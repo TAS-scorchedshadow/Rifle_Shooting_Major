@@ -2,9 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block page_title %}{% endblock %} - ProAnalytics</title>
+    <title>{% block page_title %}{% endblock %} | ProAnalytics</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://kit.fontawesome.com/de048b62de.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    Hello world!
+    <nav class="navbar">
+        <u1 class="navbar-nav">
+            <li class="nav-item">
+                <a href="#" class = "nav-link">
+                    <i class="fas fa-camera"></i>
+                </a>
+                <span class="linked-text">Home</span>
+            </li>
+            <li class="nav-item">
+                <a href="#" class = "nav-link">
+                </a>
+                <span class="linked-text">Summer</span>
+            </li>
+            <li class="nav-item">
+                <a href="#" class = "nav-link">
+                </a>
+                <span class="linked-text">Winter</span>
+            </li>
+        </u1>
+    </nav>
+    <main>
+        {% block page_content %}
+        {% endblock %}
+    </main>
 </body>
 </html>
