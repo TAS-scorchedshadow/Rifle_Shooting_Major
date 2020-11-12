@@ -7,6 +7,10 @@ app = Flask(__name__)
 def hello_world():
     return render_template('landingPage.html')
 
+@app.route('/target')
+def target_test():
+    return render_template('targetTest.html')
+
 
 @app.route('/profile')
 def profile():

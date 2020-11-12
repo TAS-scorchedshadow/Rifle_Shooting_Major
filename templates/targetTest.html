@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/static/targetTests.js"></script>
+    <title>Title</title>
+    <style>
+        body{
+            margin:0
+        }
+    </style>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h4>hello</h4>
+            <canvas id="title" style="border: 1px solid black"></canvas>
+            <script>
+                let myTarget = new DrawTarget('title', "300m", 600, [['1', -115.92, 111.75], ['2', 9.49, 15.66]]);
+                myTarget.draw();
+            </script>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
