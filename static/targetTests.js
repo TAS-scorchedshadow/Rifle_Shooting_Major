@@ -1,105 +1,149 @@
-// canvas = document.getElementById('title');
-// console.log('hello');
-// canvas.width = 400;
-// canvas.height = 400;
-// var c = canvas.getContext('2d');
-// //just trying out canvas currently doesn't make a target but a zoomable circle
-maxWidth = window.innerWidth;
-maxHeight = window.innerHeight;
-var target_details = {"300m": [300, 70, 140, 280, 420, 600],
-                      "400m": [400, 95, 185, 375, 560, 800],
-                      "500m": [500, 145, 290, 660, 1000, 1320],
-                      "600m": [600, 160, 320, 660, 1000, 1320],
-                      "700m": [700, 255, 510, 815, 1120, 1830],
-                      "800m": [700, 255, 510, 815, 1120, 1830],
+var maxWidth = window.innerWidth;
+var maxHeight = window.innerHeight;
+var target_details = {"300m": [300, 70, 140, 280, 420, 600, 1200],
+                      "400m": [400, 95, 185, 375, 560, 800, 1800],
+                      "500m": [500, 145, 290, 660, 1000, 1320, 1800],
+                      "600m": [600, 160, 320, 660, 1000, 1320, 1800],
+                      "700m": [700, 255, 510, 815, 1120, 1830, 2400],
+                      "800m": [700, 255, 510, 815, 1120, 1830, 2400],
                       "300yds": [274.32, 65, 130, 260, 390, 560],
                       "400yds": [365.76, 85, 175, 350, 520, 745],
                       "500yds": [457.20, 130, 260, 600, 915, 1320],
                       "600yds": [548.64, 145, 290, 600, 915, 1320]};
-// let x = 0;
-// let y = 0;
-// while (y <= maxHeight) {
-//     while (x <= maxWidth) {
-//         c.beginPath();
-//         let green = Math.floor(Math.random() * 255).toString();
-//         let blue = Math.floor(Math.random() * 255).toString();
-//         let red = Math.floor(Math.random() * 255).toString();
-//         let rgbString = 'rgb(' + red + ',' + green + ',' + blue + ')';
-//         c.strokeStyle = rgbString;
-//         c.arc(x, y, 80, 0, Math.PI * 2, false);
-//         c.fillStyle = rgbString;
-//         c.fill();
-//         c.stroke();
-//         x += 100;
-//     }
-//     y += 100
-//     x = 0
-// }
-// window.addEventListener('mousewheel', function(event) {
-//     let change = event.deltaY * -0.1;
-//     let circle1 = circleArray[2];
-//     console.log(circle1);
-//     if (Math.abs(event.x - circle1.x) < circle1.radius && Math.abs(event.y - circle1.y) < circle1.radius){
-//         if (circle1.radius + change > 100 && circle1.radius + change < 300) {
-//             for (let i=0; i < 3; i++) {
-//                 circleArray[i].radius += change
-//             }
-//
-//         }
-//         document.body.style.overflow = 'hidden';
-//     }
-//     else {
-//         document.body.style.overflow = 'auto';
-//     }
-// })
 
-
-function Circle(c, x, y, radius) {
+function Circle(c, x, y, radius, lineWidth=1) {
+    this.lineWidth = lineWidth
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.draw = function() {
         c.beginPath();
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        c.fillStyle = '#76ce76';
+        c.fillStyle = 'black';
         c.fill();
+        c.lineWidth = this.lineWidth;
+        c.strokeStyle = 'white';
         c.stroke();
+        c.closePath();
     };
     this.update = function() {
         this.draw();
     }
 }
 
+function Shot(c, x, y, ratio, num) {
+    this.width = width;
+    this.c = c;
+    this.x = x;
+    this.y = y;
+    this.ratio = ratio;
+    this.draw = function(){
+        //Draw text
+        this.c.font = "30px Arial";
+        this.c.textAlign = "center"
+        this.c.strokeText(num, this.x, this.y);
+        //Draw Circle
+        c.beginPath();
+        c.arc(this.x, this.y, 10*this.ratio, 0, Math.PI * 2, false);
+    }
+}
+
 function Target(c, x, y, width, dist){
+    this.c = c
     this.dist = dist;
     this.x = x;
     this.y = y;
     this.width = width;
     this.targetCircles = [];
+    //Ratio in pixels per millimetre
     this.ratio = this.width/target_details[this.dist][5];
-    console.log(this.width);
     for (let i=1; i<=5; i++){
-        let addCircle = new Circle(c, this.x, this.y,target_details[this.dist][i]*this.ratio);
+        let addCircle = new Circle(this.c, this.x, this.y,target_details[this.dist][i]*this.ratio/2, 4*this.ratio);
         this.targetCircles.push(addCircle);
     }
 }
-
-function DrawTarget(canvasId, x, y, dist, width){
+//canvasId is the id of the canvas element
+//dist is a string that describes the distance of the target eg. "300m"
+//width is the width of the target (and height because the target boundaries is a square)
+//shots is an array of arrays with the following format:
+//[num, x, y]
+function DrawTarget(canvasId, dist, width, shots=[]){
     this.canvasObj = document.getElementById(canvasId);
     this.canvasObj.width = width;
     this.canvasObj.height = width;
-    this.x = x;
-    this.y = y;
+    this.x = this.canvasObj.width/2;
+    this.y = this.canvasObj.height/2;
     this.dist = dist;
     this.c = this.canvasObj.getContext('2d');
-    this.target = new Target(this.c, this.x, this.y, this.canvasObj.width/2, this.dist);
+    this.ratio = this.canvasObj.width/target_details[this.dist][5];
+    //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
+    let MM_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[dist][0] * this.ratio;
+    this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
     this.draw = function() {
+        // Draw all the circles on the target
         for (let i=4; i>=0; i--) {
             this.target.targetCircles[i].draw()
         }
+        // Draw the gridlines of the target, from middle to left/top, then middle to right/bottom
+        let xLine = this.x
+        let plot_size = this.canvasObj.width
+        while (xLine > this.x-plot_size){
+            this.c.beginPath();
+            this.c.lineWidth = 2 * this.ratio
+            this.c.strokeStyle = 'grey';
+            this.c.moveTo(xLine, plot_size);
+            this.c.lineTo(xLine, -plot_size);
+            this.c.stroke();
+            this.c.closePath();
+            this.c.beginPath();
+            this.c.moveTo(plot_size, xLine);
+            this.c.lineTo(-plot_size, xLine);
+            this.c.stroke();
+            this.c.closePath();
+            xLine -= MM_PER_MOA_PER_1M
+        }
+        xLine = this.x + MM_PER_MOA_PER_1M;
+        while (xLine < this.x + this.canvasObj.width/2){
+            this.c.beginPath();
+            this.c.lineWidth = 2 * this.ratio
+            this.c.strokeStyle = 'grey';
+            this.c.moveTo(xLine, plot_size);
+            this.c.lineTo(xLine, -plot_size);
+            this.c.stroke();
+            this.c.closePath();
+            this.c.beginPath();
+            this.c.moveTo(plot_size, xLine);
+            this.c.lineTo(-plot_size, xLine);
+            this.c.stroke();
+            this.c.closePath();
+            xLine += MM_PER_MOA_PER_1M
+        //Draw all the individual shots
+        let shotsLength = shots.length;
+        let shot_x = 0
+        let shot_y = 0
+        let shot_num = ''
+        let font_size = ''
+        for (let i=0; i<shotsLength; i++){
+            shot_num = shots[i][0];
+            shot_x = shots[i][1];
+            shot_y = shots[i][2];
+            //Draw Circle
+            this.c.beginPath();
+            this.c.arc(this.x + (shot_x*this.ratio), this.y + (shot_y*this.ratio), 13, 0, Math.PI * 2, false);
+            this.c.fillStyle = 'black';
+            this.c.fill();
+            this.c.strokeStyle = 'white';
+            this.c.strokeWidth = 1;
+            this.c.stroke();
+            this.c.closePath();
+            //Draw text
+            this.c.beginPath();
+            this.c.font = "16px Arial";
+            this.c.fillStyle= "white"
+            this.c.textAlign = "center";
+            this.c.fillText(shot_num, this.x + (shot_x*this.ratio), this.y + (shot_y*this.ratio)+5);
+            this.c.closePath();
+        }
+        }
     }
 }
-
-let myTarget = new DrawTarget('title', canvas.width/2, canvas.height/2, "300m", 400);
-myTarget.draw();
-console.log(myTarget);
