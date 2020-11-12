@@ -2,5 +2,47 @@
 {% set active_page = "Home" %}
 {% block page_title %} Home {% endblock %}
 {% block page_content %}
-    This will be the home page
+<!--
+<style>
+    .jumbotron{
+        background-image: url('../static/images/home.jpg');
+        background-size: cover;
+        margin-bottom: 20px;
+        margin-top: 0px;
+        background-position: center;
+    }
+</style>
+<div class="jumbotron jumbotron-fluid  bg-transparent" style="background-size: cover;">
+  <div class="container justify-content-center text-center">
+      <h1 class="display-4" id="jumboTitle"><b>Progress Analytics for Rifle Shooters</b></h1>
+  </div>
+</div>
+-->
+
+<br>
+<br>
+<div class = "row text-center justify-content-center">
+    <div class="col-8">
+        <div class="card">
+            <h3>About PARS</h3>
+                <p> Welcome to Rifle Shooting Analytics. This program was created to aid rifle shooters to progress their
+                    skill and capability.
+                </p>
+                <p>
+                    Created as a Software Design and Development project in SBHS 2020, the aim was to create an application which allowed
+                    data access and personalised analytics for the performance in the rifle shooter's endeavours.
+                </p>
+                <br>
+                <p>
+                    Proudly created by Andrew T, Dylan H, Henry G, Ryan T & Rishi W
+                </p>
+
+        </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+          <a class="btn btn-primary btn-lg" href="/user/signin">Sign In <i class="fas fa-sign-in-alt"></i></a>
+      </div>
+    </div>
+</div>
 {% endblock %}
