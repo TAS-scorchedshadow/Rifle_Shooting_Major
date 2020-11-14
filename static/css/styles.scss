@@ -7,7 +7,12 @@ $palette-3: #6B6E70;
 $palette-4: #474B4F;
 $palette-5: #222629;
 
-$txt-color: #fff;
+$text-primary: #b6b6b6;
+$text-secondary: #ececec;
+$bg-primary:#294F65;
+$bg-secondary:#1A3240;
+
+$txt-color: black;
 $theme-colors: (
   "primary": $palette-1,
   "nav-color-bg": $palette-4,
@@ -44,6 +49,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     color: $txt-color;
 }
 
+/*
 .card {
     background-color: $palette-4;
 }
@@ -75,6 +81,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 .fa-clock{
     color: white;
 }
+ */
 
 //Upload page
 
@@ -113,18 +120,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 :root {
     font-size: 16px;
     font-family: 'Open Sans';
-    --text-primary: #b6b6b6;
-    --text-secondary: #ececec;
-    --bg-primary:#23232e;
-    --bg-secondary:#141418;
     --transition-speed: 600ms;
-}
-
-body {
-    color: black;
-    background: white;
-    margin: 0;
-    padding: 0;
 }
 
 main {
@@ -139,7 +135,7 @@ main {
     position: fixed;
     z-index: 1;
     transition: width 600ms ease;
-    background-color: var(--bg-primary);
+    background-color: $bg-primary;
 }
 
 .sidebar:hover {
@@ -169,11 +165,11 @@ main {
     display: flex;
     align-items: center;
     height: 5rem;
-    color: var(--text-primary);
+    color: $text-primary;
     text-decoration: none;
     padding: 0;
     margin: 0;
-    filter: grayscale(100%) opacity(0.7);
+    filter: grayscale(100%);
     transition: var(--transition-speed);
 }
 
@@ -192,8 +188,8 @@ main {
 
 .nav-link:hover {
     filter: grayscale(0%) opacity(1);
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
+    background: $bg-secondary;
+    color: $text-secondary;
 }
 
 .sidebar:hover .linked-text {

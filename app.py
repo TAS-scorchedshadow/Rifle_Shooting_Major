@@ -1,7 +1,8 @@
 from flask import Flask, render_template
+from uploadForms import reportForm
 
 app = Flask(__name__)
-
+app.secret_key = "_wTlFKa92a-UL0GityNmMg"
 
 @app.route('/')
 def hello_world():
@@ -14,7 +15,8 @@ def target_test():
 
 @app.route('/profile')
 def profile():
-    return render_template('profile.html')
+    form = reportForm()
+    return render_template('students/profile.html',form=form)
 
 if __name__ == '__main__':
     app.run()
