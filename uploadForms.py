@@ -39,7 +39,7 @@ class signUpForm(FlaskForm):
 
 # Form for logging in
 # -- Dylan Huynh --
-class signIn(FlaskForm):
+class signInForm(FlaskForm):
     username = StringField("Username or password")
     password = PasswordField("Password:")
 

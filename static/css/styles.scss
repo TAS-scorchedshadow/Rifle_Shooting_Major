@@ -37,9 +37,12 @@ $link-hover-decoration : none;
 
 //General
 
+/*
 body{
     background-color: $palette-3;
 }
+
+ */
 
 label{
     color: $txt-color;
@@ -136,6 +139,7 @@ main {
     z-index: 1;
     transition: width 600ms ease;
     background-color: $bg-primary;
+    overflow: hidden;
 }
 
 .sidebar:hover {

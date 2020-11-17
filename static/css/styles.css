@@ -10177,10 +10177,12 @@ h3 {
     border-color: #dee2e6;
   }
 }
-body {
-  background-color: #6B6E70;
+/*
+body{
+    background-color: $palette-3;
 }
 
+ */
 label {
   color: black;
 }
@@ -10275,6 +10277,7 @@ main {
   z-index: 1;
   transition: width 600ms ease;
   background-color: #294F65;
+  overflow: hidden;
 }
 
 .sidebar:hover {
