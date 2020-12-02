@@ -5,14 +5,17 @@
     <script type="text/javascript" src="/static/targetTests.js"></script>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-3 col-md-12 mr-5">
                 <canvas id="title" style="border: 1px solid black"></canvas>
                 <script>
-                    let myTarget = new DrawTarget('title', "300m", 600, [['1', -115.92, 111.75], ['2', 9.49, 15.66]]);
-                    myTarget.draw();
+                    let myTarget = new DrawTarget('title', "300m", [['1', -115.92, 111.75], ['2', 9.49, 15.66]], 600);
+                </script>
+                <canvas id="title2" style="border: 1px solid black"></canvas>
+                <script>
+                    let myTarget2 = new DrawTarget('title2', "300m", [['1', -115.92, 111.75], ['2', 9.49, 15.66]]);
                 </script>
             </div>
-        <div class="col-lg-6 col-md-12">
+        <div class="col-lg-7 col-md-12">
                 <div class="card-deck text-center">
                     <div class="card shadow border-0 h-80">
                         <table class="table">
