@@ -10,17 +10,37 @@
   src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
   crossorigin="anonymous"></script>
 
-<!-- Heading container which holds student's name -->
+<!-- Heading container which holds shooter's info -->
     <div class="jumbotron jumbotron-fluid">
-  <div class="container justify-content-left text-left">
-            <p>Dylan Huynh (7M)</p>
-      <p>It</p>
+    <div class="container justify-content-left text-left">
+     <table class="table table-striped table-bordered table-sm">
+  <tbody>
+    <tr>
+        <td>SID (Shooter): 00000</td>
+        <td>DOB: True</td>
+        <td>Rifle Serial: 0000</td>
+        <td>Student ID: 43------- </td>
+        <td>Grade: A </td>
+        <td>Email: generic.email@domain.com</td>
+    </tr>
+    <tr>
+        <td>Permit: N/A</td>
+        <td>Expiry: 01/01/2025</td>
+        <td>Sharing: Yes?</td>
+        <td>Mobile: 04-- --- ---</td>
+        <td>Roll Class: 7M</td>
+        <td>Mobile: 04-- --- ---</td>
+    </tr>
+  </tbody>
+</table>
     </div>
     </div>
 
+
+
     <!-- ChartJS for the attendance doughnut  -->
     <section>
-<div class="attendance-container" style="position: relative; height:20vh; width:40vw">
+<div class="attendance-container" style="position: relative; height:20vh; width:27vw">
 <canvas id="attendance"></canvas>
 <script>
 var ctx = document.getElementById('attendance').getContext('2d');
