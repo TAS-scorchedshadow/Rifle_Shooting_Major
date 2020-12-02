@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% set active_page = "profile" %}
+{% block page_title %} Profile {% endblock %}
+{% block page_content %}
+
+    <!-- ChartJS modules -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+
+<!-- Heading container which holds student's name -->
+    <div class="jumbotron jumbotron-fluid">
+  <div class="container justify-content-left text-left">
+            <p>Dylan Huynh (7M)</p>
+      <p>It</p>
+    </div>
+    </div>
+
+    <!-- ChartJS for the attendance doughnut  -->
+    <section>
+<div class="attendance-container" style="position: relative; height:20vh; width:40vw">
+<canvas id="attendance"></canvas>
+<script>
+var ctx = document.getElementById('attendance').getContext('2d');
+console.log(ctx);
+var attendance = new Chart(ctx, {
+			type: 'doughnut',
+			data: {
+				datasets: [{
+					data: [155, 13],
+					backgroundColor: [
+						'rgba(91, 188, 228, 0.85)',
+                        'rgba(139, 69, 19, 0.85)',
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+				    'Attended',
+					'Not Attended'
+				]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: 'Chart.js Doughnut Chart'
+					},
+				},
+				animation: {
+					animateScale: true,
+					animateRotate: true
+				}
+			}
+            });
+	</script>
+    </section>
+
+    <!-- ChartJS radar to show student's skill -->
+    <section>
+<div class="radar-container" style="position: relative; height:20vh; width:40vw">
+<canvas id="radar"></canvas>
+<script>
+var ctx = document.getElementById('radar').getContext('2d');
+console.log(ctx);
+var radar = new Chart(ctx, {
+    type: 'radar',
+			data: {
+				labels: ['Consistency', 'Speed', 'xDrift', 'yDrift', 'Score'],
+				datasets: [{
+					label: 'Student Name',
+					backgroundColor: 'rgba(91, 188, 228, 0.3',
+					borderColor: 'rgba(91, 188, 228, 1)',
+                    data: [70, 80, 75, 80, 60]
+}]},
+			options: {
+				plugins: {
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: 'Chart.js Radar Chart'
+					},
+				},
+				scale: {
+					beginAtZero: true
+				}
+			}
+		});
+</script>
+    </section>
+
+    <div style="alignment: center">
+    <div class="col-3" align="left">
+        <div class="card shadow border-0 justify-content-center">
+            <div class = "card-title text-center">
+                <h2>Dylan Huynh (7M)</h2>
+            </div>
+            <div class = "card-body">
+                <p>Picture</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <title>{% block page_title %}{% endblock %} | ProAnalytics</title>
     <script src="https://kit.fontawesome.com/de048b62de.js" crossorigin="anonymous"></script>
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <!-- Bootstrap JS -->
-   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/style.css">
+
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap" rel="stylesheet"/>
 </head>
 <body>
@@ -23,7 +20,7 @@
             <li class="nav-item">
                 <a href="/profile" class = "nav-link">
                     <i class="fas fa-user"></i>
-                    <span class="linked-text">Profile Page</span>
+                    <span class="linked-text">Profile</span>
                 </a>
             </li>
             <li class="nav-item">
@@ -33,9 +30,9 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class = "nav-link">
+                <a href="/user/signin" class = "nav-link">
                     <i class="fas fa-sign-in-alt"></i>
-                    <span class="linked-text">Sign Out</span>
+                    <span class="linked-text">Sign In</span>
                 </a>
             </li>
         </u1>
