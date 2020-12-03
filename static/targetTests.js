@@ -19,9 +19,7 @@ const shotStroke = 'black';
 const shotText = 'black';
 
 const gridLinesColor = '#7b7b7b';
-
-//c is canvas context object
-//x and y is the centre of the circle
+//c is canvas context objectle
 //lineWidth is the thickness of the circle's stroke
 function Circle(c, x, y, radius, lineWidth=1) {
     this.lineWidth = lineWidth

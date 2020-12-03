@@ -1,2 +1,4 @@
 /myvenv/
 /.env
+/env
+/venv38/

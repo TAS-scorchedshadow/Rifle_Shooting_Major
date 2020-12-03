@@ -37,6 +37,8 @@
                         Upload shoot strings here. <br>
                         Files should appear as 'string-' followed by a number, e.g. 'string-1434928243577.txt'
                         </p>
+                        <textarea id="content-target0"></textarea>
+                        <textarea id="content-target1"></textarea>
                     </div>
                     <div class="card-body">
                         <form method="post" enctype="multipart/form-data">
@@ -56,6 +58,32 @@
                                     dropZoneTitle: "Drag and drop txt files here…",
                                     allowedFileExtensions: ["txt"]
                             });
+                            //FileReader code from https://stackoverflow.com/questions/31746837/reading-uploaded-text-file-contents-in-html
+                            document.getElementById('input-fa').addEventListener('change', getFile)
+                            function getFile(event){
+                                const input = event.target
+                                for (let i = 0; i<=input.files.length; i++){
+                                    if ('files' in input && input.files.length > 0) {
+                                      placeFileContent(
+                                      document.getElementById('content-target' + i.toString()),
+                                      input.files[i])
+                                    }
+                                }
+                            }
+                            function placeFileContent(target, file) {
+                                readFileContent(file).then(content => {
+                                target.value = content
+                                console.log(content)
+                              }).catch(error => console.log(error))
+                            }
+                            function readFileContent(file) {
+                                const reader = new FileReader()
+                                return new Promise((resolve, reject) => {
+                                    reader.onload = event => resolve(event.target.result)
+                                    reader.onerror = error => reject(error)
+                                    reader.readAsText(file)
+                                })
+                            }
                             </script>
                             {{ form.identifier(value="upload") }}
                         </form>
