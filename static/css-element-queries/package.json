@@ -1,0 +1,55 @@
+{
+  "_from": "css-element-queries",
+  "_id": "css-element-queries@1.2.3",
+  "_inBundle": false,
+  "_integrity": "sha512-QK9uovYmKTsV2GXWQiMOByVNrLn2qz6m3P7vWpOR4IdD6I3iXoDw5qtgJEN3Xq7gIbdHVKvzHjdAtcl+4Arc4Q==",
+  "_location": "/css-element-queries",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "css-element-queries",
+    "name": "css-element-queries",
+    "escapedName": "css-element-queries",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/css-element-queries/-/css-element-queries-1.2.3.tgz",
+  "_shasum": "e14940b1fcd4bf0da60ea4145d05742d7172e516",
+  "_spec": "css-element-queries",
+  "_where": "C:\\Users\\iNiz\\PycharmProjects\\Rifle_Shooting_Major",
+  "author": {
+    "name": "Marc J. Schmidt"
+  },
+  "bugs": {
+    "url": "https://github.com/marcj/css-element-queries/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "CSS-Element-Queries Polyfill. Proof-of-concept for high-speed element dimension/media queries in valid css.",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-bump": "^0.3.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "homepage": "https://github.com/marcj/css-element-queries",
+  "license": "MIT",
+  "main": "index.js",
+  "name": "css-element-queries",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/marcj/css-element-queries.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "typings": "css-element-queries.d.ts",
+  "version": "1.2.3"
+}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% set active_page = "Upload" %}
+{% block page_title %} Upload {% endblock %}
+{% block page_content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card h-100 justify-content-center">
+                <div class="card-header text-center">
+                    <h1>Finalise Upload</h1>
+                </div>
+                <div class="card-body">
+                     <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            {{ form.rifleRange(class_="form-control") }}
+                        </div>
+                        <div class="input-group-append">
+                            {{ form.distance(class_="form-control") }}
+                        </div>
+                        <div class="input-group-append">
+                            {{ form.weather(class_="form-control") }}
+                        </div>
+                    </div>
+                    <hr>
+                    <!--TODO you probably need to change the value insert into some Javascript equivalent-->
+                    <h3 class="text-center">The following stages contain incomplete data</h3>
+                    <div class="table-responsive">
+                        <table class="text-center justify-content-center table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Stage ID</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Score</th>
+                                 </tr>
+                            </thead>
+                            <tbody>
+                            {% for thing in stageList %}
+                                <tr>
+                                    <td scope="row">0912039</td>
+                                    <td>23/10/2020</td>
+                                    <td><input class="form-control" type="text"></td>
+                                    <td><input class="form-control" type="text"></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    <!--TODO add submit style-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

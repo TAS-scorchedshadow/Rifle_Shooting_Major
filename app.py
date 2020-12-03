@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
-from uploadForms import reportForm, signInForm
+from flask import Flask, render_template, request, url_for, redirect
+from uploadForms import reportForm, signInForm, uploadForm
+
 
 app = Flask(__name__)
 app.secret_key = "_wTlFKa92a-UL0GityNmMg"
@@ -18,6 +19,22 @@ def target_test():
 def profile():
     form = reportForm()
     return render_template('students/profile.html',form=form)
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    form = uploadForm()
+    if request.method == "POST":
+        return redirect(url_for('uploadV'))
+    return render_template('upload/upload.html',form=form)
+
+@app.route('/upload2')
+def uploadV():
+    form = uploadForm()
+    stageList = ['1','2','4','2','3','1','2',2,1,1,2,3,12,31,123]
+    if request.method == "POST":
+        return render_template('landingPage.html')
+    return render_template('upload/uploadVerify.html', form=form,stageList=stageList)
 
 
 @app.route('/user/signin', methods=['GET', 'POST'])

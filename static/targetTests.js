@@ -28,6 +28,7 @@ function Circle(c, x, y, radius, lineWidth=1) {
     this.x = x;
     this.y = y;
     this.radius = radius;
+
     this.draw = function() {
         c.beginPath();
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
@@ -37,9 +38,14 @@ function Circle(c, x, y, radius, lineWidth=1) {
         c.strokeStyle = targetStroke;
         c.stroke();
         c.closePath();
+        console.log('Drawing circles! :)')
     };
-    this.update = function() {
-        this.draw();
+    this.update = function(x=this.x, y=this.y, radius=this.radius, lineWidth=this.lineWidth) {
+        this.x = x
+        this.y = y
+        this.radius = radius
+        this.lineWidth = lineWidth
+
     }
 }
 
@@ -57,25 +63,46 @@ function Target(c, x, y, width, dist){
         let addCircle = new Circle(this.c, this.x, this.y,target_details[this.dist][i]*this.ratio/2, 1*this.ratio);
         this.targetCircles.push(addCircle);
     }
+    this.update = function(x,y,width, ratio) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.ratio = ratio;
+        for (let i=0; i<=4; i++){
+            this.targetCircles[i].update(this.x, this.y, target_details[this.dist][i+1]*this.ratio/2);
+        }
+    };
 }
 //canvasId is the id of the canvas element
 //dist is a string that describes the distance of the target eg. "300m"
 //width is the width of the target (and height because the target boundaries is a square)
 //shots is an array of arrays with the following format:
 //[num, x, y]
-function DrawTarget(canvasId, dist, width, shots=[]){
-    this.canvasObj = document.getElementById(canvasId);
-    this.canvasObj.width = width;
-    this.canvasObj.height = width;
-    this.x = this.canvasObj.width/2;
-    this.y = this.canvasObj.height/2;
-    this.dist = dist;
-    this.c = this.canvasObj.getContext('2d');
-    this.ratio = this.canvasObj.width/target_details[this.dist][5];
-    //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
-    //it is modified to be in pixels
-    let PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[dist][0] * this.ratio;
-    this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
+function DrawTarget(canvasId, dist, shots=[], width='flex'){
+    this.init = function() {
+        this.canvasObj = document.getElementById(canvasId);
+        if (width === 'flex'){
+            let rect = this.canvasObj.parentNode.getBoundingClientRect();
+            this.canvasObj.width = rect.width;
+            this.canvasObj.height = rect.width;
+
+        }
+        else{
+            this.canvasObj.width = width;
+            this.canvasObj.height = width;
+        }
+        this.x = this.canvasObj.width/2;
+        this.y = this.canvasObj.height/2;
+        this.dist = dist;
+        this.c = this.canvasObj.getContext('2d');
+        this.ratio = this.canvasObj.width/target_details[this.dist][5];
+        //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
+        //it is modified to be in pixels
+        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[dist][0] * this.ratio;
+        this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
+
+    }
+
     this.draw = function() {
         // Draw all the circles on the target
         for (let i=4; i>=0; i--) {
@@ -97,9 +124,9 @@ function DrawTarget(canvasId, dist, width, shots=[]){
             this.c.lineTo(-plot_size, xLine);
             this.c.stroke();
             this.c.closePath();
-            xLine -= PX_PER_MOA_PER_1M
+            xLine -= this.PX_PER_MOA_PER_1M
         }
-        xLine = this.x + PX_PER_MOA_PER_1M;
+        xLine = this.x + this.PX_PER_MOA_PER_1M;
         while (xLine < this.x + this.canvasObj.width/2) {
             this.c.beginPath();
             this.c.lineWidth = 2 * this.ratio
@@ -113,7 +140,7 @@ function DrawTarget(canvasId, dist, width, shots=[]){
             this.c.lineTo(-plot_size, xLine);
             this.c.stroke();
             this.c.closePath();
-            xLine += PX_PER_MOA_PER_1M
+            xLine += this.PX_PER_MOA_PER_1M
         }
         //Draw indicators for each ring
         for (let i=1; i<=5; i++){
@@ -156,7 +183,42 @@ function DrawTarget(canvasId, dist, width, shots=[]){
             this.c.closePath();
         }
     }
+
+    this.update = function() {
+        if (width === 'flex'){
+            let rect = this.canvasObj.parentNode.getBoundingClientRect();
+            this.canvasObj.width = rect.width;
+            this.canvasObj.height = rect.width;
+        }
+        this.x = this.canvasObj.width/2
+        this.y = this.canvasObj.height/2
+        this.ratio = this.canvasObj.width/target_details[this.dist][5];
+        //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
+        //it is modified to be in pixels
+        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[dist][0] * this.ratio;
+        //update the target dimensions
+        this.target.update(this.x, this.y, this.canvasObj.width, this.ratio)
+    };
+
+    this.init();
+    this.draw();
+    //Change target dimensions if its parent div changes dimensions
+    if (width === 'flex'){
+        let canvasParent = this.canvasObj.parentNode
+        let drawThisTarget = this
+        new ResizeSensor(canvasParent, function(){
+            drawThisTarget.update();
+            drawThisTarget.draw();
+        });
+    }
 }
+//
+// let canvasParent = document.getElementById(canvasId).parentNode;
+// new ResizeSensor(canvasParent, function(){
+//
+// });
+
+
 //Unused (might use later)
 // function Shot(c, x, y, ratio, num) {
 //     this.width = width;

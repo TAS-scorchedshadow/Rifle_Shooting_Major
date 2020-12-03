@@ -8,19 +8,19 @@ from wtforms.validators import DataRequired, InputRequired
 
 # Form for uploading files
 # -- Ryan Tan --
-# class uploadForm(FlaskForm):
-#     file = MultipleFileField(u'Submit File')
-#     rifleRange = SelectField("Rifle Range:", choices=[('Malabar', 'Malabar')])
-#     distance = SelectField("Distance:", choices=[('300m', '300m'), ('500m', '500m'), ('600m', '600m'),
-#                                                  ('700m', '700m'), ('800m', '800m')])
-#     weather = SelectField("Weather:", choices=[('Sunny', 'Sunny'), ('Cloudy', 'Cloudy'), ('Windy', 'Windy'),
-#                                                ('Rain', 'Rain'), ('Storm', 'Storm')])
-#     submit = SubmitField("Submit")
-#     identifier = HiddenField("Upload/Verify", default="upload")
-#     submit = SubmitField("Submit")
-#     invalidShootInfo = HiddenField("Data")
-#     success = HiddenField("Success")
-#     total = HiddenField("Total")
+class uploadForm(FlaskForm):
+    file = MultipleFileField(u'Submit File')
+    rifleRange = SelectField("Rifle Range:", choices=[('Malabar', 'Malabar')])
+    distance = SelectField("Distance:", choices=[('300m', '300m'), ('500m', '500m'), ('600m', '600m'),
+                                                 ('700m', '700m'), ('800m', '800m')])
+    weather = SelectField("Weather:", choices=[('Sunny', 'Sunny'), ('Cloudy', 'Cloudy'), ('Windy', 'Windy'),
+                                               ('Rain', 'Rain'), ('Storm', 'Storm')])
+    submit = SubmitField("Submit")
+    identifier = HiddenField("Upload/Verify", default="upload")
+    submit = SubmitField("Submit")
+    invalidShootInfo = HiddenField("Data")
+    success = HiddenField("Success")
+    total = HiddenField("Total")
 
 
 # Form for registering
