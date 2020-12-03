@@ -1,0 +1,44 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS stages CASCADE;
+DROP TABLE IF EXISTS shots CASCADE;
+
+CREATE TABLE IF NOT EXISTS users (
+    userID SERIAL PRIMARY KEY NOT NULL UNIQUE,
+    username VARCHAR(41) NOT NULL UNIQUE,
+    fName VARCHAR(20) NOT NULL,
+    sName VARCHAR(20) NOT NULL,
+    email VARCHAR(50),
+    mobile VARCHAR(20),
+    schoolID VARCHAR(20),
+    shooterID VARCHAR(20),
+    permitNum VARCHAR(20),
+    permitExpiry VARCHAR(20),
+    year VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS stages (
+    stageID SERIAL PRIMARY KEY NOT NULL UNIQUE,
+    userID INT,
+    time BIGINT,
+    duration BIGINT,
+    groupSize float,
+    range VARCHAR(5),
+    jsonID TEXT,
+    location VARCHAR(10) DEFAULT 'Malabar',
+    CONSTRAINT fk_user
+        FOREIGN KEY(userID)
+            REFERENCES users(userID)
+);
+
+CREATE TABLE IF NOT EXISTS shots (
+    shotID SERIAL PRIMARY KEY NOT NULL UNIQUE,
+    stageID INT,
+    xPos float,
+    yPos float,
+    time BIGINT,
+    score INT,
+    numV INT,
+    CONSTRAINT fk_stage
+        FOREIGN KEY(stageID)
+            REFERENCES stages(stageID)
+);

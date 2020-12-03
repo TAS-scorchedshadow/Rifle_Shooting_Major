@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, url_for, redirect
 from uploadForms import reportForm, signInForm, uploadForm
+import os
 
 
 app = Flask(__name__)
-app.secret_key = "_wTlFKa92a-UL0GityNmMg"
+app.secret_key = os.environ['secret_key']
 
 @app.route('/')
 def hello_world():
