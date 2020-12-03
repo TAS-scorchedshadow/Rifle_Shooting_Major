@@ -4,7 +4,7 @@ import os
 
 
 app = Flask(__name__)
-app.secret_key = se
+app.secret_key = os.environ['secret_key']
 
 @app.route('/')
 def hello_world():
