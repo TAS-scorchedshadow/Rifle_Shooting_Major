@@ -8,7 +8,7 @@
       <excludeFolder url="file://$MODULE_DIR$/myvenv" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (ProAnalytics)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.8 (Rifle_Shooting_Major)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
