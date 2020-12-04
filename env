@@ -1,0 +1,2 @@
+DATABASE_URL='postgres://eeqgndyfzangno:c7f5aa26c93be82dce1b9ae5467e2c34e2f75d3838767e1f664ba6ee453a835d@ec2-54-196-89-124.compute-1.amazonaws.com:5432/d593nprrsltblo'
+SECRET_KEY='_wTlFKa92a-UL0GityNmMg'
