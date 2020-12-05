@@ -1,4 +1,5 @@
 /myvenv/
 /.env
-/env
+/venv
 /venv38/
+/echo

@@ -1,10 +1,8 @@
-from flask import Flask, render_template, request, url_for, redirect
-from uploadForms import reportForm, signInForm, uploadForm
-import os
+from urllib import request
 
-
-app = Flask(__name__)
-app.secret_key = os.environ['secret_key']
+from flask import render_template, redirect, url_for
+from app import app
+from app.forms import uploadForm,signInForm,reportForm
 
 @app.route('/')
 def hello_world():
@@ -62,6 +60,3 @@ def signin():
             #     return flask.redirect(next or flask.url_for('report', username=current_user.username))
             return render_template('landingPage.html')
     return render_template('UserAuth/login.html', form=form)
-
-if __name__ == '__main__':
-    app.run()
