@@ -1,11 +1,16 @@
 from urllib import request
 
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, flash
+from flask_login import current_user, login_user, logout_user, login_required
+from werkzeug.urls import url_parse
+
 from app import app
-from app.forms import uploadForm,signInForm,reportForm
+from app.forms import uploadForm, signInForm, reportForm
+from app.models import User
+
 
 @app.route('/')
-def hello_world():
+def landingPage():
     return render_template('landingPage.html')
 
 
@@ -17,46 +22,47 @@ def target_test():
 @app.route('/profile')
 def profile():
     form = reportForm()
-    return render_template('students/profile.html',form=form)
+    return render_template('students/profile.html', form=form)
 
 
+@login_required
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     form = uploadForm()
     if request.method == "POST":
         return redirect(url_for('uploadV'))
-    return render_template('upload/upload.html',form=form)
+    return render_template('upload/upload.html', form=form)
+
 
 @app.route('/upload2')
 def uploadV():
     form = uploadForm()
-    stageList = ['1','2','4','2','3','1','2',2,1,1,2,3,12,31,123]
+    stageList = ['1', '2', '4', '2', '3', '1', '2', 2, 1, 1, 2, 3, 12, 31, 123]
     if request.method == "POST":
         return render_template('landingPage.html')
-    return render_template('upload/uploadVerify.html', form=form,stageList=stageList)
+    return render_template('upload/uploadVerify.html', form=form, stageList=stageList)
 
 
-@app.route('/user/signin', methods=['GET', 'POST'])
-def signin():
-    # create form
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('landingPage'))
     form = signInForm()
-    # on submission
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            # # Authenticate User. Also initialises sessions.
-            # usernameError, passwordError = validateLogin(form)
-            # if usernameError or passwordError:
-            #     return render_template('signInForm.html', form=form, usernameError=True, passwordError=True)
-            # else:
-            #     user = User(form.username.data)
-            #     login_user(user)
-            #     next = flask.request.args.get('next')
-            #     # is_safe_url should check if the url is safe for redirects.
-            #     # See https://stackoverflow.com/questions/60532973/how-do-i-get-a-is-safe-url-function-to-use-with-flask-and-how-does-it-work for an example.
-            #     if not is_safe_url(next):
-            #         return flask.abort(400)
-            #     if current_user.admin == 1:
-            #         return flask.redirect('/adminHome')
-            #     return flask.redirect(next or flask.url_for('report', username=current_user.username))
-            return render_template('landingPage.html')
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != ':':
+            next_page = url_for('landingPage')
+        return url_for(next_page)
     return render_template('UserAuth/login.html', form=form)
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
