@@ -17,6 +17,11 @@
 <body>
     <nav class="sidebar">
         <u1 class="sidebar-nav">
+            <li class="logo">
+        <a href="#" class="nav-link">
+          <span class="link-text logo-text">SAP</span>
+        </a>
+      </li>
             <li class="nav-item">
                 <a href="/" class = "nav-link">
                     <i class="fas fa-home"></i>
@@ -42,10 +47,17 @@
                 </a>
             </li>
             <li class="nav-item">
+                {% if current_user.is_authenticated %}
+                    <a href="/logout" class = "nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="linked-text">Sign Out</span>
+                    </a>
+                {% else %}
                 <a href="/login" class = "nav-link">
                     <i class="fas fa-sign-in-alt"></i>
                     <span class="linked-text">Sign In</span>
                 </a>
+                {% endif %}
             </li>
         </u1>
     </nav>

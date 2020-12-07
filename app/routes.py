@@ -1,6 +1,6 @@
 from urllib import request
 
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -9,6 +9,7 @@ from app.forms import uploadForm, signInForm, reportForm
 from app.models import User
 
 
+@login_required
 @app.route('/')
 def landingPage():
     return render_template('landingPage.html')
@@ -25,8 +26,8 @@ def profile():
     return render_template('students/profile.html', form=form)
 
 
-@login_required
 @app.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
     form = uploadForm()
     if request.method == "POST":
@@ -57,12 +58,12 @@ def login():
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != ':':
             next_page = url_for('landingPage')
-        return url_for(next_page)
+        return redirect(next_page)
     return render_template('UserAuth/login.html', form=form)
 
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('landingPage'))
 

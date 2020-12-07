@@ -19,8 +19,7 @@ $theme-colors: (
   "nav-color-txt": $txt-color
 );
 
-$link-hover-decoration : none;
-
+/*
 //Alerts
 .alert-secondary {
   color: #121415;
@@ -30,6 +29,7 @@ $link-hover-decoration : none;
 .alert-secondary hr {
   border-top-color: #b4b5b6;
 }
+ */
 
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
@@ -199,3 +199,23 @@ main {
     display: inline;
 }
 
+.logo {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  font-size: 1.5rem;
+  letter-spacing: 0.3ch;
+  width: 100%;
+}
+
+
+.logo-text
+{
+  left: 10px;
+  display: inline;
+  position: absolute;
+  transition: var(--transition-speed);
+}

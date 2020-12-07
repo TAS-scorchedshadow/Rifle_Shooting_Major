@@ -1,14 +1,15 @@
 @charset "UTF-8";
+/*
+//Alerts
 .alert-secondary {
   color: #121415;
-  background-color: #474B4F !important;
-  border-color: #474B4F !important;
+  background-color: $palette-4 !important;
+  border-color: $palette-4 !important;
 }
-
 .alert-secondary hr {
   border-top-color: #b4b5b6;
 }
-
+ */
 /*!
  * Bootstrap v4.5.2 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
@@ -170,7 +171,7 @@ a {
 }
 a:hover {
   color: #5c8522;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 a:not([href]):not([class]) {
@@ -3023,10 +3024,10 @@ fieldset:disabled a.btn {
 }
 .btn-link:hover {
   color: #5c8522;
-  text-decoration: none;
+  text-decoration: underline;
 }
 .btn-link:focus, .btn-link.focus {
-  text-decoration: none;
+  text-decoration: underline;
 }
 .btn-link:disabled, .btn-link.disabled {
   color: #6c757d;
@@ -10334,6 +10335,25 @@ main {
 
 .sidebar:hover .linked-text {
   display: inline;
+}
+
+.logo {
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: var(--text-secondary);
+  background: var(--bg-secondary);
+  font-size: 1.5rem;
+  letter-spacing: 0.3ch;
+  width: 100%;
+}
+
+.logo-text {
+  left: 10px;
+  display: inline;
+  position: absolute;
+  transition: var(--transition-speed);
 }
 
 /*# sourceMappingURL=styles.css.map */

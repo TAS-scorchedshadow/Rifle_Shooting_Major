@@ -18,10 +18,20 @@ class User(UserMixin, db.Model):
     shooterID = db.Column(db.String(20))
     permitNumber = db.Column(db.String(20))
     permitExpiry = db.Column(db.Date)
+    isAdmin = db.Column(db.Boolean, default=False)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+    def generate_username(self):
+        # Must have fName and sName initialised
+        num = 1
+        temp = self.fName.lower() + "." + self.sName.lower() + str(num)
+        user_list = User.query.all()
+        while temp in user_list:
+            num += 1
+        self.username = temp
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
