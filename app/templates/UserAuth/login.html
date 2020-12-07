@@ -14,7 +14,7 @@
                 {{ form.csrf_token }}
                 <div  class = "form-group" >
                     <label for="username">Username or Email</label>
-                    {{ form.email(class_="field form-control")}}
+                    {{ form.username(class_="field form-control")}}
                     {% if usernameError %}
                         <p>Invalid Username</p> <!--TODO integrate with bootstrap error message-->
                     {% endif %}

@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, HiddenField, MultipleFileField, IntegerField, SelectField, PasswordField, RadioField
+from wtforms import StringField, SubmitField, HiddenField, MultipleFileField, IntegerField, SelectField, PasswordField, \
+    RadioField, BooleanField
 from wtforms.fields.html5 import DateField, TimeField, EmailField
 from flask_wtf.file import FileAllowed, FileRequired
 from wtforms.validators import DataRequired, InputRequired
@@ -40,10 +41,10 @@ class signUpForm(FlaskForm):
 # Form for logging in
 # -- Dylan Huynh --
 class signInForm(FlaskForm):
-    email = EmailField("Email:")
-    password = PasswordField("Password:")
-
-    submit = SubmitField("Sign In")
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Sign In')
 
 
 # Form for report page

@@ -35,7 +35,7 @@ class Stage(db.Model):
     jsonFilename = db.Column(db.String(128))
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    duration = db.Column(db.DateTime, index=True, default=daftetime.utcnow)
+    duration = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     groupSize = db.Column(db.Float)
     rangeType = db.Column(db.String(10))
     location = db.Column(db.String(50))
