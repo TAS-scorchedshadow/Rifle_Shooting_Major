@@ -1,12 +1,13 @@
-{% extends "base.html" %}
+{% extends "UserAuth/noNavbarBase.html" %}
 {% set active_page = "Home" %}
 {% block page_title %} Home {% endblock %}
 {% block page_content %}
-    <div class = "container-fluid">
+    <link rel="stylesheet" type="text/css" href="../../static/css/userAuth.css">
+    <div class = "container login-parent">
 
-        <div class="card mx-auto text-center w-75">
+        <div class="card login-card">
 
-            <h1 class="center">Sign In</h1>
+            <h1 class="center pl-4">Sign In</h1>
 
             <!-- oninput checks if passwords are matching -->
             <form name="signup_form" role = "form" method="post">
@@ -25,7 +26,7 @@
                         <p>Incorrect Password</p>
                     {% endif %}
                     <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-                    {{ form.submit(class_="btn") }}
+                    {{ form.submit(class_="btn btn-primary") }}
                 </div>
             </form>
             {% if form.errors %}

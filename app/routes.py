@@ -1,5 +1,3 @@
-from urllib import request
-
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -50,6 +48,7 @@ def login():
         return redirect(url_for('landingPage'))
     form = signInForm()
     if form.validate_on_submit():
+        print('submitted')
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
