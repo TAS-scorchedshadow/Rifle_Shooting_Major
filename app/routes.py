@@ -2,8 +2,8 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app import app
-from app.forms import uploadForm, signInForm, reportForm
+from app import app, db
+from app.forms import uploadForm, signInForm, signUpForm, reportForm
 from app.models import User
 
 
@@ -59,6 +59,28 @@ def login():
             next_page = url_for('landingPage')
         return redirect(next_page)
     return render_template('UserAuth/login.html', form=form)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = signUpForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/userList')
+def userList():
+    users = User.query.all()
+    print(users)
+    return render_template('UserAuth/userList.html',users=users)
 
 
 @app.route('/logout')

@@ -13,6 +13,7 @@ class User(UserMixin, db.Model):
     fName = db.Column(db.String(70))
     sName = db.Column(db.String(70))
     email = db.Column(db.String(120), index=True, unique=True)
+    school = db.Column(db.String(5))
     schoolID = db.Column(db.String(20))
     schoolYr = db.Column(db.String(2))
     shooterID = db.Column(db.String(20))

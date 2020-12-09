@@ -29,9 +29,8 @@ class uploadForm(FlaskForm):
 class signUpForm(FlaskForm):
     fName = StringField("Enter First Name:",validators=[InputRequired()])
     sName = StringField("Enter Last Name:",validators=[InputRequired()])
-    email = EmailField("Email:",validators=[InputRequired()])
     school = SelectField("Select a school", choices=[('sbhs','Sydney Boys High School')])
-    year = SelectField("Select a school", choices=['None','7','8','9','10','11','12'])
+    schoolID = StringField("School ID:",validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")
 
