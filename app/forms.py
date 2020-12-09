@@ -29,7 +29,7 @@ class uploadForm(FlaskForm):
 class signUpForm(FlaskForm):
     fName = StringField("Enter First Name:",validators=[InputRequired()])
     sName = StringField("Enter Last Name:",validators=[InputRequired()])
-    school = SelectField("Select a school", choices=[('sbhs','Sydney Boys High School')])
+    school = SelectField("Select a school", choices=[('SBHS','SBHS')])
     schoolID = StringField("School ID:",validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")

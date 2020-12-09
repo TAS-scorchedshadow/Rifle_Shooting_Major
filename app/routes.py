@@ -63,17 +63,15 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
     form = signUpForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        # user = User(username=form.username.data, email=form.email.data)
+        # user.set_password(form.password.data)
+        # db.session.add(user)
+        # db.session.commit()
+        # flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('UserAuth/register.html', title='Register', form=form)
 
 
 @app.route('/userList')
@@ -81,6 +79,8 @@ def userList():
     users = User.query.all()
     print(users)
     return render_template('UserAuth/userList.html',users=users)
+
+
 
 
 @app.route('/logout')

@@ -1,38 +1,40 @@
 {% extends "UserAuth/noNavbarBase.html" %}
-{% set active_page = "Home" %}
-{% block page_title %} Home {% endblock %}
+{% set active_page = "Login" %}
+{% block page_title %} Login {% endblock %}
 {% block page_content %}
-    <link rel="stylesheet" type="text/css" href="../../static/css/userAuth.css">
-    <div class = "container login-parent">
+    <div class = "container-fluid">
 
-        <div class="card login-card">
+        <div class="card login-card shadow">
+            <div class="login-container">
 
-            <h1 class="center pl-4">Sign In</h1>
+                <h2 class="text-center my-5">Account Login</h2>
 
-            <!-- oninput checks if passwords are matching -->
-            <form name="signup_form" role = "form" method="post">
+                <!-- oninput checks if passwords are matching -->
+                <form name="signup_form" role = "form" method="post">
 
-                {{ form.csrf_token }}
-                <div  class = "form-group px-4">
-                    <label for="username">Username or Email</label>
-                    {{ form.username(class_="field form-control")}}
-                    {% if usernameError %}
-                        <p>Invalid Username</p> <!--TODO integrate with bootstrap error message-->
-                    {% endif %}
-
-                    <label for="password">Password</label>
-                    {{ form.password(class_="field form-control", minlength="5")}}
-                    {% if passwordError %}
-                        <p>Incorrect Password</p>
-                    {% endif %}
-                    <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-                    {{ form.submit(class_="btn btn-primary") }}
-                </div>
-            </form>
-            {% if form.errors %}
-                {{ form.errors }}
-            {% endif %}
-            <a href="/user/signup">Sign Up</a>
+                    {{ form.csrf_token }}
+                    <div  class = "form-group px-4">
+                        {{ form.username(class_="field form-control form-control-lg",placeholder="Username")}}
+                        {% if usernameError %}
+                            <p>Invalid Username</p> <!--TODO integrate with bootstrap error message-->
+                        {% endif %}
+                        <br>
+                        {{ form.password(class_="field form-control form-control-lg",placeholder="Password")}}
+                        {% if passwordError %}
+                            <p>Incorrect Password</p>
+                        {% endif %}
+                        <br>
+                        {{ form.remember_me() }} {{ form.remember_me.label }}
+                        {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
+                    </div>
+                </form>
+                {% if form.errors %}
+                    {{ form.errors }}
+                {% endif %}
+                <p class="text-center">Don't have an account?
+                    <a href="/register">Sign Up</a>
+                </p>
+            </div>
         </div>
     </div>
 {% endblock %}

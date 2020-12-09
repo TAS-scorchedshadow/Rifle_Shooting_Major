@@ -1,0 +1,52 @@
+{% extends "UserAuth/noNavbarBase.html" %}
+{% set active_page = "Register" %}
+{% block page_title %}Register{% endblock %}
+{% block page_content %}
+    <div class = "container-fluid">
+
+        <div class="card login-card shadow">
+            <div class="login-container">
+
+                <h2 class="text-center my-5">Register</h2>
+
+                <!-- oninput checks if passwords are matching -->
+                <form name="signup_form" role = "form" method="post">
+                    {{ form.csrf_token }}
+                      <div class="form-row px-4">
+                          <div class="col">
+                               {{ form.fName(class_="field form-control form-control-lg",placeholder="First Name")}}
+                          </div>
+                        <div class="col">
+                             {{ form.sName(class_="field form-control form-control-lg",placeholder="Surname")}}
+                        </div>
+                      </div>
+                    <br>
+                    <div class="form-row px-4">
+                          <div class="col-3">
+                               {{ form.school(class_="field form-control form-control-lg",placeholder="First Name")}}
+                          </div>
+                        <div class="col-9">
+                             {{ form.schoolID(class_="field form-control form-control-lg",placeholder="School ID")}}
+                        </div>
+                      </div>
+                    <br>
+                     <div class="form-group px-4">
+                         {{ form.password(class_="field form-control form-control-lg",placeholder="Password")}}
+                         <br>
+                         {{ form.confirmPassword(class_="field form-control form-control-lg",placeholder="Confirm Password")}}
+                     </div>
+                    <div class="form-row px-4">
+                        {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
+                    </div>
+                </form>
+                {% if form.errors %}
+                    {{ form.errors }}
+                {% endif %}
+                <br>
+                <p class="text-center">Already have an account?
+                    <a href="/login">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
