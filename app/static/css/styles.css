@@ -9999,22 +9999,17 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 }
 
 main {
-  margin-left: 5rem;
+  margin-left: 12rem;
   padding: 1rem;
 }
 
 .sidebar {
-  width: 5rem;
+  width: 12rem;
   height: 100vh;
   position: fixed;
   z-index: 2000;
-  transition: width 600ms ease;
   background-color: #294F65;
   overflow: hidden;
-}
-
-.sidebar:hover {
-  width: 16rem;
 }
 
 .sidebar-nav {
@@ -10057,17 +10052,13 @@ main {
 
 .linked-text {
   margin-left: 1.5rem;
-  display: none;
+  display: inline;
 }
 
 .nav-link:hover {
   filter: grayscale(0%) opacity(1);
   background: #1A3240;
   color: #ececec;
-}
-
-.sidebar:hover .linked-text {
-  display: inline;
 }
 
 .logo {
@@ -10087,6 +10078,14 @@ main {
   display: inline;
   position: absolute;
   transition: var(--transition-speed);
+}
+
+.error {
+  color: red;
+}
+
+.success {
+  color: limegreen;
 }
 
 /*# sourceMappingURL=styles.css.map */

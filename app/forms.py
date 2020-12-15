@@ -31,6 +31,7 @@ class signUpForm(FlaskForm):
     sName = StringField("Enter Last Name:",validators=[InputRequired()])
     school = SelectField("Select a school", choices=[('SBHS','SBHS')])
     schoolID = StringField("School ID:",validators=[InputRequired()])
+    shooterID = StringField("School ID:", validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")
 

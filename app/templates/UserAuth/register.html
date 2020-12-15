@@ -2,51 +2,57 @@
 {% set active_page = "Register" %}
 {% block page_title %}Register{% endblock %}
 {% block page_content %}
-    <div class = "container-fluid">
+<h2 class="text-center my-5">Register</h2>
+<h4 class="text-center">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes" style="list-style-type: none">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</h4>
 
-        <div class="card login-card shadow">
-            <div class="login-container">
+<!-- oninput checks if passwords are matching -->
+<form name="signup_form" role = "form" method="post" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
 
-                <h2 class="text-center my-5">Register</h2>
-
-                <!-- oninput checks if passwords are matching -->
-                <form name="signup_form" role = "form" method="post">
-                    {{ form.csrf_token }}
-                      <div class="form-row px-4">
-                          <div class="col">
-                               {{ form.fName(class_="field form-control form-control-lg",placeholder="First Name")}}
-                          </div>
-                        <div class="col">
-                             {{ form.sName(class_="field form-control form-control-lg",placeholder="Surname")}}
-                        </div>
-                      </div>
-                    <br>
-                    <div class="form-row px-4">
-                          <div class="col-3">
-                               {{ form.school(class_="field form-control form-control-lg",placeholder="First Name")}}
-                          </div>
-                        <div class="col-9">
-                             {{ form.schoolID(class_="field form-control form-control-lg",placeholder="School ID")}}
-                        </div>
-                      </div>
-                    <br>
-                     <div class="form-group px-4">
-                         {{ form.password(class_="field form-control form-control-lg",placeholder="Password")}}
-                         <br>
-                         {{ form.confirmPassword(class_="field form-control form-control-lg",placeholder="Confirm Password")}}
-                     </div>
-                    <div class="form-row px-4">
-                        {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
-                    </div>
-                </form>
-                {% if form.errors %}
-                    {{ form.errors }}
-                {% endif %}
-                <br>
-                <p class="text-center">Already have an account?
-                    <a href="/login">Sign In</a>
-                </p>
-            </div>
+    {{ form.csrf_token }}
+      <div class="form-row px-4">
+          <div class="col">
+               {{ form.fName(class_="field form-control form-control-lg",placeholder="First Name")}}
+          </div>
+        <div class="col">
+             {{ form.sName(class_="field form-control form-control-lg",placeholder="Surname")}}
         </div>
+      </div>
+    <br>
+    <div class="form-row px-4">
+          <div class="col-3">
+               {{ form.school(class_="field form-control form-control-lg",placeholder="First Name")}}
+          </div>
+        <div class="col-9">
+             {{ form.schoolID(class_="field form-control form-control-lg",placeholder="School ID")}}
+        </div>
+      </div>
+    <br>
+     <div class="form-group px-4">
+         {{ form.shooterID(class_="field form-control form-control-lg",placeholder="Shooter ID")}}
+         <br>
+         {{ form.password(class_="field form-control form-control-lg",placeholder="Password", id ="pass1")}}
+         <br>
+         {{ form.confirmPassword(class_="field form-control form-control-lg",placeholder="Confirm Password", id ="pass2")}}
+     </div>
+    <div class="form-row px-4">
+        {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
     </div>
+</form>
+{% if form.errors %}
+    {{ form.errors }}
+{% endif %}
+<br>
+<p class="text-center">Already have an account?
+    <a href="/login">Sign In</a>
+</p>
 {% endblock %}

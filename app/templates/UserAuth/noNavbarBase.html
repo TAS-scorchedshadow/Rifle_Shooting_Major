@@ -13,8 +13,14 @@
 </head>
 <body>
     <main>
-        {% block page_content %}
-        {% endblock %}
+        <div class="container-fluid">
+             <div class="card login-card shadow">
+                 <div class="login-container justify-content-center">
+                     {% block page_content %}
+                     {% endblock %}
+                 </div>
+             </div>
+        </div>
     </main>
 </body>
 </html>

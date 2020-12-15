@@ -5,6 +5,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import uploadForm, signInForm, signUpForm, reportForm
 from app.models import User
+from app.email import send_email
 
 
 @login_required
@@ -51,7 +52,7 @@ def login():
         print('submitted')
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'error')
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
@@ -65,20 +66,19 @@ def login():
 def register():
     form = signUpForm()
     if form.validate_on_submit():
-        # user = User(username=form.username.data, email=form.email.data)
-        # user.set_password(form.password.data)
-        # db.session.add(user)
-        # db.session.commit()
-        # flash('Congratulations, you are now a registered user!')
+        user = User(fName=form.fName.data, sName=form.sName.data,school=form.school.data,schoolID=form.schoolID.data)
+        user.generate_username()
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!','success')
         return redirect(url_for('login'))
     return render_template('UserAuth/register.html', title='Register', form=form)
 
 
 @app.route('/userList')
 def userList():
-    users = User.query.all()
-    print(users)
-    return render_template('UserAuth/userList.html',users=users)
+    return render_template('UserAuth/userList.html')
 
 
 
