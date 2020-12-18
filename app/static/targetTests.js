@@ -1,4 +1,4 @@
-var target_details = {"details": ['distance', 'V', '5', '4', '3', '2', '1'],
+const target_details = {"details": ['distance', 'V', '5', '4', '3', '2', '1'],
                       "300m": [300, 70, 140, 280, 420, 600, 1200],
                       "400m": [400, 95, 185, 375, 560, 800, 1800],
                       "500m": [500, 145, 290, 660, 1000, 1320, 1800],
@@ -22,7 +22,7 @@ const gridLinesColor = '#7b7b7b';
 //c is canvas context objectle
 //lineWidth is the thickness of the circle's stroke
 function Circle(c, x, y, radius, lineWidth=1) {
-    this.lineWidth = lineWidth
+    this.lineWidth = lineWidth;
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -39,9 +39,9 @@ function Circle(c, x, y, radius, lineWidth=1) {
         console.log('Drawing circles! :)')
     };
     this.update = function(x=this.x, y=this.y, radius=this.radius, lineWidth=this.lineWidth) {
-        this.x = x
-        this.y = y
-        this.radius = radius
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
         this.lineWidth = lineWidth
 
     }
@@ -49,7 +49,7 @@ function Circle(c, x, y, radius, lineWidth=1) {
 
 //dist is the target distance of the shot
 function Target(c, x, y, width, dist){
-    this.c = c
+    this.c = c;
     this.dist = dist;
     this.x = x;
     this.y = y;
@@ -107,11 +107,11 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.target.targetCircles[i].draw()
         }
         // Draw the gridlines of the target, from middle to left/top, then middle to right/bottom
-        let xLine = this.x
-        let plot_size = this.canvasObj.width
+        let xLine = this.x;
+        let plot_size = this.canvasObj.width;
         while (xLine > this.x-plot_size){
             this.c.beginPath();
-            this.c.lineWidth = 2 * this.ratio
+            this.c.lineWidth = 2 * this.ratio;
             this.c.strokeStyle = gridLinesColor;
             this.c.moveTo(xLine, plot_size);
             this.c.lineTo(xLine, -plot_size);
@@ -127,7 +127,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         xLine = this.x + this.PX_PER_MOA_PER_1M;
         while (xLine < this.x + this.canvasObj.width/2) {
             this.c.beginPath();
-            this.c.lineWidth = 2 * this.ratio
+            this.c.lineWidth = 2 * this.ratio;
             this.c.strokeStyle = gridLinesColor;
             this.c.moveTo(xLine, plot_size);
             this.c.lineTo(xLine, -plot_size);
@@ -142,23 +142,23 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         }
         //Draw indicators for each ring
         for (let i=1; i<=5; i++){
-            let indicatorTxt = target_details['details'][i]
-            let ringDist = target_details[this.dist][i]/2*this.ratio
+            let indicatorTxt = target_details['details'][i];
+            let ringDist = target_details[this.dist][i]/2*this.ratio;
             this.c.beginPath();
             this.c.font = "12px Arial";
             this.c.fillStyle= shotText;
             this.c.textAlign = "center";
-            this.c.fillText(indicatorTxt, this.x + ringDist-10, this.y-3)
+            this.c.fillText(indicatorTxt, this.x + ringDist-10, this.y-3);
             this.c.closePath();
         }
 
 
         //Draw all the individual shots
         let shotsLength = shots.length;
-        let shot_x = 0
-        let shot_y = 0
-        let shot_num = ''
-        let font_size = ''
+        let shot_x = 0;
+        let shot_y = 0;
+        let shot_num = '';
+        let font_size = '';
         for (let i=0; i<shotsLength; i++){
             shot_num = shots[i][0];
             shot_x = shots[i][1];
@@ -188,8 +188,8 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.canvasObj.width = rect.width;
             this.canvasObj.height = rect.width;
         }
-        this.x = this.canvasObj.width/2
-        this.y = this.canvasObj.height/2
+        this.x = this.canvasObj.width/2;
+        this.y = this.canvasObj.height/2;
         this.ratio = this.canvasObj.width/target_details[this.dist][5];
         //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
         //it is modified to be in pixels
@@ -202,8 +202,8 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
     this.draw();
     //Change target dimensions if its parent div changes dimensions
     if (width === 'flex'){
-        let canvasParent = this.canvasObj.parentNode
-        let drawThisTarget = this
+        let canvasParent = this.canvasObj.parentNode;
+        let drawThisTarget = this;
         new ResizeSensor(canvasParent, function(){
             drawThisTarget.update();
             drawThisTarget.draw();
