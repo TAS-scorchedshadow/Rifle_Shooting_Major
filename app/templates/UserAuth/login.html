@@ -6,9 +6,9 @@
 <div class="text-center">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <ul class=flashes style="list-style-type: none">
+            <ul>
             {% for category, message in messages %}
-                <div class="{{ category }}">{{ message }}</div>
+                <div class="{{ category }}"><b>{{ message }}</b></div>
             {% endfor %}
             </ul>
         {% endif %}
