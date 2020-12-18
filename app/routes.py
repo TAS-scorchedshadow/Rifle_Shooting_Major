@@ -34,7 +34,7 @@ def upload():
     return render_template('upload/upload.html', form=form)
 
 
-@app.route('/upload2')
+@app.route('/upload2', methods=['GET', 'POST'])
 def uploadV():
     form = uploadForm()
     stageList = ['1', '2', '4', '2', '3', '1', '2', 2, 1, 1, 2, 3, 12, 31, 123]
