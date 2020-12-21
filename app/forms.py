@@ -53,6 +53,10 @@ class reportForm(FlaskForm):
     date = SelectField('Date',)
     submit = SubmitField("Select")
 
+# -- Rishi Wig --
+class shooterSelect(FlaskForm):
+    team = SelectField("Team")
+    name = SelectField("Name")
 
 # # Forms for comparisons
 # # -- Rishi Wig --

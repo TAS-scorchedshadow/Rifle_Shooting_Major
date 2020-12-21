@@ -3,6 +3,9 @@
 {% block page_title %} Profile {% endblock %}
 {% block page_content %}
 
+<!-- Profile page to view shooter's performance -->
+<!-- Rishi -->
+
     <!-- ChartJS modules -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
@@ -16,12 +19,11 @@
         <div class="row">
         <div style="alignment: center">
     <div class="col-3" align="left">
-        <div class="card shadow border-0 justify-content-center" style="width: 5rem">
+        <div class="card shadow border-0 justify-content-center" style="width: 11.5rem">
             <div class = "card-title text-center">
                 <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
                 <p>Dylan Huynh (7M)</p>
             </div>
-            <div class = "card-body"></div>
         </div>
     </div>
 </div>
@@ -66,8 +68,8 @@
     </div>
 </div>
     </section>
-    
-    <section style="position: relative; left: 1000px; top: -500px">
+
+    <section style="position: relative; left: 1000px; top:250px">
     <div style="alignment: center">
     <div class="col-3" align="left">
         <div class="card shadow border-0 justify-content-center">
@@ -85,7 +87,7 @@
     </section>
 
     <!-- ChartJS for the attendance doughnut  -->
-    <section style="position: relative; left: -30px; top: -735px">
+    <section style="position: relative; right: 80px; top: -360px">
 <div class="attendance-container" style="position: relative; height:20vh; width:35vw">
 <canvas id="attendance"></canvas>
 <script>
@@ -128,8 +130,62 @@ var attendance = new Chart(ctx, {
 </div>
     </section>
 
+    <section style="position: relative; left: 460px; top: -140px">
+    <div class="barAvg-container" style="position: relative; height:20vh; width:30vw">
+    <canvas id="barAvg"></canvas>
+        <script>
+            var ctx = document.getElementById('barAvg').getContext('2d');
+console.log(ctx);
+var barChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+			labels: ['300m', '400m', '500m', '600m', '700m', '800m', '500y', '600y', 'Overall'],
+			datasets: [{
+				label: '2018',
+				backgroundColor: 'rgba(255,0,0,0.5)',
+				borderColor: 'rgba(255,0,0,1)',
+				borderWidth: 1,
+				data: [1, 2, 3, 4, 5, 6, 7, 8 , 9]
+			}, {
+				label: '2019',
+				backgroundColor: "rgba(0,0,255,0.5)",
+				borderColor: 'rgba(0,0,255,1)',
+				borderWidth: 1,
+				data: [9,8,7,6,5,4,3,2,1]
+			},
+                {
+                    label: '2020',
+				backgroundColor: 'rgba(0,255,0,0.5)',
+				borderColor: 'rgba(0,255,0,1)',
+				borderWidth: 1,
+				data: [1, 3, 5, 7, 9, 11, 9, 7, 5]
+                }],
+
+        options: {
+			    responsive: true,
+                plugins: {
+			        title: {
+			            display: true,
+                        text: 'Averages Bar'
+                    }
+                },
+			    scales: {
+			        yAxes: [{
+			            min: 0,
+			            ticks: {
+			                min: 0,
+			                beginAtZero:true
+			            }
+			        }]
+			    }
+        }
+		}});
+        </script>
+    </div>
+    </section>
+
     <!-- ChartJS radar to show student's skill -->
-    <section style="position: relative; left: 375px; top: -440px">
+    <section style="position: relative; left: 375px; top: -670px">
 <div class="radar-container" style="position: relative; height:20vh; width:40vw">
 <canvas id="radar"></canvas>
 <script>
@@ -141,7 +197,7 @@ var radar = new Chart(ctx, {
 				labels: ['Consistency', 'Speed', 'xDrift', 'yDrift', 'Score'],
 				datasets: [{
 					label: 'Student Name',
-					backgroundColor: 'rgba(91, 188, 228, 0.2',
+					backgroundColor: 'rgba(91, 188, 228, 0.2)',
 					borderColor: 'rgba(91, 188, 228, 1)',
                     data: [7, 8, 5, 9, 6]
 }]},
