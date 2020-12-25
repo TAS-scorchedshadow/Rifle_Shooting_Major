@@ -3,7 +3,8 @@ from wtforms import StringField, SubmitField, HiddenField, MultipleFileField, In
     RadioField, BooleanField
 from wtforms.fields.html5 import DateField, TimeField, EmailField
 from flask_wtf.file import FileAllowed, FileRequired
-from wtforms.validators import DataRequired, InputRequired
+from wtforms.validators import DataRequired, InputRequired, EqualTo
+
 
 # This file contains all the required forms from various parts of this project
 
@@ -46,6 +47,17 @@ class signInForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = EmailField('Email',validators=[DataRequired()])
+    submit = SubmitField('Request password reset')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Request Password Reset')
 
 # Form for report page
 # -- Henry Guo --

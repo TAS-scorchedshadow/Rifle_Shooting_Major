@@ -3,6 +3,9 @@
 {% block page_title %} User List {% endblock %}
 {% block page_content %}
     <div class="container-fluid">
+        <div class="col">
+
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="card h-100 justify-content-center">
@@ -17,7 +20,8 @@
                                         <th scope="col">School</th>
                                         <th scope="col">Student ID</th>
                                         <th scope="col">Name</th>
-                                        <th scope="col">Score</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Manage Account</th>
                                      </tr>
                                 </thead>
                                 <tbody>
@@ -26,8 +30,40 @@
                                         <td scope="row">{{ user.school }}</td>
                                         <td>{{ user.schoolID }}</td>
                                         <td>{{ user.fName }} {{ user.sName }}</td>
-                                        <td><input class="form-control" type="text"></td>
+                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            {% if not user.isAdmin %}
+                                                <!-- Button trigger modal -->
+                                                <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#Amodal{{ user.id }}">
+                                                    Make Admin
+                                                </a>
+                                            {% else  %}
+                                                <a type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Amodal{{ user.id }}">
+                                                    Revoke Admin Access
+                                                </a>
+                                            {% endif %}
+                                        </td>
                                     </tr>
+                                    <!-- Approve Admin Modals -->
+                                        <div class="modal fade" id="Amodal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                          <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                              <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                  <span aria-hidden="true">&times;</span>
+                                                </button>
+                                              </div>
+                                              <div class="modal-body">
+                                                  {{ user.fName }}
+                                              </div>
+                                              <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
                                 {% endfor %}
                                 </tbody>
                             </table>
@@ -38,4 +74,6 @@
             </div>
         </div>
     </div>
+
+
 {% endblock %}

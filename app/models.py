@@ -1,8 +1,9 @@
-from app import db
-from app import login
+from app import db, login, app
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from time import time
+import jwt
 
 
 class User(UserMixin, db.Model):
@@ -20,6 +21,8 @@ class User(UserMixin, db.Model):
     permitNumber = db.Column(db.String(20))
     permitExpiry = db.Column(db.Date)
     isAdmin = db.Column(db.Boolean, default=False)
+    isActive = db.Column(db.Boolean, default=False)
+    lastActive = db.Column(db.DateTime)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
 
     def __repr__(self):
@@ -43,6 +46,19 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256')
+
+    @staticmethod
+    def verify_reset_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
+        except:
+            return
+        return User.query.get(id)
 
 
 class Stage(db.Model):
