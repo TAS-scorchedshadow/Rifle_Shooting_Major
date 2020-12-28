@@ -19,7 +19,8 @@ const shotStroke = 'black';
 const shotText = 'black';
 
 const gridLinesColor = '#7b7b7b';
-//c is canvas context objectle
+
+//c is canvas context object
 //lineWidth is the thickness of the circle's stroke
 function Circle(c, x, y, radius, lineWidth=1) {
     this.lineWidth = lineWidth;
@@ -36,7 +37,6 @@ function Circle(c, x, y, radius, lineWidth=1) {
         c.strokeStyle = targetStroke;
         c.stroke();
         c.closePath();
-        console.log('Drawing circles! :)')
     };
     this.update = function(x=this.x, y=this.y, radius=this.radius, lineWidth=this.lineWidth) {
         this.x = x;
@@ -75,7 +75,7 @@ function Target(c, x, y, width, dist){
 //dist is a string that describes the distance of the target eg. "300m"
 //width is the width of the target (and height because the target boundaries is a square)
 //shots is an array of arrays with the following format:
-//[num, x, y]
+//[num, x, y, score]
 function DrawTarget(canvasId, dist, shots=[], width='flex'){
     this.init = function() {
         this.canvasObj = document.getElementById(canvasId);
@@ -102,11 +102,11 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
     }
 
     this.draw = function() {
-        // Draw all the circles on the target
+        // Draw all the score rings on the target
         for (let i=4; i>=0; i--) {
-            this.target.targetCircles[i].draw()
+            this.target.targetCircles[i].draw();
         }
-        // Draw the gridlines of the target, from middle to left/top, then middle to right/bottom
+        // Draw the grid-lines of the target, from middle to left/top, then middle to right/bottom
         let xLine = this.x;
         let plot_size = this.canvasObj.width;
         while (xLine > this.x-plot_size){
@@ -122,7 +122,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.c.lineTo(-plot_size, xLine);
             this.c.stroke();
             this.c.closePath();
-            xLine -= this.PX_PER_MOA_PER_1M
+            xLine -= this.PX_PER_MOA_PER_1M;
         }
         xLine = this.x + this.PX_PER_MOA_PER_1M;
         while (xLine < this.x + this.canvasObj.width/2) {
@@ -138,7 +138,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.c.lineTo(-plot_size, xLine);
             this.c.stroke();
             this.c.closePath();
-            xLine += this.PX_PER_MOA_PER_1M
+            xLine += this.PX_PER_MOA_PER_1M;
         }
         //Draw indicators for each ring
         for (let i=1; i<=5; i++){
@@ -195,21 +195,69 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         //it is modified to be in pixels
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[dist][0] * this.ratio;
         //update the target dimensions
-        this.target.update(this.x, this.y, this.canvasObj.width, this.ratio)
+        this.target.update(this.x, this.y, this.canvasObj.width, this.ratio);
     };
 
     this.init();
     this.draw();
+    //Set values for use in the following functions
+    let canvasParent = this.canvasObj.parentNode;
+    let targetX = this.x;
+    let targetY = this.y;
+    let canvasOffset = $("#" + canvasId).offset();
+    let targetRatio = this.ratio;
+    let tipCanvas = document.getElementById('tip');
+    if (!tipCanvas){
+        console.log('No tipCanvas detected!');
+        console.log("Please add a canvas element with 'tip' as its id to avoid creating multiple unneccessary canvas'");
+        console.log("If no tooltip shows or it lacks a border and background etc. styling may be needed");
+        tipCanvas = document.createElement("CANVAS");
+        canvasParent.appendChild(tipCanvas);
+    }
+    tipCanvas.setAttribute('width', '100');
+    tipCanvas.setAttribute('height', '25');
+    tipCanvas.setAttribute('id', 'tip');
+    let tipCtx = tipCanvas.getContext('2d');
+    let ThisTarget = this;
+
     //Change target dimensions if its parent div changes dimensions
     if (width === 'flex'){
-        let canvasParent = this.canvasObj.parentNode;
-        let drawThisTarget = this;
         new ResizeSensor(canvasParent, function(){
-            drawThisTarget.update();
-            drawThisTarget.draw();
+            ThisTarget.update();
+            ThisTarget.draw();
+            canvasOffset = $("#" + canvasId).offset();
+            targetX = ThisTarget.x;
+            targetY = ThisTarget.y;
+            targetRatio = ThisTarget.ratio;
         });
     }
+    this.canvasObj.onmousemove = function (e) {
+        handleMouseMove(e, shots, targetX, targetY, targetRatio);
+    }
+    //Draw tooltip every time the mouse hovers over a shot
+    //used some code from https://stackoverflow.com/questions/17064913/display-tooltip-in-canvas-graph
+    function handleMouseMove(e, shots, targetX, targetY, targetRatio){
+        let mouseX = e.pageX - canvasOffset.left - targetX;
+        let mouseY = e.pageY - canvasOffset.top - targetY;
+        let hit = false;
+        for (let i=0; i<shots.length; i++){
+            let dx =  mouseX - shots[i][1]*targetRatio;
+            let dy = mouseY - shots[i][2]*targetRatio;
+            if (dx*dx + dy*dy < 13*13) {
+                tipCanvas.style.left = (targetX + shots[i][1]*targetRatio + 25) + "px";
+                tipCanvas.style.top = (targetY + shots[i][2]*targetRatio - 40) + "px";
+                tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+                tipCtx.fillText('Score: ' + shots[i][3], 5, 15);
+                hit = true;
+            }
+
+        }
+        if (!hit) { tipCanvas.style.left = "-200px"; }
+    }
 }
+
+
+
 //
 // let canvasParent = document.getElementById(canvasId).parentNode;
 // new ResizeSensor(canvasParent, function(){
