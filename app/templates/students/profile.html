@@ -13,216 +13,212 @@
   src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
   crossorigin="anonymous"></script>
 
-<!-- Heading container which holds shooter's info -->
+<!-- Heading container which holds shooter's info inside the table -->
   <div class="jumbotron jumbotron-fluid">
     <div class="container justify-content-left text-left">
         <div class="row">
-        <div style="alignment: center">
-    <div class="col-3" align="left">
-        <div class="card shadow border-0 justify-content-center" style="width: 11.5rem">
-            <div class = "card-title text-center">
-                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
-                <p>Dylan Huynh (7M)</p>
+            <div style="alignment: center">
+                <div class="col-3" align="left">
+                    <div class="card shadow border-0 justify-content-center" style="width: 11.5rem">
+                        <div class = "card-title text-center">
+                            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
+                            <p>Dylan Huynh (7M)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col col-md-9">
+                <table class="table table-striped table-bordered table-sm">
+                    <tbody>
+                        <tr>
+                            <td>SID (Shooter): 00000</td>
+                            <td>DOB: True</td>
+                            <td>Rifle Serial: 0000</td>
+                            <td>Student ID: 435921302 </td>
+                            <td>Grade: A </td>
+                            <td>Email: generic.email@domain.com</td>
+                        </tr>
+                        <tr>
+                            <td>Permit: N/A</td>
+                            <td>Expiry: 01/01/2025</td>
+                            <td>Sharing: Yes?</td>
+                            <td>Mobile: 04-- --- ---</td>
+                            <td>Roll Class: 7M</td>
+                            <td>Mobile: 04-- --- ---</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  </div>
+
+        <!-- ChartJS for the attendance doughnut  -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+        <canvas id="attendance"></canvas>
+            <script>
+                var ctx = document.getElementById('attendance').getContext('2d');
+                console.log(ctx);
+                var attendance = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                datasets: [{
+                                    data: [155, 13],
+                                    backgroundColor: [
+                                        'rgba(91, 188, 228, 0.85)',
+                                        'rgba(139, 69, 19, 0.85)',
+                                    ],
+                                    label: 'Dataset 1'
+                                }],
+                                labels: [
+                                    'Attended',
+                                    'Not Attended'
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Chart.js Doughnut Chart'
+                                    },
+                                },
+                                animation: {
+                                    animateScale: true,
+                                    animateRotate: true
+                                }
+                            }
+                            });
+            </script>
+        </div>
+
+
+        <!-- ChartJS radar to show shooter's skill -->
+        <div class="col-md-4">
+        <canvas id="radar"></canvas>
+            <script>
+                var ctx = document.getElementById('radar').getContext('2d');
+                console.log(ctx);
+                var radar = new Chart(ctx, {
+                    type: 'radar',
+                            data: {
+                                labels: ['Consistency', 'Speed', 'xDrift', 'yDrift', 'Score'],
+                                datasets: [{
+                                    label: 'Student Name',
+                                    backgroundColor: 'rgba(91, 188, 228, 0.2)',
+                                    borderColor: 'rgba(91, 188, 228, 1)',
+                                    data: [7, 8, 5, 9, 6]
+                }]},
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Chart.js Radar Chart'
+                                    },
+                                },
+                                scale: {
+                                    beginAtZero: true,
+                                    ticks: {
+                            min: 0,
+                            //max: 100,
+                            //stepSize: 10
+                        }
+                                }
+                            }
+                        });
+            </script>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow border-0 justify-content-center">
+                <div class = "card-title text-center">
+                    <h2>Equipment</h2>
+                </div>
+                <div class = "card-body">
+                    <p>E1</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
-        <div class="col col-md-9">
-            <table class="table table-striped table-bordered table-sm">
-  <tbody>
-    <tr>
-        <td>SID (Shooter): 00000</td>
-        <td>DOB: True</td>
-        <td>Rifle Serial: 0000</td>
-        <td>Student ID: 43------- </td>
-        <td>Grade: A </td>
-        <td>Email: generic.email@domain.com</td>
-    </tr>
-    <tr>
-        <td>Permit: N/A</td>
-        <td>Expiry: 01/01/2025</td>
-        <td>Sharing: Yes?</td>
-        <td>Mobile: 04-- --- ---</td>
-        <td>Roll Class: 7M</td>
-        <td>Mobile: 04-- --- ---</td>
-    </tr>
-  </tbody>
-</table>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="barAvg"></canvas>
+                <script>
+                    var ctx = document.getElementById('barAvg').getContext('2d');
+                    console.log(ctx);
+                    var barChart = new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                                labels: ['300m', '400m', '500m', '600m', '700m', '800m', '500y', '600y', 'Overall'],
+                                datasets: [{
+                                    label: '2018',
+                                    backgroundColor: 'rgba(255,0,0,0.5)',
+                                    borderColor: 'rgba(255,0,0,1)',
+                                    borderWidth: 1,
+                                    data: [1, 2, 3, 4, 5, 6, 7, 8 , 9]
+                                }, {
+                                    label: '2019',
+                                    backgroundColor: "rgba(0,0,255,0.5)",
+                                    borderColor: 'rgba(0,0,255,1)',
+                                    borderWidth: 1,
+                                    data: [9,8,7,6,5,4,3,2,1]
+                                },
+                                    {
+                                        label: '2020',
+                                    backgroundColor: 'rgba(0,255,0,0.5)',
+                                    borderColor: 'rgba(0,255,0,1)',
+                                    borderWidth: 1,
+                                    data: [1, 3, 5, 7, 9, 11, 9, 7, 5]
+                                    }],
+                            //TODO Understand why options section not working
+                            options: {
+                                    responsive: true,
+                                    plugins: {
+                                        title: {
+                                            display: true,
+                                            text: 'Averages Bar'
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            min: 0,
+                                            ticks: {
+                                                min: 0,
+                                                beginAtZero:true
+                                            }
+                                        }]
+                                    }
+                            }
+                            }});
+                </script>
+        </div>
+
+
+        <div class="col-6">
+            <div class="card shadow border-0 justify-content-center">
+                <div class = "card-title text-center">
+                    <h2>Stats</h2>
+                </div>
+                <div class = "card-body">
+                    <p>Mean (x̅): 3.0</p>
+                    <p>Median (x̃): 5.0</p>
+                    <p>Standard Deviation (σx): 2.0</p>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
-    </div>
-
-
-    <section style="position: relative; left: 1000px; top: 80px">
-<div style="alignment: center">
-    <div class="col-3" align="left">
-        <div class="card shadow border-0 justify-content-center">
-            <div class = "card-title text-center">
-                <h2>Equipment</h2>
-            </div>
-            <div class = "card-body">
-                <p>E1</p>
-            </div>
-        </div>
-    </div>
 </div>
-    </section>
-
-    <section style="position: relative; left: 1000px; top:250px">
-    <div style="alignment: center">
-    <div class="col-3" align="left">
-        <div class="card shadow border-0 justify-content-center">
-            <div class = "card-title text-center">
-                <h2>Stats</h2>
-            </div>
-            <div class = "card-body">
-                <p>Mean (x̅): 3.0</p>
-                <p>Median (x̃): 5.0</p>
-                <p>Standard Deviation (σx): 2.0</p>
-            </div>
-        </div>
-    </div>
-</div>
-    </section>
-
-    <!-- ChartJS for the attendance doughnut  -->
-    <section style="position: relative; right: 80px; top: -360px">
-<div class="attendance-container" style="position: relative; height:20vh; width:35vw">
-<canvas id="attendance"></canvas>
-<script>
-var ctx = document.getElementById('attendance').getContext('2d');
-console.log(ctx);
-var attendance = new Chart(ctx, {
-			type: 'doughnut',
-			data: {
-				datasets: [{
-					data: [155, 13],
-					backgroundColor: [
-						'rgba(91, 188, 228, 0.85)',
-                        'rgba(139, 69, 19, 0.85)',
-					],
-					label: 'Dataset 1'
-				}],
-				labels: [
-				    'Attended',
-					'Not Attended'
-				]
-			},
-			options: {
-				responsive: true,
-				plugins: {
-					legend: {
-						position: 'top',
-					},
-					title: {
-						display: true,
-						text: 'Chart.js Doughnut Chart'
-					},
-				},
-				animation: {
-					animateScale: true,
-					animateRotate: true
-				}
-			}
-            });
-	</script>
-</div>
-    </section>
-
-    <section style="position: relative; left: 460px; top: -140px">
-    <div class="barAvg-container" style="position: relative; height:20vh; width:30vw">
-    <canvas id="barAvg"></canvas>
-        <script>
-            var ctx = document.getElementById('barAvg').getContext('2d');
-console.log(ctx);
-var barChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-			labels: ['300m', '400m', '500m', '600m', '700m', '800m', '500y', '600y', 'Overall'],
-			datasets: [{
-				label: '2018',
-				backgroundColor: 'rgba(255,0,0,0.5)',
-				borderColor: 'rgba(255,0,0,1)',
-				borderWidth: 1,
-				data: [1, 2, 3, 4, 5, 6, 7, 8 , 9]
-			}, {
-				label: '2019',
-				backgroundColor: "rgba(0,0,255,0.5)",
-				borderColor: 'rgba(0,0,255,1)',
-				borderWidth: 1,
-				data: [9,8,7,6,5,4,3,2,1]
-			},
-                {
-                    label: '2020',
-				backgroundColor: 'rgba(0,255,0,0.5)',
-				borderColor: 'rgba(0,255,0,1)',
-				borderWidth: 1,
-				data: [1, 3, 5, 7, 9, 11, 9, 7, 5]
-                }],
-
-        options: {
-			    responsive: true,
-                plugins: {
-			        title: {
-			            display: true,
-                        text: 'Averages Bar'
-                    }
-                },
-			    scales: {
-			        yAxes: [{
-			            min: 0,
-			            ticks: {
-			                min: 0,
-			                beginAtZero:true
-			            }
-			        }]
-			    }
-        }
-		}});
-        </script>
-    </div>
-    </section>
-
-    <!-- ChartJS radar to show student's skill -->
-    <section style="position: relative; left: 375px; top: -670px">
-<div class="radar-container" style="position: relative; height:20vh; width:40vw">
-<canvas id="radar"></canvas>
-<script>
-var ctx = document.getElementById('radar').getContext('2d');
-console.log(ctx);
-var radar = new Chart(ctx, {
-    type: 'radar',
-			data: {
-				labels: ['Consistency', 'Speed', 'xDrift', 'yDrift', 'Score'],
-				datasets: [{
-					label: 'Student Name',
-					backgroundColor: 'rgba(91, 188, 228, 0.2)',
-					borderColor: 'rgba(91, 188, 228, 1)',
-                    data: [7, 8, 5, 9, 6]
-}]},
-			options: {
-				plugins: {
-					legend: {
-						position: 'top',
-					},
-					title: {
-						display: true,
-						text: 'Chart.js Radar Chart'
-					},
-				},
-				scale: {
-					beginAtZero: true,
-                    ticks: {
-            min: 0,
-            //max: 100,
-            //stepSize: 10
-        }
-				}
-			}
-		});
-</script>
-</div>
-    </section>
 
 {% endblock %}
