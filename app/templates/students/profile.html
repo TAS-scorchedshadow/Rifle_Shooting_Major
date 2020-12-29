@@ -150,10 +150,60 @@
     </div>
 </div>
 
+<br>
+<br>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
+            <canvas id="lineAvg"></canvas>
+                <script>
+                    var ctx = document.getElementById('lineAvg').getContext('2d');
+                    console.log(ctx);
+                    var barChart = new Chart(ctx, {
+                        type: "line",
+                        data: {
+                                labels: {{ label }},
+                                datasets: [{
+                                    label: 'Averages',
+                                    backgroundColor: 'rgba(255,0,0,0)',
+                                    borderColor: 'rgba(255,0,0,1)',
+                                    borderWidth: 1,
+                                    fill: false,
+                                    data: {{ data }}
+                                }, {
+                                    label: 'Trend',
+                                    backgroundColor: "rgba(0,0,255,0)",
+                                    borderColor: 'rgba(0,0,255,1)',
+                                    borderWidth: 1,
+                                    fill: false,
+                                    data: {{ trend }}
+                                }],
+                            //TODO Understand why options section not working
+                            options: {
+                                    responsive: true,
+                                    plugins: {
+                                        title: {
+                                            display: true,
+                                            text: 'Averages Bar'
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            min: 0,
+                                            ticks: {
+                                                min: 0,
+                                                beginAtZero:true
+                                            }
+                                        }]
+                                    }
+                            }
+                            }});
+                </script>
+        </div>
+
+
+        <div class="col-md-4">
             <canvas id="barAvg"></canvas>
                 <script>
                     var ctx = document.getElementById('barAvg').getContext('2d');
@@ -206,7 +256,7 @@
         </div>
 
 
-        <div class="col-6">
+        <div class="col-md-4">
             <div class="card shadow border-0 justify-content-center">
                 <div class = "card-title text-center">
                     <h2>Stats</h2>

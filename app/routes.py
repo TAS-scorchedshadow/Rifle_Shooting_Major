@@ -9,6 +9,9 @@ from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPassw
 from app.models import User
 from app.email import send_password_reset_email, send_activation_email
 
+import numpy
+from matplotlib import pylab
+
 import json
 
 import json
@@ -28,7 +31,19 @@ def target_test():
 @app.route('/profile')
 def profile():
     form = reportForm()
-    return render_template('students/profile.html', form=form)
+
+    yearStubAvgLine = [2018, 2019, 2020]
+    scoreStubAvgLine = [5, 8, 17]
+
+    z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
+    p = numpy.poly1d(z)
+    pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
+    trend = []
+    for j in range(len(yearStubAvgLine)):
+        result = ((yearStubAvgLine[j])*z[0]) + z[1]
+        trend.append(result)
+
+    return render_template('students/profile.html', form=form, label=yearStubAvgLine, data=scoreStubAvgLine, trend=trend)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
