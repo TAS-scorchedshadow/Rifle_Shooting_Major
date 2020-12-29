@@ -7,6 +7,8 @@ from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPassw
 from app.models import User
 from app.email import send_password_reset_email
 
+import json
+
 
 @login_required
 @app.route('/')
@@ -30,6 +32,15 @@ def profile():
 def upload():
     form = uploadForm()
     if request.method == "POST":
+        files = request.files.getlist('file')
+        for file in files:
+            # Decodes a file from FileStorage format into json format.
+            bytes = file.read()
+            string = bytes.decode('utf-8')
+            info = json.loads(string)
+            print(info)
+            print(info["_id"])
+            # todo: files are not passed through the redirect, pass it through *then* do processing
         return redirect(url_for('uploadV'))
     return render_template('upload/upload.html', form=form)
 
