@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     fName = db.Column(db.String(70))
     sName = db.Column(db.String(70))
-    email = db.Column(db.String(120), index=True, unique=True)
+    email = db.Column(db.String(120))
     school = db.Column(db.String(5))
     schoolID = db.Column(db.String(20))
     schoolYr = db.Column(db.String(2))
@@ -29,16 +29,15 @@ class User(UserMixin, db.Model):
         return '<User {}>'.format(self.username)
 
     def generate_username(self):
-        # TODO account for white space
         # Must have fName and sName initialised
         num = 1
-        temp = self.fName.lower() + "." + self.sName.lower() + str(num)
+        temp = self.fName.lower() + "." + self.sName[0].lower() + str(num)
         list = []
         for instance in User.query.all():
             list.append(instance.username)
         while temp in list:
             num += 1
-            temp = self.fName.lower() + "." + self.sName.lower() + str(num)
+            temp = self.fName.lower() + "." + self.sName[0].lower() + str(num)
         self.username = temp
 
     def set_password(self, password):
@@ -52,8 +51,21 @@ class User(UserMixin, db.Model):
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
+    def get_activation_token(self, expires_in=600):
+        return jwt.encode(
+            {'activate': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256')
+
     @staticmethod
     def verify_reset_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
+        except:
+            return
+        return User.query.get(id)
+
+    @staticmethod
+    def verify_activation_token(token):
         try:
             id = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
         except:

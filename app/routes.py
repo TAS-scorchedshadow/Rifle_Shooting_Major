@@ -1,11 +1,15 @@
-from flask import render_template, redirect, url_for, flash, request
+from distutils.util import strtobool
+
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from app import app, db
 from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User
-from app.email import send_password_reset_email
+from app.email import send_password_reset_email, send_activation_email
+
+import json
 
 import json
 
@@ -82,21 +86,36 @@ def login():
         if not next_page or url_parse(next_page).netloc != ':':
             next_page = url_for('landingPage')
         return redirect(next_page)
-    return render_template('UserAuth/login.html', form=form)
+    return render_template('userAuth/login.html', form=form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = signUpForm()
     if form.validate_on_submit():
-        user = User(fName=form.fName.data, sName=form.sName.data,school=form.school.data,schoolID=form.schoolID.data)
+        #TODO account for other formats
+        email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
+        user = User(fName=form.fName.data.strip(), sName=form.sName.data.strip(),school=form.school.data,schoolID=form.schoolID.data,email=email)
         user.generate_username()
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+        send_activation_email(user)
         flash('Congratulations, you are now a registered user!','success')
-        return redirect(url_for('login'))
-    return render_template('UserAuth/register.html', title='Register', form=form)
+        return render_template('userAuth/registerSuccess.html', user=user)
+    return render_template('userAuth/register.html', title='Register', form=form)
+
+
+@app.route('/emailActivation/<token>', methods=['GET','POST'])
+def emailActivation(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('landingPage'))
+    user = User.verify_activation_token(token)
+    if not user:
+        return redirect(url_for('landingPage'))
+    user.isActive = True
+    db.session.commit()
+    return render_template('userAuth/resetPassword.html')
 
 
 @app.route('/requestResetPassword',methods=['GET','POST'])
@@ -110,7 +129,7 @@ def requestResetPassword():
             send_password_reset_email(user)
         flash('Check your email')
         return redirect(url_for('login'))
-    return render_template('UserAuth/requestResetPassword.html',form=form)
+    return render_template('userAuth/requestResetPassword.html',form=form)
 
 
 @app.route('/reset_password/<token>', methods=['GET','POST'])
@@ -126,15 +145,33 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset')
         return redirect(url_for('login'))
-    return render_template('UserAuth/resetPassword.html',form=form)
+    return render_template('userAuth/resetPassword.html',form=form)
+
 
 @app.route('/userList')
 def userList():
     users = User.query.all()
-    return render_template('UserAuth/userList.html',users=users)
+    return render_template('userAuth/userList.html',users=users)
 
 
+@app.route('/activate',methods=['POST'])
+def activate():
+    data = request.get_data()
+    loadedData = json.loads(data)
+    userID = loadedData['id']
+    state = loadedData['state']
+    if userID:
+        try:
+            print(state)
+            user = User.query.filter_by(id=userID).first()
+            user.isActive = strtobool(state)
+            db.session.commit()
+            return jsonify({'id': userID, 'newState': not strtobool(state)})
+        except:
+            print('error')
+            return jsonify({'error': 'Invalid State'})
 
+    return jsonify({'error': 'userID'})
 
 @app.route('/logout')
 def logout():

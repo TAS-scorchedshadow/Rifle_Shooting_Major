@@ -1,0 +1,11 @@
+Dear {{ user.fName }} {{user.sName}},
+
+Thank you for signing up to the PARS system
+
+To activate your account click on the following link:
+
+{{ url_for('emailActivation', token=token, _external=True) }}
+
+Sincerely,
+
+The PARS Team
