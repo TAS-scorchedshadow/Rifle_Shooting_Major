@@ -20,7 +20,7 @@ class uploadForm(FlaskForm):
     submit = SubmitField("Submit")
     identifier = HiddenField("Upload/Verify", default="upload")
     submit = SubmitField("Submit")
-    invalidShootInfo = HiddenField("Data")
+    shootInfo = HiddenField("Data")
     success = HiddenField("Success")
     total = HiddenField("Total")
 
