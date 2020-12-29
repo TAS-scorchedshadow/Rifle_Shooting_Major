@@ -31,18 +31,30 @@ def profile():
 @login_required
 def upload():
     form = uploadForm()
-    if request.method == "POST":
-        files = request.files.getlist('file')
-        for file in files:
-            # Decodes a file from FileStorage format into json format.
-            bytes = file.read()
-            string = bytes.decode('utf-8')
-            info = json.loads(string)
-            print(info)
-            print(info["_id"])
-            # todo: files are not passed through the redirect, pass it through *then* do processing
-        return redirect(url_for('uploadV'))
-    return render_template('upload/upload.html', form=form)
+    stageList = []
+    template = 'upload/upload.html'
+    if form.identifier.data == "upload":
+        if request.method == "POST":
+            template = 'upload/uploadVerify.html'
+            files = request.files.getlist('file')
+            for file in files:
+                # Decodes a file from FileStorage format into json format.
+                bytes = file.read()
+                string = bytes.decode('utf-8')
+                info = json.loads(string)
+                print(info)
+                print(info["_id"])
+                # todo: verify the file is in correct format and extract only relevant information.
+                # todo: save the file to a list that is passed through the uploadVerify.
+                # todo: find if username exists. If it does not, then save it to stageList.
+            stageList = ['1', '2', '3']
+
+    else:
+        template = 'landingPage.html'
+        print("a")
+        # todo: if all usernames are correct, handle all the uploading.
+        # todo: if not, repeat this page with all settings still intact.
+    return render_template(template, form=form, stageList=stageList)
 
 
 @app.route('/upload2', methods=['GET', 'POST'])
