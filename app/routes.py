@@ -8,11 +8,10 @@ from app import app, db
 from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User
 from app.email import send_password_reset_email, send_activation_email
+from app.uploadProcessing import validateShots
 
 import numpy
 from matplotlib import pylab
-
-import json
 
 import json
 
@@ -57,13 +56,15 @@ def upload():
             template = 'upload/uploadVerify.html'
             files = request.files.getlist('file')
             for file in files:
-                # Decodes a file from FileStorage format into json format.
-                bytes = file.read()
-                string = bytes.decode('utf-8')
-                info = json.loads(string)
-                print(info)
-                print(info["_id"])
-                # todo: verify the file is in correct format and extract only relevant information.
+                # Decodes a file from FileStorage format into json format, and then extracts relevant info
+                try:
+                    bytes = file.read()
+                    string = bytes.decode('utf-8')
+                    data = json.loads(string)
+                    shoot = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
+                    print(shoot)
+                except:
+                    print("File had an error in uploading")
                 # todo: save the file to a list that is passed through the uploadVerify.
                 # todo: find if username exists. If it does not, then save it to stageList.
             stageList = ['1', '2', '3']
@@ -74,15 +75,6 @@ def upload():
         # todo: if all usernames are correct, handle all the uploading.
         # todo: if not, repeat this page with all settings still intact.
     return render_template(template, form=form, stageList=stageList)
-
-
-@app.route('/upload2', methods=['GET', 'POST'])
-def uploadV():
-    form = uploadForm()
-    stageList = ['1', '2', '4', '2', '3', '1', '2', 2, 1, 1, 2, 3, 12, 31, 123]
-    if request.method == "POST":
-        return render_template('landingPage.html')
-    return render_template('upload/uploadVerify.html', form=form, stageList=stageList)
 
 
 @app.route('/login', methods=['GET', 'POST'])
