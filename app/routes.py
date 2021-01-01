@@ -50,6 +50,7 @@ def profile():
 def upload():
     form = uploadForm()
     stageList = []
+    invalidList = []
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
         if request.method == "POST":
@@ -63,18 +64,26 @@ def upload():
                     data = json.loads(string)
                     shoot = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
                     print(shoot)
+                    stageList.append(shoot)
+                    # todo: following requires a usernameExists function, or similar
+                    # idFound = usernameExists(shoot['username'])
+                    # if not idFound:
+                    #     invalidList.append(shoot)
                 except:
                     print("File had an error in uploading")
-                # todo: save the file to a list that is passed through the uploadVerify.
-                # todo: find if username exists. If it does not, then save it to stageList.
-            stageList = ['1', '2', '3']
 
     else:
         template = 'landingPage.html'
-        print("a")
+        stageList = json.loads(request.form["stageDump"])
+        shootDefine = {'rifleRange': '', 'distance': '', 'weather': ''}
+        shootDefine['rifleRange'] = request.form["rifleRange"]
+        shootDefine['distance'] = request.form["distance"]
+        shootDefine['weather'] = request.form["weather"]
+        print(stageList)
         # todo: if all usernames are correct, handle all the uploading.
         # todo: if not, repeat this page with all settings still intact.
-    return render_template(template, form=form, stageList=stageList)
+    stageDump = json.dumps(stageList)
+    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList)
 
 
 @app.route('/login', methods=['GET', 'POST'])
