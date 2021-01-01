@@ -8,8 +8,10 @@ from app import app, db
 from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.models import User
 from app.email import send_password_reset_email, send_activation_email
+from app.uploadProcessing import validateShots
 
-import json
+import numpy
+from matplotlib import pylab
 
 import json
 
@@ -28,7 +30,19 @@ def target_test():
 @app.route('/profile')
 def profile():
     form = reportForm()
-    return render_template('students/profile.html', form=form)
+
+    yearStubAvgLine = [2018, 2019, 2020]
+    scoreStubAvgLine = [5, 8, 17]
+
+    z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
+    p = numpy.poly1d(z)
+    pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
+    trend = []
+    for j in range(len(yearStubAvgLine)):
+        result = ((yearStubAvgLine[j])*z[0]) + z[1]
+        trend.append(result)
+
+    return render_template('students/profile.html', form=form, label=yearStubAvgLine, data=scoreStubAvgLine, trend=trend)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -36,38 +50,40 @@ def profile():
 def upload():
     form = uploadForm()
     stageList = []
+    invalidList = []
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
             files = request.files.getlist('file')
             for file in files:
-                # Decodes a file from FileStorage format into json format.
-                bytes = file.read()
-                string = bytes.decode('utf-8')
-                info = json.loads(string)
-                print(info)
-                print(info["_id"])
-                # todo: verify the file is in correct format and extract only relevant information.
-                # todo: save the file to a list that is passed through the uploadVerify.
-                # todo: find if username exists. If it does not, then save it to stageList.
-            stageList = ['1', '2', '3']
+                # Decodes a file from FileStorage format into json format, and then extracts relevant info
+                try:
+                    bytes = file.read()
+                    string = bytes.decode('utf-8')
+                    data = json.loads(string)
+                    shoot = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
+                    print(shoot)
+                    stageList.append(shoot)
+                    # todo: following requires a usernameExists function, or similar
+                    # idFound = usernameExists(shoot['username'])
+                    # if not idFound:
+                    #     invalidList.append(shoot)
+                except:
+                    print("File had an error in uploading")
 
     else:
         template = 'landingPage.html'
-        print("a")
+        stageList = json.loads(request.form["stageDump"])
+        shootDefine = {'rifleRange': '', 'distance': '', 'weather': ''}
+        shootDefine['rifleRange'] = request.form["rifleRange"]
+        shootDefine['distance'] = request.form["distance"]
+        shootDefine['weather'] = request.form["weather"]
+        print(stageList)
         # todo: if all usernames are correct, handle all the uploading.
         # todo: if not, repeat this page with all settings still intact.
-    return render_template(template, form=form, stageList=stageList)
-
-
-@app.route('/upload2', methods=['GET', 'POST'])
-def uploadV():
-    form = uploadForm()
-    stageList = ['1', '2', '4', '2', '3', '1', '2', 2, 1, 1, 2, 3, 12, 31, 123]
-    if request.method == "POST":
-        return render_template('landingPage.html')
-    return render_template('upload/uploadVerify.html', form=form, stageList=stageList)
+    stageDump = json.dumps(stageList)
+    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList)
 
 
 @app.route('/login', methods=['GET', 'POST'])
