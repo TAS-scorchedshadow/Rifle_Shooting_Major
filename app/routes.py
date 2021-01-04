@@ -16,9 +16,15 @@ from matplotlib import pylab
 import json
 
 
-@login_required
 @app.route('/')
-def landingPage():
+def index():
+    # if not current_user.is_authenticated:
+    #     return redirect(url_for('landing'))
+    return render_template('index.html')
+
+
+@app.route('/landing')
+def landing():
     return render_template('landingPage.html')
 
 
@@ -27,6 +33,7 @@ def target_test():
     return render_template('targetTest.html')
 
 
+@login_required
 @app.route('/profile')
 def profile():
     form = reportForm()
@@ -104,7 +111,7 @@ def upload():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     form = signInForm()
     if form.validate_on_submit():
         print('submitted')
@@ -115,7 +122,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != ':':
-            next_page = url_for('landingPage')
+            next_page = url_for('index')
         return redirect(next_page)
     return render_template('userAuth/login.html', form=form)
 
@@ -140,10 +147,10 @@ def register():
 @app.route('/emailActivation/<token>', methods=['GET','POST'])
 def emailActivation(token):
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     user = User.verify_activation_token(token)
     if not user:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     user.isActive = True
     db.session.commit()
     return render_template('userAuth/resetPassword.html')
@@ -152,7 +159,7 @@ def emailActivation(token):
 @app.route('/requestResetPassword',methods=['GET','POST'])
 def requestResetPassword():
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -166,10 +173,10 @@ def requestResetPassword():
 @app.route('/reset_password/<token>', methods=['GET','POST'])
 def reset_password(token):
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     user = User.verify_reset_token(token)
     if not user:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
@@ -224,5 +231,5 @@ def admin():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('landingPage'))
+    return redirect(url_for('index'))
 
