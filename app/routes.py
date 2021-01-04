@@ -172,7 +172,7 @@ def reset_password(token):
 
 @app.route('/userList')
 def userList():
-    users = User.query.all()
+    users = User.query.order_by(User.schoolID).all()
     return render_template('userAuth/userList.html',users=users)
 
 
@@ -184,7 +184,6 @@ def activate():
     state = loadedData['state']
     if userID:
         try:
-            print(state)
             user = User.query.filter_by(id=userID).first()
             user.isActive = strtobool(state)
             db.session.commit()
@@ -194,6 +193,24 @@ def activate():
             return jsonify({'error': 'Invalid State'})
 
     return jsonify({'error': 'userID'})
+
+#TODO merge both functions
+@app.route('/admin',methods=['POST'])
+def admin():
+    data = request.get_data()
+    loadedData =json.loads(data)
+    state = loadedData['state']
+    userID = loadedData['id']
+    if userID:
+        try:
+            user = User.query.filter_by(id=userID).first()
+            user.isAdmin = strtobool(state)
+            db.session.commit()
+            return jsonify({'id': userID, 'newState': not strtobool(state)})
+        except:
+            print('error')
+            return jsonify({'error': 'Invalid State'})
+
 
 @app.route('/logout')
 def logout():

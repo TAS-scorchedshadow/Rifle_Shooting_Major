@@ -1,11 +1,13 @@
 <p>Dear {{ user.fName }} {{ user.sName }}</p>
 
 <p>Thank you for signing up to the PARS system </p>
+<p>Your username is <b>{{ user.username }}</b></p>
 <p>
     To activate your account
     <a href="{{ url_for('emailActivation', token=token, _external=true) }}">
         Click Here
     </a>
-
+</p>
+<p>Alternatively contact your school's administrator for manual approval</p>
 <p>Sincerely,</p>
 <p>The PARS Team</p>
