@@ -56,6 +56,7 @@ def upload():
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
             files = request.files.getlist('file')
+            count = 0
             for file in files:
                 # Decodes a file from FileStorage format into json format, and then extracts relevant info
                 try:
@@ -63,23 +64,28 @@ def upload():
                     string = bytes.decode('utf-8')
                     data = json.loads(string)
                     shoot = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
-                    print(shoot)
+                    shoot['listID'] = count
                     stageList.append(shoot)
                     # todo: following requires a usernameExists function, or similar
-                    # idFound = usernameExists(shoot['username'])
                     # if not idFound:
-                    #     invalidList.append(shoot)
+                    invalidList.append(shoot)
                 except:
                     print("File had an error in uploading")
+                count += 1
 
     else:
-        template = 'landingPage.html'
         stageList = json.loads(request.form["stageDump"])
-        shootDefine = {'rifleRange': '', 'distance': '', 'weather': ''}
-        shootDefine['rifleRange'] = request.form["rifleRange"]
-        shootDefine['distance'] = request.form["distance"]
-        shootDefine['weather'] = request.form["weather"]
+        for key in request.form:
+            if "username." in key:
+                id = int(key[9:])
+                username = request.form[key]
+                stageList[id]['username'] = username
         print(stageList)
+        shootDefine = {}
+        shootDefine['rifleRange'] = form.rifleRange.data
+        shootDefine['distance'] = form.distance.data
+        shootDefine['weather'] = form.weather.data
+        print(shootDefine)
         # todo: if all usernames are correct, handle all the uploading.
         # todo: if not, repeat this page with all settings still intact.
     stageDump = json.dumps(stageList)
