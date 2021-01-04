@@ -66,9 +66,10 @@ def upload():
                     shoot = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
                     shoot['listID'] = count
                     stageList.append(shoot)
-                    # todo: following requires a usernameExists function, or similar
-                    # if not idFound:
-                    invalidList.append(shoot)
+                    # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
+                    idFound = User.query.filter_by(username=shoot['username']).first()
+                    if idFound is None:
+                        invalidList.append(shoot)
                 except:
                     print("File had an error in uploading")
                 count += 1
@@ -80,14 +81,22 @@ def upload():
                 id = int(key[9:])
                 username = request.form[key]
                 stageList[id]['username'] = username
-        print(stageList)
-        shootDefine = {}
-        shootDefine['rifleRange'] = form.rifleRange.data
-        shootDefine['distance'] = form.distance.data
-        shootDefine['weather'] = form.weather.data
-        print(shootDefine)
-        # todo: if all usernames are correct, handle all the uploading.
-        # todo: if not, repeat this page with all settings still intact.
+                idFound = User.query.filter_by(username=username).first()
+                if idFound is None:
+                    invalidList.append(stageList[id])
+        if not invalidList:
+            shootDefine = {}
+            shootDefine['rifleRange'] = form.rifleRange.data
+            shootDefine['distance'] = form.distance.data
+            shootDefine['weather'] = form.weather.data
+            # todo: handle uploading
+            print(stageList)
+            print("DEBUG: All usernames correct")
+            stageList = []
+        else:
+            template = 'upload/uploadVerify.html'
+            # todo: need to add an alert popup here
+            print("DEBUG: Not all usernames correct")
     stageDump = json.dumps(stageList)
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList)
 
