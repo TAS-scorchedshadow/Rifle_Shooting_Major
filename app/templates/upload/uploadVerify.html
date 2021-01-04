@@ -9,50 +9,59 @@
                 <div class="card-header text-center">
                     <h1>Finalise Upload</h1>
                 </div>
-                <div class="card-body">
-                     <div class="input-group mb-3">
-                        <div class="input-group-append">
-                            {{ form.rifleRange(class_="form-control") }}
+                <form method="post">
+                    <div class="card-body">
+                         <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                {{ form.rifleRange(class_="form-control") }}
+                            </div>
+                            <div class="input-group-append">
+                                {{ form.distance(class_="form-control") }}
+                            </div>
+                            <div class="input-group-append">
+                                {{ form.weather(class_="form-control") }}
+                            </div>
                         </div>
-                        <div class="input-group-append">
-                            {{ form.distance(class_="form-control") }}
-                        </div>
-                        <div class="input-group-append">
-                            {{ form.weather(class_="form-control") }}
+                        <hr>
+                        <!--TODO you probably need to change the value insert into some Javascript equivalent-->
+                        <h3 class="text-center">The following stages contain incomplete data</h3>
+                        <div class="table-responsive">
+                            <table class="text-center justify-content-center table table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Stage ID</th>
+                                        <th scope="col">Time</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Score</th>
+                                     </tr>
+                                </thead>
+                                <tbody>
+                                {% for invalidShoot in invalidList %}
+                                    <tr>
+                                        <!-- Shoot ID may be meaningless since it's just a string of humanly unidentifiable numbers -->
+                                        <td>{{ invalidShoot['id'] }}</td>
+                                        <td>{{ invalidShoot['dateTime'] }}</td>
+                                        <td>
+                                            <input type="text"
+                                                   name="username.{{ invalidShoot['listID'] }}"
+                                                   value={{ invalidShoot['username'] }}>
+                                        </td>
+                                        <td>
+                                            {% for shot in invalidShoot['shotList'] %}
+                                                {{ shot }}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        <!--TODO add proper submit style-->
+                            {{ form.submit(class_="form-control") }}
+                            {{ form.identifier(value="verify") }}
+                            {{ form.stageDump(value=stageDump)}}
                         </div>
                     </div>
-                    <hr>
-                    <!--TODO you probably need to change the value insert into some Javascript equivalent-->
-                    <h3 class="text-center">The following stages contain incomplete data</h3>
-                    <div class="table-responsive">
-                        <table class="text-center justify-content-center table table-bordered">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">Stage ID</th>
-                                    <th scope="col">Time</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Score</th>
-                                 </tr>
-                            </thead>
-                            <tbody>
-                            {% for thing in invalidList %}
-                                <tr>
-                                    <td scope="row">0912039</td>
-                                    <td>23/10/2020</td>
-                                    <td><input class="form-control" type="text"></td>
-                                    <td><input class="form-control" type="text"></td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    <!--TODO add proper submit style-->
-                    <form method="post">
-                        {{ form.submit(class_="form-control") }}
-                        {{ form.identifier(value="verify") }}
-                        {{ form.stageDump(value=stageDump)}}
-                    </form>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

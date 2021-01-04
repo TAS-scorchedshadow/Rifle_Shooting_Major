@@ -16,9 +16,15 @@ from matplotlib import pylab
 import json
 
 
-@login_required
 @app.route('/')
-def landingPage():
+def index():
+    # if not current_user.is_authenticated:
+    #     return redirect(url_for('landing'))
+    return render_template('index.html')
+
+
+@app.route('/landing')
+def landing():
     return render_template('landingPage.html')
 
 
@@ -27,6 +33,7 @@ def target_test():
     return render_template('targetTest.html')
 
 
+@login_required
 @app.route('/profile')
 def profile():
     form = reportForm()
@@ -56,6 +63,7 @@ def upload():
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
             files = request.files.getlist('file')
+            count = 0
             for file in files:
                 # Decodes a file from FileStorage format into json format, and then extracts relevant info
                 try:
@@ -63,25 +71,39 @@ def upload():
                     string = bytes.decode('utf-8')
                     data = json.loads(string)
                     shoot = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
-                    print(shoot)
+                    shoot['listID'] = count
                     stageList.append(shoot)
-                    # todo: following requires a usernameExists function, or similar
-                    # idFound = usernameExists(shoot['username'])
-                    # if not idFound:
-                    #     invalidList.append(shoot)
+                    # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
+                    idFound = User.query.filter_by(username=shoot['username']).first()
+                    if idFound is None:
+                        invalidList.append(shoot)
                 except:
                     print("File had an error in uploading")
+                count += 1
 
     else:
-        template = 'landingPage.html'
         stageList = json.loads(request.form["stageDump"])
-        shootDefine = {'rifleRange': '', 'distance': '', 'weather': ''}
-        shootDefine['rifleRange'] = request.form["rifleRange"]
-        shootDefine['distance'] = request.form["distance"]
-        shootDefine['weather'] = request.form["weather"]
-        print(stageList)
-        # todo: if all usernames are correct, handle all the uploading.
-        # todo: if not, repeat this page with all settings still intact.
+        for key in request.form:
+            if "username." in key:
+                id = int(key[9:])
+                username = request.form[key]
+                stageList[id]['username'] = username
+                idFound = User.query.filter_by(username=username).first()
+                if idFound is None:
+                    invalidList.append(stageList[id])
+        if not invalidList:
+            shootDefine = {}
+            shootDefine['rifleRange'] = form.rifleRange.data
+            shootDefine['distance'] = form.distance.data
+            shootDefine['weather'] = form.weather.data
+            # todo: handle uploading
+            print(stageList)
+            print("DEBUG: All usernames correct")
+            stageList = []
+        else:
+            template = 'upload/uploadVerify.html'
+            # todo: need to add an alert popup here
+            print("DEBUG: Not all usernames correct")
     stageDump = json.dumps(stageList)
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList)
 
@@ -89,7 +111,7 @@ def upload():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     form = signInForm()
     if form.validate_on_submit():
         print('submitted')
@@ -100,7 +122,7 @@ def login():
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != ':':
-            next_page = url_for('landingPage')
+            next_page = url_for('index')
         return redirect(next_page)
     return render_template('userAuth/login.html', form=form)
 
@@ -125,10 +147,10 @@ def register():
 @app.route('/emailActivation/<token>', methods=['GET','POST'])
 def emailActivation(token):
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     user = User.verify_activation_token(token)
     if not user:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     user.isActive = True
     db.session.commit()
     return render_template('userAuth/resetPassword.html')
@@ -137,7 +159,7 @@ def emailActivation(token):
 @app.route('/requestResetPassword',methods=['GET','POST'])
 def requestResetPassword():
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -151,10 +173,10 @@ def requestResetPassword():
 @app.route('/reset_password/<token>', methods=['GET','POST'])
 def reset_password(token):
     if current_user.is_authenticated:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     user = User.verify_reset_token(token)
     if not user:
-        return redirect(url_for('landingPage'))
+        return redirect(url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
@@ -209,5 +231,5 @@ def admin():
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('landingPage'))
+    return redirect(url_for('index'))
 
