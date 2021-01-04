@@ -35,7 +35,7 @@
                                  </tr>
                             </thead>
                             <tbody>
-                            {% for thing in stageList %}
+                            {% for thing in invalidList %}
                                 <tr>
                                     <td scope="row">0912039</td>
                                     <td>23/10/2020</td>
@@ -45,9 +45,12 @@
                             {% endfor %}
                             </tbody>
                         </table>
-                    <!--TODO add submit style-->
-                    {{ form.identifier(value="verify") }}
-                    {{ form.shootInfo }}
+                    <!--TODO add proper submit style-->
+                    <form method="post">
+                        {{ form.submit(class_="form-control") }}
+                        {{ form.identifier(value="verify") }}
+                        {{ form.stageDump(value=stageDump)}}
+                    </form>
                     </div>
                 </div>
             </div>
