@@ -2,10 +2,11 @@
 {% set active_page = "User List" %}
 {% block page_title %} User List {% endblock %}
 {% block page_content %}
+    <script type="text/javascript" src="../static/js/userList.js"></script>
     <div class="container-fluid">
-        <div class="col">
-
-        </div>
+        <a type="button" class="btn btn-primary" data-toggle="modal" style="display: none">
+            Make Admin
+        </a>
         <div class="row">
             <div class="col-12">
                 <div class="card h-100 justify-content-center">
@@ -22,49 +23,90 @@
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Manage Account</th>
+                                        <th scope="col">xD</th>
                                      </tr>
                                 </thead>
                                 <tbody>
-                                {% for user in users %}
-                                    <tr>
-                                        <td scope="row">{{ user.school }}</td>
-                                        <td>{{ user.schoolID }}</td>
-                                        <td>{{ user.fName }} {{ user.sName }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>
-                                            {% if not user.isAdmin %}
-                                                <!-- Button trigger modal -->
-                                                <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#Amodal{{ user.id }}">
-                                                    Make Admin
-                                                </a>
-                                            {% else  %}
-                                                <a type="button" class="btn btn-secondary" data-toggle="modal" data-target="#Amodal{{ user.id }}">
-                                                    Revoke Admin Access
-                                                </a>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <!-- Approve Admin Modals -->
-                                        <div class="modal fade" id="Amodal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                          <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                  <span aria-hidden="true">&times;</span>
-                                                </button>
-                                              </div>
-                                              <div class="modal-body">
-                                                  {{ user.fName }}
-                                              </div>
-                                              <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
-                                              </div>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td scope="row">{{ user.school }}</td>
+                                            <td>{{ user.schoolID }}</td>
+                                            <td>{{ user.fName }} {{ user.sName }}</td>
+                                            <td>{{ user.email }}</td>
+                                            <td>
+                                                {% if not user.isActive %}
+                                                    <!-- Button trigger modal -->
+                                                    <a type="button" id="setActive{{ user.id }}" class="btn btn-secondary" href="javascript:setActive('#setActive{{ user.id }}','{{ user.id }}','true')">
+                                                        Activate Account
+                                                    </a>
+                                                {% else  %}
+                                                    <a type="button" id="setActive{{ user.id }}" class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal{{ user.id }}">
+                                                        Delete account
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if not user.isAdmin %}
+                                                    <!-- Button trigger modal -->
+                                                    <a type="button" id ="setAdmin{{ user.id }}" class="btn btn-primary" data-toggle="modal" data-target="#AdminModal{{ user.id }}">
+                                                        Make Admin
+                                                    </a>
+                                                {% else  %}
+                                                    <a type="button" id="setAdmin{{ user.id }}" class="btn btn-danger" href="javascript:setAdmin('#setAdmin{{ user.id }}','{{ user.id }}','true')">
+                                                        Revoke Admin Access
+                                                    </a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <!-- Delete Account Modal -->
+                                            <div class="modal fade" id="RemoveModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Delete Account</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                             </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete {{ user.fName }} {{ user.sName }}'s account?</p>
+                                                            <p>Deleted accounts can be recovered up to 14 days after deletion by reactivating the account on this page.</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <a type="button" class="btn btn-danger"
+                                                               href="javascript:setActive('#setActive{{ user.id }}','{{ user.id }}','false')">
+                                                                Make Admin
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                          </div>
-                                        </div>
-                                {% endfor %}
+                                        <!-- Admin Account Modal -->
+                                            <div class="modal fade" id="AdminModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Delete Account</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                             </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete {{ user.fName }} {{ user.sName }}'s an admin?</p>
+                                                            <p>As an admin they will be able to view all rifle shooter's information, and manage accounts.</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                            <a type="button" class="btn btn-primary"
+                                                               href="javascript:setAdmin('#setAdmin{{ user.id }}','{{ user.id }}','true')">
+                                                                Make Admin
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         <!--TODO add submit style-->

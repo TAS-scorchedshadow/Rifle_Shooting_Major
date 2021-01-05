@@ -19,8 +19,7 @@ class uploadForm(FlaskForm):
                                                ('Rain', 'Rain'), ('Storm', 'Storm')])
     submit = SubmitField("Submit")
     identifier = HiddenField("Upload/Verify", default="upload")
-    submit = SubmitField("Submit")
-    invalidShootInfo = HiddenField("Data")
+    stageDump = HiddenField("Data")
     success = HiddenField("Success")
     total = HiddenField("Total")
 

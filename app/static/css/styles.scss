@@ -219,3 +219,34 @@ main {
 .success{
     color: limegreen;
 }
+
+//Hover Styles
+.inner{
+    overflow: hidden;
+}
+
+.inner img{
+    transition: all 1.2s ease;
+}
+
+.inner:hover img {
+    transform: scale(1.2);
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+a.custom-card:hover {
+  color: inherit;
+}
+
+.linked-card:hover{
+    -webkit-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+    -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+    box-shadow: -5px 9px 40px -12px rgba(0,0,0,0.75);
+}

@@ -27,7 +27,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col col-md-9">
+            <div class="col col-md-9.5">
                 <table class="table table-striped table-bordered table-sm">
                     <tbody>
                         <tr>
@@ -79,13 +79,13 @@
                             },
                             options: {
                                 responsive: true,
+                                title: {
+                                        display: true,
+                                        text: 'Attendance'
+                                    },
                                 plugins: {
                                     legend: {
                                         position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Chart.js Doughnut Chart'
                                     },
                                 },
                                 animation: {
@@ -99,7 +99,7 @@
 
 
         <!-- ChartJS radar to show shooter's skill -->
-        <div class="col-md-4">
+        <div class="col-md-6">
         <canvas id="radar"></canvas>
             <script>
                 var ctx = document.getElementById('radar').getContext('2d');
@@ -115,13 +115,13 @@
                                     data: [7, 8, 5, 9, 6]
                 }]},
                             options: {
+                                title: {
+                                        display: true,
+                                        text: 'Performance'
+                                    },
                                 plugins: {
                                     legend: {
                                         position: 'top',
-                                    },
-                                    title: {
-                                        display: true,
-                                        text: 'Chart.js Radar Chart'
                                     },
                                 },
                                 scale: {
@@ -137,7 +137,7 @@
             </script>
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-2">
             <div class="card shadow border-0 justify-content-center">
                 <div class = "card-title text-center">
                     <h2>Equipment</h2>
@@ -150,10 +150,59 @@
     </div>
 </div>
 
+<br>
+<br>
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
+            <canvas id="lineAvg"></canvas>
+                <script>
+                    var ctx = document.getElementById('lineAvg').getContext('2d');
+                    console.log(ctx);
+                    var barChart = new Chart(ctx, {
+                        type: "line",
+                        data: {
+                                labels: {{ label }},
+                                datasets: [{
+                                    label: 'Averages',
+                                    backgroundColor: 'rgba(255,0,0,0)',
+                                    borderColor: 'rgba(255,0,0,1)',
+                                    borderWidth: 1,
+                                    fill: false,
+                                    data: {{ data }}
+                                }, {
+                                    label: 'Trend',
+                                    backgroundColor: "rgba(0,0,255,0)",
+                                    borderColor: 'rgba(0,0,255,1)',
+                                    borderWidth: 1,
+                                    fill: false,
+                                    data: {{ trend }}
+                                }]},
+                            options: {
+                                    responsive: true,
+                                    title: {
+                                            display: true,
+                                            text: 'Averages Line'
+                                        },
+                                    plugins: {
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            min: 0,
+                                            ticks: {
+                                                min: 0,
+                                                beginAtZero:true
+                                            }
+                                        }]
+                                    }
+                            }
+                            });
+                </script>
+        </div>
+
+
+        <div class="col-md-5">
             <canvas id="barAvg"></canvas>
                 <script>
                     var ctx = document.getElementById('barAvg').getContext('2d');
@@ -181,15 +230,14 @@
                                     borderColor: 'rgba(0,255,0,1)',
                                     borderWidth: 1,
                                     data: [1, 3, 5, 7, 9, 11, 9, 7, 5]
-                                    }],
-                            //TODO Understand why options section not working
+                                    }]},
                             options: {
                                     responsive: true,
-                                    plugins: {
-                                        title: {
+                                title: {
                                             display: true,
                                             text: 'Averages Bar'
-                                        }
+                                        },
+                                    plugins: {
                                     },
                                     scales: {
                                         yAxes: [{
@@ -201,12 +249,12 @@
                                         }]
                                     }
                             }
-                            }});
+                            });
                 </script>
         </div>
 
 
-        <div class="col-6">
+        <div class="col-md-2">
             <div class="card shadow border-0 justify-content-center">
                 <div class = "card-title text-center">
                     <h2>Stats</h2>

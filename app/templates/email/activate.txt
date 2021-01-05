@@ -1,0 +1,15 @@
+Dear {{ user.fName }} {{user.sName}},
+
+Thank you for signing up to the PARS system.
+
+Your username is {{ user.username }}
+
+To activate your account click on the following link:
+
+{{ url_for('emailActivation', token=token, _external=True) }}
+
+Alternatively contact your school's administrator for manual approval
+
+Sincerely,
+
+The PARS Team
