@@ -12,8 +12,8 @@ from wtforms.validators import DataRequired, InputRequired, EqualTo
 # -- Ryan Tan --
 class uploadForm(FlaskForm):
     file = MultipleFileField(u'Submit File')
-    rifleRange = SelectField("Rifle Range:", choices=[('Malabar', 'Malabar')])
-    distance = SelectField("Distance:", choices=[('300m', '300m'), ('500m', '500m'), ('600m', '600m'),
+    location = SelectField("Location:", choices=[('Malabar', 'Malabar')])
+    rangeDistance = SelectField("Distance:", choices=[('300m', '300m'), ('500m', '500m'), ('600m', '600m'),
                                                  ('700m', '700m'), ('800m', '800m')])
     weather = SelectField("Weather:", choices=[('Sunny', 'Sunny'), ('Cloudy', 'Cloudy'), ('Windy', 'Windy'),
                                                ('Rain', 'Rain'), ('Storm', 'Storm')])

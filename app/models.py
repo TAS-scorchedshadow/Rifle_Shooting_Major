@@ -75,12 +75,12 @@ class User(UserMixin, db.Model):
 
 class Stage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    jsonFilename = db.Column(db.String(128))
+    jsonID = db.Column(db.String(128))
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     duration = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     groupSize = db.Column(db.Float)
-    rangeType = db.Column(db.String(10))
+    rangeDistance = db.Column(db.String(10))
     location = db.Column(db.String(50))
     notes = db.Column(db.String(255))
     shots = db.relationship('Shot', backref='stage', lazy='dynamic')
@@ -97,6 +97,7 @@ class Shot(db.Model):
     yPos = db.Column(db.Float)
     score = db.Integer
     numV = db.Integer
+    sighter = db.Boolean
 
     def __repr__(self):
         return '<Shot {}>'.format(self.id)

@@ -29,6 +29,48 @@
 
     </head>
     <div class="container-fluid">
+        <div class = "row text-center justify-content-center">
+            <div class="col-10 col-md-4">
+                <a href="/upload" class="custom-card">
+                  <div class="card linked-card h-100">
+                      <div class="inner">
+                          <img class="card-img-top" src="../static/images/upload.png" alt="Upload">
+                      </div>
+                      <div class="card-title">
+                          <h4>Upload</h4>
+                      </div>
+                      <p>Upload files from on site system</p>
+                  </div>
+                </a>
+            </div>
+            <div class="col-10 col-md-4">
+                <a href="/studentList" class="custom-card">
+                  <div class="card linked-card h-100">
+                      <div class="inner">
+                        <img class="card-img-top" src="../static/images/findastudent.png" alt="Find A Student">
+                      </div>
+                      <div class="card-title">
+                          <h4>Find A Shooter</h4>
+                      </div>
+                       <p>Investigate the performance of a specific shooter.</p>
+                  </div>
+                </a>
+            </div>
+            <div class="col-10 col-md-4">
+                 <a href="/comparativeHomePage" class="custom-card">
+                  <div class="card linked-card h-100">
+                      <div class="inner">
+                        <img class="card-img-top" src="../static/images/comparisons.png" alt="Comparisons">
+                      </div>
+                      <div class="card-title">
+                          <h4>Comparisons</h4>
+                      </div>
+                      <p>Line graphs, pie charts and other interesting visualisations!</p>
+                  </div>
+                </a>
+            </div>
+        </div>
+        <hr>
         <div class="row">
             <div class="col-12">
                 <div class="card h-100 justify-content-center">
@@ -61,34 +103,6 @@
                             {{ form.identifier(value="upload") }}
                         </form>
                     </div>
-                </div>
-            </div>
-            <div class="col">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                  Launch demo modal
-                </button>
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <textarea id="content-target0"></textarea>
-                        <textarea id="content-target1"></textarea>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
             </div>
         </div>

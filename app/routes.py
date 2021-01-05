@@ -6,7 +6,7 @@ from werkzeug.urls import url_parse
 
 from app import app, db
 from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm
-from app.models import User
+from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 
@@ -70,13 +70,13 @@ def upload():
                     bytes = file.read()
                     string = bytes.decode('utf-8')
                     data = json.loads(string)
-                    shoot = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
-                    shoot['listID'] = count
-                    stageList.append(shoot)
+                    stage = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
+                    stage['listID'] = count
+                    stageList.append(stage)
                     # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
-                    idFound = User.query.filter_by(username=shoot['username']).first()
+                    idFound = User.query.filter_by(username=stage['username']).first()
                     if idFound is None:
-                        invalidList.append(shoot)
+                        invalidList.append(stage)
                 except:
                     print("File had an error in uploading")
                 count += 1
@@ -92,12 +92,22 @@ def upload():
                 if idFound is None:
                     invalidList.append(stageList[id])
         if not invalidList:
-            shootDefine = {}
-            shootDefine['rifleRange'] = form.rifleRange.data
-            shootDefine['distance'] = form.distance.data
-            shootDefine['weather'] = form.weather.data
+            stageDefine = {}
+            stageDefine['location'] = form.location.data
+            stageDefine['rangeDistance'] = form.rangeDistance.data
+            stageDefine['weather'] = form.weather.data
             # todo: handle uploading
-            print(stageList)
+            for item in stageList:
+                print(item)
+                stage = Stage(jsonFilename=item['id'], userID=item['username'], timestamp=item['time'],
+                              duration=item['duration'], groupSize=item['groupSize'],
+                              rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'], notes="")
+                # here I think stage needs to be uploaded then relocated for shots to be uploaded
+                id = None
+                for point in item['validShots']:
+                    shot = Shot(stageID=id, timestamp=point['ts'], xPos=point['x'], yPos=point['y'],
+                                score=point['score'], numV=point['Vscore'],
+                                sighter=point['sighter'])
             print("DEBUG: All usernames correct")
             stageList = []
         else:
