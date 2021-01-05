@@ -75,7 +75,7 @@ class User(UserMixin, db.Model):
 
 class Stage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    jsonFilename = db.Column(db.String(128))
+    jsonID = db.Column(db.String(128))
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     duration = db.Column(db.DateTime, index=True, default=datetime.utcnow)
