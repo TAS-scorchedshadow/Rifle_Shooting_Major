@@ -21,9 +21,9 @@
                                         <th scope="col">School</th>
                                         <th scope="col">Student ID</th>
                                         <th scope="col">Name</th>
+                                        <th SCOPE="col">Username</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Manage Account</th>
-                                        <th scope="col">xD</th>
                                      </tr>
                                 </thead>
                                 <tbody>
@@ -32,30 +32,35 @@
                                             <td scope="row">{{ user.school }}</td>
                                             <td>{{ user.schoolID }}</td>
                                             <td>{{ user.fName }} {{ user.sName }}</td>
+                                            <td>{{ user.username }}</td>
                                             <td>{{ user.email }}</td>
                                             <td>
-                                                {% if not user.isActive %}
-                                                    <!-- Button trigger modal -->
-                                                    <a type="button" id="setActive{{ user.id }}" class="btn btn-secondary" href="javascript:setActive('#setActive{{ user.id }}','{{ user.id }}','true')">
-                                                        Activate Account
-                                                    </a>
-                                                {% else  %}
-                                                    <a type="button" id="setActive{{ user.id }}" class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal{{ user.id }}">
-                                                        Delete account
-                                                    </a>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if not user.isAdmin %}
-                                                    <!-- Button trigger modal -->
-                                                    <a type="button" id ="setAdmin{{ user.id }}" class="btn btn-primary" data-toggle="modal" data-target="#AdminModal{{ user.id }}">
-                                                        Make Admin
-                                                    </a>
-                                                {% else  %}
-                                                    <a type="button" id="setAdmin{{ user.id }}" class="btn btn-danger" href="javascript:setAdmin('#setAdmin{{ user.id }}','{{ user.id }}','true')">
-                                                        Revoke Admin Access
-                                                    </a>
-                                                {% endif %}
+                                                <div class="row">
+                                                    <div class="col">
+                                                        {% if not user.isActive %}
+                                                            <!-- Button trigger modal -->
+                                                            <a type="button" id="setActive{{ user.id }}" class="btn btn-secondary" href="javascript:setActive('#setActive{{ user.id }}','{{ user.id }}','true')">
+                                                                Activate Account
+                                                            </a>
+                                                        {% else  %}
+                                                            <a type="button" id="setActive{{ user.id }}" class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal{{ user.id }}">
+                                                                Delete account
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col">
+                                                        {% if not user.isAdmin %}
+                                                            <!-- Button trigger modal -->
+                                                            <a type="button" id ="setAdmin{{ user.id }}" class="btn btn-primary" data-toggle="modal" data-target="#AdminModal{{ user.id }}">
+                                                                Make Admin
+                                                            </a>
+                                                        {% else  %}
+                                                            <a type="button" id="setAdmin{{ user.id }}" class="btn btn-danger" href="javascript:setAdmin('#setAdmin{{ user.id }}','{{ user.id }}','true')">
+                                                                Revoke Admin Access
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                         <!-- Delete Account Modal -->
