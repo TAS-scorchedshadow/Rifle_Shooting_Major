@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% set active_page = "home" %}
+{% block page_title %} Admin Home {% endblock %}
+{% block page_content %}
+<style>
+    .jumbotron{
+        background-image: url('../static/images/home.jpg');
+        background-size: cover;
+        margin-bottom: 20px;
+        margin-top: 0px;
+        background-position: center;
+    }
+</style>
+<div class="jumbotron jumbotron-fluid  bg-transparent" style="background-size: cover;">
+  <div class="container justify-content-center text-center">
+    <h1 class="display-4" id="jumboTitle"><b>Progress Analytics for Rifle Shooters</b></h1>
+  </div>
+</div>
+
+
+<h2 class="text-center">Admin Features</h2>
+<hr>
+<div class = "row text-center justify-content-center">
+    <div class="col-10 col-md-4">
+        <a href="/upload" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                  <img class="card-img-top" src="../static/images/upload.png" alt="Upload">
+              </div>
+              <div class="card-title">
+                  <h4>Upload</h4>
+              </div>
+              <p>Upload files from on site system</p>
+          </div>
+        </a>
+    </div>
+    <div class="col-10 col-md-4">
+        <a href="/studentList" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                <img class="card-img-top" src="../static/images/findastudent.png" alt="Find A Student">
+              </div>
+              <div class="card-title">
+                  <h4>Find A Shooter</h4>
+              </div>
+               <p>Investigate the performance of a specific shooter.</p>
+          </div>
+        </a>
+    </div>
+    <div class="col-10 col-md-4">
+         <a href="/comparativeHomePage" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                <img class="card-img-top" src="../static/images/comparisons.png" alt="Comparisons">
+              </div>
+              <div class="card-title">
+                  <h4>Comparisons</h4>
+              </div>
+              <p>Line graphs, pie charts and other interesting visualisations!</p>
+          </div>
+        </a>
+    </div>
+</div>
+<hr>
+{% endblock %}
