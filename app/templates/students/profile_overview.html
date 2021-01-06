@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% set active_page = "overview" %}
+{% block page_title %} Overview {% endblock %}
+{% block page_content %}
+
+    <!-- ChartJS modules -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+
+<div class="container">
+    <div class="col-6">
+        <!-- Henry's entry to create Recent Shoots panel  -->
+    </div>
+    <div class="col-6>">
+    <div class="row">
+        <div class="col-3">
+            <div class="card shadow border-0 justify-content-center">
+                    <div class = "card-title text-center">
+                        <h2>Stats</h2>
+                    </div>
+                    <div class = "card-body">
+                        <p>Mean (x̅): 3.0</p>
+                        <p>Median (x̃): 5.0</p>
+                        <p>Standard Deviation (σx): 2.0</p>
+                    </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <canvas id="attendance"></canvas>
+            <script>
+                var ctx = document.getElementById('attendance').getContext('2d');
+                console.log(ctx);
+                var attendance = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                datasets: [{
+                                    data: [155, 13],
+                                    backgroundColor: [
+                                        'rgba(91, 188, 228, 0.85)',
+                                        'rgba(139, 69, 19, 0.85)',
+                                    ],
+                                    label: 'Dataset 1'
+                                }],
+                                labels: [
+                                    'Attended',
+                                    'Not Attended'
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                title: {
+                                        display: true,
+                                        text: 'Attendance'
+                                    },
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                    },
+                                },
+                                animation: {
+                                    animateScale: true,
+                                    animateRotate: true
+                                }
+                            }
+                            });
+            </script>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <canvas id="lineSTDEV"></canvas>
+                    <script>
+                        var ctx = document.getElementById('lineSTDEV').getContext('2d');
+                        console.log(ctx);
+                        var barChart = new Chart(ctx, {
+                            type: "line",
+                            data: {
+                                    labels: [2018, 2019, 2020],
+                                    datasets: [{
+                                        label: 'Averages',
+                                        backgroundColor: 'rgba(255,0,0,0)',
+                                        borderColor: 'rgba(255,0,0,1)',
+                                        borderWidth: 1,
+                                        fill: false,
+                                        data: [5, 6, 7]
+                                    }]},
+                                options: {
+                                        responsive: true,
+                                        title: {
+                                                display: true,
+                                                text: 'ot Line'
+                                            },
+                                        plugins: {
+                                        },
+                                        scales: {
+                                            yAxes: [{
+                                                min: 0,
+                                                ticks: {
+                                                    min: 0,
+                                                    beginAtZero:true
+                                                }
+                                            }]
+                                        }
+                                }
+                                });
+                    </script>
+        </div>
+    </div>
+
+{% endblock %}

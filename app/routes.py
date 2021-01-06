@@ -36,7 +36,6 @@ def target_test():
 @app.route('/profile')
 def profile():
     form = reportForm()
-
     yearStubAvgLine = [2018, 2019, 2020]
     scoreStubAvgLine = [5, 8, 17]
 
@@ -50,6 +49,13 @@ def profile():
 
     return render_template('students/profile.html', form=form, label=yearStubAvgLine, data=scoreStubAvgLine, trend=trend)
 
+@app.route('/overview')
+def profile_overview():
+    return render_template('students/profile_overview.html')
+
+@app.route('/settings')
+def profile_settings():
+    return render_template('students/profile_settings.html')
 
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
