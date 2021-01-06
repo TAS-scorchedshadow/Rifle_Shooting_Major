@@ -84,7 +84,7 @@ class Stage(db.Model):
     shots = db.relationship('Shot', backref='stage', lazy='dynamic')
 
     def __repr__(self):
-        return '<Stage {}>'.format(self.jsonFilename)
+        return '<Stage {}>'.format(self.id)
 
 
 class Shot(db.Model):
