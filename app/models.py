@@ -24,6 +24,7 @@ class User(UserMixin, db.Model):
     isActive = db.Column(db.Boolean, default=False)
     lastActive = db.Column(db.DateTime)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
+    gear = db.relationship('Gear', backref='shooter', lazy='dynamic')
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -99,6 +100,20 @@ class Shot(db.Model):
 
     def __repr__(self):
         return '<Shot {}>'.format(self.id)
+
+
+class GearSettings(db.Model):
+    userID = db.Column(db.Integer, db.ForeignKey('user.id'),primary_key=True)
+    jacket = db.Column(db.String(10))
+    glove = db.Column(db.String(10))
+    hat = db.Column(db.String(10))
+    slingHole = db.Column(db.String(10))
+    slingPoint = db.Column(db.String(10))
+    butOut = db.Column(db.String(10))
+    butUp = db.Column(db.String(10))
+    ringSize = db.Column(db.String(10))
+    sightHole = db.Column(db.String(10))
+
 
 
 @login.user_loader
