@@ -11,14 +11,17 @@
             top:100px;
         }
     </style>
-    <script type="text/javascript" src="../static/targetTests.js"></script>
+    <script type="text/javascript" src="../static/js/targetTests.js"></script>
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-md-12 mr-5">
                 <canvas id="title" style="border: 1px solid black"></canvas>
                 <canvas id="tip"></canvas>
                 <script>
-                    let myTarget = new DrawTarget('title', "300m", [['1', -115.92, 111.75, '3'], ['2', 94.9, 15.66, '4'], ['3', 0, 0, 'V']]);
+                    let shotList= {{ jsonList|safe }} //TODO This is vulneratble to injections fix when we have time
+                    let range = {{ range|safe }}
+                    console.log(shotList)
+                    let myTarget = new DrawTarget('title',range,shotList);
                 </script>
             </div>
         <div class="col-lg-7 col-md-12">
