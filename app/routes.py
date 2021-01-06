@@ -10,6 +10,7 @@ from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 
+from datetime import datetime
 import numpy
 from matplotlib import pylab
 
@@ -70,7 +71,34 @@ def profile():
 
 @app.route('/overview')
 def profile_overview():
-    return render_template('students/profile_overview.html')
+    #stub for shooter ID passed to the overview
+    shooterID = 31
+
+    #database query from the shooter ID to find the stages. first loop gets the stages and creates a dictionary
+    # following loops gets the scores, adds them together and places them as the respective values
+    stages_query = Stage.query.filter_by(userID=shooterID).all()
+    info = {}
+    for i in range(len(stages_query)):
+        info[stages_query[i].id] = 0
+    for j in info:
+        shots_query = Shot.query.filter_by(stageID=j).all()
+        score = 0
+        for k in range(len(shots_query)):
+            score += (shots_query[k].score)
+        info[j] = score
+    times = []
+    scores = []
+    for l in info:
+        timestamp_query = Stage.query.filter_by(id=l).all()
+        for m in range(len(timestamp_query)):
+            times.append(timestamp_query[m].timestamp)
+        scores.append(info[l])
+    for n in range(len(times)):
+        times[n] = (times[n].strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
+    print(times)
+    print(scores)
+    times = json.dumps(times)
+    return render_template('students/profile_overview.html', dates=times, scores=scores)
 
 @app.route('/settings')
 def profile_settings():
