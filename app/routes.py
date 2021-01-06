@@ -30,7 +30,26 @@ def landing():
 
 @app.route('/target')
 def target_test():
-    return render_template('targetTest.html')
+    # This route takes an argument from url and uses it to query the databvase for
+    # the relevant shots and range information
+    stageID = request.args.get('stageID')
+    stage = Stage.query.filter_by(id=stageID).first()
+    if stage:
+        range = json.dumps(stage.rangeDistance)
+        shots = Shot.query.filter_by(stageID=stageID).all()
+        formattedList = []
+        num = 1
+        letter = ord("A")
+        for shot in shots:
+            if shot.sighter:
+                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score)])
+                letter += 1
+            else:
+                formattedList.append([str(num),shot.xPos,shot.yPos,str(shot.score)])
+                num += 1
+        jsonList = json.dumps(formattedList)
+        print(jsonList)
+    return render_template('targetTest.html',range=range, jsonList=jsonList)
 
 
 @login_required
@@ -98,14 +117,13 @@ def upload():
             files = request.files.getlist('file')
             count = 0
             for file in files:
-                bytes = file.read()
-                string = bytes.decode('utf-8')
-                data = json.loads(string)
-                stage = validateShots(data)
-                # Decodes a file from FileStorage format into json format, and then extracts relevant info
                 try:
-
-                      # Fixes up file to obtain relevant data and valid shots
+                    bytes = file.read()
+                    string = bytes.decode('utf-8')
+                    data = json.loads(string)
+                    stage = validateShots(data)
+                    # Decodes a file from FileStorage format into json format, and then extracts relevant info
+                    # Fixes up file to obtain relevant data and valid shots
                     stage['listID'] = count
                     stageList.append(stage)
                     # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
