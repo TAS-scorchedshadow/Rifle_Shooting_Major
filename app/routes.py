@@ -22,7 +22,6 @@ def index():
     #     return redirect(url_for('landing'))
     return render_template('index.html')
 
-
 @app.route('/landing')
 def landing():
     return render_template('landingPage.html')
@@ -54,6 +53,10 @@ def profile():
 def profile_overview():
     return render_template('students/profile_overview.html')
 
+@app.route('/settings')
+def profile_settings():
+    return render_template('students/profile_settings.html')
+
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -67,12 +70,14 @@ def upload():
             files = request.files.getlist('file')
             count = 0
             for file in files:
+                bytes = file.read()
+                string = bytes.decode('utf-8')
+                data = json.loads(string)
+                stage = validateShots(data)
                 # Decodes a file from FileStorage format into json format, and then extracts relevant info
                 try:
-                    bytes = file.read()
-                    string = bytes.decode('utf-8')
-                    data = json.loads(string)
-                    stage = validateShots(data)  # Fixes up file to obtain relevant data and valid shots
+
+                      # Fixes up file to obtain relevant data and valid shots
                     stage['listID'] = count
                     stageList.append(stage)
                     # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
@@ -85,12 +90,14 @@ def upload():
 
     else:
         stageList = json.loads(request.form["stageDump"])
+        print(stageList)
         for key in request.form:
             if "username." in key:
                 id = int(key[9:])
                 username = request.form[key]
                 stageList[id]['username'] = username
                 idFound = User.query.filter_by(username=username).first()
+                stageList[id]['userID'] = idFound.id
                 if idFound is None:
                     invalidList.append(stageList[id])
         if not invalidList:
@@ -101,15 +108,23 @@ def upload():
             # todo: handle uploading
             for item in stageList:
                 print(item)
-                stage = Stage(jsonFilename=item['id'], userID=item['username'], timestamp=item['time'],
-                              duration=item['duration'], groupSize=item['groupSize'],
-                              rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'], notes="")
-                # here I think stage needs to be uploaded then relocated for shots to be uploaded
-                id = None
-                for point in item['validShots']:
-                    shot = Shot(stageID=id, timestamp=point['ts'], xPos=point['x'], yPos=point['y'],
-                                score=point['score'], numV=point['Vscore'],
-                                sighter=point['sighter'])
+                try:
+                    stage = Stage(id=item['id'], userID=item['userID'],
+                                  timestamp=item['time'],
+                                  groupSize=item['groupSize'],
+                                  rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'], notes="")
+                    db.session.add(stage)
+                    # here I think stage needs to be uploaded then relocated for shots to be uploaded
+                    id = item['id']
+                    for point in item['validShots']:
+                        shot = Shot(stageID=id, timestamp=point['ts'],
+                                    xPos=point['x'], yPos=point['y'],
+                                    score=point['score'], numV=point['Vscore'],
+                                    sighter=point['sighter'])
+                        db.session.add(shot)
+                    db.session.commit()
+                except:
+                    print('DEBUG: Duplicate file')
             print("DEBUG: All usernames correct")
             stageList = []
         else:

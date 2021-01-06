@@ -13,6 +13,7 @@ def validateShots(data):
         x = individualShot['valid']
         if x:
             score = getScore(individualShot)
+            individualShot['ts'] = msToDatetime(individualShot['ts'])
             individualShot['score'] = score['score']
             individualShot['Vscore'] = score['Vscore']
             sighter = checkSighter(individualShot)
@@ -30,11 +31,10 @@ def validateShots(data):
     # Send all the relevant data to a new dictionary, newShoot
     newShoot['id'] = data['_id']
     newShoot['username'] = data['name']
-    firstShotTime = validShotList[0]['ts']              # time of last shot
+    firstShotTime = validShotList[0]['ts']              # time of first shot
     lastShotTime = validShotList[totalShots - 1]['ts']  # time of last shot
     newShoot['time'] = firstShotTime
-    newShoot['dateTime'] = msToDatetime(firstShotTime)
-    newShoot['duration'] = lastShotTime - firstShotTime
+    newShoot['dateTime'] = firstShotTime
     newShoot['groupSize'] = data['stats_group_size']
     newShoot['groupCentreX'] = data['stats_group_center']['x']
     newShoot['groupCentreY'] = data['stats_group_center']['y']
@@ -60,8 +60,15 @@ def shotStats(shoot):
 
 
 def msToDatetime(ms):
-    date = datetime.fromtimestamp(ms / 1000).strftime('%d/%m/%Y %H:%M')
+    date = datetime.utcfromtimestamp(ms / 1000).strftime('%Y-%m-%d %H:%M:%S')
     return date
+
+
+def strTimeDifference(str1,str2):
+    time1 = datetime.strptime(str1,'%Y-%m-%d %H:%M:%S')
+    time2 = datetime.strptime(str2, '%Y-%m-%d %H:%M:%S')
+    difference = time2 -time1
+    return str(difference)
 
 
 # Gets shot statistics
