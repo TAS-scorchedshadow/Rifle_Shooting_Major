@@ -13,5 +13,11 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://topsy.db.elephantsql.com:5432/</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="PARS Database" uuid="5984c9a4-c013-49f9-85ad-677eb2337d55">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-54-196-89-124.compute-1.amazonaws.com:5432/d593nprrsltblo</jdbc-url>
+    </data-source>
   </component>
 </project>
