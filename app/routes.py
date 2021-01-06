@@ -37,7 +37,6 @@ def target_test():
 @app.route('/profile')
 def profile():
     form = reportForm()
-
     yearStubAvgLine = [2018, 2019, 2020]
     scoreStubAvgLine = [5, 8, 17]
 

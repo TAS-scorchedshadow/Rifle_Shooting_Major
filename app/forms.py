@@ -65,9 +65,10 @@ class reportForm(FlaskForm):
     submit = SubmitField("Select")
 
 # -- Rishi Wig --
-class shooterSelect(FlaskForm):
-    team = SelectField("Team")
-    name = SelectField("Name")
+class graphSelect(FlaskForm):
+    line = SelectField('Stat', choices=[('Avg','Average'),('St dev', 'Standard Deviation')])
+    bar = SelectField('Stat', choices=[('Avg','Average'),('St dev', 'Standard Deviation')])
+    submit = SubmitField('ENTER')
 
 # # Forms for comparisons
 # # -- Rishi Wig --

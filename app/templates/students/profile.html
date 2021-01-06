@@ -56,7 +56,37 @@
         <!-- ChartJS for the attendance doughnut  -->
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
+            <div class="card shadow border-0 justify-content-center">
+                <div class = "card-title text-center">
+                    <h2>Stats</h2>
+                </div>
+                <div class = "card-body">
+                    <p>Mean (x̅): 3.0</p>
+                    <p>Median (x̃): 5.0</p>
+                    <p>Standard Deviation (σx): 2.0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow border-0 justify-content-center">
+                <div class = "card-title text-center">
+                    <h2>Equipment</h2>
+                </div>
+                <div class = "card-body">
+                    <p>E1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
         <canvas id="attendance"></canvas>
             <script>
                 var ctx = document.getElementById('attendance').getContext('2d');
@@ -136,26 +166,12 @@
                         });
             </script>
         </div>
-
-        <div class="col-md-2">
-            <div class="card shadow border-0 justify-content-center">
-                <div class = "card-title text-center">
-                    <h2>Equipment</h2>
-                </div>
-                <div class = "card-body">
-                    <p>E1</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
-<br>
-<br>
-
 <div class="container">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-6">
             <canvas id="lineAvg"></canvas>
                 <script>
                     var ctx = document.getElementById('lineAvg').getContext('2d');
@@ -202,7 +218,7 @@
         </div>
 
 
-        <div class="col-md-5">
+        <div class="col-md-6">
             <canvas id="barAvg"></canvas>
                 <script>
                     var ctx = document.getElementById('barAvg').getContext('2d');
@@ -252,21 +268,111 @@
                             });
                 </script>
         </div>
-
-
-        <div class="col-md-2">
-            <div class="card shadow border-0 justify-content-center">
-                <div class = "card-title text-center">
-                    <h2>Stats</h2>
-                </div>
-                <div class = "card-body">
-                    <p>Mean (x̅): 3.0</p>
-                    <p>Median (x̃): 5.0</p>
-                    <p>Standard Deviation (σx): 2.0</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="lineSTDEV"></canvas>
+                <script>
+                    var ctx = document.getElementById('lineSTDEV').getContext('2d');
+                    console.log(ctx);
+                    var barChart = new Chart(ctx, {
+                        type: "line",
+                        data: {
+                                labels: {{ label }},
+                                datasets: [{
+                                    label: 'Averages',
+                                    backgroundColor: 'rgba(255,0,0,0)',
+                                    borderColor: 'rgba(255,0,0,1)',
+                                    borderWidth: 1,
+                                    fill: false,
+                                    data: {{ data }}
+                                }, {
+                                    label: 'Trend',
+                                    backgroundColor: "rgba(0,0,255,0)",
+                                    borderColor: 'rgba(0,0,255,1)',
+                                    borderWidth: 1,
+                                    fill: false,
+                                    data: {{ trend }}
+                                }]},
+                            options: {
+                                    responsive: true,
+                                    title: {
+                                            display: true,
+                                            text: 'ot Line'
+                                        },
+                                    plugins: {
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            min: 0,
+                                            ticks: {
+                                                min: 0,
+                                                beginAtZero:true
+                                            }
+                                        }]
+                                    }
+                            }
+                            });
+                </script>
+        </div>
+
+
+        <div class="col-md-6">
+            <canvas id="barSTDEV"></canvas>
+                <script>
+                    var ctx = document.getElementById('barSTDEV').getContext('2d');
+                    console.log(ctx);
+                    var barChart = new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                                labels: ['300m', '400m', '500m', '600m', '700m', '800m', '500y', '600y', 'Overall'],
+                                datasets: [{
+                                    label: '2018',
+                                    backgroundColor: 'rgba(255,0,0,0.5)',
+                                    borderColor: 'rgba(255,0,0,1)',
+                                    borderWidth: 1,
+                                    data: [1, 2, 3, 4, 5, 6, 7, 8 , 9]
+                                }, {
+                                    label: '2019',
+                                    backgroundColor: "rgba(0,0,255,0.5)",
+                                    borderColor: 'rgba(0,0,255,1)',
+                                    borderWidth: 1,
+                                    data: [9,8,7,6,5,4,3,2,1]
+                                },
+                                    {
+                                        label: '2020',
+                                    backgroundColor: 'rgba(0,255,0,0.5)',
+                                    borderColor: 'rgba(0,255,0,1)',
+                                    borderWidth: 1,
+                                    data: [1, 3, 5, 7, 9, 11, 9, 7, 5]
+                                    }]},
+                            options: {
+                                    responsive: true,
+                                title: {
+                                            display: true,
+                                            text: 'NOT Bar'
+                                        },
+                                    plugins: {
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            min: 0,
+                                            ticks: {
+                                                min: 0,
+                                                beginAtZero:true
+                                            }
+                                        }]
+                                    }
+                            }
+                            });
+                </script>
+        </div>
+
+
+
+    </div>
+</div>
 {% endblock %}
