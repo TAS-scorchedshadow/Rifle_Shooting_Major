@@ -79,8 +79,11 @@ def profile_overview():
 
     # database query from the shooter ID to find the stages. first loop gets the stages and creates a dictionary
     # following loops gets the scores, adds them together and places them as the respective values
+    # database query to get times and corroborate with the scores from the dictionary in the previous function
     stages_query = Stage.query.filter_by(userID=shooterID).all()
     info = {}
+    times = []
+    scores = []
     for i in range(len(stages_query)):
         info[stages_query[i].id] = 0
     for j in info:
@@ -89,24 +92,33 @@ def profile_overview():
         for k in range(len(shots_query)):
             score += (shots_query[k].score)
         info[j] = score
-    times = []
-    scores = []
-    for l in info:
-        timestamp_query = Stage.query.filter_by(id=l).all()
+        timestamp_query = Stage.query.filter_by(id=j).all()
         for m in range(len(timestamp_query)):
             times.append(timestamp_query[m].timestamp)
-        scores.append(info[l])
+        scores.append(info[j])
+
+    # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
     for n in range(len(times)):
         times[n] = (times[n].strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
-    print(times)
-    print(scores)
     times = json.dumps(times)
     return render_template('students/profile_overview.html', dates=times, scores=scores)
 
 
 @app.route('/settings')
 def profile_settings():
-    return render_template('students/profile_settings.html')
+    shooterID =31
+
+    info = {}
+    equipment_query = User.query.filter_by(id=shooterID).all()
+    for i in range(len(equipment_query)):
+        info["Glove"] = equipment_query[i].glove
+        info["Hat"] = equipment_query[i].hat
+        info["Jacket"] = equipment_query[i].jacket
+        info["Sight Hole"] = equipment_query[i].sightHole
+        info["Sling Hole"] = equipment_query[i].slingHole
+        info["Sling Point"] = equipment_query[i].slingPoint
+
+    return render_template('students/profile_settings.html', info=info)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
