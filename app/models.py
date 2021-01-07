@@ -24,9 +24,20 @@ class User(UserMixin, db.Model):
     isActive = db.Column(db.Boolean, default=False)
     lastActive = db.Column(db.DateTime)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
+    #Gear Settings
+    jacket = db.Column(db.String(10))
+    glove = db.Column(db.String(10))
+    hat = db.Column(db.String(10))
+    slingHole = db.Column(db.String(10))
+    slingPoint = db.Column(db.String(10))
+    butOut = db.Column(db.String(10))
+    butUp = db.Column(db.String(10))
+    ringSize = db.Column(db.String(10))
+    sightHole = db.Column(db.String(10))
+
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+            return '<User {}>'.format(self.username)
 
     def generate_username(self):
         # Must have fName and sName initialised
