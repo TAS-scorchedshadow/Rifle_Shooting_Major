@@ -21,7 +21,7 @@ import json
 def index():
     # if not current_user.is_authenticated:
     #     return redirect(url_for('landing'))
-    return render_template('index.html')
+    return render_template('gearSettings.html')
 
 @app.route('/landing')
 def landing():
@@ -299,6 +299,21 @@ def admin():
         except:
             print('error')
             return jsonify({'error': 'Invalid State'})
+
+
+@app.route('/getGear',methods=['POST'])
+def getGear():
+    #Function provides data for ajax request in gearSettings.js
+    print('reached')
+    userID = request.get_data().decode("utf-8")
+    print(userID)
+    user = User.query.filter_by(id=userID).first()
+    if user: #Handles if userID parameter is given but is not found in database
+        return jsonify({'jacket': user.jacket,'glove':user.glove,
+                        'hat':user.hat, 'slingHole': user.slingHole, 'slingLength': user.slingPoint,
+                        'butOut':user.butOut, 'butUp':user.butUp, 'ringSize':user.ringSize,
+                        'sightHole': user.sightHole})
+    return jsonify({'error': 'userID'})
 
 
 @app.route('/logout')
