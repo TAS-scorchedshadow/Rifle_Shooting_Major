@@ -361,10 +361,41 @@ def getShots():
     userID = loadedData[0]
     # numLoaded are the number of tables already loaded
     numLoaded = loadedData[1]
-    stage = Stage.query.filter_by(userID=userID).all()
-    testList = ['1', '2', '3', '4', '5', '6']
-    print(len(testList[:4]))
-    return jsonify('success')
+    print(numLoaded)
+    stages = Stage.query.filter_by(userID=userID).all()[numLoaded: numLoaded + 5]
+    stagesList = []
+    for stage in stages:
+        shots = Shot.query.filter_by(stageID=stage.id).all()
+        scores = {}
+        totalScore = 0
+        num = 1
+        letter = ord("A")
+        shot_list = []
+        for shot in shots:
+            if shot.sighter:
+                scores[chr(letter)] = shot.score
+                letter += 1
+            else:
+                scores[str(num)] = shot.score
+                num += 1
+            totalScore += shot.score
+            shot_list.append(shot.score)
+        std = round(numpy.std(shot_list), 1)
+        duration = str(shots[-1].timestamp - shots[1].timestamp)
+        duration = duration.split(':')
+        # str(int()) is done to remove the zero in single digit numbers
+        duration = '{}m {}s'.format(str(int(duration[1])), str(int(duration[2])))
+        # TODO add weather
+        stagesList.append({'scores': scores,
+                           'totalScore': totalScore,
+                           'groupSize': round(stage.groupSize, 1),
+                           'rangeDistance': '300m',
+                           'timestamp': stage.timestamp,
+                           'std': std,
+                           'duration': duration
+                           })
+    print(stagesList)
+    return jsonify(stagesList)
     # stage = Stage.query.filter_by(userID=userID).all()
 
 
