@@ -9,17 +9,21 @@
                 <div class="card-body shadow">
                     <h5 class="card-title">Gear Settings</h5>
                     <table class="table table-bordered table-sm table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <td>Item</td>
+                                <td>Details</td>
+                                <td>School/Self</td>
+                            </tr>
+                        </thead>
+                        {% for key, value in info.items() %}
                         <tbody>
                             <tr>
-                                <td>Jacket Size</td>
-                                <td>158</td>
-                                <td></td>
+                                <td>{{ key }}</td>
+                                <td>{{ value }}</td>
+                                <td>UNKNOWN</td>
                             </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
