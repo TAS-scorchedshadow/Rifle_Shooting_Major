@@ -151,16 +151,16 @@ main {
     height: 100%;
 }
 
-.nav-item {
+.Snav-item {
     width: 100%;
 }
 
 
-.nav-item:last-child {
+.Snav-item:last-child {
     margin-top: auto;
 }
 
-.nav-link {
+.Snav-link {
     display: flex;
     align-items: center;
     height: 5rem;
@@ -172,7 +172,7 @@ main {
     transition: var(--transition-speed);
 }
 
-.nav-link i {
+.Snav-link i {
     padding-left: 1rem;
     font-size: 3rem;
     width: 4rem;
@@ -185,7 +185,7 @@ main {
     display: inline;
 }
 
-.nav-link:hover {
+.Snav-link:hover {
     filter: grayscale(0%) opacity(1);
     background: $bg-secondary;
     color: $text-secondary;

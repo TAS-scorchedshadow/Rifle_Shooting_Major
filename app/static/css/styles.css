@@ -10022,33 +10022,35 @@ main {
   height: 100%;
 }
 
-.nav-item {
-  width: 100%;
+.Snav-item {
+    width: 100%;
 }
 
-.nav-item:last-child {
-  margin-top: auto;
+
+.Snav-item:last-child {
+    margin-top: auto;
 }
 
-.nav-link {
-  display: flex;
-  align-items: center;
-  height: 5rem;
-  color: #b6b6b6;
-  text-decoration: none;
-  padding: 0;
-  margin: 0;
-  filter: grayscale(100%);
-  transition: var(--transition-speed);
+.Snav-link {
+    display: flex;
+    align-items: center;
+    height: 5rem;
+    color: var(--text);
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    filter: grayscale(100%);
+    transition: var(--transition-speed);
 }
 
-.nav-link i {
-  padding-left: 1rem;
-  font-size: 3rem;
-  width: 4rem;
-  min-width: 4rem;
-  text-align: center;
+.Snav-link i {
+    padding-left: 1rem;
+    font-size: 3rem;
+    width: 4rem;
+    min-width: 4rem;
+    text-align: center;
 }
+
 
 .linked-text {
   margin-left: 1.5rem;

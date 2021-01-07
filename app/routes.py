@@ -21,7 +21,7 @@ import json
 def index():
     # if not current_user.is_authenticated:
     #     return redirect(url_for('landing'))
-    return render_template('gearSettings.html')
+    return render_template('index.html')
 
 
 @app.route('/landing')
