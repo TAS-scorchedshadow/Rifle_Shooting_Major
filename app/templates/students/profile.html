@@ -2,377 +2,292 @@
 {% set active_page = "profile" %}
 {% block page_title %} Profile {% endblock %}
 {% block page_content %}
-
 <!-- Profile page to view shooter's performance -->
-<!-- Rishi -->
-
+<!-- Rishi and Henry-->
+    <script
+  src="https://code.jquery.com/jquery-3.5.1.min.js"
+  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+  crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <!-- ChartJS modules -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-<script
-  src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-  crossorigin="anonymous"></script>
-
-<!-- Heading container which holds shooter's info inside the table -->
-  <div class="jumbotron jumbotron-fluid">
-    <div class="container justify-content-left text-left">
-        <div class="row">
-            <div style="alignment: center">
-                <div class="col-3" align="left">
-                    <div class="card shadow border-0 justify-content-center" style="width: 11.5rem">
-                        <div class = "card-title text-center">
-                            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="width:100%">
-                            <p>Dylan Huynh (7M)</p>
+<style>
+body {
+    overflow-y: scroll
+}
+</style>
+    <div class="container-fluid" style="padding-bottom: 50px">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="row">
+                <div class="col-2 pl-5">
+                    <div class="card">
+                        <img class="card-img-top" src=".\.\static\images\blank-profile.png" alt="Card image cap">
+                        <div class="card-body">
+                            <h4 class="card-text text-center">First Last</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="col-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">SID</th>
+                                    <th scope="col">DOB</th>
+                                    <th scope="col">Rifle Serial</th>
+                                    <th scope="col">Student ID</th>
+                                    <th scope="col">Grade</th>
+                                    <th scope="col">Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0000</td>
+                                    <td>01/02/2003</td>
+                                    <td>01234</td>
+                                    <td>0478593402</td>
+                                    <td>9</td>
+                                    <td>example@someemail.com</td>
+                                </tr>
+                            </tbody>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Permit</th>
+                                    <th scope="col">Expiry</th>
+                                    <th scope="col">Sharing</th>
+                                    <th scope="col">Mobile</th>
+                                    <th scope="col">Roll Class</th>
+                                    <th scope="col">Mobile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Minors</td>
+                                    <td>01/02/2021</td>
+                                    <td>Yes</td>
+                                    <td>0478593402</td>
+                                    <td>9E</td>
+                                    <td>0478593402</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="rifle-settings-tab" data-toggle="tab" href="#rifle-settings" role="tab" aria-controls="rifle-settings" aria-selected="false">Rifle Settings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="compare-tab" data-toggle="tab" href="#compare" role="tab" aria-controls="compare" aria-selected="false">Compare</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                <div class="container">
+                    <div class="col-6">
+                        <!-- Henry's entry to create Recent Shoots panel  -->
+                    </div>
+                    <div class="col-6>">
+                        <div class="row">
+                            <div class="cols-3">
+                                <div class="card shadow border-0 justify-content-center">
+                                        <div class = "card-title text-center">
+                                            <h2>Stats</h2>
+                                        </div>
+                                        <div class = "card-body">
+                                            <p>Mean (x̅): 3.0</p>
+                                            <p>Median (x̃): 5.0</p>
+                                            <p>Standard Deviation (σx): 2.0</p>
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="cols-3">
+                                <canvas id="attendance"></canvas>
+                                <script>
+                                    var ctx = document.getElementById('attendance').getContext('2d');
+                                    console.log(ctx);
+                                    var attendance = new Chart(ctx, {
+                                                type: 'doughnut',
+                                                data: {
+                                                    datasets: [{
+                                                        data: [155, 13],
+                                                        backgroundColor: [
+                                                            'rgba(91, 188, 228, 0.85)',
+                                                            'rgba(139, 69, 19, 0.85)',
+                                                        ],
+                                                        label: 'Dataset 1'
+                                                    }],
+                                                    labels: [
+                                                        'Attended',
+                                                        'Not Attended'
+                                                    ]
+                                                },
+                                                options: {
+                                                    responsive: true,
+                                                    title: {
+                                                            display: true,
+                                                            text: 'Attendance'
+                                                        },
+                                                    plugins: {
+                                                        legend: {
+                                                            position: 'top',
+                                                        },
+                                                    },
+                                                    animation: {
+                                                        animateScale: true,
+                                                        animateRotate: true
+                                                    }
+                                                }
+                                                });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <meta id="my-data" data-dates="{{dates}}">
+                            <canvas id="lineSTDEV"></canvas>
+                                    <script>
+                                        var ctx = document.getElementById('lineSTDEV').getContext('2d');
+                                        var dateData = $('#my-data').data('dates');
+                                        console.log(dateData);
+                                        var barChart = new Chart(ctx, {
+                                            type: "line",
+                                            data: {
+                                                    labels: dateData,
+                                                    datasets: [{
+                                                        label: 'Averages',
+                                                        backgroundColor: 'rgba(255,0,0,0)',
+                                                        borderColor: 'rgba(255,0,0,1)',
+                                                        borderWidth: 1,
+                                                        fill: false,
+                                                        data: {{ scores }}
+                                                    }]},
+                                                options: {
+                                                        responsive: true,
+                                                        title: {
+                                                                display: true,
+                                                                text: 'ot Line'
+                                                            },
+                                                        plugins: {
+                                                        },
+                                                        scales: {
+                                                            yAxes: [{
+                                                                min: 0,
+                                                                ticks: {
+                                                                    min: 0,
+                                                                    beginAtZero:true
+                                                                }
+                                                            }]
+                                                        }
+                                                }
+                                                });
+                                    </script>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col col-md-9.5">
-                <table class="table table-striped table-bordered table-sm">
-                    <tbody>
-                        <tr>
-                            <td>SID (Shooter): 00000</td>
-                            <td>DOB: True</td>
-                            <td>Rifle Serial: 0000</td>
-                            <td>Student ID: 435921302 </td>
-                            <td>Grade: A </td>
-                            <td>Email: generic.email@domain.com</td>
-                        </tr>
-                        <tr>
-                            <td>Permit: N/A</td>
-                            <td>Expiry: 01/01/2025</td>
-                            <td>Sharing: Yes?</td>
-                            <td>Mobile: 04-- --- ---</td>
-                            <td>Roll Class: 7M</td>
-                            <td>Mobile: 04-- --- ---</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="tab-pane fade" id="rifle-settings" role="tabpanel" aria-labelledby="rifle-settings-tab">
+                <div class="container">
+                <div class="row">
+                    <div class="col-6">
+                            <div class="card-body shadow">
+                                <h5 class="card-title">Gear Settings</h5>
+                                <table class="table table-bordered table-sm table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td>Jacket Size</td>
+                                            <td>158</td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                    <div class="col-6">
+                            <div class="card-body shadow">
+                                <h5 class="card-title">Elevation Settings</h5>
+                                <table class="table table-bordered table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <td>Range</td>
+                                            <td>PPU Elevation</td>
+                                            <td>ADI Elevation</td>
+                                            <td>Foresight Ring</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>300m</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>400m</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>500m</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>600m</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>700m</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>800m</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>500y</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>600y</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="tab-pane fade" id="compare" role="tabpanel" aria-labelledby="compare-tab">
+                Compare
             </div>
         </div>
     </div>
-  </div>
-
-        <!-- ChartJS for the attendance doughnut  -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow border-0 justify-content-center">
-                <div class = "card-title text-center">
-                    <h2>Stats</h2>
-                </div>
-                <div class = "card-body">
-                    <p>Mean (x̅): 3.0</p>
-                    <p>Median (x̃): 5.0</p>
-                    <p>Standard Deviation (σx): 2.0</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card shadow border-0 justify-content-center">
-                <div class = "card-title text-center">
-                    <h2>Equipment</h2>
-                </div>
-                <div class = "card-body">
-                    <p>E1</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<br>
-<br>
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-        <canvas id="attendance"></canvas>
-            <script>
-                var ctx = document.getElementById('attendance').getContext('2d');
-                console.log(ctx);
-                var attendance = new Chart(ctx, {
-                            type: 'doughnut',
-                            data: {
-                                datasets: [{
-                                    data: [155, 13],
-                                    backgroundColor: [
-                                        'rgba(91, 188, 228, 0.85)',
-                                        'rgba(139, 69, 19, 0.85)',
-                                    ],
-                                    label: 'Dataset 1'
-                                }],
-                                labels: [
-                                    'Attended',
-                                    'Not Attended'
-                                ]
-                            },
-                            options: {
-                                responsive: true,
-                                title: {
-                                        display: true,
-                                        text: 'Attendance'
-                                    },
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                },
-                                animation: {
-                                    animateScale: true,
-                                    animateRotate: true
-                                }
-                            }
-                            });
-            </script>
-        </div>
-
-
-        <!-- ChartJS radar to show shooter's skill -->
-        <div class="col-md-6">
-        <canvas id="radar"></canvas>
-            <script>
-                var ctx = document.getElementById('radar').getContext('2d');
-                console.log(ctx);
-                var radar = new Chart(ctx, {
-                    type: 'radar',
-                            data: {
-                                labels: ['Consistency', 'Speed', 'xDrift', 'yDrift', 'Score'],
-                                datasets: [{
-                                    label: 'Student Name',
-                                    backgroundColor: 'rgba(91, 188, 228, 0.2)',
-                                    borderColor: 'rgba(91, 188, 228, 1)',
-                                    data: [7, 8, 5, 9, 6]
-                }]},
-                            options: {
-                                title: {
-                                        display: true,
-                                        text: 'Performance'
-                                    },
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                },
-                                scale: {
-                                    beginAtZero: true,
-                                    ticks: {
-                            min: 0,
-                            //max: 100,
-                            //stepSize: 10
-                        }
-                                }
-                            }
-                        });
-            </script>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <canvas id="lineAvg"></canvas>
-                <script>
-                    var ctx = document.getElementById('lineAvg').getContext('2d');
-                    console.log(ctx);
-                    var barChart = new Chart(ctx, {
-                        type: "line",
-                        data: {
-                                labels: {{ label }},
-                                datasets: [{
-                                    label: 'Averages',
-                                    backgroundColor: 'rgba(255,0,0,0)',
-                                    borderColor: 'rgba(255,0,0,1)',
-                                    borderWidth: 1,
-                                    fill: false,
-                                    data: {{ data }}
-                                }, {
-                                    label: 'Trend',
-                                    backgroundColor: "rgba(0,0,255,0)",
-                                    borderColor: 'rgba(0,0,255,1)',
-                                    borderWidth: 1,
-                                    fill: false,
-                                    data: {{ trend }}
-                                }]},
-                            options: {
-                                    responsive: true,
-                                    title: {
-                                            display: true,
-                                            text: 'Averages Line'
-                                        },
-                                    plugins: {
-                                    },
-                                    scales: {
-                                        yAxes: [{
-                                            min: 0,
-                                            ticks: {
-                                                min: 0,
-                                                beginAtZero:true
-                                            }
-                                        }]
-                                    }
-                            }
-                            });
-                </script>
-        </div>
-
-
-        <div class="col-md-6">
-            <canvas id="barAvg"></canvas>
-                <script>
-                    var ctx = document.getElementById('barAvg').getContext('2d');
-                    console.log(ctx);
-                    var barChart = new Chart(ctx, {
-                        type: "bar",
-                        data: {
-                                labels: ['300m', '400m', '500m', '600m', '700m', '800m', '500y', '600y', 'Overall'],
-                                datasets: [{
-                                    label: '2018',
-                                    backgroundColor: 'rgba(255,0,0,0.5)',
-                                    borderColor: 'rgba(255,0,0,1)',
-                                    borderWidth: 1,
-                                    data: [1, 2, 3, 4, 5, 6, 7, 8 , 9]
-                                }, {
-                                    label: '2019',
-                                    backgroundColor: "rgba(0,0,255,0.5)",
-                                    borderColor: 'rgba(0,0,255,1)',
-                                    borderWidth: 1,
-                                    data: [9,8,7,6,5,4,3,2,1]
-                                },
-                                    {
-                                        label: '2020',
-                                    backgroundColor: 'rgba(0,255,0,0.5)',
-                                    borderColor: 'rgba(0,255,0,1)',
-                                    borderWidth: 1,
-                                    data: [1, 3, 5, 7, 9, 11, 9, 7, 5]
-                                    }]},
-                            options: {
-                                    responsive: true,
-                                title: {
-                                            display: true,
-                                            text: 'Averages Bar'
-                                        },
-                                    plugins: {
-                                    },
-                                    scales: {
-                                        yAxes: [{
-                                            min: 0,
-                                            ticks: {
-                                                min: 0,
-                                                beginAtZero:true
-                                            }
-                                        }]
-                                    }
-                            }
-                            });
-                </script>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="row">
-        <div class="col-md-6">
-            <canvas id="lineSTDEV"></canvas>
-                <script>
-                    var ctx = document.getElementById('lineSTDEV').getContext('2d');
-                    console.log(ctx);
-                    var barChart = new Chart(ctx, {
-                        type: "line",
-                        data: {
-                                labels: {{ label }},
-                                datasets: [{
-                                    label: 'Averages',
-                                    backgroundColor: 'rgba(255,0,0,0)',
-                                    borderColor: 'rgba(255,0,0,1)',
-                                    borderWidth: 1,
-                                    fill: false,
-                                    data: {{ data }}
-                                }, {
-                                    label: 'Trend',
-                                    backgroundColor: "rgba(0,0,255,0)",
-                                    borderColor: 'rgba(0,0,255,1)',
-                                    borderWidth: 1,
-                                    fill: false,
-                                    data: {{ trend }}
-                                }]},
-                            options: {
-                                    responsive: true,
-                                    title: {
-                                            display: true,
-                                            text: 'ot Line'
-                                        },
-                                    plugins: {
-                                    },
-                                    scales: {
-                                        yAxes: [{
-                                            min: 0,
-                                            ticks: {
-                                                min: 0,
-                                                beginAtZero:true
-                                            }
-                                        }]
-                                    }
-                            }
-                            });
-                </script>
-        </div>
-
-
-        <div class="col-md-6">
-            <canvas id="barSTDEV"></canvas>
-                <script>
-                    var ctx = document.getElementById('barSTDEV').getContext('2d');
-                    console.log(ctx);
-                    var barChart = new Chart(ctx, {
-                        type: "bar",
-                        data: {
-                                labels: ['300m', '400m', '500m', '600m', '700m', '800m', '500y', '600y', 'Overall'],
-                                datasets: [{
-                                    label: '2018',
-                                    backgroundColor: 'rgba(255,0,0,0.5)',
-                                    borderColor: 'rgba(255,0,0,1)',
-                                    borderWidth: 1,
-                                    data: [1, 2, 3, 4, 5, 6, 7, 8 , 9]
-                                }, {
-                                    label: '2019',
-                                    backgroundColor: "rgba(0,0,255,0.5)",
-                                    borderColor: 'rgba(0,0,255,1)',
-                                    borderWidth: 1,
-                                    data: [9,8,7,6,5,4,3,2,1]
-                                },
-                                    {
-                                        label: '2020',
-                                    backgroundColor: 'rgba(0,255,0,0.5)',
-                                    borderColor: 'rgba(0,255,0,1)',
-                                    borderWidth: 1,
-                                    data: [1, 3, 5, 7, 9, 11, 9, 7, 5]
-                                    }]},
-                            options: {
-                                    responsive: true,
-                                title: {
-                                            display: true,
-                                            text: 'NOT Bar'
-                                        },
-                                    plugins: {
-                                    },
-                                    scales: {
-                                        yAxes: [{
-                                            min: 0,
-                                            ticks: {
-                                                min: 0,
-                                                beginAtZero:true
-                                            }
-                                        }]
-                                    }
-                            }
-                            });
-                </script>
-        </div>
-
-
-
-    </div>
-</div>
 {% endblock %}

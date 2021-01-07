@@ -15,62 +15,63 @@
         <!-- Henry's entry to create Recent Shoots panel  -->
     </div>
     <div class="col-6>">
-    <div class="row">
-        <div class="col-3">
-            <div class="card shadow border-0 justify-content-center">
-                    <div class = "card-title text-center">
-                        <h2>Stats</h2>
-                    </div>
-                    <div class = "card-body">
-                        <p>Mean (x̅): 3.0</p>
-                        <p>Median (x̃): 5.0</p>
-                        <p>Standard Deviation (σx): 2.0</p>
-                    </div>
+        <div class="row">
+            <div class="cols-3">
+                <div class="card shadow border-0 justify-content-center">
+                        <div class = "card-title text-center">
+                            <h2>Stats</h2>
+                        </div>
+                        <div class = "card-body">
+                            <p>Mean (x̅): 3.0</p>
+                            <p>Median (x̃): 5.0</p>
+                            <p>Standard Deviation (σx): 2.0</p>
+                        </div>
+                </div>
+            </div>
+            <div class="cols-3">
+                <canvas id="attendance"></canvas>
+                <script>
+                    var ctx = document.getElementById('attendance').getContext('2d');
+                    console.log(ctx);
+                    var attendance = new Chart(ctx, {
+                                type: 'doughnut',
+                                data: {
+                                    datasets: [{
+                                        data: [155, 13],
+                                        backgroundColor: [
+                                            'rgba(91, 188, 228, 0.85)',
+                                            'rgba(139, 69, 19, 0.85)',
+                                        ],
+                                        label: 'Dataset 1'
+                                    }],
+                                    labels: [
+                                        'Attended',
+                                        'Not Attended'
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    title: {
+                                            display: true,
+                                            text: 'Attendance'
+                                        },
+                                    plugins: {
+                                        legend: {
+                                            position: 'top',
+                                        },
+                                    },
+                                    animation: {
+                                        animateScale: true,
+                                        animateRotate: true
+                                    }
+                                }
+                                });
+                </script>
             </div>
         </div>
-        <div class="col-3">
-            <canvas id="attendance"></canvas>
-            <script>
-                var ctx = document.getElementById('attendance').getContext('2d');
-                console.log(ctx);
-                var attendance = new Chart(ctx, {
-                            type: 'doughnut',
-                            data: {
-                                datasets: [{
-                                    data: [155, 13],
-                                    backgroundColor: [
-                                        'rgba(91, 188, 228, 0.85)',
-                                        'rgba(139, 69, 19, 0.85)',
-                                    ],
-                                    label: 'Dataset 1'
-                                }],
-                                labels: [
-                                    'Attended',
-                                    'Not Attended'
-                                ]
-                            },
-                            options: {
-                                responsive: true,
-                                title: {
-                                        display: true,
-                                        text: 'Attendance'
-                                    },
-                                plugins: {
-                                    legend: {
-                                        position: 'top',
-                                    },
-                                },
-                                animation: {
-                                    animateScale: true,
-                                    animateRotate: true
-                                }
-                            }
-                            });
-            </script>
-        </div>
     </div>
-    <div class="row">
-        <div class="col-6">
+    <div class="col-6">
+        <div class="row">
             <meta id="my-data" data-dates="{{dates}}">
             <canvas id="lineSTDEV"></canvas>
                     <script>
@@ -111,5 +112,6 @@
                     </script>
         </div>
     </div>
+</div>
 
 {% endblock %}
