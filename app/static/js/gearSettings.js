@@ -2,6 +2,15 @@ $( document ).ready(function() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const userID = urlParams.get('userID')
+    $( "#gearTable tbody" ).on( "change", "input", function() {
+        var fieldVal = $( this ).val();
+        var equipment = $( this ).attr('name');
+        $.ajax({
+            type:"POST",
+            url: "/setGear",
+            data: JSON.stringify([userID,equipment,fieldVal])
+        })
+    });
     loadTable(userID)
     function loadTable(user){
         if (userID != null){
@@ -14,9 +23,7 @@ $( document ).ready(function() {
                     console.log(data)
                     for (var key in data) {
                         var value = data[key]
-                        console.log(key)
-                        console.log(value)
-                        var htmlstring = `<tr><td>`+key+`</td><td><input type="test" name="` + key + `" value=` + value + `></td></tr>`
+                        var htmlstring = `<tr><td>`+key+`</td><td><input type="test" id="cD" class="ajaxField" name="` + key + `" value=` + value + `></td></tr>`
                         $("#gearTable").append(htmlstring);
                     }
 
