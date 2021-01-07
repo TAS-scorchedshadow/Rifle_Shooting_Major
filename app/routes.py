@@ -21,7 +21,7 @@ import json
 def index():
     # if not current_user.is_authenticated:
     #     return redirect(url_for('landing'))
-    return render_template('index.html')
+    return render_template('recentShots.html')
 
 
 @app.route('/landing')
@@ -350,8 +350,22 @@ def setGear():
         # e.g. user.sightHole = "5"
         setattr(user, field, value)
         db.session.commit()
-        return jsonify('"success')
+        return jsonify('success')
     return jsonify({'error': 'userID'})
+
+@app.route('/getShots', methods=['POST'])
+def getShots():
+    data = request.get_data()
+    loadedData = json.loads(data)
+    print(loadedData)
+    userID = loadedData[0]
+    # numLoaded are the number of tables already loaded
+    numLoaded = loadedData[1]
+    stage = Stage.query.filter_by(userID=userID).all()
+    testList = ['1', '2', '3', '4', '5', '6']
+    print(len(testList[:4]))
+    return jsonify('success')
+    # stage = Stage.query.filter_by(userID=userID).all()
 
 
 @app.route('/logout')
