@@ -24,48 +24,48 @@
         <nav class="sidebar">
             <u1 class="sidebar-nav">
                 <li class="logo">
-            <a href="#" class="nav-link">
+            <a href="#" class="Snav-link">
               <span class="link-text logo-text">SAP</span>
             </a>
           </li>
-                <li class="nav-item">
-                    <a href="/" class = "nav-link">
+                <li class="Snav-item">
+                    <a href="/" class = "Snav-link">
                         <i class="fas fa-home"></i>
                         <span class="linked-text">Home</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/profile" class = "nav-link">
+                <li class="Snav-item">
+                    <a href="/profile?userID={{ current_user.id }}" class = "Snav-link">
                         <i class="fas fa-user"></i>
                         <span class="linked-text">Profile</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/target" class = "nav-link">
+                <li class="Snav-item">
+                    <a href="/target" class = "Snav-link">
                         <i class="fas fa-bullseye"></i>
                         <span class="linked-text">Target</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/userList" class = "nav-link">
+                <li class="Snav-item">
+                    <a href="/userList" class = "Snav-link">
                         <i class="fas fa-user"></i>
                         <span class="linked-text">User List</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/upload" class = "nav-link">
+                <li class="Snav-item">
+                    <a href="/upload" class = "Snav-link">
                         <i class="fas fa-upload"></i>
                         <span class="linked-text">Upload</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="Snav-item">
                     {% if current_user.is_authenticated %}
-                        <a href="/logout" class = "nav-link">
+                        <a href="/logout" class = "Snav-link">
                             <i class="fas fa-sign-out-alt"></i>
                             <span class="linked-text">Sign Out</span>
                         </a>
                     {% else %}
-                    <a href="/login" class = "nav-link">
+                    <a href="/login" class = "Snav-link">
                         <i class="fas fa-sign-in-alt"></i>
                         <span class="linked-text">Sign In</span>
                     </a>
