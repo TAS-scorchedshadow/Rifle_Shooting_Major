@@ -362,7 +362,7 @@ def getShots():
     # numLoaded are the number of tables already loaded
     numLoaded = loadedData[1]
     print(numLoaded)
-    stages = Stage.query.filter_by(userID=userID).all()[numLoaded: numLoaded + 5]
+    stages = Stage.query.filter_by(userID=userID).all()[numLoaded: numLoaded + 3]
     stagesList = []
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()
