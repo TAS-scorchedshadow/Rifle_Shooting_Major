@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="d593nprrsltblo@ec2-54-196-89-124.compute-1.amazonaws.com" uuid="1b0dcc35-a12b-42e2-ad01-5c8a8986a4ef">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://ec2-54-196-89-124.compute-1.amazonaws.com:5432/d593nprrsltblo</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="elephantsql" uuid="4fd5b198-408c-4129-8cc9-09ff990b2dfa">
-      <driver-ref>postgresql</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://topsy.db.elephantsql.com:5432/</jdbc-url>
-    </data-source>
-    <data-source source="LOCAL" name="PARS Database" uuid="5984c9a4-c013-49f9-85ad-677eb2337d55">
+    <data-source source="LOCAL" name="PARS Database" uuid="1b0dcc35-a12b-42e2-ad01-5c8a8986a4ef">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

@@ -36,7 +36,6 @@ def target_test():
     stageID = request.args.get('stageID')
     stage = Stage.query.filter_by(id=stageID).first()
     stage.stageStats()
-    print(stage.mean)
     if stage:
         range = json.dumps(stage.rangeDistance)
         shots = Shot.query.filter_by(stageID=stageID).all()
@@ -401,7 +400,8 @@ def getShots():
                            'rangeDistance': '300m',
                            'timestamp': stage.timestamp,
                            'std': std,
-                           'duration': duration
+                           'duration': duration,
+                           'stageID': stage.id,
                            })
     print(stagesList)
     return jsonify(stagesList)
