@@ -13,7 +13,7 @@ from app.uploadProcessing import validateShots
 from datetime import datetime
 import numpy
 from matplotlib import pylab
-
+import statistics
 import json
 
 
@@ -21,7 +21,7 @@ import json
 def index():
     # if not current_user.is_authenticated:
     #     return redirect(url_for('landing'))
-    return render_template('recentShots.html')
+    return render_template('index.html')
 
 
 @app.route('/landing')
@@ -31,17 +31,23 @@ def landing():
 
 @app.route('/target')
 def target_test():
-    # This route takes an argument from url and uses it to query the databvase for
+    # This route takes an argument from url and uses it to query the database for
     # the relevant shots and range information
     stageID = request.args.get('stageID')
     stage = Stage.query.filter_by(id=stageID).first()
+    stage.stageStats()
+    print(stage.mean)
     if stage:
         range = json.dumps(stage.rangeDistance)
         shots = Shot.query.filter_by(stageID=stageID).all()
         formattedList = []
+        scoreList = []
         num = 1
         letter = ord("A")
+        shotTotal = 0
         for shot in shots:
+            shotTotal += shot.score
+            scoreList.append(shot.score)
             if shot.sighter:
                 formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score)])
                 letter += 1
@@ -49,13 +55,16 @@ def target_test():
                 formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score)])
                 num += 1
         jsonList = json.dumps(formattedList)
-        print(jsonList)
-    return render_template('targetTest.html', range=range, jsonList=jsonList)
+        formattedList.append(["Total", 0, 0, str(shotTotal)]) #Total appended to list to make display of shots easier
+        stage.stageStats()
+    return render_template('plotSheet.html', range=range, formattedList=formattedList, jsonList=jsonList,stage=stage)
 
 
 @login_required
 @app.route('/profile')
 def profile():
+    userID = request.args.get('userID')
+    user = User.query.filter_by(id=userID).first()
     form = reportForm()
     yearStubAvgLine = [2018, 2019, 2020]
     scoreStubAvgLine = [5, 8, 17]
@@ -69,7 +78,7 @@ def profile():
         trend.append(result)
 
     return render_template('students/profile.html', form=form, label=yearStubAvgLine, data=scoreStubAvgLine,
-                           trend=trend)
+                           trend=trend,user=user)
 
 
 @app.route('/overview')
@@ -397,6 +406,17 @@ def getShots():
     print(stagesList)
     return jsonify(stagesList)
     # stage = Stage.query.filter_by(userID=userID).all()
+
+@app.route('/getTargetStats', methods=['POST'])
+def getTargetStats():
+    # Function provides databse information for ajax request in gearSettings.js
+    stageID = request.get_data().decode("utf-8")
+    stage = Stage.query.filter_by(id=stageID).first()
+    if stage:  # Handles if stageID parameter is given but is not found in database
+
+        return jsonify({'success':'success'})
+    return jsonify({'error': 'userID'})
+
 
 
 @app.route('/logout')

@@ -33,6 +33,7 @@ def validateShots(data):
     newShoot['username'] = data['name']
     firstShotTime = validShotList[0]['ts']              # time of first shot
     lastShotTime = validShotList[totalShots - 1]['ts']  # time of last shot
+    difference = lastShotTime - firstShotTime
     newShoot['time'] = firstShotTime
     newShoot['dateTime'] = firstShotTime
     newShoot['groupSize'] = data['stats_group_size']

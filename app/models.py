@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from time import time
 import jwt
-
+import statistics
 
 class User(UserMixin, db.Model):
     # UserMixin defines isActive, isAuthenticated, getID, isAnonymous
@@ -94,9 +94,28 @@ class Stage(db.Model):
     notes = db.Column(db.String(255))
     shots = db.relationship('Shot', backref='stage', lazy='dynamic')
 
+    def __init__(self):
+        self.mean = 0
+        self.median = 0
+        self.std = 0
+
     def __repr__(self):
         return '<Stage {}>'.format(self.id)
 
+    def stageStats(self):
+        shots = Shot.query.filter_by(stageID=self.id).all()
+        print(shots)
+        scores = []
+        for shot in shots:
+            if not shot.sighter:
+                scores.append(shot.score)
+        try:
+            mean = round(statistics.mean(scores), 2)
+            median = round(statistics.median(scores),2)
+            std = round(statistics.stdev(scores), 2)
+            return mean, median, std
+        except ValueError:
+            raise ValueError("Error with list")
 
 class Shot(db.Model):
     id = db.Column(db.Integer, primary_key=True)

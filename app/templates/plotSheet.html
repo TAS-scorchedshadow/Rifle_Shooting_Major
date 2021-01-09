@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% set active_page = "profile" %}
+{% block page_title %} Profile {% endblock %}
+{% block sidebar %}{% endblock %}
+{% block page_content %}
+    <style>
+        #tip {
+            background-color: white;
+            border: 1px solid blue;
+            position: absolute;
+            left: -200px;
+            top: 100px;
+        }
+        main{
+            margin: 0;
+        }
+
+        @media (min-width: 768px){
+            body {
+                overflow: hidden;
+            }
+        }
+
+        .table{
+            overflow: scroll;
+        }
+
+        .cover-container {
+            height: 100vh;
+        }
+        .card-header{
+            color: #fff
+        }
+
+    </style>
+    <script type="text/javascript" src="../static/js/targetTests.js"></script>
+    <script type="text/javascript" src="../static/js/targetAjax.js"></script>
+    <div class="container-fluid cover-container text-center d-flex flex-column">
+        <div class="row flex-fill">
+            <div class="col-lg-5 col-md-12 mr-5">
+                <canvas id="title" style="border: 1px solid black"></canvas>
+                <canvas id="tip"></canvas>
+                <script>
+                    let shotList= {{ jsonList|safe }} //TODO This is vulneratble to injections fix when we have time
+                    let range = {{ range|safe }}
+                    console.log(shotList)
+                    let myTarget = new DrawTarget('title',range,shotList);
+                </script>
+                <br>
+                <div class="card shadow border-0 ml-5">
+                    <div class="d-flex justify-content-around p-2 my-auto">
+                        <a class="btn btn-primary" href="#" role="button">&lt</a>
+                        <p><b>{{ stage.timestamp }}</b></p>
+                        <a class="btn btn-primary" href="#" role="button">&gt</a>
+                    </div>
+                </div>
+            </div>
+        <div class="col-lg col-md-12">
+                <div class="row h-60">
+                    <div class="col-3">
+                        <div class="card shadow border-0 h-80">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for shot in formattedList %}
+                                        <tr>
+                                            <th scope="row">{{ shot[0] }}</th>
+                                            <td>{{ shot[3] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col">
+                         <div class="card shadow border-0">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                    <tr>
+                                      <th scope="col">Stat</th>
+                                      <th scope="col">This Stage</th>
+                                      <th scope="col">Your Average(Day)</th>
+                                      <th scope="col">Your Average(Season)</th>
+                                    </tr>
+                                </thead>
+                                 <tbody>
+                                    <tr>
+                                      <th scope="row">Avr. Score</th>
+                                      <td>Mark</td>
+                                      <td>Otto</td>
+                                      <td>@mdo</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">S.T.D Score</th>
+                                      <td>Jacob</td>
+                                      <td>Thornton</td>
+                                      <td>@fat</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">Median</th>
+                                      <td>Larry</td>
+                                      <td>the Bird</td>
+                                      <td>@twitter</td>
+                                    </tr>
+                                 <tr>
+                                      <th scope="row">Duration</th>
+                                      <td>Larry</td>
+                                      <td>the Bird</td>
+                                      <td>@twitter</td>
+                                    </tr>
+                                 <tr>
+                                      <th scope="row">Consistency</th>
+                                      <td>Larry</td>
+                                      <td>the Bird</td>
+                                      <td>@twitter</td>
+                                    </tr>
+                                  </tbody>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="card shadow border-0 flex-fill">
+                            <div class="card-header bg-dark">
+                                <div class="row justify-content-between mx-2">
+                                    <div>
+                                        <i class="fas fa-cloud-rain"></i>
+                                        <span>Raining</span>
+                                    </div>
+                                    <div>
+                                        <span>Weather</span>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-wind"></i>
+                                        <span>30km/h</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="card shadow border-0">
+                   <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="row"></th>
+                                <th scope="col"></th>
+                                <th scope="row"></th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Shooter Name</th>
+                                <td>Dylan Huynh </td>
+                                <th>Coach</th>
+                                <td>Jeff</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date and Time</th>
+                                <td>23/12/2020 10:45am</td>
+                                <th>Rifle Serial</th>
+                                <td>SDV-248</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Location</th>
+                                <td>Malabar</td>
+                                <th>...</th>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
