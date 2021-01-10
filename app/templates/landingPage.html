@@ -3,14 +3,23 @@
 {% block page_title %} Home {% endblock %}
 {% block sidebar %}{% endblock %}
 {% block page_content %}
+<style>
+    main{
+        margin: 0;
+        background: #1A3240
+    }
+    h1{
+        font-size: 10rem;
+    }
+</style>
 <div class="container-fluid text-center vh-100">
     <div class="row h-100">
         <div class="col-12 my-auto">
-            <div class="title-main">
-                <h1>PARS SYSTEM</h1>
-            </div>
             <div>
-                <img src="../static/images/logo.png" width="200">
+                <span>
+                    <h1 class="title">PARS</h1>
+                </span>
+                <img src="../static/images/logo.png" width="300">
             </div>
             <br>
             <a class="btn btn-primary btn-lg" href="/login">

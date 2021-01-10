@@ -20,8 +20,8 @@ import json
 
 @app.route('/')
 def index():
-    # if not current_user.is_authenticated:
-    #     return redirect(url_for('landing'))
+    if not current_user.is_authenticated:
+        return redirect(url_for('landing'))
     return render_template('index.html')
 
 
@@ -70,7 +70,8 @@ def target_test():
         seasonStats = [round(stat,2) for stat in seasonResponse if isinstance(stat,float)]
         duration = "{}m {}s".format(int(seasonResponse[4]/60),seasonResponse[4] % 60)
         seasonStats.append(duration)
-    return render_template('plotSheet.html', range=range, formattedList=formattedList, jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats)
+        return render_template('plotSheet.html', range=range, formattedList=formattedList, jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats)
+    return render_template('index.html')
 
 
 @login_required
