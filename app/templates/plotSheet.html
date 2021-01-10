@@ -15,11 +15,13 @@
             margin: 0;
         }
 
-        @media (min-width: 768px){
+        /*
+        @media (min-width: 1200px){
             body {
                 overflow: hidden;
             }
         }
+        */
 
         .table{
             overflow: scroll;
@@ -91,33 +93,33 @@
                                  <tbody>
                                     <tr>
                                       <th scope="row">Avr. Score</th>
-                                      <td>Mark</td>
+                                      <td>{{ stageStats[0] }}</td>
                                       <td>Otto</td>
-                                      <td>@mdo</td>
+                                      <td>{{ seasonStats[0] }}</td>
+                                    </tr>
+                                    <tr>
+                                      <th scope="row">Median Score</th>
+                                      <td>{{ stageStats[1] }}</td>
+                                      <td>Thornton</td>
+                                      <td>{{ seasonStats[1] }}</td>
                                     </tr>
                                     <tr>
                                       <th scope="row">S.T.D Score</th>
-                                      <td>Jacob</td>
-                                      <td>Thornton</td>
-                                      <td>@fat</td>
-                                    </tr>
-                                    <tr>
-                                      <th scope="row">Median</th>
-                                      <td>Larry</td>
+                                      <td>{{ stageStats[2] }}</td>
                                       <td>the Bird</td>
-                                      <td>@twitter</td>
+                                      <td>{{ seasonStats[2] }}</td>
+                                    </tr>
+                                 <tr>
+                                      <th scope="row">Group Size</th>
+                                      <td>{{ stageStats[3] }}</td>
+                                      <td>the Bird</td>
+                                      <td>{{ seasonStats[3] }}</td>
                                     </tr>
                                  <tr>
                                       <th scope="row">Duration</th>
-                                      <td>Larry</td>
+                                      <td>{{ stageStats[4] }}</td>
                                       <td>the Bird</td>
-                                      <td>@twitter</td>
-                                    </tr>
-                                 <tr>
-                                      <th scope="row">Consistency</th>
-                                      <td>Larry</td>
-                                      <td>the Bird</td>
-                                      <td>@twitter</td>
+                                      <td>{{ seasonStats[4] }}</td>
                                     </tr>
                                   </tbody>
                             </table>

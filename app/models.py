@@ -83,6 +83,29 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
+    def seasonStats(self):
+        totalMean = 0
+        totalMedian = 0
+        totalStd = 0
+        totalDuration = 0
+        totalGroup = 0
+        stages = Stage.query.filter_by(userID=self.id).all()
+        for stage in stages:
+            stats = stage.stageStats()
+            totalMean += stats[0]
+            totalMedian += stats[1]
+            totalStd += stats[2]
+            totalGroup +=stats[3]
+            totalDuration += stats[4]
+        mean = totalMean / len(stages)
+        median = totalMedian /len(stages)
+        std = totalStd / len(stages)
+        group = totalGroup / len(stages)
+        duration = int(totalDuration /len(stages))
+        return mean,median,std,group,duration
+
+
+
 
 class Stage(db.Model):
     id = db.Column(db.BigInteger, primary_key=True)
@@ -94,28 +117,20 @@ class Stage(db.Model):
     notes = db.Column(db.String(255))
     shots = db.relationship('Shot', backref='stage', lazy='dynamic')
 
-    def __init__(self):
-        self.mean = 0
-        self.median = 0
-        self.std = 0
-
     def __repr__(self):
         return '<Stage {}>'.format(self.id)
 
     def stageStats(self):
         shots = Shot.query.filter_by(stageID=self.id).all()
-        print(shots)
-        scores = []
-        for shot in shots:
-            if not shot.sighter:
-                scores.append(shot.score)
+        scores = [shot.score for shot in shots if not shot.sighter]
         try:
-            mean = round(statistics.mean(scores), 2)
-            median = round(statistics.median(scores),2)
-            std = round(statistics.stdev(scores), 2)
-            return mean, median, std
+            mean = statistics.mean(scores)
+            median = statistics.median(scores)
+            std = statistics.stdev(scores)
+            duration = int((shots[-1].timestamp - shots[1].timestamp).total_seconds())
+            return mean, median, std, self.groupSize, duration
         except ValueError:
-            raise ValueError("Error with list")
+            raise ValueError("Error with list, likely null")
 
 class Shot(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -2,6 +2,8 @@ from distutils.util import strtobool
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
+from sqlalchemy import Date, cast, and_
+from sqlalchemy.orm import session
 from werkzeug.urls import url_parse
 
 from app import app, db
@@ -13,7 +15,6 @@ from app.uploadProcessing import validateShots
 from datetime import datetime
 import numpy
 from matplotlib import pylab
-import statistics
 import json
 
 
@@ -35,7 +36,6 @@ def target_test():
     # the relevant shots and range information
     stageID = request.args.get('stageID')
     stage = Stage.query.filter_by(id=stageID).first()
-    stage.stageStats()
     if stage:
         range = json.dumps(stage.rangeDistance)
         shots = Shot.query.filter_by(stageID=stageID).all()
@@ -55,8 +55,22 @@ def target_test():
                 num += 1
         jsonList = json.dumps(formattedList)
         formattedList.append(["Total", 0, 0, str(shotTotal)]) #Total appended to list to make display of shots easier
-        stage.stageStats()
-    return render_template('plotSheet.html', range=range, formattedList=formattedList, jsonList=jsonList,stage=stage)
+
+        #Stage Stats
+        stageResponse = stage.stageStats()
+        stageStats = [round(stat,2) for stat in stageResponse if isinstance(stat,float)]
+        duration = "{}m {}s".format(int(stageResponse[4]/60),stageResponse[4] % 60)
+        stageStats.append(duration)
+
+        #test = Stage.query.filter(Stage.timestamp == stage.timestamp.date()).all()
+
+        #Get Season Stats
+        user = User.query.filter_by(id=stage.userID).first()
+        seasonResponse = user.seasonStats()
+        seasonStats = [round(stat,2) for stat in seasonResponse if isinstance(stat,float)]
+        duration = "{}m {}s".format(int(seasonResponse[4]/60),seasonResponse[4] % 60)
+        seasonStats.append(duration)
+    return render_template('plotSheet.html', range=range, formattedList=formattedList, jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats)
 
 
 @login_required
