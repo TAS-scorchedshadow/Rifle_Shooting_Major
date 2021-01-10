@@ -1,0 +1,304 @@
+/*
+    DEMO STYLE
+    Taken from https://bootstrapious.com/p/bootstrap-sidebar
+*/
+
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+a.custom-card:hover {
+  color: inherit;
+}
+
+.linked-card:hover{
+    -webkit-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+    -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
+    box-shadow: -5px 9px 40px -12px rgba(0,0,0,0.75);
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE (Extracted to studentSidebar.css)
+----------------------------------------------------- */
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: calc(100% - 250px);
+    padding: 40px;
+    min-height: 100vh;
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#content.active {
+    width: 100%;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content {
+        width: 100%;
+    }
+    #content.active {
+        width: calc(100% - 250px);
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}
+
+.inner{
+    overflow: hidden;
+}
+
+.inner img{
+    transition: all 1.2s ease;
+}
+
+.inner:hover img{
+    transform: scale(1.2);
+}
+
+//Modifying bootstrap css
+
+//Color palette where 1 is the primary color
+$palette-1: #86c232;
+$palette-2: #72c213;
+$palette-3: #6B6E70;
+$palette-4: #474B4F;
+$palette-5: #222629;
+
+$txt-color: #fff;
+$theme-colors: (
+  "primary": $palette-1,
+  "nav-color-bg": $palette-4,
+  "nav-color-txt": $txt-color
+);
+
+$link-hover-decoration : none;
+
+//Alerts
+.alert-secondary {
+  color: #121415;
+  background-color: $palette-4 !important;
+  border-color: $palette-4 !important;
+}
+.alert-secondary hr {
+  border-top-color: #b4b5b6;
+}
+
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+//Non-bootstrap css
+
+//General
+
+body{
+    background-color: $palette-3;
+}
+
+label{
+    color: $txt-color;
+}
+
+h1, h2, h3, h4, h5, h6, p, th, td {
+    color: $txt-color;
+}
+
+.card {
+    background-color: $palette-4;
+}
+.card-header{
+    background-color: $palette-5;
+}
+
+.input-group-text{
+    background-color: $palette-4;
+    color: #fff;
+    border: 1px solid $palette-5;
+}
+
+.text-primary{
+    color: $palette-1;
+}
+
+.text-secondary{
+    color: $palette-2;
+}
+#text-primary {
+    color: $palette-1;
+}
+
+.jumbotron-fluid{
+    background-color: $palette-4;
+}
+
+.fa-clock{
+    color: white;
+}
+
+//Sidebar
+
+.custom-radio-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+
+
+#sidebar {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: $palette-4;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: $palette-5;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid $palette-1;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    color: #fff;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: $palette-1;
+    background: $palette-3;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    background: $palette-3;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: $palette-3
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #fff;
+    color: $palette-1;
+}
+
+a.article {
+    background-color: $palette-1;
+    color: #fff !important;
+}
+
+
+.article:hover {
+    background-color: $palette-1 !important;
+    color: #fff !important;
+}

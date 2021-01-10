@@ -8,7 +8,7 @@
     <!--Script to detect changes in div dimensions-->
     <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
     <script src="../static/css-element-queries/src/ElementQueries.js"></script>
-    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/template.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
@@ -17,64 +17,75 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" type="text/javascript"></script>
-
+    <!-- jQuery Custom Scroller CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
+     <!-- Defining aria collapse movement -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sidebar").mCustomScrollbar({
+                theme: "minimal"
+            });
+        });
+    </script>
 </head>
 <body>
     {% block sidebar %}
-        <nav class="sidebar">
-            <u1 class="sidebar-nav">
-                <li class="logo">
-            <a href="#" class="Snav-link">
-              <span class="link-text logo-text">SAP</span>
-            </a>
-          </li>
-                <li class="Snav-item">
-                    <a href="/" class = "Snav-link">
-                        <i class="fas fa-home"></i>
-                        <span class="linked-text">Home</span>
-                    </a>
-                </li>
-                <li class="Snav-item">
-                    <a href="/profile?userID={{ current_user.id }}" class = "Snav-link">
-                        <i class="fas fa-user"></i>
-                        <span class="linked-text">Profile</span>
-                    </a>
-                </li>
-                <li class="Snav-item">
-                    <a href="/target" class = "Snav-link">
-                        <i class="fas fa-bullseye"></i>
-                        <span class="linked-text">Target</span>
-                    </a>
-                </li>
-                <li class="Snav-item">
-                    <a href="/userList" class = "Snav-link">
-                        <i class="fas fa-user"></i>
-                        <span class="linked-text">User List</span>
-                    </a>
-                </li>
-                <li class="Snav-item">
-                    <a href="/upload" class = "Snav-link">
-                        <i class="fas fa-upload"></i>
-                        <span class="linked-text">Upload</span>
-                    </a>
-                </li>
-                <li class="Snav-item">
-                    {% if current_user.is_authenticated %}
-                        <a href="/logout" class = "Snav-link">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span class="linked-text">Sign Out</span>
+    <div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h1>PARS</h1>
+                <h5>Admin</h5>
+            </div>
+            <!-- Coaches View -->
+                <!-- Todo Align icons-->
+                <ul class="list-unstyled components">
+                    <li>
+                        <a href="/">
+                            <i class="fas fa-home"></i>
+                            Home
                         </a>
-                    {% else %}
-                    <a href="/login" class = "Snav-link">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="linked-text">Sign In</span>
-                    </a>
-                    {% endif %}
-                </li>
-            </u1>
+                    </li>
+                    <li>
+                        <a href="/profile">
+                             <i class="fas fa-user"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/target">
+                            <i class="fas fa-bullseye"></i>
+                            Target
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/userList">
+                            <i class="fas fa-portrait"></i>
+                            User List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/upload">
+                            <i class="fas fa-upload"></i>
+                            Upload
+                        </a>
+                    </li>
+                </ul>
+            <ul class="list-unstyled CTAs">
+                {% if current_user.is_authenticated %}
+                    <li>
+                        <a href="/logout" class="article">Sign Out <i class="fas fa-sign-out-alt"></i></a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="/user/signin" class="article">Sign In <i class="fas fa-sign-in-alt"></i></a>
+                    </li>
+                {% endif %}
+            </ul>
         </nav>
+
     {% endblock %}
-    <main>
+    <div id="content">
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <div class="alert alert-success text-center" role='alert'>
@@ -89,6 +100,7 @@
 
         {% block page_content %}
         {% endblock %}
-    </main>
+        </div>
+    </div>
 </body>
 </html>

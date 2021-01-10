@@ -20,8 +20,8 @@ import json
 
 @app.route('/')
 def index():
-    if not current_user.is_authenticated:
-        return redirect(url_for('landing'))
+    #if not current_user.is_authenticated:
+     #   return redirect(url_for('landing'))
     return render_template('index.html')
 
 
