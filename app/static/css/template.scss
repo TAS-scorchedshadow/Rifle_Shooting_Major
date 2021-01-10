@@ -116,7 +116,6 @@ a.custom-card:hover {
 }
 
 //Modifying bootstrap css
-
 //Color palette where 1 is the primary color
 $palette-1: #86c232;
 $palette-2: #72c213;
@@ -128,10 +127,13 @@ $txt-color: #fff;
 $theme-colors: (
   "primary": $palette-1,
   "nav-color-bg": $palette-4,
-  "nav-color-txt": $txt-color
+  "nav-color-txt": $txt-color,
+  "nav-tabs-link-active-bg": $palette-4
 );
 
 $link-hover-decoration : none;
+
+@import "../../../node_modules/bootstrap/scss/bootstrap";
 
 //Alerts
 .alert-secondary {
@@ -143,7 +145,15 @@ $link-hover-decoration : none;
   border-top-color: #b4b5b6;
 }
 
-@import "../../../node_modules/bootstrap/scss/bootstrap";
+//Tab Headers
+.nav-tabs {
+  .nav-link.active,
+  .nav-item.show .nav-link {
+    color: #fff;
+    background-color: $palette-4 !important;
+  }
+}
+
 
 //Non-bootstrap css
 
