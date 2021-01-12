@@ -23,7 +23,7 @@ body {
                     <div class="card">
                         <img class="card-img-top" src=".\.\static\images\blank-profile.png" alt="Card image cap">
                         <div class="card-body">
-                            <h4 class="card-text text-center">First Last</h4>
+                            <h4 class="card-text text-center">{{ name }}</h4>
                         </div>
                     </div>
                 </div>
@@ -42,12 +42,12 @@ body {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>0000</td>
-                                    <td>01/02/2003</td>
-                                    <td>01234</td>
-                                    <td>0478593402</td>
-                                    <td>9</td>
-                                    <td>example@someemail.com</td>
+                                    <td>{{ info["SID"] }}</td>
+                                    <td>{{ info["DOB"] }}</td>
+                                    <td>{{ info["Rifle Serial"] }}</td>
+                                    <td>{{ info["StudentID"] }}</td>
+                                    <td>{{ info["Grade"] }}</td>
+                                    <td>{{ info["Email"] }}</td>
                                 </tr>
                             </tbody>
                             <thead>
@@ -62,12 +62,12 @@ body {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Minors</td>
-                                    <td>01/02/2021</td>
-                                    <td>Yes</td>
-                                    <td>0478593402</td>
-                                    <td>9E</td>
-                                    <td>0478593402</td>
+                                    <td>{{ info["Permit"] }}</td>
+                                    <td>{{ info["Expiry"] }}</td>
+                                    <td>{{ info["Sharing"] }}</td>
+                                    <td>{{ info["Mobile"] }}</td>
+                                    <td>{{ info["Roll Class"] }}</td>
+                                    <td>{{ info["Mobile"] }}</td>
                                 </tr>
                             </tbody>
                         </table>

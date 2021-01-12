@@ -83,6 +83,31 @@ def profile():
     yearStubAvgLine = [2018, 2019, 2020]
     scoreStubAvgLine = [5, 8, 17]
 
+    stubID = 36
+    name = ""
+    info = {}
+    details_query = User.query.filter_by(id=stubID).all()
+    for i in range(len(details_query)):
+        name += details_query[i].fName + " " + details_query[i].sName
+        #info["SID"] = details_query[i].schoolID
+        info["SID"] = "NULL"
+        info["DOB"] = details_query[i].dob
+        info["Rifle Serial"] = details_query[i].rifleSerial
+        info["StudentID"] = details_query[i].schoolID
+        info["Grade"] = details_query[i].schoolYr
+        info["Email"] = details_query[i].email
+        info["Permit"] = details_query[i].permitNumber
+        info["Expiry"] = details_query[i].permitExpiry
+        info["Sharing"] = details_query[i].sharing
+        info["Mobile"] = "NULL"
+        info["Roll Class"] = "NULL"
+        info["Mobile"] = "NULL"
+        #info["Mobile"] = details_query[i].mobile
+        #info["Roll Class"] = details_query[i].schoolYR
+        #info["Mobile"] = details_query[i].mobile
+    print(info)
+    print(name)
+
     z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     p = numpy.poly1d(z)
     pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
@@ -92,7 +117,7 @@ def profile():
         trend.append(result)
 
     return render_template('students/profile.html', form=form, label=yearStubAvgLine, data=scoreStubAvgLine,
-                           trend=trend,user=user)
+                           trend=trend, user=user, info=info, name=name)
 
 
 @app.route('/overview')
@@ -129,7 +154,7 @@ def profile_overview():
 
 @app.route('/settings')
 def profile_settings():
-    shooterID =31
+    shooterID = 31
 
     info = {}
     equipment_query = User.query.filter_by(id=shooterID).all()
