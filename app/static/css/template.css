@@ -10438,6 +10438,10 @@ body {
   background-color: #6B6E70;
 }
 
+.background-dark {
+  background-color: #222629;
+}
+
 label {
   color: #fff;
 }

@@ -11,10 +11,6 @@
             left: -200px;
             top: 100px;
         }
-        main{
-            margin: 0;
-        }
-
         /*
         @media (min-width: 1200px){
             body {
@@ -32,6 +28,14 @@
         }
         .card-header{
             color: #fff
+        }
+        .table-wrapper{
+            max-height: 75vh;
+            overflow-y: auto;
+        }
+        #content{
+            padding: 0;
+            width: 100%;
         }
 
     </style>
@@ -57,26 +61,28 @@
                     </div>
                 </div>
             </div>
-        <div class="col-lg col-md-12">
+            <div class="col-lg col-md-12 h-100">
                 <div class="row h-60">
                     <div class="col-3">
-                        <div class="card shadow border-0 h-80">
-                            <table class="table">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Score</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for shot in formattedList %}
+                        <div class="card shadow border-0">
+                            <div class="table-wrapper">
+                                <table class="table">
+                                    <thead class="thead-dark">
                                         <tr>
-                                            <th scope="row">{{ shot[0] }}</th>
-                                            <td>{{ shot[3] }}</td>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Score</th>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {% for shot in formattedList %}
+                                            <tr>
+                                                <th scope="row">{{ shot[0] }}</th>
+                                                <td>{{ shot[3] }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     <div class="col">
@@ -86,8 +92,8 @@
                                     <tr>
                                       <th scope="col">Stat</th>
                                       <th scope="col">This Stage</th>
-                                      <th scope="col">Your Average(Day)</th>
-                                      <th scope="col">Your Average(Season)</th>
+                                      <th scope="col">Average (Day)</th>
+                                      <th scope="col">Average (Season)</th>
                                     </tr>
                                 </thead>
                                  <tbody>
