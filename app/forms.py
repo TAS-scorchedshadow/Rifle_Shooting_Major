@@ -65,9 +65,12 @@ class reportForm(FlaskForm):
     submit = SubmitField("Select")
 
 # -- Rishi Wig --
-class graphSelect(FlaskForm):
-    line = SelectField('Stat', choices=[('Avg','Average'),('St dev', 'Standard Deviation')])
-    bar = SelectField('Stat', choices=[('Avg','Average'),('St dev', 'Standard Deviation')])
+class profileSelect(FlaskForm):
+    cell = SelectField('Change cell', choices=[('SID','SID'),('DOB', 'DOB'), ('Serial', 'Rifle Serial'), ('SchoolID', 'Student ID'),
+                                               ("Grade", "Grade"), ("Email", "Email"), ("Permit", "Permit"),
+                                               ("Expiry", "Expiry"), ("Sharing", "Sharing"),
+                                               ("Mobile1", "Mobile"), ("Class", "Class"), ("Mobile2", "Mobile")])
+    data = StringField('Enter new data:')
     submit = SubmitField('ENTER')
 
 # # Forms for comparisons

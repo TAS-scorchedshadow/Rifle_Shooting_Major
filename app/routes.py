@@ -7,7 +7,7 @@ from sqlalchemy.orm import session
 from werkzeug.urls import url_parse
 
 from app import app, db
-from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm
+from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm, profileSelect
 from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
@@ -75,15 +75,47 @@ def target_test():
 
 
 @login_required
-@app.route('/profile')
+@app.route('/profile',  methods=['GET', 'POST'])
 def profile():
-    userID = request.args.get('userID')
-    user = User.query.filter_by(id=userID).first()
-    form = reportForm()
+    stubID = 36
+    #userID = request.args.get('userID')
+    #user = User.query.filter_by(id=userID).first()
+    form = profileSelect()
+    if form.is_submitted():
+        change = form.cell.data
+        newValue = form.data.data
+        details = User.query.filter_by(id=stubID).first()
+        #TODO: Address where some entries are meant to be directed and clarify the two "Mobile" sections
+        if change == "SID":
+            pass
+        if change == "DOB":
+            details.dob = newValue
+        if change == "Serial":
+            details.rifleSerial = newValue
+        if change == "SchoolID":
+            details.schoolID = newValue
+        if change == "Grade":
+            details.schoolYr = newValue
+        if change == "Email":
+            details.email = newValue
+        if change == "Permit":
+            details.permitNumber = newValue
+        if change == "Expiry":
+            details.permitExpiry = newValue
+        if change == "Sharing":
+            details.sharing = newValue
+        if change == "Mobile":
+            pass
+        if change == "Permit":
+            pass
+        if change == "Permit":
+            pass
+        db.session.commit()
+
     yearStubAvgLine = [2018, 2019, 2020]
     scoreStubAvgLine = [5, 8, 17]
 
-    stubID = 36
+
     name = ""
     info = {}
     details_query = User.query.filter_by(id=stubID).all()
@@ -105,8 +137,6 @@ def profile():
         #info["Mobile"] = details_query[i].mobile
         #info["Roll Class"] = details_query[i].schoolYR
         #info["Mobile"] = details_query[i].mobile
-    print(info)
-    print(name)
 
     z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     p = numpy.poly1d(z)
@@ -117,7 +147,7 @@ def profile():
         trend.append(result)
 
     return render_template('students/profile.html', form=form, label=yearStubAvgLine, data=scoreStubAvgLine,
-                           trend=trend, user=user, info=info, name=name)
+                           trend=trend, user=stubID, info=info, name=name)
 
 
 @app.route('/overview')
@@ -136,10 +166,12 @@ def profile_overview():
         info[stages_query[i].id] = 0
     for j in info:
         shots_query = Shot.query.filter_by(stageID=j).all()
+        total = 0
         score = 0
         for k in range(len(shots_query)):
+            total += 1
             score += (shots_query[k].score)
-        info[j] = score
+        info[j] = (score/total)
         timestamp_query = Stage.query.filter_by(id=j).all()
         for m in range(len(timestamp_query)):
             times.append(timestamp_query[m].timestamp)
@@ -154,19 +186,48 @@ def profile_overview():
 
 @app.route('/settings')
 def profile_settings():
-    shooterID = 31
+    stubID = 31
 
-    info = {}
-    equipment_query = User.query.filter_by(id=shooterID).all()
+    eqiupmentInfo = {}
+    equipment_query = User.query.filter_by(id=stubID).all()
     for i in range(len(equipment_query)):
-        info["Glove"] = equipment_query[i].glove
-        info["Hat"] = equipment_query[i].hat
-        info["Jacket"] = equipment_query[i].jacket
-        info["Sight Hole"] = equipment_query[i].sightHole
-        info["Sling Hole"] = equipment_query[i].slingHole
-        info["Sling Point"] = equipment_query[i].slingPoint
+        eqiupmentInfo["Glove"] = equipment_query[i].glove
+        eqiupmentInfo["Hat"] = equipment_query[i].hat
+        eqiupmentInfo["Jacket"] = equipment_query[i].jacket
+        eqiupmentInfo["Sight Hole"] = equipment_query[i].sightHole
+        eqiupmentInfo["Sling Hole"] = equipment_query[i].slingHole
+        eqiupmentInfo["Sling Point"] = equipment_query[i].slingPoint
 
-    return render_template('students/profile_settings.html', info=info)
+    elevationInfo = {}
+    elevation_query = User.query.filter_by(id=stubID).all()
+    for i in range(len(equipment_query)):
+        elevationInfo["ADI300m"] = elevation_query[i].ADI300m
+        elevationInfo["Fore300m"] = elevation_query[i].Fore300m
+        elevationInfo["PPU300m"] = elevation_query[i].PPU300m
+        elevationInfo["ADI400m"] = elevation_query[i].ADI400m
+        elevationInfo["Fore400m"] = elevation_query[i].Fore400m
+        elevationInfo["PPU400m"] = elevation_query[i].PPU400m
+        elevationInfo["ADI500m"] = elevation_query[i].ADI500m
+        elevationInfo["Fore500m"] = elevation_query[i].Fore500m
+        elevationInfo["PPU500m"] = elevation_query[i].PPU500m
+        elevationInfo["ADI600m"] = elevation_query[i].ADI600m
+        elevationInfo["Fore600m"] = elevation_query[i].Fore600m
+        elevationInfo["PPU600m"] = elevation_query[i].PPU600m
+        elevationInfo["ADI700m"] = elevation_query[i].ADI700m
+        elevationInfo["Fore700m"] = elevation_query[i].Fore700m
+        elevationInfo["PPU700m"] = elevation_query[i].PPU700m
+        elevationInfo["ADI800m"] = elevation_query[i].ADI800m
+        elevationInfo["Fore800m"] = elevation_query[i].Fore800m
+        elevationInfo["PPU800m"] = elevation_query[i].PPU800m
+        elevationInfo["ADI500y"] = elevation_query[i].ADI500y
+        elevationInfo["Fore500y"] = elevation_query[i].Fore500y
+        elevationInfo["PPU500y"] = elevation_query[i].PPU500y
+        elevationInfo["ADI600y"] = elevation_query[i].ADI600y
+        elevationInfo["Fore600y"] = elevation_query[i].Fore600y
+        elevationInfo["PPU600y"] = elevation_query[i].PPU600y
+
+
+    return render_template('students/profile_settings.html', equipmentInfo=eqiupmentInfo, elevationInfo=elevationInfo)
 
 
 @app.route('/upload', methods=['GET', 'POST'])

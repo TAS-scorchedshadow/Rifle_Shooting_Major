@@ -29,43 +29,10 @@
                 </div>
             </div>
             <div class="cols-3">
+                <script type="text/javascript" src="../static/js/profileGraphs.js"></script>
                 <canvas id="attendance"></canvas>
                 <script>
-                    var ctx = document.getElementById('attendance').getContext('2d');
-                    console.log(ctx);
-                    var attendance = new Chart(ctx, {
-                                type: 'doughnut',
-                                data: {
-                                    datasets: [{
-                                        data: [155, 13],
-                                        backgroundColor: [
-                                            'rgba(91, 188, 228, 0.85)',
-                                            'rgba(139, 69, 19, 0.85)',
-                                        ],
-                                        label: 'Dataset 1'
-                                    }],
-                                    labels: [
-                                        'Attended',
-                                        'Not Attended'
-                                    ]
-                                },
-                                options: {
-                                    responsive: true,
-                                    title: {
-                                            display: true,
-                                            text: 'Attendance'
-                                        },
-                                    plugins: {
-                                        legend: {
-                                            position: 'top',
-                                        },
-                                    },
-                                    animation: {
-                                        animateScale: true,
-                                        animateRotate: true
-                                    }
-                                }
-                                });
+                    let myAttendance = new Attendance();
                 </script>
             </div>
         </div>
@@ -75,40 +42,8 @@
             <meta id="my-data" data-dates="{{dates}}">
             <canvas id="lineSTDEV"></canvas>
                     <script>
-                        var ctx = document.getElementById('lineSTDEV').getContext('2d');
                         var dateData = $('#my-data').data('dates');
-                        console.log(dateData);
-                        var barChart = new Chart(ctx, {
-                            type: "line",
-                            data: {
-                                    labels: dateData,
-                                    datasets: [{
-                                        label: 'Averages',
-                                        backgroundColor: 'rgba(255,0,0,0)',
-                                        borderColor: 'rgba(255,0,0,1)',
-                                        borderWidth: 1,
-                                        fill: false,
-                                        data: {{ scores }}
-                                    }]},
-                                options: {
-                                        responsive: true,
-                                        title: {
-                                                display: true,
-                                                text: 'ot Line'
-                                            },
-                                        plugins: {
-                                        },
-                                        scales: {
-                                            yAxes: [{
-                                                min: 0,
-                                                ticks: {
-                                                    min: 0,
-                                                    beginAtZero:true
-                                                }
-                                            }]
-                                        }
-                                }
-                                });
+                        let myGraph= new lineGraph(dateData, {{ scores }});
                     </script>
         </div>
     </div>

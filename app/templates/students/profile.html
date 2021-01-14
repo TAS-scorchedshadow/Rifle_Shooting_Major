@@ -73,6 +73,22 @@ body {
                         </table>
                     </div>
                 </div>
+                <div class="col-6">
+                    <form action ="" method="post" onsubmit="">
+                            {{ form.hidden_tag() }}
+                        <p>
+                            {{ form.cell.label }}<br>
+                            {{ form.cell(size = 1)  }}
+                        </p>
+                        <p>
+                            {{ form.data.label }}<br>
+                            {{ form.data(size = 35)  }}
+                        </p>
+                        <p>
+                            {{ form.submit() }}
+                        </p>
+                    </form>
+                </div>
             </div>
         </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
