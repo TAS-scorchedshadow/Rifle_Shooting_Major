@@ -1,1 +1,1 @@
-web: gunicorn app:sapSystem
+web: gunicorn app:app
