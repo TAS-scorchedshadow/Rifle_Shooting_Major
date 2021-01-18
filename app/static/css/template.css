@@ -10454,6 +10454,10 @@ h1, h2, h3, h4, h5, h6, p, th, td {
   background-color: #474B4F;
 }
 
+.modal-content {
+  background-color: #474B4F;
+}
+
 .card-header {
   background-color: #222629;
 }
@@ -10591,6 +10595,18 @@ a.article {
 
 .fnt-righteous {
   font-family: "Righteous", cursive;
+}
+
+::-webkit-scrollbar {
+  width: 0.25em;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1e1e24;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #72c213;
 }
 
 /*# sourceMappingURL=template.css.map */

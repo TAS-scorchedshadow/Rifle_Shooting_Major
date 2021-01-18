@@ -178,6 +178,10 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 .card {
     background-color: $palette-4;
 }
+
+.modal-content{
+    background-color: $palette-4;
+}
 .card-header{
     background-color: $palette-5;
 }
@@ -319,4 +323,15 @@ a.article {
 
 .fnt-righteous{
     font-family: 'Righteous', cursive;
+}
+
+::-webkit-scrollbar {
+    width:0.25em
+}
+::-webkit-scrollbar-track{
+    background-color: #1e1e24;
+}
+
+::-webkit-scrollbar-thumb{
+    background-color: $palette-2;
 }
