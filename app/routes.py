@@ -77,6 +77,10 @@ def target_test():
 @app.route('/profile',  methods=['GET', 'POST'])
 @login_required
 def profile():
+    """
+    :parameter [UserID]: Database Shooter ID
+    :return: profile.html with info dictionary for the table, form for forms and variables/lists for ChartJS
+    """
     stubID = 36
     #userID = request.args.get('userID')
     #user = User.query.filter_by(id=userID).first()

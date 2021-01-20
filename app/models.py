@@ -7,6 +7,10 @@ import jwt
 import statistics
 
 class User(UserMixin, db.Model):
+    """
+    :parameter [UserMixin]: Defines isActive, isAuthenticated, getID, isAnonymous
+    :parameter [db.Model]: TO BE FILLED
+    """
     # UserMixin defines isActive, isAuthenticated, getID, isAnonymous
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -139,6 +143,9 @@ class User(UserMixin, db.Model):
 
 
 class Stage(db.Model):
+    """
+    :parameter: TO BE FILLED
+    """
     id = db.Column(db.BigInteger, primary_key=True)
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
@@ -164,6 +171,10 @@ class Stage(db.Model):
             raise ValueError("Error with list, likely null")
 
 class Shot(db.Model):
+    """
+    :type: Class
+    :
+    """
     id = db.Column(db.Integer, primary_key=True)
     stageID = db.Column(db.BigInteger, db.ForeignKey('stage.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)

@@ -3,6 +3,10 @@ from datetime import datetime
 
 
 def validateShots(data):
+    """
+    :param data: TO BE FILLED
+    :return: Information of the shoot session
+    """
     totalShots = 0      # Total number of shots
     countingShots = 0   # Total, excluding sighters
     newShoot = {'id': 0, 'username': "", 'time': 0, 'duration': 0, 'validShots': [],
@@ -49,6 +53,10 @@ def validateShots(data):
 
 # Gets shot statistics
 def shotStats(shoot):
+    """
+    :param shoot: Data of the shoot session
+    :return: Calculation of median, mean and standard deviation
+    """
     stats = {}
     shots = []
     for i in shoot:
@@ -61,11 +69,21 @@ def shotStats(shoot):
 
 
 def msToDatetime(ms):
+    """
+    :param ms: Time in millisecond format?
+    :return: Time in format of YYYY/MM/DD HH:MM:SS
+    """
     date = datetime.utcfromtimestamp(ms / 1000).strftime('%Y-%m-%d %H:%M:%S')
     return date
 
 
 def strTimeDifference(str1,str2):
+    """
+    :param str1: Former time
+    :param str2: Latter time
+    :return: Time gap between former and latter times
+    :rtype: string
+    """
     time1 = datetime.strptime(str1,'%Y-%m-%d %H:%M:%S')
     time2 = datetime.strptime(str2, '%Y-%m-%d %H:%M:%S')
     difference = time2 -time1
@@ -74,6 +92,10 @@ def strTimeDifference(str1,str2):
 
 # Gets shot statistics
 def shootList(shoot):
+    """
+    :param shoot: Dictionary of shot number and its value from a shoot session
+    :return: List of individual shot scores
+    """
     shots = []
     for i in shoot:
         shots.append(i['value'])
@@ -82,6 +104,10 @@ def shootList(shoot):
 
 # Reformats score into a dictionary of score and Vscore
 def getScore(shot):
+    """
+    :param shot: Individual shot info
+    :return: Score of the shot
+    """
     score = {'score': 0, 'Vscore': 0}  # Vscore = 0 if none was given
     if shot['value'] == "V":                # JSON includes array if shot included a Vscore
         score['score'] = shot['score'][0]
@@ -93,6 +119,10 @@ def getScore(shot):
 
 # Checks if the shot is a sighter
 def checkSighter(shot):
+    """
+    :param shot: Individual shot
+    :return: Whether the sighter was used?
+    """
     try:
         return shot['sighter']
     except KeyError:
