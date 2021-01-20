@@ -10597,16 +10597,18 @@ a.article {
   font-family: "Righteous", cursive;
 }
 
+/*
+
 ::-webkit-scrollbar {
-  width: 0.25em;
+    width:0.25em
+}
+::-webkit-scrollbar-track{
+    background-color: #1e1e24;
 }
 
-::-webkit-scrollbar-track {
-  background-color: #1e1e24;
+::-webkit-scrollbar-thumb{
+    background-color: $palette-2;
 }
-
-::-webkit-scrollbar-thumb {
-  background-color: #72c213;
-}
+*/
 
 /*# sourceMappingURL=template.css.map */

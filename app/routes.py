@@ -74,8 +74,8 @@ def target_test():
     return render_template('index.html')
 
 
-@login_required
 @app.route('/profile',  methods=['GET', 'POST'])
+@login_required
 def profile():
     stubID = 36
     #userID = request.args.get('userID')
@@ -388,7 +388,10 @@ def reset_password(token):
 
 
 @app.route('/userList')
+@login_required
 def userList():
+    if not current_user.isAdmin:
+        return redirect(url_for('index'))
     users = User.query.order_by(User.schoolID).all()
     return render_template('userAuth/userList.html', users=users)
 
