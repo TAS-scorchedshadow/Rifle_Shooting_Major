@@ -15,20 +15,21 @@ $(document).ready(function(){
                 data: JSON.stringify([user, numLoaded]),
                 success:(function (data) {
                     console.log(data)
-                    for (let stage in data){
-                        let shots = data[stage]['scores']
-                        let htmlScoresHead = ``
-                        let htmlScoresBody = ``
-                        for (let shot in data[stage]['scores']){
-                            htmlScoresHead = htmlScoresHead + `
+                    if (Array.isArray(data) && data.length){
+                        for (let stage in data) {
+                            let shots = data[stage]['scores']
+                            let htmlScoresHead = ``
+                            let htmlScoresBody = ``
+                            for (let shot in data[stage]['scores']) {
+                                htmlScoresHead = htmlScoresHead + `
                             <th>${shot}</th>
                             `;
-                            htmlScoresBody = htmlScoresBody + `
+                                htmlScoresBody = htmlScoresBody + `
                             <th>${data[stage]['scores'][shot]}</th>
                             `;
-                        }
-                        //missing icons for duration and weather
-                        let htmlstring = `
+                            }
+                            //missing icons for duration and weather
+                            let htmlstring = `
                         <div class="stage-overview">
                             <a class="row">
                                 <div class="col-12 pb-4">
@@ -81,7 +82,22 @@ $(document).ready(function(){
                             </div>
                         </div>
                         `;
-                        $("#recentShots").append(htmlstring);
+                            $("#recentShots").append(htmlstring);
+                        }
+                    }
+                    else{
+                        let htmlstring = `
+                        <div class="text-center align-items-center p-3">
+                            <h2>No Recent Stages Found :(</h2>
+                            <svg class="py-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2" style="width:10rem;">
+                               <polygon class="logoCol" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
+                               <polygon class="logoCol" points="69.4 13.1 108.6 79 32.6 175 0 138.9 69.4 13.1"/>
+                               <polygon class="logoCol" points="158.8 11.6 120.2 79.1 198.6 175.2 231.1 138.1 158.8 11.6"/>
+                            </svg>
+                            <h5>A summary of recent stages will be shown here. Make sure to enter the correct username at the range!</h5>
+                        </div>
+                        `
+                        $("#recentShotsContainer").replaceWith(htmlstring);
                     }
                 })
             })

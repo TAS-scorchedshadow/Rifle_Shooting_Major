@@ -343,7 +343,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        send_activation_email(user)
+        #send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
         return render_template('userAuth/registerSuccess.html', user=user)
     return render_template('userAuth/register.html', title='Register', form=form)
