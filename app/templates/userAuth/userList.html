@@ -26,9 +26,9 @@
                                         <th scope="col">Manage Account</th>
                                      </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="tableBody">
                                     {% for user in users %}
-                                        <tr>
+                                        <tr id="row{{ user.id }}">
                                             <td scope="row">{{ user.school }}</td>
                                             <td>{{ user.schoolID }}</td>
                                             <td>{{ user.fName }} {{ user.sName }}</td>
@@ -37,28 +37,10 @@
                                             <td>
                                                 <div class="row">
                                                     <div class="col">
-                                                        {% if not user.isActive %}
-                                                            <!-- Button trigger modal -->
-                                                            <a type="button" id="setActive{{ user.id }}" class="btn btn-secondary" href="javascript:setActive('#setActive{{ user.id }}','{{ user.id }}','true')">
-                                                                Activate Account
-                                                            </a>
-                                                        {% else  %}
-                                                            <a type="button" id="setActive{{ user.id }}" class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal{{ user.id }}">
-                                                                Delete account
-                                                            </a>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="col">
-                                                        {% if not user.isAdmin %}
-                                                            <!-- Button trigger modal -->
-                                                            <a type="button" id ="setAdmin{{ user.id }}" class="btn btn-primary" data-toggle="modal" data-target="#AdminModal{{ user.id }}">
-                                                                Make Admin
-                                                            </a>
-                                                        {% else  %}
-                                                            <a type="button" id="setAdmin{{ user.id }}" class="btn btn-danger" href="javascript:setAdmin('#setAdmin{{ user.id }}','{{ user.id }}','true')">
-                                                                Revoke Admin Access
-                                                            </a>
-                                                        {% endif %}
+                                                        <a type="button" user="{{ user.id }}" class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal{{ user.id }}">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                            Delete
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -75,13 +57,13 @@
                                                         </div>
                                                         <div class="modal-body">
                                                             <p>Are you sure you want to delete {{ user.fName }} {{ user.sName }}'s account?</p>
-                                                            <p>Deleted accounts can be recovered up to 14 days after deletion by reactivating the account on this page.</p>
+                                                            <!--<p>Deleted accounts can be recovered up to 14 days after deletion by reactivating the account on this page.</p>-->
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                             <a type="button" class="btn btn-danger"
-                                                               href="javascript:setActive('#setActive{{ user.id }}','{{ user.id }}','false')">
-                                                                Make Admin
+                                                               href="javascript:deleteAccount('{{ user.id }}')">
+                                                                Delete Account
                                                             </a>
                                                         </div>
                                                     </div>

@@ -405,18 +405,17 @@ def userList():
     return render_template('userAuth/userList.html', users=users)
 
 
-@app.route('/activate', methods=['POST'])
-def activate():
+@app.route('/deleteAccount', methods=['POST'])
+def deleteAccount():
+    print('reached')
     data = request.get_data()
-    loadedData = json.loads(data)
-    userID = loadedData['id']
-    state = loadedData['state']
+    userID = json.loads(data)
     if userID:
         try:
             user = User.query.filter_by(id=userID).first()
-            user.isActive = strtobool(state)
+            db.session.delete(user)
             db.session.commit()
-            return jsonify({'id': userID, 'newState': not strtobool(state)})
+            return jsonify('success')
         except:
             print('error')
             return jsonify({'error': 'Invalid State'})
