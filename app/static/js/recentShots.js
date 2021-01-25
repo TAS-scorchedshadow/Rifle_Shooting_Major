@@ -7,14 +7,18 @@ $(document).ready(function(){
     loadTable(userID)
     function loadTable(user){
         if (userID != null){
-            let numLoaded = $("div[class*='stage-overview']").length
-            console.log(numLoaded)
+            let numLoaded = $("div[class*='stage-overview']").length;
+            $('#spinner').toggleClass('d-flex');
+            $('#spinner').show();
+            console.log(numLoaded);
             $.ajax({
                 type: 'POST',
                 url: "/getShots",
                 data: JSON.stringify([user, numLoaded]),
                 success:(function (data) {
                     console.log(data)
+                    $('#spinner').toggleClass('d-flex');
+                    $('#spinner').hide()
                     if (Array.isArray(data) && data.length){
                         for (let stage in data) {
                             let shots = data[stage]['scores']

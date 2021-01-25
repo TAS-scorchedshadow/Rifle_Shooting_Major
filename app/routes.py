@@ -141,6 +141,8 @@ def profile():
         #info["Mobile"] = details_query[i].mobile
         #info["Roll Class"] = details_query[i].schoolYR
         #info["Mobile"] = details_query[i].mobile
+    print(info)
+    print(name)
 
     z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     p = numpy.poly1d(z)
