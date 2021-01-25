@@ -58,11 +58,15 @@
                 <br>
                 <div class="card shadow border-0 ml-5">
                     <div class="d-flex justify-content-around p-2 my-auto">
-                        <a class="btn btn-primary" href="#" role="button">&lt</a>
-                        <p><b>{{ stage.timestamp }}</b></p>
-                        <a class="btn btn-primary" href="#" role="button">&gt</a>
+                        <!--<a class="btn btn-primary" href="#" role="button">&lt</a>-->
+                        <div>
+                            <h3>{{ (stage.timestamp|utc_to_local).strftime("%d %b %Y %I:%M %p") }}</h3>
+                            <p>{{ (stage.timestamp|utc_to_local).strftime("%Z") }}</p>
+                        </div>
+                        <!--<a class="btn btn-primary" href="#" role="button">&gt</a>-->
                     </div>
                 </div>
+                <br>
             </div>
             <div class="col-lg col-md-12 h-100">
                 <div class="row h-60">

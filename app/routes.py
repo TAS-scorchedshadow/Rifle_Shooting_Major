@@ -12,7 +12,7 @@ from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 
-from datetime import datetime
+from datetime import datetime, timezone
 import numpy
 from matplotlib import pylab
 import json
@@ -72,6 +72,11 @@ def target_test():
         seasonStats.append(duration)
         return render_template('plotSheet.html', range=range, formattedList=formattedList, jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats)
     return render_template('index.html')
+
+
+@app.template_filter('utc_to_local')
+def utc_to_local(utc_dt):
+    return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
 
 
 @app.route('/profile',  methods=['GET', 'POST'])
@@ -402,18 +407,17 @@ def userList():
     return render_template('userAuth/userList.html', users=users)
 
 
-@app.route('/activate', methods=['POST'])
-def activate():
+@app.route('/deleteAccount', methods=['POST'])
+def deleteAccount():
+    print('reached')
     data = request.get_data()
-    loadedData = json.loads(data)
-    userID = loadedData['id']
-    state = loadedData['state']
+    userID = json.loads(data)
     if userID:
         try:
             user = User.query.filter_by(id=userID).first()
-            user.isActive = strtobool(state)
+            db.session.delete(user)
             db.session.commit()
-            return jsonify({'id': userID, 'newState': not strtobool(state)})
+            return jsonify('success')
         except:
             print('error')
             return jsonify({'error': 'Invalid State'})
@@ -508,7 +512,7 @@ def getShots():
                            'totalScore': totalScore,
                            'groupSize': round(stage.groupSize, 1),
                            'rangeDistance': '300m',
-                           'timestamp': stage.timestamp,
+                           'timestamp': utc_to_local(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
                            'std': std,
                            'duration': duration,
                            'stageID': stage.id,
