@@ -25,3 +25,11 @@ def send_activation_email(user):
                recipients=[user.email],
                text_body=render_template('email/activate.txt', user=user, token=token),
                html_body=render_template('email/activate.html', user=user, token=token))
+
+def send_test_email(user):
+    send_email('[PARS] Test Email',
+               sender=app.config['MAIL_USERNAME'],
+               recipients=[user.email],
+               text_body=render_template('email/testEmail.txt', user=user),
+               html_body=render_template('email/testEmail.html', user=user))
+

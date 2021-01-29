@@ -9,7 +9,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm, profileSelect
 from app.models import User, Stage, Shot
-from app.email import send_password_reset_email, send_activation_email
+from app.email import send_password_reset_email, send_activation_email, send_test_email
 from app.uploadProcessing import validateShots
 
 from datetime import datetime, timezone
@@ -29,6 +29,11 @@ def index():
 def landing():
     return render_template('landingPage.html')
 
+
+@app.route('/email')
+def email_test():
+    send_test_email(current_user)
+    return "email sent"
 
 @app.route('/target')
 def target_test():
