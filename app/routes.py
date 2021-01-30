@@ -2,11 +2,12 @@ from distutils.util import strtobool
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import current_user, login_user, logout_user, login_required
+from flask_mail import Message
 from sqlalchemy import Date, cast, and_
 from sqlalchemy.orm import session
 from werkzeug.urls import url_parse
 
-from app import app, db
+from app import app, db, mail
 from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm, profileSelect
 from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_test_email
@@ -32,7 +33,10 @@ def landing():
 
 @app.route('/email')
 def email_test():
-    send_test_email(current_user)
+    msg = Message('Twilio SendGrid Test Email', recipients=['redman29h@gmail.com'])
+    msg.body = 'This is a test email!'
+    msg.html = '<p>This is a test email!</p>'
+    mail.send(msg)
     return "email sent"
 
 @app.route('/target')
