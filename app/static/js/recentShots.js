@@ -37,11 +37,11 @@ $(document).ready(function(){
                         <div class="stage-overview">
                             <a class="row">
                                 <div class="col-12 pb-4">
-                                    <a class="stretched-link" href="/target?stageID=${data[stage]['stageID']}" target="_blank">
-                                        <div class="card shadow border-0">
-                                            <div class="card-header">
+                                    <div class="card shadow border-0">
+                                        <a href="/target?stageID=${data[stage]['stageID']}" target="_blank">
+                                            <div class="card-header recent-header">
                                                 <div class="row">
-                                                    <div class="col-4 align-self-center"
+                                                    <div class="col-4 align-self-center">
                                                         <p>${data[stage]['duration']}</p>
                                                     </div>
                                                     <div class="col-4 align-self-center">
@@ -52,36 +52,36 @@ $(document).ready(function(){
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-sm table-bordered">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Range</th>
-                                                                        ${htmlScoresHead}
-                                                                        <th>Total Score</th>
-                                                                        <th>Group Size</th>
-                                                                        <th>Std</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <th>${data[stage]['rangeDistance']}</th>
-                                                                        ${htmlScoresBody}
-                                                                        <th>${data[stage]['totalScore']}</th>
-                                                                        <th>${data[stage]['groupSize']}</th>
-                                                                        <th>${data[stage]['std']}</th>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                        </a>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Range</th>
+                                                                    ${htmlScoresHead}
+                                                                    <th>Total Score</th>
+                                                                    <th>Group Size</th>
+                                                                    <th>Std</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>${data[stage]['rangeDistance']}</th>
+                                                                    ${htmlScoresBody}
+                                                                    <th>${data[stage]['totalScore']}</th>
+                                                                    <th>${data[stage]['groupSize']}</th>
+                                                                    <th>${data[stage]['std']}</th>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

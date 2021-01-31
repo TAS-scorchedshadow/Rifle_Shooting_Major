@@ -184,9 +184,9 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
 
     this.update = function() {
         if (width === 'flex'){
-            let rect = this.canvasObj.parentNode.getBoundingClientRect();
-            this.canvasObj.width = rect.width;
-            this.canvasObj.height = rect.width;
+            let parentWidth = $("#" + canvasId).parent().width();
+            this.canvasObj.width = parentWidth;
+            this.canvasObj.height = parentWidth;
         }
         this.x = this.canvasObj.width/2;
         this.y = this.canvasObj.height/2;

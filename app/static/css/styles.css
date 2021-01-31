@@ -10118,4 +10118,8 @@ a.custom-card:hover {
   box-shadow: -5px 9px 40px -12px rgba(0, 0, 0, 0.75);
 }
 
+.card-header {
+  color: #ffffff;
+}
+
 /*# sourceMappingURL=styles.css.map */
