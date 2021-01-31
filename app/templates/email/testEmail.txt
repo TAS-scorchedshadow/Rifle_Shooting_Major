@@ -1,2 +1,0 @@
-Dear {{ user.fName }} {{user.sName}},
-The PARS Team

@@ -10,7 +10,7 @@ from werkzeug.urls import url_parse
 from app import app, db, mail
 from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm, profileSelect
 from app.models import User, Stage, Shot
-from app.email import send_password_reset_email, send_activation_email, send_test_email
+from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 
 from datetime import datetime, timezone
@@ -30,14 +30,9 @@ def index():
 def landing():
     return render_template('landingPage.html')
 
-
 @app.route('/email')
-def email_test():
-    msg = Message('Twilio SendGrid Test Email', recipients=['redman29h@gmail.com'])
-    msg.body = 'This is a test email!'
-    msg.html = '<p>This is a test email!</p>'
-    mail.send(msg)
-    return "email sent"
+def test():
+    return render_template('/email/activate.html',user=current_user)
 
 @app.route('/target')
 def target_test():
@@ -359,7 +354,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        #send_activation_email(user)
+        send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
         return render_template('userAuth/registerSuccess.html', user=user)
     return render_template('userAuth/register.html', title='Register', form=form)
