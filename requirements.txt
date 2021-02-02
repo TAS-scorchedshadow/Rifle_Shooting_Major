@@ -62,3 +62,4 @@ urllib3==1.26.2
 Werkzeug==1.0.0
 WTForms==2.3.3
 zstandard==0.14.1
+pytz~=2020.5

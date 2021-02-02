@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 import numpy
 from matplotlib import pylab
 import json
+import pytz
 
 
 @app.route('/')
@@ -29,6 +30,11 @@ def index():
 @app.route('/landing')
 def landing():
     return render_template('landingPage.html')
+
+@app.route('/xD')
+def landing2():
+
+    return "done"
 
 @app.route('/email')
 def test():
@@ -78,9 +84,10 @@ def target_test():
     return render_template('index.html')
 
 
-@app.template_filter('utc_to_local')
-def utc_to_local(utc_dt):
-    return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+@app.template_filter('utc_to_nsw')
+def utc_to_nsw(utc_dt):
+    nsw = pytz.timezone('Australia/NSW')
+    return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=nsw)
 
 
 @app.route('/profile',  methods=['GET', 'POST'])
@@ -516,7 +523,7 @@ def getShots():
                            'totalScore': totalScore,
                            'groupSize': round(stage.groupSize, 1),
                            'rangeDistance': '300m',
-                           'timestamp': utc_to_local(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
+                           'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
                            'std': std,
                            'duration': duration,
                            'stageID': stage.id,
