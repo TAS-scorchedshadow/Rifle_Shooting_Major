@@ -31,10 +31,6 @@ def index():
 def landing():
     return render_template('landingPage.html')
 
-@app.route('/xD')
-def landing2():
-
-    return "done"
 
 @app.route('/email')
 def test():
@@ -54,17 +50,27 @@ def target_test():
         num = 1
         letter = ord("A")
         shotTotal = 0
-        for shot in shots:
+        shotsList = [stat for stat in enumerate(shots)]
+
+        for i, shot in shotsList:
             shotTotal += shot.score
             scoreList.append(shot.score)
+            if i == 0:
+                duration = 'N/A'
+            else:
+                start = shotsList[i-1][1].timestamp
+                diff = (shot.timestamp-start).total_seconds()
+                if int(diff/60) == 0:
+                    duration = "{}s".format(int(diff%60))
+                else:
+                    duration = "{}m {}s".format(int(diff/60),int(diff%60))
             if shot.sighter:
-                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score)])
+                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), duration])
                 letter += 1
             else:
-                formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score)])
+                formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score),duration])
                 num += 1
         jsonList = json.dumps(formattedList)
-        formattedList.append(["Total", 0, 0, str(shotTotal)]) #Total appended to list to make display of shots easier
 
         #Stage Stats
         stageResponse = stage.stageStats()
@@ -72,7 +78,7 @@ def target_test():
         duration = "{}m {}s".format(int(stageResponse[4]/60),stageResponse[4] % 60)
         stageStats.append(duration)
 
-        #test = Stage.query.filter(Stage.timestamp == stage.timestamp.date()).all()
+        formattedList.append(["Total", 0, 0, str(shotTotal), duration])  # Total appended to list to make display of shots easier
 
         #Get Season Stats
         user = User.query.filter_by(id=stage.userID).first()
