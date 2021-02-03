@@ -31,56 +31,57 @@
 </head>
 <body>
     {% block sidebar %}
-    <div class="wrapper"> <!--d-xs-none is redundancy did not want to edit template code-->
         <!-- Sidebar  -->
         <nav id="sidebar">
-            <div class="sidebar-header">
-                <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2">
-                   <polygon class="logoCol" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
-                   <polygon class="logoCol" points="69.4 13.1 108.6 79 32.6 175 0 138.9 69.4 13.1"/>
-                   <polygon class="logoCol" points="158.8 11.6 120.2 79.1 198.6 175.2 231.1 138.1 158.8 11.6"/>
-                </svg>
-                <h3 class=fnt-righteous style="display: inline">PARS</h3>
-            </div>
-            <!-- Coaches View -->
-                <!-- Todo Align icons-->
-                <ul class="list-unstyled components">
-                    <li>
-                        <a href="/">
-                            <i class="fas fa-home"></i>
-                            Home
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/profile?userID={{ current_user.id }}">
-                             <i class="fas fa-user"></i>
-                            Profile
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/userList">
-                            <i class="fas fa-portrait"></i>
-                            User List
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/upload">
-                            <i class="fas fa-upload"></i>
-                            Upload
-                        </a>
-                    </li>
-                </ul>
-            <ul class="list-unstyled CTAs">
+            <ul class="list-unstyled components">
+                <li class="sidebar-header">
+                    <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2">
+                       <polygon class="logoCol" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
+                       <polygon class="logoCol" points="69.4 13.1 108.6 79 32.6 175 0 138.9 69.4 13.1"/>
+                       <polygon class="logoCol" points="158.8 11.6 120.2 79.1 198.6 175.2 231.1 138.1 158.8 11.6"/>
+                    </svg>
+                    <span class=fnt-righteous style="display: inline">PARS</span>
+                </li>
+                <li>
+                    <a href="/">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/profile?userID={{ current_user.id }}">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/userList">
+                        <i class="fas fa-portrait"></i>
+                        <span>User List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/upload">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload</span>
+                    </a>
+                </li>
                 {% if current_user.is_authenticated %}
                     <li>
-                        <a href="/logout" class="article">Sign Out <i class="fas fa-sign-out-alt"></i></a>
+                        <a href="/logout" class="article">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sign Out</span>
+                        </a>
                     </li>
                 {% else %}
                     <li>
-                        <a href="/login" class="article">Sign In <i class="fas fa-sign-in-alt"></i></a>
+                        <a href="/login" class="article">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Sign In</span>
+                        </a>
                     </li>
                 {% endif %}
-            </ul>
+        </ul>
         </nav>
 
     {% endblock %}
