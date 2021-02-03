@@ -150,6 +150,8 @@ class Stage(db.Model):
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     groupSize = db.Column(db.Float)
+    groupX = db.Column(db.Float)
+    groupY = db.Column(db.Float)
     rangeDistance = db.Column(db.String(10))
     location = db.Column(db.String(50))
     notes = db.Column(db.String(255))

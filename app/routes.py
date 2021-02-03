@@ -17,6 +17,7 @@ from datetime import datetime, timezone
 import numpy
 from matplotlib import pylab
 import json
+import pytz
 
 
 @app.route('/')
@@ -29,6 +30,7 @@ def index():
 @app.route('/landing')
 def landing():
     return render_template('landingPage.html')
+
 
 @app.route('/email')
 def test():
@@ -48,17 +50,27 @@ def target_test():
         num = 1
         letter = ord("A")
         shotTotal = 0
-        for shot in shots:
+        shotsList = [stat for stat in enumerate(shots)]
+
+        for i, shot in shotsList:
             shotTotal += shot.score
             scoreList.append(shot.score)
+            if i == 0:
+                duration = 'N/A'
+            else:
+                start = shotsList[i-1][1].timestamp
+                diff = (shot.timestamp-start).total_seconds()
+                if int(diff/60) == 0:
+                    duration = "{}s".format(int(diff%60))
+                else:
+                    duration = "{}m {}s".format(int(diff/60),int(diff%60))
             if shot.sighter:
-                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score)])
+                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), duration])
                 letter += 1
             else:
-                formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score)])
+                formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score),duration])
                 num += 1
         jsonList = json.dumps(formattedList)
-        formattedList.append(["Total", 0, 0, str(shotTotal)]) #Total appended to list to make display of shots easier
 
         #Stage Stats
         stageResponse = stage.stageStats()
@@ -66,7 +78,7 @@ def target_test():
         duration = "{}m {}s".format(int(stageResponse[4]/60),stageResponse[4] % 60)
         stageStats.append(duration)
 
-        #test = Stage.query.filter(Stage.timestamp == stage.timestamp.date()).all()
+        formattedList.append(["Total", 0, 0, str(shotTotal), duration])  # Total appended to list to make display of shots easier
 
         #Get Season Stats
         user = User.query.filter_by(id=stage.userID).first()
@@ -78,9 +90,10 @@ def target_test():
     return render_template('index.html')
 
 
-@app.template_filter('utc_to_local')
-def utc_to_local(utc_dt):
-    return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=None)
+@app.template_filter('utc_to_nsw')
+def utc_to_nsw(utc_dt):
+    nsw = pytz.timezone('Australia/NSW')
+    return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=nsw)
 
 
 @app.route('/profile',  methods=['GET', 'POST'])
@@ -517,7 +530,7 @@ def getShots():
                            'totalScore': totalScore,
                            'groupSize': round(stage.groupSize, 1),
                            'rangeDistance': '300m',
-                           'timestamp': utc_to_local(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
+                           'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
                            'std': std,
                            'duration': duration,
                            'stageID': stage.id,
