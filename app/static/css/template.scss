@@ -195,16 +195,17 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 //Small Screens TODO figure out the weird location with opening window
 @media (max-width: 768px) {
     #sidebar {
-        bottom: 0;
+        top: 0;
+        left: 0;
         width: 100vw;
-        height: 5rem;
-        border-top: 5px solid $palette-1;
+        height: 4rem;
+        border-bottom: 3px solid $palette-1;
     }
     #content {
+        margin-top: 4rem;
         width: 100%;
     }
     #sidebar ul.components {
-        margin-bottom: 0;
         display: flex;
         flex-direction: row;
     }
@@ -213,15 +214,15 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     }
     #sidebar ul li a {
         text-align: center;
-        width: 5rem;
-        height: 5rem;
+        width: 4rem;
+        height: 4rem;
     }
     #sidebar ul li a span {
         display: none;
     }
     #sidebar ul li i {
         padding-top: 10px;
-        font-size: 3rem;
+        font-size: 2rem;
     }
 }
 
@@ -321,11 +322,6 @@ ul.CTAs a {
 a.download {
     background: #fff;
     color: $palette-1;
-}
-
-a.article {
-    background-color: $palette-1;
-    color: #fff !important;
 }
 
 
