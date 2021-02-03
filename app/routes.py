@@ -284,9 +284,10 @@ def upload():
                 username = request.form[key]
                 stageList[id]['username'] = username
                 idFound = User.query.filter_by(username=username).first()
-                stageList[id]['userID'] = idFound.id
                 if idFound is None:
                     invalidList.append(stageList[id])
+                else:
+                    stageList[id]['userID'] = idFound.id
         if not invalidList:
             stageDefine = {}
             stageDefine['location'] = form.location.data
