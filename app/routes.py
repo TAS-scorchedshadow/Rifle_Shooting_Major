@@ -350,6 +350,7 @@ def upload():
     form = uploadForm()
     stageList = []
     invalidList = []
+    alert = None
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
         if request.method == "POST":
@@ -420,7 +421,7 @@ def upload():
             # todo: need to add an alert popup here
             print("DEBUG: Not all usernames correct")
     stageDump = json.dumps(stageList)
-    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList)
+    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
 
 
 @app.route('/login', methods=['GET', 'POST'])
