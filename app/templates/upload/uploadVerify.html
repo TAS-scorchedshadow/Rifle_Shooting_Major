@@ -28,6 +28,9 @@
                         <hr>
                         <!--TODO you probably need to change the value insert into some Javascript equivalent-->
                         <h3 class="text-center">The following stages contain incomplete data</h3>
+                        {% if invalidList == [] %}
+                            No invalid shoots!
+                        {% endif %}
                         <div class="table-responsive">
                             <table class="text-center justify-content-center table table-bordered">
                                 <thead class="thead-dark">

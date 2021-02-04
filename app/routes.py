@@ -350,6 +350,7 @@ def upload():
     form = uploadForm()
     stageList = []
     invalidList = []
+    alert = None
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
         if request.method == "POST":
@@ -383,9 +384,10 @@ def upload():
                 username = request.form[key]
                 stageList[id]['username'] = username
                 idFound = User.query.filter_by(username=username).first()
-                stageList[id]['userID'] = idFound.id
                 if idFound is None:
                     invalidList.append(stageList[id])
+                else:
+                    stageList[id]['userID'] = idFound.id
         if not invalidList:
             stageDefine = {}
             stageDefine['location'] = form.location.data
@@ -419,7 +421,7 @@ def upload():
             # todo: need to add an alert popup here
             print("DEBUG: Not all usernames correct")
     stageDump = json.dumps(stageList)
-    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList)
+    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
 
 
 @app.route('/login', methods=['GET', 'POST'])
