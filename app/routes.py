@@ -583,7 +583,7 @@ def setGear():
 def getUsers():
     print('reached')
     users = User.query.all()
-    list = [{'label':"{} {}".format(user.fName,user.sName),'value': user.username} for user in users]
+    list = [{'label':"{} ({} {})".format(user.username,user.fName,user.sName),'value': user.username} for user in users]
     return jsonify(list)
 
 @app.route('/getShots', methods=['POST'])
