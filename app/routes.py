@@ -20,8 +20,13 @@ import json
 import pytz
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == "POST":
+        username = request.form['user']
+        if username:
+            user = User.query.filter_by(username=username).first()
+            return redirect('/profile?userID='+str(user.id))
     if not current_user.is_authenticated:
       return redirect(url_for('landing'))
     return render_template('index.html')
@@ -491,6 +496,14 @@ def setGear():
         db.session.commit()
         return jsonify('success')
     return jsonify({'error': 'userID'})
+
+
+@app.route('/getUsers', methods=['POST'])
+def getUsers():
+    print('reached')
+    users = User.query.all()
+    list = [{'label':"{} {}".format(user.fName,user.sName),'value': user.username} for user in users]
+    return jsonify(list)
 
 @app.route('/getShots', methods=['POST'])
 def getShots():

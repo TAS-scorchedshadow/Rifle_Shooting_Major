@@ -10452,7 +10452,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 ----------------------------------------------------- */
 #content {
   width: calc(100% - 250px);
-  padding: 40px;
+  padding: 15px;
   min-height: 100vh;
   transition: all 0.3s;
   position: absolute;
@@ -10478,6 +10478,8 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 
   #content {
     margin-top: 4rem;
+    padding-left: 1px;
+    padding-right: 1px;
     width: 100%;
   }
 
