@@ -1,30 +1,30 @@
 //By Henry Guo
-
-const target_details = {"details": ['V', '5', '4', '3', '2', '1'],
-                      "300m": [300, 70, 140, 280, 420, 600, 1200],
-                      "400m": [400, 95, 185, 375, 560, 800, 1800],
-                      "500m": [500, 145, 290, 660, 1000, 1320, 1800],
-                      "600m": [600, 160, 320, 660, 1000, 1320, 1800],
-                      "700m": [700, 255, 510, 815, 1120, 1830, 2400],
-                      "800m": [700, 255, 510, 815, 1120, 1830, 2400],
-                      "300yds": [274.32, 65, 130, 260, 390, 560],
-                      "400yds": [365.76, 85, 175, 350, 520, 745],
-                      "500yds": [457.20, 130, 260, 600, 915, 1320],
-                      "600yds": [548.64, 145, 290, 600, 915, 1320]
+var target_details = {
+    "details": ['V', '5', '4', '3', '2', '1'],
+    "300m": [300, 70, 140, 280, 420, 600, 1200],
+    "400m": [400, 95, 185, 375, 560, 800, 1800],
+    "500m": [500, 145, 290, 660, 1000, 1320, 1800],
+    "600m": [600, 160, 320, 660, 1000, 1320, 1800],
+    "700m": [700, 255, 510, 815, 1120, 1830, 2400],
+    "800m": [700, 255, 510, 815, 1120, 1830, 2400],
+    "300yds": [274.32, 65, 130, 260, 390, 560],
+    "400yds": [365.76, 85, 175, 350, 520, 745],
+    "500yds": [457.20, 130, 260, 600, 915, 1320],
+    "600yds": [548.64, 145, 290, 600, 915, 1320]
 };
 //Colors
-const targetFill = '#afafaf';
-const targetStroke = 'black';
+var targetFill = '#afafaf';
+var targetStroke = 'black';
 
-const shotFill = '#afafaf';
-const shotStroke = 'black';
-const shotText = 'black';
+var shotFill = '#afafaf';
+var shotStroke = 'black';
+var shotText = 'black';
 
-const gridLinesColor = '#7b7b7b';
+var gridLinesColor = '#7b7b7b';
 
 //c is canvas context object
 //lineWidth is the thickness of the circle's stroke
-function Circle(c, x, y, radius, lineWidth=1) {
+function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWidth=1) {
     this.lineWidth = lineWidth;
     this.x = x;
     this.y = y;
@@ -33,10 +33,10 @@ function Circle(c, x, y, radius, lineWidth=1) {
     this.draw = function() {
         c.beginPath();
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        c.fillStyle = targetFill;
+        c.fillStyle = fillColor;
         c.fill();
         c.lineWidth = this.lineWidth;
-        c.strokeStyle = targetStroke;
+        c.strokeStyle = strokeColor;
         c.stroke();
         c.closePath();
     };
@@ -60,7 +60,7 @@ function Target(c, x, y, width, dist){
     //Ratio in pixels per millimetre
     this.ratio = this.width/target_details[this.dist][5];
     for (let i=1; i<=5; i++){
-        let addCircle = new Circle(this.c, this.x, this.y,target_details[this.dist][i]*this.ratio/2, 1*this.ratio);
+        let addCircle = new Circle(this.c, this.x, this.y,target_details[this.dist][i]*this.ratio/2, targetFill, targetStroke, 1*this.ratio);
         this.targetCircles.push(addCircle);
     }
     this.update = function(x,y,width, ratio) {
@@ -145,7 +145,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         //Draw indicators for each ring
         for (let i=0; i<=4; i++){
             let indicatorTxt = target_details['details'][i];
-            let ringDist = target_details[this.dist][i]/2*this.ratio;
+            let ringDist = target_details[this.dist][i+1]/2*this.ratio;
             this.c.beginPath();
             this.c.font = "12px Arial";
             this.c.fillStyle= shotText;

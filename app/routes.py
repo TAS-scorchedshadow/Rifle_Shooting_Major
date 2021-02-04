@@ -95,6 +95,7 @@ def target_test():
         otherStages = []
         # stages of the selected user's shoots on the same day and stores their grouping info
         myStages = []
+
         dayStats = [0, 0, 0, 0, 0]
         for shoot in dayStages:
             if shoot.userID == stage.userID:
@@ -105,7 +106,7 @@ def target_test():
                 dayX += shoot.groupX
                 dayY += shoot.groupY
                 myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-            else:
+            elif shoot.rangeDistance == stage.rangeDistance:
                 otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
         dayAvg = [dayX / count, dayY / count]
         myStages = json.dumps(myStages)
@@ -118,8 +119,6 @@ def target_test():
         # stageStats[4] or seasonStats[4] is duration as a string
         # Instead, dayStats[5] is duration as a string
 
-
-
         #Get Season Stats
         user = User.query.filter_by(id=stage.userID).first()
         seasonResponse = user.seasonStats()
@@ -127,24 +126,20 @@ def target_test():
         seasonDuration = "{}m {}s".format(int(seasonResponse[4]/60),seasonResponse[4] % 60)
         seasonStats.append(seasonDuration)
 
-        print(myStages)
-        print(otherStages)
-
         return render_template('plotSheet.html', range=range, formattedList=formattedList,
                                jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats,
                                dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
     return render_template('index.html')
 
-# Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
+# # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
 # @app.route('/groupTest')
 # def getGroupStats():
-#     stages = Stage.query.filter_by(userID=31).all()
+#     stages = Stage.query.filter_by(userID=32).all()
 #     for stage in stages:
 #         stageID = stage.id
 #         shots = Shot.query.filter_by(stageID=stageID).all()
 #         totalX = 0
 #         totalY = 0
-#         totalSize = 0
 #         sighterNum = 0
 #         for shot in shots:
 #             if not shot.sighter:
