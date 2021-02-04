@@ -8,6 +8,8 @@ import statistics
 
 class User(UserMixin, db.Model):
     """
+    User database table
+
     :parameter [UserMixin]: Defines isActive, isAuthenticated, getID, isAnonymous
     :parameter [db.Model]: TO BE FILLED
     """
@@ -75,6 +77,9 @@ class User(UserMixin, db.Model):
             return '<User {}>'.format(self.username)
 
     def generate_username(self):
+        """
+        :return: TO BE FILLED
+        """
         # Must have fName and sName initialised
         num = 1
         temp = self.fName.lower() + "." + self.sName[0].lower() + str(num)
@@ -87,23 +92,43 @@ class User(UserMixin, db.Model):
         self.username = temp
 
     def set_password(self, password):
+        """
+        :param password: The password set
+        :return: TO BE FILLED
+        """
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        """
+        :param password: Entered password
+        :return: Checks is password is correct
+        """
         return check_password_hash(self.password_hash, password)
 
     def get_reset_password_token(self, expires_in=600):
+        """
+        :param expires_in: TO BE FILLED
+        :return: TO BE FILLED
+        """
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
     def get_activation_token(self, expires_in=600):
+        """
+        :param expires_in: TO BE FILLED
+        :return: TO BE FILLED
+        """
         return jwt.encode(
             {'activate': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
     @staticmethod
     def verify_reset_token(token):
+        """
+        :param token: TO BE FILLED
+        :return: ID of the user
+        """
         try:
             id = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
         except:
@@ -112,6 +137,10 @@ class User(UserMixin, db.Model):
 
     @staticmethod
     def verify_activation_token(token):
+        """
+        :param token: TO BE FILLED
+        :return: ID of the user
+        """
         try:
             id = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
         except:
@@ -119,6 +148,11 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
 
     def seasonStats(self):
+        """
+        Statistics on the season
+
+        :return: Mean, median, std, group size & duration
+        """
         totalMean = 0
         totalMedian = 0
         totalStd = 0
@@ -144,6 +178,9 @@ class User(UserMixin, db.Model):
 
 class Stage(db.Model):
     """
+    Stages database table
+
+    :type: Class
     :parameter: TO BE FILLED
     """
     id = db.Column(db.BigInteger, primary_key=True)
@@ -161,6 +198,9 @@ class Stage(db.Model):
         return '<Stage {}>'.format(self.id)
 
     def stageStats(self):
+        """
+        :returns: Mean, median, std, group size and duration if successful
+        """
         shots = Shot.query.filter_by(stageID=self.id).all()
         scores = [shot.score for shot in shots if not shot.sighter]
         try:
@@ -174,8 +214,10 @@ class Stage(db.Model):
 
 class Shot(db.Model):
     """
+    Shot database table
+
     :type: Class
-    :
+    :parameter: TO BE FILLED
     """
     id = db.Column(db.Integer, primary_key=True)
     stageID = db.Column(db.BigInteger, db.ForeignKey('stage.id'))

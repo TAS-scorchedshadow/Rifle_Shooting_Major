@@ -4,6 +4,16 @@ from app import app, mail
 
 
 def send_email(subject ,recipients, text_body, html_body):
+    """
+    Sends an email to the relevant recipients
+
+    :param subject: Fills subject of the email
+    :param sender: Specifies the creator of the email
+    :param recipients: Specifies the address of the emails
+    :param text_body: Fills the body of the email
+    :param html_body: TO BE FILLED
+    :return:
+    """
     msg = Message(subject, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
@@ -11,6 +21,12 @@ def send_email(subject ,recipients, text_body, html_body):
 
 
 def send_password_reset_email(user):
+    """
+    Sends an email for users to reset their passwords
+
+    :param user: User requesting for a change in password
+    :return: TO BE FILLED
+    """
     token = user.get_reset_password_token()
     send_email('[PARS] Reset Your Password',
                recipients=[user.email],
@@ -18,6 +34,12 @@ def send_password_reset_email(user):
                html_body=render_template('email/resetPassword.html', user=user, token=token))
 
 def send_activation_email(user):
+    """
+    Sends a confirmation email to the newly registered user
+
+    :param user: Newly registered user
+    :return: TO BE FILLED
+    """
     token = user.get_activation_token()
     send_email('Welcome to PARS! Confirm Your Email',
                recipients=[user.email],

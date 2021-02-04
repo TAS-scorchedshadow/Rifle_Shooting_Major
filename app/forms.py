@@ -8,9 +8,11 @@ from wtforms.validators import DataRequired, InputRequired, EqualTo
 
 # This file contains all the required forms from various parts of this project
 
-# Form for uploading files
 # -- Ryan Tan --
 class uploadForm(FlaskForm):
+    """
+    Form fields to upload information on the shoot to be added to the database
+    """
     file = MultipleFileField(u'Submit File')
     location = SelectField("Location:", choices=[('Malabar', 'Malabar')])
     rangeDistance = SelectField("Distance:", choices=[('300m', '300m'), ('500m', '500m'), ('600m', '600m'),
@@ -24,9 +26,11 @@ class uploadForm(FlaskForm):
     total = HiddenField("Total")
 
 
-# Form for registering
 # -- Dylan Huynh --
 class signUpForm(FlaskForm):
+    """
+    Form for registering a user on the application
+    """
     fName = StringField("Enter First Name:",validators=[InputRequired()])
     sName = StringField("Enter Last Name:",validators=[InputRequired()])
     school = SelectField("Select a school", choices=[('SBHS','SBHS')])
@@ -38,9 +42,11 @@ class signUpForm(FlaskForm):
     submit = SubmitField("Sign Up")
 
 
-# Form for logging in
 # -- Dylan Huynh --
 class signInForm(FlaskForm):
+    """
+    Form for logging into the application
+    """
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
@@ -58,14 +64,19 @@ class ResetPasswordForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
 
-# Form for report page
 # -- Henry Guo --
 class reportForm(FlaskForm):
+    """
+    Forms for the report page
+    """
     date = SelectField('Date',)
     submit = SubmitField("Select")
 
 # -- Rishi Wig --
 class profileSelect(FlaskForm):
+    """
+    Forms to select and change cells in info table on the profile page
+    """
     cell = SelectField('Change cell', choices=[('SID','SID'),('DOB', 'DOB'), ('Serial', 'Rifle Serial'), ('SchoolID', 'Student ID'),
                                                ("Grade", "Grade"), ("Email", "Email"), ("Permit", "Permit"),
                                                ("Expiry", "Expiry"), ("Sharing", "Sharing"),
