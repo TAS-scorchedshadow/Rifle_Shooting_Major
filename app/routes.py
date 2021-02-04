@@ -22,6 +22,11 @@ import pytz
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    """
+    Homepage for the website. Identifies whether person is signed in.
+
+    :return: Index html page
+    """
     if request.method == "POST":
         username = request.form['user']
         if username:
@@ -34,15 +39,30 @@ def index():
 
 @app.route('/landing')
 def landing():
+    """
+    First page opened when address entered
+
+    :return: Landing html page
+    """
     return render_template('landingPage.html')
 
 
 @app.route('/email')
 def test():
+    """
+    TO BE FILLED
+
+    :return:
+    """
     return render_template('/email/activate.html',user=current_user)
 
 @app.route('/target')
 def target_test():
+    """
+    Displays target & mapping of shits from the shoot
+
+    :return:
+    """
     # This route takes an argument from url and uses it to query the database for
     # the relevant shots and range information
     stageID = request.args.get('stageID')
@@ -160,6 +180,12 @@ def target_test():
 
 @app.template_filter('utc_to_nsw')
 def utc_to_nsw(utc_dt):
+    """
+    TO BE FILLED
+
+    :param utc_dt: TO BE FILLED
+    :return: TO BE FILLED
+    """
     nsw = pytz.timezone('Australia/NSW')
     return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=nsw)
 def nsw_to_utc(nsw_dt):
@@ -181,6 +207,8 @@ def get_stages_on_same_day(stage):
 @login_required
 def profile():
     """
+    Page which displays shooter/stages/shot information
+
     :parameter [UserID]: Database Shooter ID
     :return: profile.html with info dictionary for the table, form for forms and variables/lists for ChartJS
     """
@@ -342,6 +370,11 @@ def profile_settings():
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
+    """
+    Page to receive file entries for upload of shoot info
+
+    :return: Upload html page
+    """
     form = uploadForm()
     stageList = []
     invalidList = []
@@ -421,6 +454,11 @@ def upload():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Allows the user to log on to the system
+
+    :return: Login page
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = signInForm()
@@ -440,6 +478,11 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """
+    Allows user to register an account on the system
+
+    :return:
+    """
     form = signUpForm()
     if form.validate_on_submit():
         # TODO account for other formats
@@ -458,6 +501,12 @@ def register():
 
 @app.route('/emailActivation/<token>', methods=['GET', 'POST'])
 def emailActivation(token):
+    """
+    TO BE FILLED
+
+    :param token: TO BE FILLED
+    :return: TO BE FILLED
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     user = User.verify_activation_token(token)
@@ -470,6 +519,11 @@ def emailActivation(token):
 
 @app.route('/requestResetPassword', methods=['GET', 'POST'])
 def requestResetPassword():
+    """
+    Requesting a password reset if account details forgotten
+
+    :return: Reset password html page
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = ResetPasswordRequestForm()
@@ -484,6 +538,11 @@ def requestResetPassword():
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    """
+    Requesting a password reset if account details forgotten
+
+    :return: Reset password html page
+    """
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     user = User.verify_reset_token(token)
@@ -501,6 +560,11 @@ def reset_password(token):
 @app.route('/userList')
 @login_required
 def userList():
+    """
+    List of all current users on the system
+
+    :return:
+    """
     if not current_user.isAdmin:
         return redirect(url_for('index'))
     users = User.query.order_by(User.schoolID).all()
@@ -509,6 +573,11 @@ def userList():
 
 @app.route('/deleteAccount', methods=['POST'])
 def deleteAccount():
+    """
+    Allows users to remove their account from the system
+
+    :return: TO BE FILLED
+    """
     print('reached')
     data = request.get_data()
     userID = json.loads(data)
@@ -528,6 +597,11 @@ def deleteAccount():
 # TODO merge both functions
 @app.route('/admin', methods=['POST'])
 def admin():
+    """
+    TO BE FILLED
+
+    :return: TO BE FILLED
+    """
     data = request.get_data()
     loadedData = json.loads(data)
     state = loadedData['state']
@@ -643,5 +717,10 @@ def getTargetStats():
 
 @app.route('/logout')
 def logout():
+    """
+    Allows users to exit from the system
+
+    :return: TO BE FILLED
+    """
     logout_user()
     return redirect(url_for('index'))
