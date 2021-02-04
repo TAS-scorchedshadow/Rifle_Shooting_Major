@@ -13,15 +13,20 @@ from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import numpy
 from matplotlib import pylab
 import json
 import pytz
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == "POST":
+        username = request.form['user']
+        if username:
+            user = User.query.filter_by(username=username).first()
+            return redirect('/profile?userID='+str(user.id))
     if not current_user.is_authenticated:
       return redirect(url_for('landing'))
     return render_template('index.html')
@@ -80,20 +85,101 @@ def target_test():
 
         formattedList.append(["Total", 0, 0, str(shotTotal), duration])  # Total appended to list to make display of shots easier
 
+        dayStages = get_stages_on_same_day(stage)
+        # dayStages = Stage.query.filter_by(userID=31).all()
+        # dayX and dayY refers to the grouping coordinates
+        dayX = 0
+        dayY = 0
+        count = 0
+        # stages of other people's shoots on the same day and stores their grouping info
+        otherStages = []
+        # stages of the selected user's shoots on the same day and stores their grouping info
+        myStages = []
+        dayStats = [0, 0, 0, 0, 0]
+        for shoot in dayStages:
+            if shoot.userID == stage.userID:
+                count += 1
+                dayResponse = shoot.stageStats()
+                for i, stat in enumerate(dayResponse):
+                    dayStats[i] = dayStats[i] + stat
+                dayX += shoot.groupX
+                dayY += shoot.groupY
+                myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
+            else:
+                otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
+        dayAvg = [dayX / count, dayY / count]
+        myStages = json.dumps(myStages)
+        otherStages = json.dumps(otherStages)
+        for i, stat in enumerate(dayStats):
+            dayStats[i] = round(stat / count, 2)
+        dayDuration = "{}m {}s".format(int(dayStats[4] / 60), int(dayStats[4] % 60))
+        dayStats.append(dayDuration)
+        # Note: due to averaging method, dayStats[4] is duration in seconds while the other vars like
+        # stageStats[4] or seasonStats[4] is duration as a string
+        # Instead, dayStats[5] is duration as a string
+
+
+
         #Get Season Stats
         user = User.query.filter_by(id=stage.userID).first()
         seasonResponse = user.seasonStats()
         seasonStats = [round(stat,2) for stat in seasonResponse if isinstance(stat,float)]
-        duration = "{}m {}s".format(int(seasonResponse[4]/60),seasonResponse[4] % 60)
-        seasonStats.append(duration)
-        return render_template('plotSheet.html', range=range, formattedList=formattedList, jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats)
+        seasonDuration = "{}m {}s".format(int(seasonResponse[4]/60),seasonResponse[4] % 60)
+        seasonStats.append(seasonDuration)
+
+        print(myStages)
+        print(otherStages)
+
+        return render_template('plotSheet.html', range=range, formattedList=formattedList,
+                               jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats,
+                               dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
     return render_template('index.html')
+
+# Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
+# @app.route('/groupTest')
+# def getGroupStats():
+#     stages = Stage.query.filter_by(userID=31).all()
+#     for stage in stages:
+#         stageID = stage.id
+#         shots = Shot.query.filter_by(stageID=stageID).all()
+#         totalX = 0
+#         totalY = 0
+#         totalSize = 0
+#         sighterNum = 0
+#         for shot in shots:
+#             if not shot.sighter:
+#                 totalX += shot.xPos
+#                 totalY += shot.yPos
+#             else:
+#                 sighterNum += 1
+#         stage.groupX = totalX / (len(shots) - sighterNum)
+#         stage.groupY = totalY / (len(shots) - sighterNum)
+#     db.session.flush()
+#     db.session.commit()
+#
+#
+#     print('database commit successful')
+#     return render_template('index.html')
+
 
 
 @app.template_filter('utc_to_nsw')
 def utc_to_nsw(utc_dt):
     nsw = pytz.timezone('Australia/NSW')
     return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=nsw)
+def nsw_to_utc(nsw_dt):
+    return nsw_dt.astimezone(pytz.utc)
+
+def get_stages_on_same_day(stage):
+    # Because datetime is stored as utc, we have to first convert it to local time to get the time for the start and end of the day
+    # Then it must be converted back to utc to query the database
+    # Returns a tuple with all the stages on the same day as the stage given
+    dayStartAEST = utc_to_nsw(stage.timestamp).replace(hour=0, minute=0, second=0, microsecond=0)
+    dayEndAEST = dayStartAEST + timedelta(days=1)
+    dayStart = nsw_to_utc(dayStartAEST)
+    dayEnd = nsw_to_utc(dayEndAEST)
+    dayStages = Stage.query.filter(Stage.timestamp.between(dayStart, dayEnd))
+    return dayStages
 
 
 @app.route('/profile',  methods=['GET', 'POST'])
@@ -492,6 +578,14 @@ def setGear():
         db.session.commit()
         return jsonify('success')
     return jsonify({'error': 'userID'})
+
+
+@app.route('/getUsers', methods=['POST'])
+def getUsers():
+    print('reached')
+    users = User.query.all()
+    list = [{'label':"{} {}".format(user.fName,user.sName),'value': user.username} for user in users]
+    return jsonify(list)
 
 @app.route('/getShots', methods=['POST'])
 def getShots():

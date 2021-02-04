@@ -49,17 +49,17 @@
         }
 
     </style>
-    <script type="text/javascript" src="../static/js/targetTests.js"></script>
+    <script type="text/javascript" src="../static/js/targetDiagram.js"></script>
     <script type="text/javascript" src="../static/js/targetAjax.js"></script>
     <div class="container-fluid cover-container text-center">
         <div class="row flex-fill">
             <div class="col-lg-5 col-md-12 justify-content-center">
                 <canvas id="title" style="border: 1px solid black"></canvas>
-                <canvas id="tip"></canvas>
+                <canvas id="tip" width="100" height="25"></canvas>
                 <script>
-                    let shotList= {{ jsonList|safe }} //TODO This is vulneratble to injections fix when we have time
-                    let range = {{ range|safe }}
-                    console.log(shotList)
+                    let shotList= {{ jsonList|safe }}; //TODO This is vulneratble to injections fix when we have time
+                    let range = {{ range|safe }};
+                    console.log(shotList);
                     let myTarget = new DrawTarget('title',range,shotList);
                 </script>
                 <br>
@@ -116,31 +116,31 @@
                                     <tr>
                                       <th scope="row">Avr. Score</th>
                                       <td>{{ stageStats[0] }}</td>
-                                      <td>Otto</td>
+                                      <td>{{ dayStats[0] }}</td>
                                       <td>{{ seasonStats[0] }}</td>
                                     </tr>
                                     <tr>
                                       <th scope="row">Median Score</th>
                                       <td>{{ stageStats[1] }}</td>
-                                      <td>Thornton</td>
+                                      <td>{{ dayStats[1] }}</td>
                                       <td>{{ seasonStats[1] }}</td>
                                     </tr>
                                     <tr>
                                       <th scope="row">S.T.D Score</th>
                                       <td>{{ stageStats[2] }}</td>
-                                      <td>the Bird</td>
+                                      <td>{{ dayStats[2] }}</td>
                                       <td>{{ seasonStats[2] }}</td>
                                     </tr>
                                  <tr>
                                       <th scope="row">Group Size</th>
                                       <td>{{ stageStats[3] }}</td>
-                                      <td>the Bird</td>
+                                      <td>{{ dayStats[3] }}</td>
                                       <td>{{ seasonStats[3] }}</td>
                                     </tr>
                                  <tr>
                                       <th scope="row">Duration</th>
                                       <td>{{ stageStats[4] }}</td>
-                                      <td>the Bird</td>
+                                      <td>{{ dayStats[5] }}</td>
                                       <td>{{ seasonStats[4] }}</td>
                                     </tr>
                                   </tbody>

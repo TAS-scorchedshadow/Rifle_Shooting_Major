@@ -11,6 +11,9 @@
         background-position: center;
     }
 </style>
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+ <script type="text/javascript" src="../static/js/autofill.js"></script>
 <div class = "text-center justify-content-center">
     <div>
         <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2">
@@ -63,6 +66,13 @@
               <p>Line graphs, pie charts and other interesting visualisations!</p>
           </div>
         </a>
+    </div>
+    <div class="ui-widget user-searchbar">
+        <form method="post">
+             <label for="user-searchbar-field">Profile: </label>
+             <input id="user-searchbar-field" autocomplete="off" name="user">
+            <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </div>
 <hr>

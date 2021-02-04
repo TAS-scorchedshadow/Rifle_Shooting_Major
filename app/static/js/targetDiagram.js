@@ -1,4 +1,6 @@
-const target_details = {"details": ['distance', 'V', '5', '4', '3', '2', '1'],
+//By Henry Guo
+
+const target_details = {"details": ['V', '5', '4', '3', '2', '1'],
                       "300m": [300, 70, 140, 280, 420, 600, 1200],
                       "400m": [400, 95, 185, 375, 560, 800, 1800],
                       "500m": [500, 145, 290, 660, 1000, 1320, 1800],
@@ -141,7 +143,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             xLine += this.PX_PER_MOA_PER_1M;
         }
         //Draw indicators for each ring
-        for (let i=1; i<=5; i++){
+        for (let i=0; i<=4; i++){
             let indicatorTxt = target_details['details'][i];
             let ringDist = target_details[this.dist][i]/2*this.ratio;
             this.c.beginPath();
@@ -165,7 +167,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             shot_y = shots[i][2];
             //Draw Circle
             this.c.beginPath();
-            this.c.arc(this.x + (shot_x*this.ratio), this.y + (shot_y*this.ratio), 13, 0, Math.PI * 2, false);
+            this.c.arc(this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio), 13, 0, Math.PI * 2, false);
             this.c.fillStyle = shotFill;
             this.c.fill();
             this.c.strokeStyle = shotStroke;
@@ -177,7 +179,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.c.font = "16px Arial";
             this.c.fillStyle= shotText;
             this.c.textAlign = "center";
-            this.c.fillText(shot_num, this.x + (shot_x*this.ratio), this.y + (shot_y*this.ratio)+5);
+            this.c.fillText(shot_num, this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio)+5);
             this.c.closePath();
         }
     }
@@ -200,7 +202,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
 
     this.init();
     this.draw();
-    //Set values for use in the following functions
+    //Set values for use in the later functions
     let canvasParent = this.canvasObj.parentNode;
     let targetX = this.x;
     let targetY = this.y;
@@ -242,10 +244,10 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         let hit = false;
         for (let i=0; i<shots.length; i++){
             let dx =  mouseX - shots[i][1]*targetRatio;
-            let dy = mouseY - shots[i][2]*targetRatio;
+            let dy = mouseY + shots[i][2]*targetRatio;
             if (dx*dx + dy*dy < 13*13) {
                 tipCanvas.style.left = (targetX + shots[i][1]*targetRatio + 25) + "px";
-                tipCanvas.style.top = (targetY + shots[i][2]*targetRatio - 40) + "px";
+                tipCanvas.style.top = (targetY - shots[i][2]*targetRatio - 40) + "px";
                 tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
                 tipCtx.fillText('Score: ' + shots[i][3], 5, 15);
                 hit = true;
