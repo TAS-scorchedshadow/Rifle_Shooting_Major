@@ -3,6 +3,21 @@
 {% block page_title %} Upload {% endblock %}
 {% block page_content %}
     <head>
+        <style>
+            .alert {
+              padding: 20px;
+            {% if alert[0] == "Success" %}
+                background-color: #86c232;
+            {% elif alert[0] == "Failure" %}
+                background-color: #EF4836;
+            {% else %}
+                background-color: #e77b33;
+            {% endif %}
+              color: white;
+              opacity: 1;
+              transition: opacity 0.6s; /* 600ms to fade out */
+            }
+        </style>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
         <!-- if using RTL (Right-To-Left) orientation, load the RTL CSS file after fileinput.css by uncommenting below -->
         <!-- link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/css/fileinput-rtl.min.css" media="all" rel="stylesheet" type="text/css" /-->
@@ -28,6 +43,44 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/js/locales/(lang).js"></script>
 
     </head>
+    {% if alert[0] %}
+        <body>
+            <div class="alert">
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                {% if alert[0] == "Failure" %}
+                    {{ alert[1] }} files were in incorrect format and could not be uploaded.
+                {% elif alert[0] == "Success" %}
+                    {{ alert[2] }} files have been successfully uploaded.
+                {% elif alert[0] == "Warning" %}
+                    {{ alert[2] }} files have been successfully uploaded, while {{ alert[1] }} duplicates were found and were not uploaded.
+                {% else %}
+                    This should not appear... go contact Ryan or something.
+                {% endif %}
+            </div>
+
+            <script>
+                // Get all elements with class="closebtn"
+                var close = document.getElementsByClassName("closebtn");
+                var i;
+
+                // Loop through all close buttons
+                for (i = 0; i < close.length; i++) {
+                    // When someone clicks on a close button
+                    close[i].onclick = function(){
+
+                    // Get the parent of <span class="closebtn"> (<div class="alert">)
+                    var div = this.parentElement;
+
+                    // Set the opacity of div to 0 (transparent)
+                    div.style.opacity = "0";
+
+                    // Hide the div after 600ms (the same amount of milliseconds it takes to fade out)
+                    setTimeout(function(){ div.style.display = "none"; }, 600);
+                    }
+                }
+            </script>
+        </body>
+    {% endif %}
     <div class="container-fluid">
     <div class = "text-center justify-content-center">
         <div>

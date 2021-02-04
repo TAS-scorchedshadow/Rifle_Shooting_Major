@@ -5,6 +5,58 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="../static/js/autofill.js"></script>
+<style>
+    .alert {
+        padding: 20px;
+        {% if alert[0] == "Success" %}
+            background-color: #86c232;
+        {% elif alert[0] == "Failure" %}
+            background-color: #EF4836;
+        {% else %}
+            background-color: #e77b33;
+        {% endif %}
+        color: white;
+        opacity: 1;
+        transition: opacity 0.6s; /* 600ms to fade out */
+    }
+</style>
+{% if alert[0] %}
+    <body>
+        <div class="alert">
+            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+            {% if alert[2] > 0 %}
+                {{ alert[2] }} files are ready to upload.
+            {% endif %}
+            {% if alert[0] == "Warning" %}
+                {{ alert[1] }} files were in incorrect format and could not be uploaded.
+            {% elif alert[0] == "Incomplete" %}
+                {{ alert[1] }} files are missing a correct username.
+            {% endif %}
+        </div>
+
+        <script>
+            // Get all elements with class="closebtn"
+            var close = document.getElementsByClassName("closebtn");
+            var i;
+
+            // Loop through all close buttons
+            for (i = 0; i < close.length; i++) {
+                // When someone clicks on a close button
+                close[i].onclick = function(){
+
+                // Get the parent of <span class="closebtn"> (<div class="alert">)
+                var div = this.parentElement;
+
+                // Set the opacity of div to 0 (transparent)
+                div.style.opacity = "0";
+
+                // Hide the div after 600ms (the same amount of milliseconds it takes to fade out)
+                setTimeout(function(){ div.style.display = "none"; }, 600);
+                }
+            }
+        </script>
+    </body>
+{% endif %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">

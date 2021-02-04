@@ -378,13 +378,13 @@ def upload():
     form = uploadForm()
     stageList = []
     invalidList = []
-    alert = None
+    alert = [None, 0, 0]    # Alert type, Failures, Successes
+    count = {"total": 0, "failure": 0, "success": 0}
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
             files = request.files.getlist('file')
-            count = 0
             for file in files:
                 try:
                     bytes = file.read()
@@ -393,15 +393,28 @@ def upload():
                     stage = validateShots(data)
                     # Decodes a file from FileStorage format into json format, and then extracts relevant info
                     # Fixes up file to obtain relevant data and valid shots
-                    stage['listID'] = count
+                    stage['listID'] = count["total"]
                     stageList.append(stage)
                     # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
                     idFound = User.query.filter_by(username=stage['username']).first()
                     if idFound is None:
                         invalidList.append(stage)
+                    else:
+                        count["success"] += 1
                 except:
                     print("File had an error in uploading")
-                count += 1
+                    count["failure"] += 1
+                count["total"] += 1
+
+            if count["success"] > 0:
+                alert[0] = "Success"
+                alert[2] = count["success"]
+            if count["failure"] > 0:
+                alert[0] = "Warning"
+                alert[1] = count["failure"]
+                if count["failure"] == count["total"]:
+                    template = 'upload/upload.html'
+                    alert[0] = "Failure"
 
     else:
         stageList = json.loads(request.form["stageDump"])
@@ -414,6 +427,7 @@ def upload():
                 idFound = User.query.filter_by(username=username).first()
                 if idFound is None:
                     invalidList.append(stageList[id])
+                    count["failure"] += 1
                 else:
                     stageList[id]['userID'] = idFound.id
         if not invalidList:
@@ -421,7 +435,6 @@ def upload():
             stageDefine['location'] = form.location.data
             stageDefine['rangeDistance'] = form.rangeDistance.data
             stageDefine['weather'] = form.weather.data
-            # todo: handle uploading
             for item in stageList:
                 print(item)
                 try:
@@ -442,11 +455,20 @@ def upload():
                     db.session.commit()
                 except:
                     print('DEBUG: Duplicate file')
-            print("DEBUG: All usernames correct")
+                    count["failure"] += 1
+            count["total"] += 1
+            print("DEBUG: Completed Upload")
+            alert[0] = "Success"
+            alert[2] = count["total"]
+            if count["failure"] > 0:
+                alert[0] = "Warning"
+                alert[1] = count["failure"]
             stageList = []
         else:
             template = 'upload/uploadVerify.html'
             # todo: need to add an alert popup here
+            alert[0] = "Incomplete"
+            alert[1] = count["failure"]
             print("DEBUG: Not all usernames correct")
     stageDump = json.dumps(stageList)
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
