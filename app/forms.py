@@ -77,10 +77,10 @@ class profileSelect(FlaskForm):
     """
     Forms to select and change cells in info table on the profile page
     """
-    cell = SelectField('Change cell', choices=[('SID','SID'),('DOB', 'DOB'), ('Serial', 'Rifle Serial'), ('SchoolID', 'Student ID'),
-                                               ("Grade", "Grade"), ("Email", "Email"), ("Permit", "Permit"),
-                                               ("Expiry", "Expiry"), ("Sharing", "Sharing"),
-                                               ("Mobile1", "Mobile"), ("Class", "Class"), ("Mobile2", "Mobile")])
+    cell = SelectField('Change cell', choices=[('sid','SID'),('dob', 'DOB'), ('rifleSerial', 'Rifle Serial'), ('schoolID', 'Student ID'),
+                                               ("schoolYr", "Grade"), ("email", "Email"), ("permitNumber", "Permit"),
+                                               ("permitExpiry", "Expiry"), ("sharing", "Sharing"),
+                                               ("mobile", "Mobile"), ("class", "Class"), ("Mobile2", "Mobile")])
     data = StringField('Enter new data:')
     submit = SubmitField('ENTER')
 

@@ -219,81 +219,43 @@ def profile():
     """
     Page which displays shooter/stages/shot information
 
-    :parameter [UserID]: Database Shooter ID
+    :parameter [UserID]: Database Shooter ID. Not passed to function, but read from URL
     :return: profile.html with info dictionary for the table, form for forms and variables/lists for ChartJS
     """
-    stubID = 36
-    #userID = request.args.get('userID')
-    #user = User.query.filter_by(id=userID).first()
+    userID = request.args.get('userID')
+    user = User.query.filter_by(id=userID).first()
     form = profileSelect()
     if form.is_submitted():
-        change = form.cell.data
+        change = str(form.cell.data)
         newValue = form.data.data
-        details = User.query.filter_by(id=stubID).first()
-        #TODO: Address where some entries are meant to be directed and clarify the two "Mobile" sections
-        if change == "SID":
-            pass
-        if change == "DOB":
-            details.dob = newValue
-        if change == "Serial":
-            details.rifleSerial = newValue
-        if change == "SchoolID":
-            details.schoolID = newValue
-        if change == "Grade":
-            details.schoolYr = newValue
-        if change == "Email":
-            details.email = newValue
-        if change == "Permit":
-            details.permitNumber = newValue
-        if change == "Expiry":
-            details.permitExpiry = newValue
-        if change == "Sharing":
-            details.sharing = newValue
-        if change == "Mobile":
-            pass
-        if change == "Permit":
-            pass
-        if change == "Permit":
-            pass
+        #user.(change) = newValue
+        setattr(user, change, newValue)
         db.session.commit()
 
-    yearStubAvgLine = [2018, 2019, 2020]
-    scoreStubAvgLine = [5, 8, 17]
-
-    name = ""
     info = {}
-    details_query = User.query.filter_by(id=stubID).all()
-    for i in range(len(details_query)):
-        name += details_query[i].fName + " " + details_query[i].sName
-        #info["SID"] = details_query[i].schoolID
-        info["SID"] = "NULL"
-        info["DOB"] = details_query[i].dob
-        info["Rifle Serial"] = details_query[i].rifleSerial
-        info["StudentID"] = details_query[i].schoolID
-        info["Grade"] = details_query[i].schoolYr
-        info["Email"] = details_query[i].email
-        info["Permit"] = details_query[i].permitNumber
-        info["Expiry"] = details_query[i].permitExpiry
-        info["Sharing"] = details_query[i].sharing
-        info["Mobile"] = "NULL"
-        info["Roll Class"] = "NULL"
-        info["Mobile"] = "NULL"
-        #info["Mobile"] = details_query[i].mobile
-        #info["Roll Class"] = details_query[i].schoolYR
-        #info["Mobile"] = details_query[i].mobile
-    print(info)
-    print(name)
+    name = user.fName + " " + user.sName
+    info["SID"] = "NULL"
+    info["DOB"] = user.dob
+    info["Rifle Serial"] = user.rifleSerial
+    info["StudentID"] = user.schoolID
+    info["Grade"] = user.schoolYr
+    info["Email"] = user.email
+    info["Permit"] = user.permitNumber
+    info["Expiry"] = user.permitExpiry
+    info["Sharing"] = user.sharing
+    info["Mobile"] = "NULL"
+    info["Roll Class"] = "NULL"
+    info["Mobile"] = "NULL"
 
-    z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
-    p = numpy.poly1d(z)
-    pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
-    trend = []
-    for j in range(len(yearStubAvgLine)):
-        result = ((yearStubAvgLine[j]) * z[0]) + z[1]
-        trend.append(result)
+    #z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
+    #p = numpy.poly1d(z)
+    #pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
+    #trend = []
+    #for j in range(len(yearStubAvgLine)):
+    #    result = ((yearStubAvgLine[j]) * z[0]) + z[1]
+    #    trend.append(result)
 
-    return render_template('students/profile.html', form=form, label=yearStubAvgLine, data=scoreStubAvgLine,
-                           trend=trend, user=stubID, info=info, name=name)
+    return render_template('students/profile.html', form=form, user=userID, info=info, name=name)
 
 
 @app.route('/overview')
@@ -301,9 +263,6 @@ def profile_overview():
     # stub for shooter ID passed to the overview
     shooterID = 31
 
-    # database query from the shooter ID to find the stages. first loop gets the stages and creates a dictionary
-    # following loops gets the scores, adds them together and places them as the respective values
-    # database query to get times and corroborate with the scores from the dictionary in the previous function
     stages_query = Stage.query.filter_by(userID=shooterID).all()
     info = {}
     times = []
