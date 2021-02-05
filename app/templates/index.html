@@ -2,18 +2,12 @@
 {% set active_page = "home" %}
 {% block page_title %} Admin Home {% endblock %}
 {% block page_content %}
-<style>
-    .jumbotron{
-        background-image: url('../static/images/home.jpg');
-        background-size: cover;
-        margin-bottom: 20px;
-        margin-top: 0px;
-        background-position: center;
-    }
-</style>
- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
- <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
- <script type="text/javascript" src="../static/js/autofill.js"></script>
+
+<!--Username Autofill-->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="../static/js/autofill.js"></script>
+
 <div class = "text-center justify-content-center">
     <div>
         <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2">
@@ -67,10 +61,10 @@
           </div>
         </a>
     </div>
-    <div class="ui-widget user-searchbar">
+    <div class="ui-widget   ">
         <form method="post">
-             <label for="user-searchbar-field">Profile: </label>
-             <input id="user-searchbar-field" autocomplete="off" name="user">
+             <label for="username">Profile: </label>
+             <input id="username" class="user-searchbar" autocomplete="off" name="user">
             <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
         </form>
     </div>

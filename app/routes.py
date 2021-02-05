@@ -57,7 +57,7 @@ def test():
     return render_template('/email/activate.html',user=current_user)
 
 @app.route('/target')
-def target_test():
+def target():
     """
     Displays target & mapping of shits from the shoot
 
@@ -76,37 +76,38 @@ def target_test():
         letter = ord("A")
         shotTotal = 0
         shotsList = [stat for stat in enumerate(shots)]
-
+        shotDuration = 'N/A'
         for i, shot in shotsList:
             shotTotal += shot.score
             scoreList.append(shot.score)
             if i == 0:
-                duration = 'N/A'
+                shotDuration = 'N/A'
             else:
-                start = shotsList[i-1][1].timestamp
-                diff = (shot.timestamp-start).total_seconds()
-                if int(diff/60) == 0:
-                    duration = "{}s".format(int(diff%60))
+                start = shotsList[i - 1][1].timestamp
+                diff = (shot.timestamp - start).total_seconds()
+                if int(diff / 60) == 0:
+                    shotDuration = "{}s".format(int(diff % 60))
                 else:
-                    duration = "{}m {}s".format(int(diff/60),int(diff%60))
+                    shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
             if shot.sighter:
-                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), duration])
+                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration])
                 letter += 1
             else:
-                formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score),duration])
+                formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration])
                 num += 1
         jsonList = json.dumps(formattedList)
 
-        #Stage Stats
+        # Stage Stats
         stageResponse = stage.stageStats()
-        stageStats = [round(stat,2) for stat in stageResponse if isinstance(stat,float)]
-        duration = "{}m {}s".format(int(stageResponse[4]/60),stageResponse[4] % 60)
-        stageStats.append(duration)
+        stageStats = [round(stat, 2) for stat in stageResponse if isinstance(stat, float)]
+        stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
+        stageStats.append(stageDuration)
 
-        formattedList.append(["Total", 0, 0, str(shotTotal), duration])  # Total appended to list to make display of shots easier
+        formattedList.append(
+            ["Total", 0, 0, str(shotTotal), stageDuration])  # Total appended to list to make display of shots easier
 
+        # Day Stats
         dayStages = get_stages_on_same_day(stage)
-        # dayStages = Stage.query.filter_by(userID=31).all()
         # dayX and dayY refers to the grouping coordinates
         dayX = 0
         dayY = 0
@@ -139,17 +140,18 @@ def target_test():
         # stageStats[4] or seasonStats[4] is duration as a string
         # Instead, dayStats[5] is duration as a string
 
-        #Get Season Stats
+        # Get Season Stats
         user = User.query.filter_by(id=stage.userID).first()
         seasonResponse = user.seasonStats()
-        seasonStats = [round(stat,2) for stat in seasonResponse if isinstance(stat,float)]
-        seasonDuration = "{}m {}s".format(int(seasonResponse[4]/60),seasonResponse[4] % 60)
+        seasonStats = [round(stat, 2) for stat in seasonResponse if isinstance(stat, float)]
+        seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
         seasonStats.append(seasonDuration)
 
         return render_template('plotSheet.html', range=range, formattedList=formattedList,
-                               jsonList=jsonList,stage=stage,stageStats=stageStats,seasonStats=seasonStats,
+                               jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
                                dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
     return render_template('index.html')
+
 
 # # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
 # @app.route('/groupTest')
@@ -177,19 +179,27 @@ def target_test():
 #     return render_template('index.html')
 
 
-
 @app.template_filter('utc_to_nsw')
 def utc_to_nsw(utc_dt):
     """
-    TO BE FILLED
+    Converts database time(naive utc) to NSW time
 
     :param utc_dt: TO BE FILLED
     :return: TO BE FILLED
     """
     nsw = pytz.timezone('Australia/NSW')
     return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=nsw)
+
+
 def nsw_to_utc(nsw_dt):
+    """
+    Converts NSW time to database time(naive utc)
+
+    :param nsw_dt: Aware datetime object(tz=NSW)
+    :return: Aware datetime object(tz=utc)
+    """
     return nsw_dt.astimezone(pytz.utc)
+
 
 def get_stages_on_same_day(stage):
     # Because datetime is stored as utc, we have to first convert it to local time to get the time for the start and end of the day
@@ -249,7 +259,6 @@ def profile():
 
     yearStubAvgLine = [2018, 2019, 2020]
     scoreStubAvgLine = [5, 8, 17]
-
 
     name = ""
     info = {}
@@ -363,7 +372,6 @@ def profile_settings():
         elevationInfo["Fore600y"] = elevation_query[i].Fore600y
         elevationInfo["PPU600y"] = elevation_query[i].PPU600y
 
-
     return render_template('students/profile_settings.html', equipmentInfo=eqiupmentInfo, elevationInfo=elevationInfo)
 
 
@@ -378,7 +386,7 @@ def upload():
     form = uploadForm()
     stageList = []
     invalidList = []
-    alert = [None, 0, 0]    # Alert type, Failures, Successes
+    alert = [None, 0, 0]  # Alert type, Failures, Successes
     count = {"total": 0, "failure": 0, "success": 0}
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
@@ -585,7 +593,7 @@ def userList():
     """
     List of all current users on the system
 
-    :return:
+    :return: userList html
     """
     if not current_user.isAdmin:
         return redirect(url_for('index'))
@@ -612,7 +620,6 @@ def deleteAccount():
         except:
             print('error')
             return jsonify({'error': 'Invalid State'})
-
     return jsonify({'error': 'userID'})
 
 
@@ -676,8 +683,10 @@ def setGear():
 def getUsers():
     print('reached')
     users = User.query.all()
-    list = [{'label':"{} ({} {})".format(user.username,user.fName,user.sName),'value': user.username} for user in users]
+    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
+            users]
     return jsonify(list)
+
 
 @app.route('/getShots', methods=['POST'])
 def getShots():
@@ -725,6 +734,7 @@ def getShots():
     return jsonify(stagesList)
     # stage = Stage.query.filter_by(userID=userID).all()
 
+
 @app.route('/getTargetStats', methods=['POST'])
 def getTargetStats():
     # Function provides databse information for ajax request in gearSettings.js
@@ -732,9 +742,8 @@ def getTargetStats():
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:  # Handles if stageID parameter is given but is not found in database
 
-        return jsonify({'success':'success'})
+        return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
-
 
 
 @app.route('/logout')

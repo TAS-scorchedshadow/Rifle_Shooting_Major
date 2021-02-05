@@ -2,9 +2,12 @@
 {% set active_page = "Upload" %}
 {% block page_title %} Upload {% endblock %}
 {% block page_content %}
+
+<!--Username Autofill-->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="../static/js/autofill.js"></script>
+
 <style>
     .alert {
         padding: 20px;
@@ -100,7 +103,7 @@
                                         <td>{{ invalidShoot['id'] }}</td>
                                         <td>{{ invalidShoot['dateTime'] }}</td>
                                         <td>
-                                            <input type="text" id="user-searchbar-field" name="username.{{ invalidShoot['listID'] }}" value={{ invalidShoot['username'] }}>
+                                            <input type="text" class="user-searchbar" name="username.{{ invalidShoot['listID'] }}" value={{ invalidShoot['username'] }}>
                                         </td>
                                         <td>
                                             {% for shot in invalidShoot['shotList'] %}
