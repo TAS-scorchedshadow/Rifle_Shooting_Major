@@ -33,6 +33,7 @@ class User(UserMixin, db.Model):
     isAdmin = db.Column(db.Boolean, default=False)
     isActive = db.Column(db.Boolean, default=False)
     lastActive = db.Column(db.Date)
+    group = db.Column(db.Integer, default=0)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
 
     #Gear Settings

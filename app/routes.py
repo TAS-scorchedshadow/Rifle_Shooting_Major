@@ -37,6 +37,19 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/changeGroups', methods=['GET', 'POST'])
+def change():
+    if request.method == "POST":
+        username = request.form['user']
+        group = request.form['group']
+        if username:
+            user = User.query.filter_by(username=username).first()
+            user.group = int(group)
+            db.session.commit()
+            print("group changed")
+    return render_template('groupEditor.html')
+
+
 @app.route('/landing')
 def landing():
     """
@@ -153,10 +166,10 @@ def target():
     return render_template('index.html')
 
 
-# # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
+# Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
 # @app.route('/groupTest')
 # def getGroupStats():
-#     stages = Stage.query.filter_by(userID=32).all()
+#     stages = Stage.query.all()
 #     for stage in stages:
 #         stageID = stage.id
 #         shots = Shot.query.filter_by(stageID=stageID).all()
@@ -171,12 +184,11 @@ def target():
 #                 sighterNum += 1
 #         stage.groupX = totalX / (len(shots) - sighterNum)
 #         stage.groupY = totalY / (len(shots) - sighterNum)
-#     db.session.flush()
 #     db.session.commit()
-#
-#
-#     print('database commit successful')
-#     return render_template('index.html')
+
+
+    print('database commit successful')
+    return render_template('index.html')
 
 
 @app.template_filter('utc_to_nsw')
@@ -642,7 +654,7 @@ def setGear():
 def getUsers():
     print('reached')
     users = User.query.all()
-    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
+    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username, 'group': user.group} for user in
             users]
     return jsonify(list)
 
