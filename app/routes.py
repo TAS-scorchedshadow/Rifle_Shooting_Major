@@ -345,6 +345,9 @@ def profile_settings():
 
     return render_template('students/profile_settings.html', equipmentInfo=eqiupmentInfo, elevationInfo=elevationInfo)
 
+@app.route('/graphs')
+def graphs():
+    return render_template('graphs.html')
 
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block page_title %}{% endblock %} | ProAnalytics</title>
+    <title>{% block page_title %}{% endblock %} | PARS</title>
     <script src="https://kit.fontawesome.com/de048b62de.js" crossorigin="anonymous"></script>
 
     <!--Script to detect changes in div dimensions-->
@@ -54,6 +54,12 @@
                     <a href="/upload">
                         <i class="fas fa-upload"></i>
                         <span>Upload</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/graphs">
+                        <i class="fas fa-chart-area"></i>
+                        <span>Graphs</span>
                     </a>
                 </li>
                 {% if current_user.is_authenticated %}
