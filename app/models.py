@@ -31,7 +31,7 @@ class User(UserMixin, db.Model):
     dob = db.Column(db.Date)
     mobile = db.Column(db.String(20))
     permitExpiry = db.Column(db.Date)
-    isAdmin = db.Column(db.Boolean, default=False)
+    access = db.Column(db.Integer, default=0)
     isActive = db.Column(db.Boolean, default=False)
     lastActive = db.Column(db.Date)
     group = db.Column(db.Integer, default=0)

@@ -239,7 +239,7 @@ def profile():
     """
     # userID = request.args.get('userID')
     # user = User.query.filter_by(id=userID).first()
-    if not current_user.isAdmin:
+    if not current_user.access >= 1:
         user = current_user
     else:
         try:
@@ -580,7 +580,7 @@ def userList():
 
     :return: userList html
     """
-    if not current_user.isAdmin:
+    if not current_user.access > 1:
         return redirect(url_for('index'))
     users = User.query.order_by(User.schoolID).all()
     return render_template('userAuth/userList.html', users=users)
