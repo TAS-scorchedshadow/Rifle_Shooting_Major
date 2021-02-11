@@ -11,6 +11,8 @@
     <!-- ChartJS modules -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+<meta id="my-data" data-userid="{{ user.id }}">
 <style>
 body {
     overflow-y: scroll
@@ -31,7 +33,7 @@ body {
                     <div class="card">
                         <img class="card-img-top" src=".\.\static\images\blank-profile.png" alt="Card image cap">
                         <div class="card-body">
-                            <h4 class="card-text text-center">{{ name }}</h4>
+                            <h4 class="card-text text-center">{{ user.fName }} {{ user.sName }}</h4>
                         </div>
                     </div>
                 </div>

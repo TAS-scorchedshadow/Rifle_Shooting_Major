@@ -1,6 +1,8 @@
 from distutils.util import strtobool
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask import session as flask_session
+
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_mail import Message
 from sqlalchemy import Date, cast, and_
@@ -31,7 +33,8 @@ def index():
         username = request.form['user']
         if username:
             user = User.query.filter_by(username=username).first()
-            return redirect('/profile?userID='+str(user.id))
+            flask_session['profileID'] = user.id
+            return redirect('/profile')
     if not current_user.is_authenticated:
       return redirect(url_for('landing'))
     return render_template('index.html')
@@ -234,8 +237,17 @@ def profile():
     :parameter [UserID]: Database Shooter ID. Not passed to function, but read from URL
     :return: profile.html with info dictionary for the table, form for forms and variables/lists for ChartJS
     """
-    userID = request.args.get('userID')
-    user = User.query.filter_by(id=userID).first()
+    # userID = request.args.get('userID')
+    # user = User.query.filter_by(id=userID).first()
+    if not current_user.isAdmin:
+        user = current_user
+    else:
+        try:
+            userID = flask_session['profileID']
+        except KeyError:
+            userID = current_user.id
+        user = User.query.filter_by(id=userID).first()
+    print(user)
     form = profileSelect()
     if form.is_submitted():
         change = str(form.cell.data)
@@ -245,7 +257,6 @@ def profile():
         db.session.commit()
 
     info = {}
-    name = user.fName + " " + user.sName
     info["SID"] = "NULL"
     info["DOB"] = user.dob
     info["Rifle Serial"] = user.rifleSerial
@@ -267,7 +278,7 @@ def profile():
     #    result = ((yearStubAvgLine[j]) * z[0]) + z[1]
     #    trend.append(result)
 
-    return render_template('students/profile.html', form=form, user=userID, info=info, name=name)
+    return render_template('students/profile.html', form=form, user=user, info=info)
 
 
 @app.route('/overview')

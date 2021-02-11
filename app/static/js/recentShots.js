@@ -1,9 +1,10 @@
 $(document).ready(function(){
     console.log('hello')
     //TODO add loading symbols
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const userID = urlParams.get('userID')
+    // const queryString = window.location.search;
+    // const urlParams = new URLSearchParams(queryString);
+    // const userID = urlParams.get('userID')
+    const userID = $('#my-data').data("userid");
     loadTable(userID)
     function loadTable(user){
         if (userID != null){

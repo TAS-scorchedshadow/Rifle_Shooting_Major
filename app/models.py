@@ -6,6 +6,7 @@ from time import time
 import jwt
 import statistics
 
+
 class User(UserMixin, db.Model):
     """
     User database table
@@ -36,7 +37,7 @@ class User(UserMixin, db.Model):
     group = db.Column(db.Integer, default=0)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
 
-    #Gear Settings
+    # Gear Settings
     rifleSerial = db.Column(db.String(20))
     jacket = db.Column(db.String(10))
     glove = db.Column(db.String(10))
@@ -47,7 +48,7 @@ class User(UserMixin, db.Model):
     butUp = db.Column(db.String(10))
     ringSize = db.Column(db.String(10))
     sightHole = db.Column(db.String(10))
-    #Elevation Settings
+    # Elevation Settings
     PPU300m = db.Column(db.String(8))
     ADI300m = db.Column(db.String(8))
     Fore300m = db.Column(db.String(8))
@@ -73,9 +74,8 @@ class User(UserMixin, db.Model):
     ADI600y = db.Column(db.String(8))
     Fore600y = db.Column(db.String(8))
 
-
     def __repr__(self):
-            return '<User {}>'.format(self.username)
+        return '<User {}>'.format(self.username)
 
     def generate_username(self):
         """
@@ -165,16 +165,14 @@ class User(UserMixin, db.Model):
             totalMean += stats[0]
             totalMedian += stats[1]
             totalStd += stats[2]
-            totalGroup +=stats[3]
+            totalGroup += stats[3]
             totalDuration += stats[4]
         mean = totalMean / len(stages)
-        median = totalMedian /len(stages)
+        median = totalMedian / len(stages)
         std = totalStd / len(stages)
         group = totalGroup / len(stages)
-        duration = int(totalDuration /len(stages))
-        return mean,median,std,group,duration
-
-
+        duration = int(totalDuration / len(stages))
+        return mean, median, std, group, duration
 
 
 class Stage(db.Model):
@@ -210,8 +208,9 @@ class Stage(db.Model):
             std = statistics.stdev(scores)
             duration = int((shots[-1].timestamp - shots[1].timestamp).total_seconds())
             return mean, median, std, self.groupSize, duration
-        except ValueError:
-            raise ValueError("Error with list, likely null")
+        except TypeError:
+            raise TypeError("Stage must have associated shots")
+
 
 class Shot(db.Model):
     """
