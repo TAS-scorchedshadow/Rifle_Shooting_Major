@@ -4,9 +4,6 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 
 from flask_login import current_user, login_user, logout_user, login_required
-from flask_mail import Message
-from sqlalchemy import Date, cast, and_
-from sqlalchemy.orm import session
 from werkzeug.urls import url_parse
 
 from app import app, db, mail
@@ -14,12 +11,10 @@ from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPassw
 from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
+from app.timeConvert import utc_to_nsw, nsw_to_utc
 
-from datetime import datetime, timezone, timedelta
 import numpy
-from matplotlib import pylab
 import json
-import pytz
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -62,15 +57,6 @@ def landing():
     """
     return render_template('landingPage.html')
 
-
-@app.route('/email')
-def test():
-    """
-    TO BE FILLED
-
-    :return:
-    """
-    return render_template('/email/activate.html',user=current_user)
 
 @app.route('/target')
 def target():
@@ -123,7 +109,7 @@ def target():
             ["Total", 0, 0, str(shotTotal), stageDuration])  # Total appended to list to make display of shots easier
 
         # Day Stats
-        dayStages = get_stages_on_same_day(stage)
+        dayStages = stage.same_day()
         # dayX and dayY refers to the grouping coordinates
         dayX = 0
         dayY = 0
@@ -192,40 +178,6 @@ def target():
 
     print('database commit successful')
     return render_template('index.html')
-
-
-@app.template_filter('utc_to_nsw')
-def utc_to_nsw(utc_dt):
-    """
-    Converts database time(naive utc) to NSW time
-
-    :param utc_dt: TO BE FILLED
-    :return: TO BE FILLED
-    """
-    nsw = pytz.timezone('Australia/NSW')
-    return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=nsw)
-
-
-def nsw_to_utc(nsw_dt):
-    """
-    Converts NSW time to database time(naive utc)
-
-    :param nsw_dt: Aware datetime object(tz=NSW)
-    :return: Aware datetime object(tz=utc)
-    """
-    return nsw_dt.astimezone(pytz.utc)
-
-
-def get_stages_on_same_day(stage):
-    # Because datetime is stored as utc, we have to first convert it to local time to get the time for the start and end of the day
-    # Then it must be converted back to utc to query the database
-    # Returns a tuple with all the stages on the same day as the stage given
-    dayStartAEST = utc_to_nsw(stage.timestamp).replace(hour=0, minute=0, second=0, microsecond=0)
-    dayEndAEST = dayStartAEST + timedelta(days=1)
-    dayStart = nsw_to_utc(dayStartAEST)
-    dayEnd = nsw_to_utc(dayEndAEST)
-    dayStages = Stage.query.filter(Stage.timestamp.between(dayStart, dayEnd))
-    return dayStages
 
 
 @app.route('/profile',  methods=['GET', 'POST'])
@@ -514,6 +466,17 @@ def register():
     return render_template('userAuth/register.html', title='Register', form=form)
 
 
+@app.route('/logout')
+def logout():
+    """
+    Allows users to exit from the system
+
+    :return: TO BE FILLED
+    """
+    logout_user()
+    return redirect(url_for('index'))
+
+
 @app.route('/emailActivation/<token>', methods=['GET', 'POST'])
 def emailActivation(token):
     """
@@ -729,14 +692,3 @@ def getTargetStats():
 
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
-
-
-@app.route('/logout')
-def logout():
-    """
-    Allows users to exit from the system
-
-    :return: TO BE FILLED
-    """
-    logout_user()
-    return redirect(url_for('index'))

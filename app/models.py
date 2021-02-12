@@ -1,10 +1,11 @@
 from app import db, login, app
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from time import time
 import jwt
 import statistics
+from app.timeConvert import nsw_to_utc, utc_to_nsw
 
 
 class User(UserMixin, db.Model):
@@ -12,7 +13,7 @@ class User(UserMixin, db.Model):
     User database table
 
     :parameter [UserMixin]: Defines isActive, isAuthenticated, getID, isAnonymous
-    :parameter [db.Model]: TO BE FILLED
+    :parameter [db.Model]: Defines database model with SQLAlchemy
     """
     # UserMixin defines isActive, isAuthenticated, getID, isAnonymous
     id = db.Column(db.Integer, primary_key=True)
@@ -195,6 +196,17 @@ class Stage(db.Model):
 
     def __repr__(self):
         return '<Stage {}>'.format(self.id)
+
+    def same_day(self):
+        # Because datetime is stored as utc, we have to first convert it to local time to get the time for the start and end of the day
+        # Then it must be converted back to utc to query the database
+        # Returns a tuple with all the stages on the same day as the stage given
+        dayStartAEST = utc_to_nsw(self.timestamp).replace(hour=0, minute=0, second=0, microsecond=0)
+        dayEndAEST = dayStartAEST + timedelta(days=1)
+        dayStart = nsw_to_utc(dayStartAEST)
+        dayEnd = nsw_to_utc(dayEndAEST)
+        dayStages = Stage.query.filter(Stage.timestamp.between(dayStart, dayEnd))
+        return dayStages
 
     def stageStats(self):
         """
