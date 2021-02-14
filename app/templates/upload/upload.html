@@ -52,7 +52,7 @@
                 {% elif alert[0] == "Success" %}
                     {{ alert[2] }} files have been successfully uploaded.
                 {% elif alert[0] == "Warning" %}
-                    {{ alert[2] }} files have been successfully uploaded, while {{ alert[1] }} duplicates were found and were not uploaded.
+                    {{ alert[2] - alert[1] }} files have been successfully uploaded, while {{ alert[1] }} duplicates were found and were not uploaded.
                 {% else %}
                     This should not appear... go contact Ryan or something.
                 {% endif %}

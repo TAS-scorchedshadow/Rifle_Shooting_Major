@@ -401,7 +401,7 @@ def upload():
                 except:
                     print('DEBUG: Duplicate file')
                     count["failure"] += 1
-            count["total"] += 1
+                count["total"] += 1
             print("DEBUG: Completed Upload")
             alert[0] = "Success"
             alert[2] = count["total"]
