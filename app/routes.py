@@ -174,10 +174,10 @@ def target():
 #         stage.groupX = totalX / (len(shots) - sighterNum)
 #         stage.groupY = totalY / (len(shots) - sighterNum)
 #     db.session.commit()
-
-
-    print('database commit successful')
-    return render_template('index.html')
+#
+#
+#     print('database commit successful')
+#     return render_template('index.html')
 
 
 @app.route('/profile',  methods=['GET', 'POST'])
