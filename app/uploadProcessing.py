@@ -35,23 +35,15 @@ def validateShots(data):
     # Send all the relevant data to a new dictionary, newShoot
     newShoot['id'] = data['_id']
     newShoot['username'] = data['name']
-    if validShotList:
-        firstShotTime = validShotList[0]['ts']              # time of first shot
-    else:
-        try:
-            firstShotTime = data['shots'][0]['ts']
-        except KeyError:
-            firstShotTime = 0
+    firstShotTime = validShotList[0]['ts']
     newShoot['time'] = firstShotTime
     newShoot['dateTime'] = firstShotTime
-    try:
-        newShoot['groupSize'] = data['stats_group_size']
-        newShoot['groupCentreX'] = data['stats_group_center']['x']
-        newShoot['groupCentreY'] = data['stats_group_center']['y']
-    except KeyError:
-        newShoot['groupSize'] = 0
-        newShoot['groupCentreX'] = 0
-        newShoot['groupCentreY'] = 0
+    newShoot['groupSize'] = data['stats_group_size']
+    newShoot['groupCentreX'] = data['stats_group_center']['x']
+    newShoot['groupCentreY'] = data['stats_group_center']['y']
+    newShoot['groupSize'] = 0
+    newShoot['groupCentreX'] = 0
+    newShoot['groupCentreY'] = 0
     newShoot['validShots'] = validShotList
     newShoot['totalShots'] = countingShots
     newShoot['totalScore'] = str(runningScore['score']) + "." + str(runningScore['Vscore'])

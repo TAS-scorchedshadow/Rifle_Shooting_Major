@@ -12,7 +12,7 @@ from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
-from app.decompress import tgz_reader
+from app.decompress import read_archive
 
 import numpy
 import json
@@ -58,7 +58,10 @@ def landing():
     """
     return render_template('landingPage.html')
 
-
+@app.route('/landing2')
+def landing2():
+    read_archive()
+    return "done"
 @app.route('/target')
 def target():
     """
@@ -331,21 +334,22 @@ def upload():
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
             #files = request.files.getlist('file')
-            files = tgz_reader()
-            for file in files:
-                print(file)
-                stage = validateShots(file)
-                # Decodes a file from FileStorage format into json format, and then extracts relevant info
-                # Fixes up file to obtain relevant data and valid shots
-                stage['listID'] = count["total"]
-                stageList.append(stage)
-                # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
-                idFound = User.query.filter_by(username=stage['username']).first()
-                if idFound is None:
-                    invalidList.append(stage)
-                else:
-                    count["success"] += 1
-                count["total"] += 1
+            files = read_archive()
+            for file, issue_code in files:
+                if not issue_code:
+                    print(file)
+                    stage = validateShots(file)
+                    # Decodes a file from FileStorage format into json format, and then extracts relevant info
+                    # Fixes up file to obtain relevant data and valid shots
+                    stage['listID'] = count["total"]
+                    stageList.append(stage)
+                    # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
+                    idFound = User.query.filter_by(username=stage['username']).first()
+                    if idFound is None:
+                        invalidList.append(stage)
+                    else:
+                        count["success"] += 1
+                    count["total"] += 1
 
             if count["success"] > 0:
                 alert[0] = "Success"
@@ -378,30 +382,25 @@ def upload():
             stageDefine['rangeDistance'] = form.rangeDistance.data
             stageDefine['weather'] = form.weather.data
             print('started')
-            stage = Stage.query.all()
-            list = [x.id for x in stage]
             for item in stageList:
-                if item['id'] not in list:
-                    try:
-                        print('uploading')
-                        stage = Stage(id=item['id'], userID=item['userID'],
-                                      timestamp=item['time'],
-                                      groupSize=item['groupSize'],
-                                      rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
-                                      notes="")
-                        db.session.add(stage)
-                        # here I think stage needs to be uploaded then relocated for shots to be uploaded
-                        id = item['id']
-                        for point in item['validShots']:
-                            shot = Shot(stageID=id, timestamp=point['ts'],
-                                        xPos=point['x'], yPos=point['y'],
-                                        score=point['score'], numV=point['Vscore'],
-                                        sighter=point['sighter'])
-                            db.session.add(shot)
-                        db.session.commit()
-                        print('uploaded')
-                    except:
-                        print('error')
+                print(item)
+                idFound = User.query.filter_by(username=item['username']).first()
+                stage = Stage(id=item['id'], userID=idFound.id,
+                              timestamp=item['time'],
+                              groupSize=item['groupSize'],
+                              rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
+                              notes="")
+                db.session.add(stage)
+                # here I think stage needs to be uploaded then relocated for shots to be uploaded
+                id = item['id']
+                for point in item['validShots']:
+                    shot = Shot(stageID=id, timestamp=point['ts'],
+                                xPos=point['x'], yPos=point['y'],
+                                score=point['score'], numV=point['Vscore'],
+                                sighter=point['sighter'])
+                    db.session.add(shot)
+                db.session.commit()
+                print('uploaded')
             count["total"] += 1
             print("DEBUG: Completed Upload")
             alert[0] = "Success"
