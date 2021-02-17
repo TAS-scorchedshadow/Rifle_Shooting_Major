@@ -2,6 +2,7 @@ from distutils.util import strtobool
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
+from sqlalchemy import desc
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -645,10 +646,11 @@ def getShots():
     # numLoaded are the number of tables already loaded
     numLoaded = loadedData[1]
     print(numLoaded)
-    stages = Stage.query.filter_by(userID=userID).all()[numLoaded: numLoaded + 3]
+    stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
     stagesList = []
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()
+        sighters = {}
         scores = {}
         totalScore = 0
         num = 1
@@ -656,18 +658,20 @@ def getShots():
         shot_list = []
         for shot in shots:
             if shot.sighter:
-                scores[chr(letter)] = shot.score
+                sighters[chr(letter)] = shot.score
                 letter += 1
             else:
                 scores[str(num)] = shot.score
                 num += 1
-            totalScore += shot.score
-            shot_list.append(shot.score)
+                totalScore += shot.score
+                shot_list.append(shot.score)
         std = round(numpy.std(shot_list), 1)
         duration = str(shots[-1].timestamp - shots[1].timestamp)
         duration = duration.split(':')
         # str(int()) is done to remove the zero in single digit numbers
         duration = '{}m {}s'.format(str(int(duration[1])), str(int(duration[2])))
+        print(sighters)
+        print(scores)
         # TODO add weather
         stagesList.append({'scores': scores,
                            'totalScore': totalScore,
@@ -677,6 +681,7 @@ def getShots():
                            'std': std,
                            'duration': duration,
                            'stageID': stage.id,
+                           'sighters': sighters
                            })
     print(stagesList)
     return jsonify(stagesList)

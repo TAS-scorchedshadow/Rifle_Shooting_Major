@@ -222,6 +222,9 @@ class Stage(db.Model):
             return mean, median, std, self.groupSize, duration
         except TypeError:
             raise TypeError("Stage must have associated shots")
+        except statistics.StatisticsError:
+            print("Stage has no shots")
+            pass
 
 
 class Shot(db.Model):

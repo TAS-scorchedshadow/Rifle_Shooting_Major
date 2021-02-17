@@ -23,15 +23,13 @@ $(document).ready(function(){
                     if (Array.isArray(data) && data.length){
                         for (let stage in data) {
                             let shots = data[stage]['scores']
-                            let htmlScoresHead = ``
                             let htmlScoresBody = ``
+                            let htmlSighters = ``
                             for (let shot in data[stage]['scores']) {
-                                htmlScoresHead = htmlScoresHead + `
-                            <th>${shot}</th>
-                            `;
-                                htmlScoresBody = htmlScoresBody + `
-                            <th>${data[stage]['scores'][shot]}</th>
-                            `;
+                                htmlScoresBody = htmlScoresBody + `${data[stage]['scores'][shot]} `;
+                            }
+                            for (let shot in data[stage]['sighters']){
+                                htmlSighters = htmlSighters + `${data[stage]['sighters'][shot]} `;
                             }
                             //missing icons for duration and weather
                             let htmlstring = `
@@ -40,7 +38,7 @@ $(document).ready(function(){
                                 <div class="col-12 pb-4">
                                     <div class="card shadow border-0">
                                         <a href="/target?stageID=${data[stage]['stageID']}" target="_blank">
-                                            <div class="card-header recent-header" style="height:70px;">
+                                            <div class="card-header recent-header">
                                                 <div class="row">
                                                     <div class="col-4 align-self-center">
                                                         <p style="font-size:12px">${data[stage]['duration']}</p>
@@ -58,20 +56,22 @@ $(document).ready(function(){
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div class="table-responsive">
-                                                        <table class="table table-sm table-bordered">
+                                                        <table class="table table-sm table-bordered recentShotsTable">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>Range</th>
-                                                                    ${htmlScoresHead}
-                                                                    <th>Total Score</th>
-                                                                    <th>Group Size</th>
-                                                                    <th>Std</th>
+                                                                    <th style='width: 50px;'>Range</th>
+                                                                    <th style='width: 60px;'>Sighters</th>
+                                                                    <th>Shots</th>
+                                                                    <th style='width: 43px;'>Total</th>
+                                                                    <th style='width: 47px;'>Group</th>
+                                                                    <th style='width: 37px;'>Std</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 <tr>
                                                                     <th>${data[stage]['rangeDistance']}</th>
-                                                                    ${htmlScoresBody}
+                                                                    <th>${htmlSighters}</th>
+                                                                    <th>${htmlScoresBody}</th>
                                                                     <th>${data[stage]['totalScore']}</th>
                                                                     <th>${data[stage]['groupSize']}</th>
                                                                     <th>${data[stage]['std']}</th>
@@ -88,12 +88,13 @@ $(document).ready(function(){
                         </div>
                         `;
                             $("#recentShots").append(htmlstring);
+                            $("#moreShoots").prop("disabled", false);
                         }
                     }
                     else{
                         let htmlstring = `
                         <div class="text-center align-items-center p-3">
-                            <h2>No Recent Stages Found :(</h2>
+                            <h2>No Stages Found :(</h2>
                             <svg class="py-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2" style="width:10rem;">
                                <polygon class="logoCol" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
                                <polygon class="logoCol" points="69.4 13.1 108.6 79 32.6 175 0 138.9 69.4 13.1"/>
@@ -102,16 +103,19 @@ $(document).ready(function(){
                             <h5>A summary of recent stages will be shown here. Make sure to enter the correct username at the range!</h5>
                         </div>
                         `
-                        $("#recentShotsContainer").replaceWith(htmlstring);
+                        $("#recentShots").append(htmlstring);
+                        $('#moreShoots').hide();
                     }
                 })
             })
         }
         else {
-            console.log('Error: No userID')
+            console.log('Error: No userID');
         }
-        $('#moreShoots').click(function() {
-            loadTable(userID)
-        })
     }
+    $('#moreShoots').click(function() {
+            console.log('running loadTable');
+            $(this).prop("disabled", true);
+            loadTable(userID);
+        })
 })
