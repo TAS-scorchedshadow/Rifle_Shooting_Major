@@ -40,16 +40,16 @@ $(document).ready(function(){
                                 <div class="col-12 pb-4">
                                     <div class="card shadow border-0">
                                         <a href="/target?stageID=${data[stage]['stageID']}" target="_blank">
-                                            <div class="card-header recent-header">
+                                            <div class="card-header recent-header" style="height:70px;">
                                                 <div class="row">
                                                     <div class="col-4 align-self-center">
-                                                        <p>${data[stage]['duration']}</p>
+                                                        <p style="font-size:12px">${data[stage]['duration']}</p>
                                                     </div>
                                                     <div class="col-4 align-self-center">
-                                                        <p class="text-center">${data[stage]['timestamp']}</p>
+                                                        <p display="block" class="text-center" style="font-size:12px;">${data[stage]['timestamp']}</p>
                                                     </div>
                                                     <div class="col-4 align-self-center">
-                                                        <p class="text-right">weather</p>
+                                                        <p class="text-right" style="font-size:12px">weather</p>
                                                     </div>
                                                 </div>
                                             </div>
