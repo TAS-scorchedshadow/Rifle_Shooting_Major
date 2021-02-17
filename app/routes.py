@@ -336,16 +336,13 @@ def upload():
             #files = request.files.getlist('file')
             files = read_archive()
             for file, issue_code in files:
+                print(file)
+                print(issue_code)
                 if not issue_code:
-                    print(file)
                     stage = validateShots(file)
-                    # Decodes a file from FileStorage format into json format, and then extracts relevant info
-                    # Fixes up file to obtain relevant data and valid shots
                     stage['listID'] = count["total"]
                     stageList.append(stage)
-                    # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
-                    idFound = User.query.filter_by(username=stage['username']).first()
-                    if idFound is None:
+                    if issue_code == 1:
                         invalidList.append(stage)
                     else:
                         count["success"] += 1
@@ -382,6 +379,7 @@ def upload():
             stageDefine['rangeDistance'] = form.rangeDistance.data
             stageDefine['weather'] = form.weather.data
             print('started')
+            # todo THIS NEEDS TO BE FIXED PROBABLY IT'S KIIINDA JANK
             for item in stageList:
                 print(item)
                 idFound = User.query.filter_by(username=item['username']).first()
