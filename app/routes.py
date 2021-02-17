@@ -333,6 +333,7 @@ def upload():
             files = request.files.getlist('file')
             for file in files:
                 try:
+                    print(file)
                     bytes = file.read()
                     string = bytes.decode('utf-8')
                     data = json.loads(string)
