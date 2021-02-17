@@ -73,7 +73,7 @@ def read_archive():
                             if num_shots(data) < 3:
                                 issue_code.append(2)
                             if not ('stats_group_size' in data and 'stats_group_center' in data):
-                                issue_code.append(3)
+                                issue_code.append(3)        # todo Issue Code 3 is synonymous with Code 2
                             stageList.append((data, issue_code))
                 except ValueError:
                     # In case out of format files were added to archive e.g. "./string-default-string.zip"

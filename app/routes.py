@@ -336,17 +336,15 @@ def upload():
             #files = request.files.getlist('file')
             files = read_archive()
             for file, issue_code in files:
-                print(file)
-                print(issue_code)
-                if not issue_code:
+                if 2 not in issue_code:
                     stage = validateShots(file)
                     stage['listID'] = count["total"]
                     stageList.append(stage)
-                    if issue_code == 1:
+                    if 1 in issue_code:
                         invalidList.append(stage)
                     else:
                         count["success"] += 1
-                    count["total"] += 1
+                        count["total"] += 1
 
             if count["success"] > 0:
                 alert[0] = "Success"
