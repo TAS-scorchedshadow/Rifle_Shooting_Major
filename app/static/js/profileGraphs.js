@@ -45,11 +45,13 @@ function lineGraph(dateData, scores){
             labels: dateData,
             datasets: [{
                 label: 'Averages',
-                backgroundColor: 'rgba(255,0,0,0)',
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 borderColor: 'rgba(255,0,0,1)',
                 borderWidth: 1,
-                fill: false,
-                data: scores
+                fill: true,
+                data: scores,
+                pointRadius: 5,
+                pointHitRadius: 20,
                         }]},
             options: {
                 responsive: true,

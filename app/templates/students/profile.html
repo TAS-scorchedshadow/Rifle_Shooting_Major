@@ -130,31 +130,39 @@ table.recentShotsTable{
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
                 <div class="container-fluid pt-5" style="padding-left: 0px; padding-right: 0px;">
-                    <div class="col-xl-6 col-md-12">
-                            <div class="card" style="min-width:300px">
-                                <div class="card-body" id="recentShotsContainer">
-                                    <div class="row">
-                                        <div class="col align-self-center">
-                                            <div id="recentShots" class="container-fluid">
-                                                <script type="text/javascript" src="../static/js/recentShots.js"></script>
+                    <div class="row">
+                        <div class="col-xl-6 col-md-6">
+                                <div class="card" style="min-width:300px">
+                                    <div class="card-body" id="recentShotsContainer">
+                                        <div class="row">
+                                            <div class="col align-self-center">
+                                                <div id="recentShots" class="container-fluid">
+                                                    <script type="text/javascript" src="../static/js/recentShots.js"></script>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12 pb-2">
-                                            <div class="spinner-border text-primary justify-content-center" id="spinner" role="status" style="margin: auto; padding: 10px;">
-                                              <span class="sr-only">Loading...</span>
+                                        <div class="row">
+                                            <div class="col-12 pb-2">
+                                                <div class="spinner-border text-primary justify-content-center" id="spinner" role="status" style="margin: auto; padding: 10px;">
+                                                  <span class="sr-only">Loading...</span>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <button id="moreShoots" class="btn btn-outline-primary">Show More</button>
+                                            <div class="col text-center">
+                                                <button id="moreShoots" class="btn btn-outline-primary">Show More</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                    </div>
-                    <div class="col-xl-6 col-lg-12">
-                        <!--Rishi's stuff goes here-->
+                        </div>
+                        <div class="col-xl-6 col-lg-6">
+                            <script type="text/javascript" src="../static/js/profileGraphs.js"></script>
+                            <meta id="my-data" data-dates="{{dates}}">
+                            <canvas style="background-color:white" id="lineSTDEV"></canvas>
+                            <script>
+                                var dateData = $('#my-data').data('dates');
+                                let myGraph= new lineGraph({{dates | safe}}, {{ scores | safe}});
+                            </script>
+                        </div>
                     </div>
                 </div>
             </div>

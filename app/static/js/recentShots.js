@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    console.log('hello')
     //TODO add loading symbols
     // const queryString = window.location.search;
     // const urlParams = new URLSearchParams(queryString);

@@ -200,7 +200,6 @@ def profile():
         except KeyError:
             userID = current_user.id
         user = User.query.filter_by(id=userID).first()
-    print(user)
     form = profileSelect()
     if form.is_submitted():
         change = str(form.cell.data)
@@ -230,8 +229,35 @@ def profile():
     #for j in range(len(yearStubAvgLine)):
     #    result = ((yearStubAvgLine[j]) * z[0]) + z[1]
     #    trend.append(result)
+    # stub for shooter ID passed to the overview
 
-    return render_template('students/profile.html', form=form, user=user, info=info)
+    # collect data fro graphs
+    stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
+    info = {}
+    times = []
+    scores = []
+    for i in range(len(stages_query)):
+        info[stages_query[i].id] = 0
+    for j in info:
+        shots_query = Shot.query.filter_by(stageID=j).all()
+        total = 0
+        score = 0
+        for k in range(len(shots_query)):
+            total += 1
+            score += (shots_query[k].score)
+        info[j] = (score/total)
+        timestamp_query = Stage.query.filter_by(id=j).order_by(Stage.timestamp).all()
+        for m in range(len(timestamp_query)):
+            times.append(utc_to_nsw(timestamp_query[m].timestamp))
+        scores.append(info[j])
+
+    # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
+    for n in range(len(times)):
+        times[n] = (times[n].strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
+    print(times, scores)
+    times = json.dumps(times)
+
+    return render_template('students/profile.html', form=form, user=user, info=info, dates=times, scores=scores)
 
 
 @app.route('/overview')
@@ -642,11 +668,9 @@ def getUsers():
 def getShots():
     data = request.get_data()
     loadedData = json.loads(data)
-    print(loadedData)
     userID = loadedData[0]
     # numLoaded are the number of tables already loaded
     numLoaded = loadedData[1]
-    print(numLoaded)
     stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
     stagesList = []
     for stage in stages:
@@ -671,8 +695,6 @@ def getShots():
         duration = duration.split(':')
         # str(int()) is done to remove the zero in single digit numbers
         duration = '{}m {}s'.format(str(int(duration[1])), str(int(duration[2])))
-        print(sighters)
-        print(scores)
         # TODO add weather
         stagesList.append({'scores': scores,
                            'totalScore': totalScore,
@@ -684,7 +706,6 @@ def getShots():
                            'stageID': stage.id,
                            'sighters': sighters
                            })
-    print(stagesList)
     return jsonify(stagesList)
     # stage = Stage.query.filter_by(userID=userID).all()
 
