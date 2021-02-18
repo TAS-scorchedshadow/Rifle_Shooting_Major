@@ -338,7 +338,7 @@ def upload():
             for file in files:
                 if tarfile.is_tarfile(file):
                     stages = read_archive(file, 3)
-                    for stage_dict, issue_code in files:
+                    for stage_dict, issue_code in stages:
                         if 2 not in issue_code:
                             stage = validateShots(stage_dict)
                             stage['listID'] = count["total"]
