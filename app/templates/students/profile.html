@@ -17,23 +17,12 @@
 body {
     overflow-y: scroll
 }
-.recent-header{
-    color: #ffffff;
-}
-.recent-header:hover{
-    color: #1b1e21;
-    background-color: darkgray;
-    transition: 1s;
-}
+
 table.recentShotsTable{
     font-size:12px;
     table-layout:fixed;
     margin-bottom:0px;
     overflow:hidden;
-}
-.card-body{
-    padding-left:0px;
-    padding-right:0px;
 }
 #recentShots{
     padding-left:0px;
@@ -41,78 +30,76 @@ table.recentShotsTable{
 }
 </style>
     <div class="container-fluid" style="padding-bottom: 50px">
-        <div class="jumbotron jumbotron-fluid" style="margin-bottom: 0px">
-            <div class="row justify-content-center align-items-center">
-                <div class="col-12 col-lg-2">
-                    <div class="card">
-                        <img class="card-img-top" src=".\.\static\images\blank-profile.png" alt="Card image cap">
-                        <div class="card-body">
-                            <h4 class="card-text text-center">{{ user.fName }} {{ user.sName }}</h4>
-                        </div>
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-lg-2">
+                <div class="card">
+                    <img class="card-img-top" src=".\.\static\images\blank-profile.png" alt="Card image cap">
+                    <div class="card-body">
+                        <h4 class="card-text text-center">{{ user.fName }} {{ user.sName }}</h4>
                     </div>
                 </div>
-                <div class="col-12 col-lg-6">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">SID</th>
-                                    <th scope="col">DOB</th>
-                                    <th scope="col">Rifle Serial</th>
-                                    <th scope="col">Student ID</th>
-                                    <th scope="col">Grade</th>
-                                    <th scope="col">Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{ info["SID"] }}</td>
-                                    <td>{{ info["DOB"] }}</td>
-                                    <td>{{ info["Rifle Serial"] }}</td>
-                                    <td>{{ info["StudentID"] }}</td>
-                                    <td>{{ info["Grade"] }}</td>
-                                    <td>{{ info["Email"] }}</td>
-                                </tr>
-                            </tbody>
-                            <thead>
-                                <tr>
-                                    <th scope="col">Permit</th>
-                                    <th scope="col">Expiry</th>
-                                    <th scope="col">Sharing</th>
-                                    <th scope="col">Mobile</th>
-                                    <th scope="col">Roll Class</th>
-                                    <th scope="col">Mobile</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>{{ info["Permit"] }}</td>
-                                    <td>{{ info["Expiry"] }}</td>
-                                    <td>{{ info["Sharing"] }}</td>
-                                    <td>{{ info["Mobile"] }}</td>
-                                    <td>{{ info["Roll Class"] }}</td>
-                                    <td>{{ info["Mobile"] }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">SID</th>
+                                <th scope="col">DOB</th>
+                                <th scope="col">Rifle Serial</th>
+                                <th scope="col">Student ID</th>
+                                <th scope="col">Grade</th>
+                                <th scope="col">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ info["SID"] }}</td>
+                                <td>{{ info["DOB"] }}</td>
+                                <td>{{ info["Rifle Serial"] }}</td>
+                                <td>{{ info["StudentID"] }}</td>
+                                <td>{{ info["Grade"] }}</td>
+                                <td>{{ info["Email"] }}</td>
+                            </tr>
+                        </tbody>
+                        <thead>
+                            <tr>
+                                <th scope="col">Permit</th>
+                                <th scope="col">Expiry</th>
+                                <th scope="col">Sharing</th>
+                                <th scope="col">Mobile</th>
+                                <th scope="col">Roll Class</th>
+                                <th scope="col">Mobile</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ info["Permit"] }}</td>
+                                <td>{{ info["Expiry"] }}</td>
+                                <td>{{ info["Sharing"] }}</td>
+                                <td>{{ info["Mobile"] }}</td>
+                                <td>{{ info["Roll Class"] }}</td>
+                                <td>{{ info["Mobile"] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-12 col-lg-4">
-                    <form action ="" method="post" onsubmit="">
-                            {{ form.hidden_tag() }}
-                        <p>
-                            {{ form.cell.label }}<br>
-                            {{ form.cell(size = 1)  }}
-                        </p>
-                        <p>
-                            {{ form.data.label }}<br>
-                            {{ form.data(size = 12)  }}
-                        </p>
-                        <p>
-                            {{ form.submit() }}
-                        </p>
-                    </form>
-                </div>
+            </div>
+            <div class="col-12 col-lg-4">
+                <form action ="" method="post" onsubmit="">
+                        {{ form.hidden_tag() }}
+                    <p>
+                        {{ form.cell.label }}<br>
+                        {{ form.cell(size = 1)  }}
+                    </p>
+                    <p>
+                        {{ form.data.label }}<br>
+                        {{ form.data(size = 12)  }}
+                    </p>
+                    <p>
+                        {{ form.submit() }}
+                    </p>
+                </form>
             </div>
         </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
@@ -148,7 +135,7 @@ table.recentShotsTable{
                                                 </div>
                                             </div>
                                             <div class="col text-center">
-                                                <button id="moreShoots" class="btn btn-outline-primary">Show More</button>
+                                                <button id="moreShoots" class="btn btn-primary">Show More</button>
                                             </div>
                                         </div>
                                     </div>

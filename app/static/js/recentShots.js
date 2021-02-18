@@ -33,10 +33,10 @@ $(document).ready(function(){
                             //missing icons for duration and weather
                             let htmlstring = `
                         <div class="stage-overview">
-                            <a class="row">
+                            <div class="row">
                                 <div class="col-12 pb-4">
-                                    <div class="card shadow border-0">
-                                        <a href="/target?stageID=${data[stage]['stageID']}" target="_blank">
+                                    <a href="/target?stageID=${data[stage]['stageID']}" target="_blank">
+                                        <div class="card shadow border-0 card-hover">
                                             <div class="card-header recent-header">
                                                 <div class="row">
                                                     <div class="col-4 align-self-center">
@@ -50,38 +50,38 @@ $(document).ready(function(){
                                                     </div>
                                                 </div>
                                             </div>
-                                        </a>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="table-responsive">
-                                                        <table class="table table-sm table-bordered recentShotsTable">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th style='width: 50px;'>Range</th>
-                                                                    <th style='width: 60px;'>Sighters</th>
-                                                                    <th>Shots</th>
-                                                                    <th style='width: 43px;'>Total</th>
-                                                                    <th style='width: 47px;'>Group</th>
-                                                                    <th style='width: 37px;'>Std</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <th>${data[stage]['rangeDistance']}</th>
-                                                                    <th>${htmlSighters}</th>
-                                                                    <th>${htmlScoresBody}</th>
-                                                                    <th>${data[stage]['totalScore']}</th>
-                                                                    <th>${data[stage]['groupSize']}</th>
-                                                                    <th>${data[stage]['std']}</th>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
+                                            <div class="recent-body">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-sm table-bordered recentShotsTable">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style='width: 50px;'>Range</th>
+                                                                        <th style='width: 60px;'>Sighters</th>
+                                                                        <th>Shots</th>
+                                                                        <th style='width: 43px;'>Total</th>
+                                                                        <th style='width: 47px;'>Group</th>
+                                                                        <th style='width: 37px;'>Std</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <th>${data[stage]['rangeDistance']}</th>
+                                                                        <th>${htmlSighters}</th>
+                                                                        <th>${htmlScoresBody}</th>
+                                                                        <th>${data[stage]['totalScore']}</th>
+                                                                        <th>${data[stage]['groupSize']}</th>
+                                                                        <th>${data[stage]['std']}</th>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>

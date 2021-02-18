@@ -3,6 +3,7 @@ from distutils.util import strtobool
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
+import time
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -192,6 +193,7 @@ def profile():
     """
     # userID = request.args.get('userID')
     # user = User.query.filter_by(id=userID).first()
+    start = time.time()
     if not current_user.access >= 1:
         user = current_user
     else:
@@ -221,7 +223,7 @@ def profile():
     info["Mobile"] = "NULL"
     info["Roll Class"] = "NULL"
     info["Mobile"] = "NULL"
-
+    end = time.time()
     #z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     #p = numpy.poly1d(z)
     #pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
@@ -230,27 +232,43 @@ def profile():
     #    result = ((yearStubAvgLine[j]) * z[0]) + z[1]
     #    trend.append(result)
     # stub for shooter ID passed to the overview
-
+    start = time.time()
+    print((end - start), "before graph")
     # collect data fro graphs
     stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-    info = {}
     times = []
     scores = []
-    for i in range(len(stages_query)):
-        info[stages_query[i].id] = 0
-    for j in info:
-        shots_query = Shot.query.filter_by(stageID=j).all()
+    for j in stages_query:
+        shots_query = Shot.query.filter_by(stageID=j.id).all()
         total = 0
         score = 0
         for k in range(len(shots_query)):
             total += 1
-            score += (shots_query[k].score)
-        info[j] = (score/total)
-        timestamp_query = Stage.query.filter_by(id=j).order_by(Stage.timestamp).all()
-        for m in range(len(timestamp_query)):
-            times.append(utc_to_nsw(timestamp_query[m].timestamp))
-        scores.append(info[j])
+            score += shots_query[k].score
+        timestamp_query = j.timestamp
+        times.append(utc_to_nsw(timestamp_query))
+        scores.append((score/total))
+    # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
+    # info = {}
+    # times = []
+    # scores = []
+    # for i in range(len(stages_query)):
+    #     info[stages_query[i].id] = 0
+    # for j in info:
+    #     shots_query = Shot.query.filter_by(stageID=j).all()
+    #     total = 0
+    #     score = 0
+    #     for k in range(len(shots_query)):
+    #         total += 1
+    #         score += (shots_query[k].score)
+    #     info[j] = (score/total)
+    #     timestamp_query = Stage.query.filter_by(id=j).order_by(Stage.timestamp).all()
+    #     for m in range(len(timestamp_query)):
+    #         times.append(utc_to_nsw(timestamp_query[m].timestamp))
+    #     scores.append(info[j])
+    end = time.time()
 
+    print((end - start), len(stages_query))
     # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
     for n in range(len(times)):
         times[n] = (times[n].strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
