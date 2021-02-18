@@ -1,4 +1,6 @@
+import tarfile
 from distutils.util import strtobool
+from io import BytesIO
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
@@ -333,30 +335,30 @@ def upload():
     if form.identifier.data == "upload":
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
-            #files = request.files.getlist('file')
-            files = read_archive()
-            for file, issue_code in files:
-                print(file)
-                print(issue_code)
-                if not issue_code:
-                    stage = validateShots(file)
-                    stage['listID'] = count["total"]
-                    stageList.append(stage)
-                    if issue_code == 1:
-                        invalidList.append(stage)
-                    else:
-                        count["success"] += 1
-                    count["total"] += 1
+            files = form.file.data
+            for file in files:
+                if tarfile.is_tarfile(file):
+                    stages = read_archive(file,3)
+                    for stage_dict, issue_code in stages:
+                        if not issue_code:
+                            stage = validateShots(stage_dict)
+                            stage['listID'] = count["total"]
+                            stageList.append(stage)
+                            if issue_code == 1:
+                                invalidList.append(stage)
+                            else:
+                                count["success"] += 1
+                            count["total"] += 1
 
-            if count["success"] > 0:
-                alert[0] = "Success"
-                alert[2] = count["success"]
-            if count["failure"] > 0:
-                alert[0] = "Warning"
-                alert[1] = count["failure"]
-                if count["failure"] == count["total"]:
-                    template = 'upload/upload.html'
-                    alert[0] = "Failure"
+                        if count["success"] > 0:
+                            alert[0] = "Success"
+                            alert[2] = count["success"]
+                        if count["failure"] > 0:
+                            alert[0] = "Warning"
+                            alert[1] = count["failure"]
+                            if count["failure"] == count["total"]:
+                                template = 'upload/upload.html'
+                                alert[0] = "Failure"
 
     else:
         stageList = json.loads(request.form["stageDump"])

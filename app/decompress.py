@@ -4,6 +4,7 @@ import tarfile
 import zlib
 import datetime
 
+from app import app
 from app.models import Stage, User
 from app.uploadProcessing import checkSighter
 
@@ -29,7 +30,8 @@ def decompress_zlib(file):
     return decoded
 
 
-def read_archive():
+@app.route('/archive')
+def read_archive(uploaded,weeks):
     # Define file directory
     proj = os.path.dirname(os.path.realpath('__file__'))
     uploadDir = os.path.join(proj, 'app/static/tar')
@@ -42,42 +44,40 @@ def read_archive():
     new_files_in_time = 0
     stageList = []
     # Files must be created earlier than 2yrs ago.
-    lastDate = datetime.datetime.now() - datetime.timedelta(days=2*365)
+    lastDate = datetime.datetime.now() - datetime.timedelta(weeks=weeks)
     unixTime = (lastDate - datetime.datetime(1970,1,1)).total_seconds()*1000
-    # Loop through the upload directory
-    for filename in os.listdir(uploadDir):
-        tar = tarfile.open(os.path.join(uploadDir, filename), "r:gz")
-        # Loop through each member of the tgz file
-        for member in tar.getmembers():
-            name = member.name
-            # Ensure that regular meta files are not computed
-            if name[:9] == "./string-" and name[-4:] == ".zip":
-                files_found += 1
-                try:
-                    id = int(name[9:-4]) # Removes './string-' prefix and '.zip' from string
-                    # Check if the id already exists in the database
-                    if id not in idList:
-                        new_files += 1
-                        data = json.loads(decompress_zlib(tar.extractfile(member).read()))
-                        # Check if the file was made in the last 2 years
-                        if data['ts'] > unixTime:
-                            new_files_in_time += 1
-                            # Issue code denotes issues with stages that will be manually addressed
-                            # 1 Username was not found in database
-                            # 2 3 Shots (Not including sighters) or less were found
-                            # 3 Group information is missing from the target
-                            # If there are no codes the file is ready for upload
-                            issue_code = []
-                            if data['name'] not in userList:
-                                issue_code.append(1)
-                            if num_shots(data) < 3:
-                                issue_code.append(2)
-                            if not ('stats_group_size' in data and 'stats_group_center' in data):
-                                issue_code.append(3)
-                            stageList.append((data, issue_code))
-                except ValueError:
-                    # In case out of format files were added to archive e.g. "./string-default-string.zip"
-                    print('invalid filename skipped')
+    tar = tarfile.open(mode ="r:gz", fileobj=uploaded)
+    # Loop through each member of the tgz file
+    for member in tar.getmembers():
+        name = member.name
+        # Ensure that regular meta files are not computed
+        if name[:9] == "./string-" and name[-4:] == ".zip":
+            files_found += 1
+            try:
+                id = int(name[9:-4]) # Removes './string-' prefix and '.zip' from string
+                # Check if the id already exists in the database
+                if id not in idList:
+                    new_files += 1
+                    data = json.loads(decompress_zlib(tar.extractfile(member).read()))
+                    # Check if the file was made in the last 2 years
+                    if data['ts'] > unixTime:
+                        new_files_in_time += 1
+                        # Issue code denotes issues with stages that will be manually addressed
+                        # 1 Username was not found in database
+                        # 2 3 Shots (Not including sighters) or less were found
+                        # 3 Group information is missing from the target
+                        # If there are no codes the file is ready for upload
+                        issue_code = []
+                        if data['name'] not in userList:
+                            issue_code.append(1)
+                        if num_shots(data) < 3:
+                            issue_code.append(2)
+                        if not ('stats_group_size' in data and 'stats_group_center' in data):
+                            issue_code.append(3)
+                        stageList.append((data, issue_code))
+            except ValueError:
+                # In case out of format files were added to archive e.g. "./string-default-string.zip"
+                print('invalid filename skipped')
 
     print("Found {} files in archive".format(files_found))
     print("Found {} new files in archive".format(new_files))
