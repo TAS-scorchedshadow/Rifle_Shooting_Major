@@ -4,13 +4,6 @@
 {% block sidebar %}{% endblock %}
 {% block page_content %}
     <style>
-        #tip {
-            background-color: white;
-            border: 1px solid blue;
-            position: absolute;
-            left: -200px;
-            top: 100px;
-        }
         /*
         @media (min-width: 1200px){
             body {
@@ -46,6 +39,14 @@
         }
         @page {
           size: A4 landscape;
+        }
+        /*Styling from https://www.w3schools.com/css/tryit.asp?filename=trycss_tooltip*/
+        #tip {
+            position: absolute;
+            left: -200px;
+            top: 100px;
+            background-color: black;
+            border-radius: 6px;
         }
 
     </style>

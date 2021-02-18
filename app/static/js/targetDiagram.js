@@ -249,6 +249,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
                 tipCanvas.style.left = (targetX + shots[i][1]*targetRatio + 25) + "px";
                 tipCanvas.style.top = (targetY - shots[i][2]*targetRatio - 40) + "px";
                 tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+                tipCtx.fillStyle = "white";
                 tipCtx.fillText('Score: ' + shots[i][3], 5, 15);
                 hit = true;
             }
