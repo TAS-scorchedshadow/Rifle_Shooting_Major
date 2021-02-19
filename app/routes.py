@@ -336,19 +336,18 @@ def upload():
             template = 'upload/uploadVerify.html'
             files = form.file.data
             for file in files:
-                if tarfile.is_tarfile(file):
-                    stages = read_archive(file, 3)
-                    for stage_dict, issue_code in stages:
-                        if 2 not in issue_code:
-                            stage = validateShots(stage_dict)
-                            stage['listID'] = count["total"]
-                            stageList.append(stage)
-                            if 1 in issue_code:
-                                # Missing username
-                                invalidList.append(stage)
-                            else:
-                                count["success"] += 1
-                            count["total"] += 1
+                stages = read_archive(file, 57)
+                for stage_dict, issue_code in stages:
+                    if 2 not in issue_code:
+                        stage = validateShots(stage_dict)
+                        stage['listID'] = count["total"]
+                        stageList.append(stage)
+                        if 1 in issue_code:
+                            # Missing username
+                            invalidList.append(stage)
+                        else:
+                            count["success"] += 1
+                        count["total"] += 1
 
                     if count["success"] > 0:
                         alert[0] = "Success"
@@ -362,7 +361,7 @@ def upload():
 
     else:
         stageList = json.loads(request.form["stageDump"])
-        userList = [User.query.all()]
+        userList = [user for user in User.query.all()]
         userDict = {}
         for user in userList:
             userDict[user.username] = user.id
@@ -414,7 +413,6 @@ def upload():
             stageList = []
         else:
             template = 'upload/uploadVerify.html'
-            # todo: need to add an alert popup here
             alert[0] = "Incomplete"
             alert[1] = count["failure"]
             alert[2] = count["success"]
