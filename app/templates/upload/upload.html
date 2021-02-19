@@ -97,8 +97,9 @@
                 <div class="card h-100 justify-content-center">
                     <div class="card-header">
                         <p>
-                        Upload shoot strings here. <br>
-                        Files should appear as 'string-' followed by a number, e.g. 'string-1434928243577.txt'
+                            Upload .tgz archives here.
+                            <!-- Upload shoot strings here. <br> -->
+                            <!-- Files should appear as 'string-' followed by a number, e.g. 'string-1434928243577.txt' -->
                         </p>
                     </div>
                     <div class="card-body">
@@ -116,8 +117,8 @@
                             <script>
                                 $("#input-fa").fileinput({
                                     theme: "fa",
-                                    dropZoneTitle: "Drag and drop txt files here…",
-                                    allowedFileExtensions: ["txt","tgz"]
+                                    dropZoneTitle: "Drag and drop .tgz files here…",
+                                    allowedFileExtensions: ["tgz"]
                             });
                                 $("select[title='Upload selected file']").prop('type', 'button');
                             </script>
