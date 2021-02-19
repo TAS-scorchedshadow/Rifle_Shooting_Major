@@ -109,6 +109,7 @@ def getScore(shot):
     :param shot: Individual shot info
     :return: Score of the shot
     """
+    print(shot['score'][0])
     score = {'score': 0, 'Vscore': 0}  # Vscore = 0 if none was given
     if shot['value'] == "V":                # JSON includes array if shot included a Vscore
         score['score'] = shot['score'][0]

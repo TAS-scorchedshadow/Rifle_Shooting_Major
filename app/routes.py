@@ -414,7 +414,6 @@ def upload():
             stageList = []
         else:
             template = 'upload/uploadVerify.html'
-            # todo: need to add an alert popup here
             alert[0] = "Incomplete"
             alert[1] = count["failure"]
             alert[2] = count["success"]
