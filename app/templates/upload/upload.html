@@ -97,8 +97,9 @@
                 <div class="card h-100 justify-content-center">
                     <div class="card-header">
                         <p>
-                        Upload shoot strings here. <br>
-                        Files should appear as 'string-' followed by a number, e.g. 'string-1434928243577.txt'
+                            Upload .tgz archives here.
+                            <!-- Upload shoot strings here. <br> -->
+                            <!-- Files should appear as 'string-' followed by a number, e.g. 'string-1434928243577.txt' -->
                         </p>
                     </div>
                     <div class="card-body">
@@ -111,13 +112,13 @@
                             {{ form.csrf_token }}
                             <!--Create upload button-->
                             <div class="file-loading">
-                                {{ form.file(id="input-fa", name_="input-fa[]", multiple_type="file", accept="text/*") }}
+                                {{ form.file(id="input-fa", name_="input-fa[]", multiple_type="file") }}
                             </div>
                             <script>
                                 $("#input-fa").fileinput({
                                     theme: "fa",
-                                    dropZoneTitle: "Drag and drop txt files here…",
-                                    allowedFileExtensions: ["txt"]
+                                    dropZoneTitle: "Drag and drop .tgz files here…",
+                                    allowedFileExtensions: ["tgz"]
                             });
                                 $("select[title='Upload selected file']").prop('type', 'button');
                             </script>
@@ -127,32 +128,4 @@
                 </div>
             </div>
         </div>
-        <script>
-        //FileReader code from https://stackoverflow.com/questions/31746837/reading-uploaded-text-file-contents-in-html
-        document.getElementById('input-fa').addEventListener('change', getFile);
-        function getFile(event){
-            const input = event.target;
-            for (let i = 0; i<=input.files.length; i++){
-                if ('files' in input && input.files.length > 0) {
-                  placeFileContent(
-                  document.getElementById('content-target' + i.toString()),
-                  input.files[i])
-                }
-            }
-        }
-        function placeFileContent(target, file) {
-            readFileContent(file).then(content => {
-            target.value = content;
-            console.log(content)
-          }).catch(error => console.log(error))
-        }
-        function readFileContent(file) {
-            const reader = new FileReader();
-            return new Promise((resolve, reject) => {
-                reader.onload = event => resolve(event.target.result);
-                reader.onerror = error => reject(error);
-                reader.readAsText(file)
-            })
-        }
-        </script>
 {% endblock %}

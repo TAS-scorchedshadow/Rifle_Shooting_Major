@@ -1,3 +1,4 @@
+import tarfile
 from distutils.util import strtobool
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
@@ -9,11 +10,13 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from app import app, db, mail
-from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm, profileSelect
+from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm, \
+    profileSelect
 from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
+from app.decompress import read_archive
 
 import numpy
 import json
@@ -26,14 +29,8 @@ def index():
 
     :return: Index html page
     """
-    if request.method == "POST":
-        username = request.form['user']
-        if username:
-            user = User.query.filter_by(username=username).first()
-            flask_session['profileID'] = user.id
-            return redirect('/profile')
     if not current_user.is_authenticated:
-      return redirect(url_for('landing'))
+        return redirect(url_for('landing'))
     return render_template('index.html')
 
 
@@ -58,6 +55,8 @@ def landing():
     :return: Landing html page
     """
     return render_template('landingPage.html')
+
+
 
 
 @app.route('/target')
@@ -156,33 +155,31 @@ def target():
                                dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
     return render_template('index.html')
 
+    # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
+    # @app.route('/groupTest')
+    # def getGroupStats():
+    #     stages = Stage.query.all()
+    #     for stage in stages:
+    #         stageID = stage.id
+    #         shots = Shot.query.filter_by(stageID=stageID).all()
+    #         totalX = 0
+    #         totalY = 0
+    #         sighterNum = 0
+    #         for shot in shots:
+    #             if not shot.sighter:
+    #                 totalX += shot.xPos
+    #                 totalY += shot.yPos
+    #             else:
+    #                 sighterNum += 1
+    #         stage.groupX = totalX / (len(shots) - sighterNum)
+    #         stage.groupY = totalY / (len(shots) - sighterNum)
+    #     db.session.commit()
 
-# Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
-# @app.route('/groupTest')
-# def getGroupStats():
-#     stages = Stage.query.all()
-#     for stage in stages:
-#         stageID = stage.id
-#         shots = Shot.query.filter_by(stageID=stageID).all()
-#         totalX = 0
-#         totalY = 0
-#         sighterNum = 0
-#         for shot in shots:
-#             if not shot.sighter:
-#                 totalX += shot.xPos
-#                 totalY += shot.yPos
-#             else:
-#                 sighterNum += 1
-#         stage.groupX = totalX / (len(shots) - sighterNum)
-#         stage.groupY = totalY / (len(shots) - sighterNum)
-#     db.session.commit()
-#
-#
-#     print('database commit successful')
-#     return render_template('index.html')
+    print('database commit successful')
+    return render_template('index.html')
 
 
-@app.route('/profile',  methods=['GET', 'POST'])
+@app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     """
@@ -193,7 +190,12 @@ def profile():
     """
     # userID = request.args.get('userID')
     # user = User.query.filter_by(id=userID).first()
-    start = time.time()
+    if request.method == "POST":
+        username = request.form['user']
+        if username:
+            user = User.query.filter_by(username=username).first()
+            flask_session['profileID'] = user.id
+            return redirect('/profile')
     if not current_user.access >= 1:
         user = current_user
     else:
@@ -206,7 +208,7 @@ def profile():
     if form.is_submitted():
         change = str(form.cell.data)
         newValue = form.data.data
-        #user.(change) = newValue
+        # user.(change) = newValue
         setattr(user, change, newValue)
         db.session.commit()
 
@@ -223,17 +225,15 @@ def profile():
     info["Mobile"] = "NULL"
     info["Roll Class"] = "NULL"
     info["Mobile"] = "NULL"
-    end = time.time()
-    #z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
-    #p = numpy.poly1d(z)
-    #pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
-    #trend = []
-    #for j in range(len(yearStubAvgLine)):
+
+    # z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
+    # p = numpy.poly1d(z)
+    # pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
+    # trend = []
+    # for j in range(len(yearStubAvgLine)):
     #    result = ((yearStubAvgLine[j]) * z[0]) + z[1]
     #    trend.append(result)
     # stub for shooter ID passed to the overview
-    start = time.time()
-    print((end - start), "before graph")
     # collect data fro graphs
     stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     times = []
@@ -266,9 +266,6 @@ def profile():
     #     for m in range(len(timestamp_query)):
     #         times.append(utc_to_nsw(timestamp_query[m].timestamp))
     #     scores.append(info[j])
-    end = time.time()
-
-    print((end - start), len(stages_query))
     # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
     for n in range(len(times)):
         times[n] = (times[n].strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
@@ -296,7 +293,7 @@ def profile_overview():
         for k in range(len(shots_query)):
             total += 1
             score += (shots_query[k].score)
-        info[j] = (score/total)
+        info[j] = (score / total)
         timestamp_query = Stage.query.filter_by(id=j).all()
         for m in range(len(timestamp_query)):
             times.append(timestamp_query[m].timestamp)
@@ -353,9 +350,11 @@ def profile_settings():
 
     return render_template('students/profile_settings.html', equipmentInfo=eqiupmentInfo, elevationInfo=elevationInfo)
 
+
 @app.route('/graphs')
 def graphs():
     return render_template('graphs.html')
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
@@ -365,6 +364,7 @@ def upload():
 
     :return: Upload html page
     """
+    # Initialise Variables
     form = uploadForm()
     stageList = []
     invalidList = []
@@ -372,81 +372,77 @@ def upload():
     count = {"total": 0, "failure": 0, "success": 0}
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
+        # Uploading
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
-            files = request.files.getlist('file')
+            files = form.file.data
             for file in files:
-                try:
-                    print(file)
-                    bytes = file.read()
-                    string = bytes.decode('utf-8')
-                    data = json.loads(string)
-                    stage = validateShots(data)
-                    # Decodes a file from FileStorage format into json format, and then extracts relevant info
-                    # Fixes up file to obtain relevant data and valid shots
-                    stage['listID'] = count["total"]
-                    stageList.append(stage)
-                    # todo: User.query.filter_by is exceptionally slow, if possible find a faster way to search username
-                    idFound = User.query.filter_by(username=stage['username']).first()
-                    if idFound is None:
-                        invalidList.append(stage)
-                    else:
-                        count["success"] += 1
-                except:
-                    print("File had an error in uploading")
-                    count["failure"] += 1
-                count["total"] += 1
-
-            if count["success"] > 0:
-                alert[0] = "Success"
-                alert[2] = count["success"]
-            if count["failure"] > 0:
-                alert[0] = "Warning"
-                alert[1] = count["failure"]
-                if count["failure"] == count["total"]:
-                    template = 'upload/upload.html'
-                    alert[0] = "Failure"
-
+                stages = read_archive(file, 57)
+                for stage_dict, issue_code in stages:
+                    if 2 not in issue_code:                 # i.e. at least more than 1 counting shot
+                        stage = validateShots(stage_dict)   # Reformat shoot stage to obtain usable data
+                        stage['listID'] = count["total"]
+                        stageList.append(stage)
+                        if 1 in issue_code:                 # i.e. missing username
+                            invalidList.append(stage)
+                        else:
+                            count["success"] += 1
+                        count["total"] += 1
+                    # Alert message handling
+                    if count["success"] > 0:
+                        alert[0] = "Success"
+                        alert[2] = count["success"]
+                    if count["failure"] > 0:
+                        alert[0] = "Warning"
+                        alert[1] = count["failure"]
+                        if count["failure"] == count["total"]:
+                            # If ALL files failed, return to upload page
+                            template = 'upload/upload.html'
+                            alert[0] = "Failure"
     else:
+        # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
+        userList = [user for user in User.query.all()]
+        userDict = {}
+        for user in userList:
+            userDict[user.username] = user.id
         print(stageList)
         for key in request.form:
             if "username." in key:
                 id = int(key[9:])
                 username = request.form[key]
                 stageList[id]['username'] = username
-                idFound = User.query.filter_by(username=username).first()
-                if idFound is None:
+                print('yes' + str(key))
+                if username in userDict:
+                    count["success"] += 1
+                    print(userDict[username])
+                else:
                     invalidList.append(stageList[id])
                     count["failure"] += 1
-                else:
-                    stageList[id]['userID'] = idFound.id
-        if not invalidList:
-            stageDefine = {}
-            stageDefine['location'] = form.location.data
-            stageDefine['rangeDistance'] = form.rangeDistance.data
-            stageDefine['weather'] = form.weather.data
+        if not invalidList:  # todo: Ideally we can remove this so that the files that are done are just uploaded
+            stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
+                           'weather': form.weather.data}
+            print('started')
+            # todo THIS NEEDS TO BE FIXED PROBABLY IT'S KIIINDA JANK
             for item in stageList:
-                print(item)
-                try:
-                    stage = Stage(id=item['id'], userID=item['userID'],
+                # if item not in invalidList:  # todo: this is jank
+                if 1 == 1:
+                    # Uploads a stage
+                    stage = Stage(id=item['id'], userID=userDict[item['username']],
                                   timestamp=item['time'],
                                   groupSize=item['groupSize'],
                                   rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
                                   notes="")
                     db.session.add(stage)
-                    # here I think stage needs to be uploaded then relocated for shots to be uploaded
-                    id = item['id']
+                    # Uploads all shots in the stage
                     for point in item['validShots']:
-                        shot = Shot(stageID=id, timestamp=point['ts'],
+                        shot = Shot(stageID=item['id'], timestamp=point['ts'],
                                     xPos=point['x'], yPos=point['y'],
                                     score=point['score'], numV=point['Vscore'],
                                     sighter=point['sighter'])
                         db.session.add(shot)
                     db.session.commit()
-                except:
-                    print('DEBUG: Duplicate file')
-                    count["failure"] += 1
+                print('uploaded')
                 count["total"] += 1
             print("DEBUG: Completed Upload")
             alert[0] = "Success"
@@ -457,9 +453,9 @@ def upload():
             stageList = []
         else:
             template = 'upload/uploadVerify.html'
-            # todo: need to add an alert popup here
             alert[0] = "Incomplete"
             alert[1] = count["failure"]
+            alert[2] = count["success"]
             print("DEBUG: Not all usernames correct")
     stageDump = json.dumps(stageList)
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
@@ -677,7 +673,8 @@ def setGear():
 def getUsers():
     print('reached')
     users = User.query.all()
-    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username, 'group': user.group} for user in
+    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username,
+             'group': user.group} for user in
             users]
     return jsonify(list)
 

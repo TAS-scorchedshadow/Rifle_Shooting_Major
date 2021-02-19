@@ -35,9 +35,12 @@ def validateShots(data):
     # Send all the relevant data to a new dictionary, newShoot
     newShoot['id'] = data['_id']
     newShoot['username'] = data['name']
-    firstShotTime = validShotList[0]['ts']              # time of first shot
+    firstShotTime = validShotList[0]['ts']
     newShoot['time'] = firstShotTime
     newShoot['dateTime'] = firstShotTime
+    # if issue_code == 2:
+    #     data['stats_group_size'] = 0
+    #     data['stats_group_center']['x'], data['stats_group_center']['y'] = getGroupSize(validShotList)
     newShoot['groupSize'] = data['stats_group_size']
     newShoot['groupCentreX'] = data['stats_group_center']['x']
     newShoot['groupCentreY'] = data['stats_group_center']['y']
@@ -106,6 +109,7 @@ def getScore(shot):
     :param shot: Individual shot info
     :return: Score of the shot
     """
+    # Note that for a HIT, shot[score] is 1, but shot[value] is HIT.
     score = {'score': 0, 'Vscore': 0}  # Vscore = 0 if none was given
     if shot['value'] == "V":                # JSON includes array if shot included a Vscore
         score['score'] = shot['score'][0]
@@ -125,3 +129,18 @@ def checkSighter(shot):
         return shot['sighter']
     except KeyError:
         return False
+
+
+def getGroupSize(shots):
+    totalX = 0
+    totalY = 0
+    sighterNum = 0
+    for shot in shots:
+        if not shot.sighter:
+            totalX += shot.xPos
+            totalY += shot.yPos
+        else:
+            sighterNum += 1
+    groupX = totalX / (len(shots) - sighterNum)
+    groupY = totalY / (len(shots) - sighterNum)
+    return groupX, groupY
