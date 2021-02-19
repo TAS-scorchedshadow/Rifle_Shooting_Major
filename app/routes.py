@@ -363,7 +363,10 @@ def upload():
 
     else:
         stageList = json.loads(request.form["stageDump"])
-        userList = [user.username for user in User.query.all()]
+        userList = [User.query.all()]
+        userDict = {}
+        for user in userList:
+            userDict[user.username] = user.id
         print(stageList)
         for key in request.form:
             if "username." in key:
@@ -371,8 +374,9 @@ def upload():
                 username = request.form[key]
                 stageList[id]['username'] = username
                 print('yes' + str(key))
-                if username in userList:
+                if username in userDict:
                     count["success"] += 1
+                    print(userDict[username])
                 else:
                     invalidList.append(stageList[id])
                     count["failure"] += 1
@@ -385,7 +389,7 @@ def upload():
             print(invalidList)
             # todo THIS NEEDS TO BE FIXED PROBABLY IT'S KIIINDA JANK
             for item in stageList:
-                # if item not in invalidList:  todo: this is jank
+                # if item not in invalidList:  # todo: this is jank
                 if 1 == 1:
                     idFound = User.query.filter_by(username=item['username']).first()
                     stage = Stage(id=item['id'], userID=idFound.id,
