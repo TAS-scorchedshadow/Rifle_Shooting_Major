@@ -325,6 +325,7 @@ def upload():
 
     :return: Upload html page
     """
+    # Initialise Variables
     form = uploadForm()
     stageList = []
     invalidList = []
@@ -332,23 +333,23 @@ def upload():
     count = {"total": 0, "failure": 0, "success": 0}
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
+        # Uploading
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
             files = form.file.data
             for file in files:
                 stages = read_archive(file, 57)
                 for stage_dict, issue_code in stages:
-                    if 2 not in issue_code:
-                        stage = validateShots(stage_dict)
+                    if 2 not in issue_code:                 # i.e. at least more than 1 counting shot
+                        stage = validateShots(stage_dict)   # Reformat shoot stage to obtain usable data
                         stage['listID'] = count["total"]
                         stageList.append(stage)
-                        if 1 in issue_code:
-                            # Missing username
+                        if 1 in issue_code:                 # i.e. missing username
                             invalidList.append(stage)
                         else:
                             count["success"] += 1
                         count["total"] += 1
-
+                    # Alert message handling
                     if count["success"] > 0:
                         alert[0] = "Success"
                         alert[2] = count["success"]
@@ -356,10 +357,12 @@ def upload():
                         alert[0] = "Warning"
                         alert[1] = count["failure"]
                         if count["failure"] == count["total"]:
+                            # If ALL files failed, return to upload page
                             template = 'upload/upload.html'
                             alert[0] = "Failure"
 
     else:
+        # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
         userList = [user for user in User.query.all()]
         userDict = {}
@@ -386,17 +389,16 @@ def upload():
             for item in stageList:
                 # if item not in invalidList:  # todo: this is jank
                 if 1 == 1:
-                    idFound = User.query.filter_by(username=item['username']).first()
-                    stage = Stage(id=item['id'], userID=idFound.id,
+                    # Uploads a stage
+                    stage = Stage(id=item['id'], userID=userDict[item['username']],
                                   timestamp=item['time'],
                                   groupSize=item['groupSize'],
                                   rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
                                   notes="")
                     db.session.add(stage)
-                    # here I think stage needs to be uploaded then relocated for shots to be uploaded
-                    id = item['id']
+                    # Uploads all shots in the stage
                     for point in item['validShots']:
-                        shot = Shot(stageID=id, timestamp=point['ts'],
+                        shot = Shot(stageID=item['id'], timestamp=point['ts'],
                                     xPos=point['x'], yPos=point['y'],
                                     score=point['score'], numV=point['Vscore'],
                                     sighter=point['sighter'])
