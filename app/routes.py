@@ -248,6 +248,30 @@ def profile():
         timestamp_query = j.timestamp
         times.append(utc_to_nsw(timestamp_query))
         scores.append((score/total))
+
+    def stage_by_date(userID, start, end):
+        query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
+        for c in query:
+            print(c.timestamp)
+        for j in query:
+            if (j.timestamp)<end or (j.timestamp)>start:
+                query.remove(j)
+        # print(query)
+        for i in query:
+            print(j.timestamp)
+
+    amount = 5
+    def stage_by_n(userID,amount):
+        query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).limit(amount).all()
+        conversion(query)
+
+    def conversion(query):
+        timestamps = []
+        for j in query:
+            timestamps.append(j.timestamp)
+            #print(j.sc)
+        print(timestamps)
+
     # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     # info = {}
     # times = []
