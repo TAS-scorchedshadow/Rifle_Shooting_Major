@@ -380,12 +380,9 @@ def upload():
                     invalidList.append(stageList[id])
                     count["failure"] += 1
         if not invalidList:  # todo: Ideally we can remove this so that the files that are done are just uploaded
-            stageDefine = {}
-            stageDefine['location'] = form.location.data
-            stageDefine['rangeDistance'] = form.rangeDistance.data
-            stageDefine['weather'] = form.weather.data
+            stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
+                           'weather': form.weather.data}
             print('started')
-            print(invalidList)
             # todo THIS NEEDS TO BE FIXED PROBABLY IT'S KIIINDA JANK
             for item in stageList:
                 # if item not in invalidList:  # todo: this is jank
