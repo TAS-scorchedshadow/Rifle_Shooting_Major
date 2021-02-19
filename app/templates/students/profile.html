@@ -12,6 +12,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
+<!--Username Autofill-->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="../static/js/autofill.js"></script>
+
 <meta id="my-data" data-userid="{{ user.id }}">
 <style>
 body {
@@ -112,6 +117,13 @@ body {
             <li class="nav-item">
                 <a class="nav-link" id="compare-tab" data-toggle="tab" href="#compare" role="tab" aria-controls="compare" aria-selected="false">Compare</a>
             </li>
+            <div class="ui-widget">
+                <form method="post">
+                    <label for="username"><i class="fas fa-search"></i></label>
+                     <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
+                    <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">

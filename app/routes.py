@@ -27,12 +27,6 @@ def index():
 
     :return: Index html page
     """
-    if request.method == "POST":
-        username = request.form['user']
-        if username:
-            user = User.query.filter_by(username=username).first()
-            flask_session['profileID'] = user.id
-            return redirect('/profile')
     if not current_user.is_authenticated:
         return redirect(url_for('landing'))
     return render_template('index.html')
@@ -194,6 +188,12 @@ def profile():
     """
     # userID = request.args.get('userID')
     # user = User.query.filter_by(id=userID).first()
+    if request.method == "POST":
+        username = request.form['user']
+        if username:
+            user = User.query.filter_by(username=username).first()
+            flask_session['profileID'] = user.id
+            return redirect('/profile')
     if not current_user.access >= 1:
         user = current_user
     else:
