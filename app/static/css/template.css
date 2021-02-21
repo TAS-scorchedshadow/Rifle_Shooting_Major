@@ -10386,7 +10386,7 @@ body {
   background-color: #ffffff;
 }
 
-.background-dark {
+.background-light {
   background-color: #84ceeb;
 }
 
@@ -10465,7 +10465,9 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     left: 0;
     width: 100vw;
     height: 4rem;
-    border-bottom: 3px solid #84ceeb;
+    border-bottom: 1px solid #84ceeb;
+    -webkit-box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 5px 10px 1px rgba(0, 0, 0, 0.5);
   }
 
   #content {
@@ -10505,6 +10507,8 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     left: 0;
     width: 250px;
     height: 100vh;
+    -webkit-box-shadow: 5px 0px 15px 1px rgba(0, 0, 0, 0.5);
+    box-shadow: 5px 0px 15px 1px rgba(0, 0, 0, 0.5);
   }
 
   #sidebar ul.components {
@@ -10531,10 +10535,6 @@ h1, h2, h3, h4, h5, h6, p, th, td {
   transition: all 0.3s;
 }
 
-#sidebar.active {
-  margin-left: -250px;
-}
-
 #sidebar .sidebar-header {
   background: #84ceeb;
 }
@@ -10551,8 +10551,8 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 }
 
 #sidebar ul li a:hover {
-  color: #84ceeb;
-  background: #ffffff;
+  color: #ffffff;
+  background: #84ceeb;
 }
 
 #sidebar ul li.active > a,
@@ -10589,16 +10589,6 @@ ul.CTAs a {
   display: block;
   border-radius: 5px;
   margin-bottom: 5px;
-}
-
-a.download {
-  background: #fff;
-  color: #84ceeb;
-}
-
-.article:hover {
-  background-color: #84ceeb !important;
-  color: #fff !important;
 }
 
 .fnt-righteous {

@@ -10010,6 +10010,7 @@ main {
   z-index: 2000;
   background-color: #294F65;
   overflow: hidden;
+  box-shadow: 5px 10px;
 }
 
 .sidebar-nav {

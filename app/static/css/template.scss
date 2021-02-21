@@ -120,7 +120,7 @@ body{
     background-color: $bg;
 }
 
-.background-dark{
+.background-light{
     background-color: $bg-highlight-2;
 }
 
@@ -202,7 +202,9 @@ h1, h2, h3, h4, h5, h6, p, th, td {
         left: 0;
         width: 100vw;
         height: 4rem;
-        border-bottom: 3px solid $primary;
+        border-bottom: 1px solid $primary;
+        -webkit-box-shadow: 0px 5px 10px 1px rgba(0,0,0,0.5);
+        box-shadow: 0px 5px 10px 1px rgba(0,0,0,0.5);
     }
     #content {
         margin-top: 4rem;
@@ -238,6 +240,8 @@ h1, h2, h3, h4, h5, h6, p, th, td {
         left: 0;
         width: 250px;
         height: 100vh;
+        -webkit-box-shadow: 5px 0px 15px 1px rgba(0,0,0,0.5);
+        box-shadow: 5px 0px 15px 1px rgba(0,0,0,0.5);
         //border-right: 6px solid $primary;
     }
     #sidebar ul.components {
@@ -265,10 +269,6 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     transition: all 0.3s;
 }
 
-#sidebar.active {
-    margin-left: -250px;
-}
-
 #sidebar .sidebar-header {
     background: $bg-highlight-2;
 }
@@ -285,8 +285,8 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 }
 
 #sidebar ul li a:hover {
-    color: $primary;
-    background: $bg;
+    color: $bg;
+    background: $primary;
 }
 
 #sidebar ul li.active>a,
@@ -323,17 +323,6 @@ ul.CTAs a {
     display: block;
     border-radius: 5px;
     margin-bottom: 5px;
-}
-
-a.download {
-    background: #fff;
-    color: $primary;
-}
-
-
-.article:hover {
-    background-color: $primary !important;
-    color: #fff !important;
 }
 
 .fnt-righteous{
