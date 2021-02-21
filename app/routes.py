@@ -602,6 +602,15 @@ def userList():
     users = User.query.order_by(User.schoolID).all()
     return render_template('userAuth/userList.html', users=users)
 
+@app.route('/profileList')
+@login_required
+#todo figure out why cards are not appearing
+def profileList():
+    if not current_user.access > 1:
+        return redirect(url_for('index'))
+    users= User.query.order_by(User.username).all()
+    return render_template('students/profileList.html', users=users)
+
 
 @app.route('/deleteAccount', methods=['POST'])
 def deleteAccount():
