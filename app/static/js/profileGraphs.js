@@ -1,3 +1,4 @@
+//By Rishi Wig
 function Attendance(){
     var ctx = document.getElementById('attendance').getContext('2d');
     console.log(ctx);
