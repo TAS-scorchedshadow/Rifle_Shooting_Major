@@ -757,3 +757,17 @@ def getTargetStats():
 
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
+
+#By Andrew Tam
+def groupAvg(userID):
+    XTotal = 0
+    YTotal = 0
+    stages = Stage.query.filter_by(userID=userID).all()
+    length = len(stages)
+    for i in range(length):
+        XTotal = XTotal + stages[i].groupX
+        YTotal = YTotal + stages[i].groupY
+    groupXAvg = XTotal/length
+    groupYAvg = YTotal/length
+
+    return groupXAvg, groupYAvg
