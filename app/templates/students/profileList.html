@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% set active_page = "Profile List" %}
+{% block page_title %} Profile List {% endblock %}
+{% block page_content %}
+<div class="jumbotron jumbotron-fluid">
+    <div class=" text-center container-fluid justify-content-lg-center">
+        <h1> Profile List </h1>
+    </div>
+</div>
+<div class="container-fluid">
+<!-- todo fix up what is not allowing the cards to appear -->
+    {%  for schoolYr in users %}
+        <div class="row">
+            <div class="col-12">
+                <h4>Year {{ schoolYr }}</h4>
+            </div>
+            {% for user in users[schoolYr] %}
+                <div class="col-2">
+                    <div class="card">
+                        <div style="padding-top: 10px">
+                            <a href="/profile?username={{ user.username }}">
+                                <p style="text-align: center"><u>{{ user.fName }} {{ user.sName }}</u></p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {%  endfor %}
+        </div>
+        <hr>
+    {% endfor %}
+</div>
+{%  endblock %}
+
+
