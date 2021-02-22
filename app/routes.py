@@ -438,11 +438,11 @@ def upload():
         for item in stageList:
             if item not in invalidList:
                 # Uploads a stage
-                # todo: Need to add an ammoType, groupX, and groupY column to the database
+                # todo: Need to add an ammoType column to the database
                 print(item['username'])
                 stage = Stage(id=item['id'], userID=userDict[item['username']],
                               timestamp=item['time'],
-                              groupSize=item['groupSize'],
+                              groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
                               rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
                               notes="")
                 db.session.add(stage)
@@ -601,6 +601,15 @@ def userList():
         return redirect(url_for('index'))
     users = User.query.order_by(User.schoolID).all()
     return render_template('userAuth/userList.html', users=users)
+
+@app.route('/profileList')
+@login_required
+#todo figure out why cards are not appearing
+def profileList():
+    if not current_user.access > 1:
+        return redirect(url_for('index'))
+    users= User.query.order_by(User.username).all()
+    return render_template('students/profileList.html', users=users)
 
 
 @app.route('/deleteAccount', methods=['POST'])

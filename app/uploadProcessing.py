@@ -42,8 +42,8 @@ def validateShots(data):
     #     data['stats_group_size'] = 0
     #     data['stats_group_center']['x'], data['stats_group_center']['y'] = getGroupSize(validShotList)
     newShoot['groupSize'] = data['stats_group_size']
-    newShoot['groupCentreX'] = data['stats_group_center']['x']
-    newShoot['groupCentreY'] = data['stats_group_center']['y']
+    newShoot['groupX'] = data['stats_group_center']['x']
+    newShoot['groupY'] = data['stats_group_center']['y']
     newShoot['validShots'] = validShotList
     newShoot['totalShots'] = countingShots
     newShoot['totalScore'] = str(runningScore['score']) + "." + str(runningScore['Vscore'])

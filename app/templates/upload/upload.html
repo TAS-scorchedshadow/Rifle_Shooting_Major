@@ -51,12 +51,12 @@
                     {% if alert[1] > 0 %}
                         {{ alert[1] }} files were in incorrect format and could not be uploaded.
                     {% else %}
-                        There were no files to upload.
+                        There were no new stages to upload.
                     {% endif %}
                 {% elif alert[0] == "Success" %}
-                    {{ alert[2] }} files have been successfully uploaded.
+                    {{ alert[2] }} stages have been successfully uploaded.
                 {% elif alert[0] == "Warning" %}
-                    {{ alert[2] - alert[1] }} files have been successfully uploaded, while {{ alert[1] }} files failed to upload.
+                    {{ alert[2] - alert[1] }} stages have been successfully uploaded, while {{ alert[1] }} stages failed to upload.
                 {% else %}
                     This should not appear... go contact Ryan or something.
                 {% endif %}
