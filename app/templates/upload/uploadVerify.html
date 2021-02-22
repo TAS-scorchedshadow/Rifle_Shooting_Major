@@ -27,12 +27,13 @@
     <body>
         <div class="alert">
             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-            {% if alert[2] > 0 %}
+            {% if alert[2] > 0 and alert[0] != "Incomplete" %}
                 {{ alert[2] }} files are ready to upload.
             {% endif %}
             {% if alert[0] == "Warning" %}
                 {{ alert[1] }} files were in incorrect format and could not be uploaded.
             {% elif alert[0] == "Incomplete" %}
+                {{ alert[2] }} files have been uploaded.
                 {{ alert[1] }} files are missing a correct username.
             {% endif %}
         </div>

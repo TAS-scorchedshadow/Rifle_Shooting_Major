@@ -421,7 +421,7 @@ def upload():
                     if count["success"] > 0:
                         alert[0] = "Success"
                         alert[2] = count["success"]
-                    if count["failure"] > 0:
+                    if count["failure"] > 0 or count["total"] == 0:
                         alert[0] = "Warning"
                         alert[1] = count["failure"]
                         if count["failure"] == count["total"]:
@@ -431,32 +431,28 @@ def upload():
     else:
         # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
+        stageListID = -1
         userList = [user for user in User.query.all()]
         userDict = {}
         for user in userList:
             userDict[user.username] = user.id
-        print(stageList)
         for key in request.form:
             if "username." in key:
-                id = int(key[9:])
+                stageListID = stageListID + 1
                 username = request.form[key]
-                stageList[id]['username'] = username
-                print('yes' + str(key))
-                if username in userDict:
-                    count["success"] += 1
-                    print(userDict[username])
-                else:
-                    invalidList.append(stageList[id])
+                stageList[stageListID]['username'] = username
+                if username not in userDict:
+                    invalidList.append(stageList[stageListID])
                     count["failure"] += 1
-        if not invalidList:  # todo: Ideally we can remove this so that the files that are done are just uploaded
-            stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
-                           'weather': form.weather.data, 'ammoType': form.ammoType.data}
-            print('started')
-            # todo THIS NEEDS TO BE FIXED PROBABLY IT'S KIIINDA JANK
-            for item in stageList:
-                # if item not in invalidList:
+        stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
+                       'weather': form.weather.data, 'ammoType': form.ammoType.data}
+        print('started')
+        print(count["failure"])
+        for item in stageList:
+            if item not in invalidList:
                 # Uploads a stage
-                # todo: Need to add an ammoType column to the database
+                # todo: Need to add an ammoType, groupX, and groupY column to the database
+                print(item['username'])
                 stage = Stage(id=item['id'], userID=userDict[item['username']],
                               timestamp=item['time'],
                               groupSize=item['groupSize'],
@@ -472,13 +468,13 @@ def upload():
                     db.session.add(shot)
                 db.session.commit()
                 print('uploaded')
-                count["total"] += 1
-            print("DEBUG: Completed Upload")
+                count["success"] += 1
+            count["total"] += 1
+        print("DEBUG: Completed Upload")
+        stageList = invalidList
+        if count["success"] == count["total"]:
             alert[0] = "Success"
-            alert[2] = count["total"]
-            if count["failure"] > 0:
-                alert[0] = "Warning"
-                alert[1] = count["failure"]
+            alert[2] = count["success"]
             stageList = []
         else:
             template = 'upload/uploadVerify.html'
