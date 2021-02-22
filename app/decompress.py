@@ -59,6 +59,7 @@ def read_archive(uploaded,weeks):
                 if id not in idList:
                     new_files += 1
                     data = json.loads(decompress_zlib(tar.extractfile(member).read()))
+                    data['name'] = data['name'].lower()
                     # Check if the file was made in the last 2 years
                     if data['ts'] > unixTime:
                         new_files_in_time += 1
