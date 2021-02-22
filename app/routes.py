@@ -5,6 +5,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
 import time
+from datetime import datetime
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -17,6 +18,7 @@ from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
+from app.stagesCalc import stage_by_n, stage_by_date
 
 import numpy
 import json
@@ -235,28 +237,13 @@ def profile():
     #    trend.append(result)
     # stub for shooter ID passed to the overview
     # collect data fro graphs
-    def stage_by_date(userID, start, end):
-        query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-        for c in query:
-            print(c.timestamp)
-        for j in query:
-            if (j.timestamp)<end or (j.timestamp)>start:
-                query.remove(j)
-        # print(query)
-        for i in query:
-            print(j.timestamp)
 
     amount = 5
-    def stage_by_n(userID,amount):
-        query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).limit(amount).all()
-        conversion(query)
+    #start = datetime(2016, 6, 28)
+    #end = datetime(2021, 6, 29)
+    #stage_by_date(userID, start, end)
+    value = stage_by_n(userID, amount)
 
-    def conversion(query):
-        timestamps = []
-        for j in query:
-            timestamps.append(j.timestamp)
-            #print(j.sc)
-        print(timestamps)
 
     # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     # info = {}
