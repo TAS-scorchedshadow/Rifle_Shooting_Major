@@ -37,7 +37,7 @@ def validateShots(data):
     newShoot['username'] = data['name']
     firstShotTime = validShotList[0]['ts']
     newShoot['time'] = firstShotTime
-    newShoot['dateTime'] = firstShotTime
+    newShoot['distance'] = data['distance']
     # if issue_code == 2:
     #     data['stats_group_size'] = 0
     #     data['stats_group_center']['x'], data['stats_group_center']['y'] = getGroupSize(validShotList)

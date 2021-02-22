@@ -95,6 +95,7 @@
                                 <thead class="thead-dark">
                                     <tr>
                                         <th scope="col">Stage ID</th>
+                                        <th scope="col">Distance</th>
                                         <th scope="col">Time</th>
                                         <th scope="col">Name</th>
                                         <th scope="col">Score</th>
@@ -105,7 +106,8 @@
                                     <tr>
                                         <!-- Shoot ID may be meaningless since it's just a string of humanly unidentifiable numbers -->
                                         <td>{{ invalidShoot['id'] }}</td>
-                                        <td>{{ invalidShoot['dateTime'] }}</td>
+                                        <td>{{ invalidShoot['distance'] }}</td>
+                                        <td>{{ invalidShoot['time'] }}</td>
                                         <td>
                                             <input type="text" class="user-searchbar" name="username.{{ invalidShoot['listID'] }}" value={{ invalidShoot['username'] }}>
                                         </td>
