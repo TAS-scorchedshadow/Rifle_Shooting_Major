@@ -19,6 +19,7 @@ class uploadForm(FlaskForm):
                                                  ('700m', '700m'), ('800m', '800m')])
     weather = SelectField("Weather:", choices=[('Sunny', 'Sunny'), ('Cloudy', 'Cloudy'), ('Windy', 'Windy'),
                                                ('Rain', 'Rain'), ('Storm', 'Storm')])
+    ammoType = SelectField("Ammo Type:", choices=[('ADI', 'ADI'), ('Winchester', 'Winchester'), ('PPU', 'PPU')])
     submit = SubmitField("Submit")
     identifier = HiddenField("Upload/Verify", default="upload")
     stageDump = HiddenField("Data")

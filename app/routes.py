@@ -445,27 +445,27 @@ def upload():
                     count["failure"] += 1
         if not invalidList:  # todo: Ideally we can remove this so that the files that are done are just uploaded
             stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
-                           'weather': form.weather.data}
+                           'weather': form.weather.data, 'ammoType': form.ammoType.data}
             print('started')
             # todo THIS NEEDS TO BE FIXED PROBABLY IT'S KIIINDA JANK
             for item in stageList:
-                # if item not in invalidList:  # todo: this is jank
-                if 1 == 1:
-                    # Uploads a stage
-                    stage = Stage(id=item['id'], userID=userDict[item['username']],
-                                  timestamp=item['time'],
-                                  groupSize=item['groupSize'],
-                                  rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
-                                  notes="")
-                    db.session.add(stage)
-                    # Uploads all shots in the stage
-                    for point in item['validShots']:
-                        shot = Shot(stageID=item['id'], timestamp=point['ts'],
-                                    xPos=point['x'], yPos=point['y'],
-                                    score=point['score'], numV=point['Vscore'],
-                                    sighter=point['sighter'])
-                        db.session.add(shot)
-                    db.session.commit()
+                # if item not in invalidList:
+                # Uploads a stage
+                # todo: Need to add an ammoType column to the database
+                stage = Stage(id=item['id'], userID=userDict[item['username']],
+                              timestamp=item['time'],
+                              groupSize=item['groupSize'],
+                              rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
+                              notes="")
+                db.session.add(stage)
+                # Uploads all shots in the stage
+                for point in item['validShots']:
+                    shot = Shot(stageID=item['id'], timestamp=point['ts'],
+                                xPos=point['x'], yPos=point['y'],
+                                score=point['score'], numV=point['Vscore'],
+                                sighter=point['sighter'])
+                    db.session.add(shot)
+                db.session.commit()
                 print('uploaded')
                 count["total"] += 1
             print("DEBUG: Completed Upload")
