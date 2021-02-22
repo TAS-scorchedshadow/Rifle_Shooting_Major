@@ -6,9 +6,6 @@
     <title>{% block page_title %}{% endblock %} | PARS</title>
     <script src="https://kit.fontawesome.com/de048b62de.js" crossorigin="anonymous"></script>
 
-    <!--Script to detect changes in div dimensions-->
-    <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
-    <script src="../static/css-element-queries/src/ElementQueries.js"></script>
     <link rel="stylesheet" type="text/css" href="../static/css/template.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&display=swap" rel="stylesheet"/>
@@ -64,14 +61,14 @@
                 </li>
                 {% if current_user.is_authenticated %}
                     <li>
-                        <a href="/logout" class="article">
+                        <a href="/logout">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Sign Out</span>
                         </a>
                     </li>
                 {% else %}
                     <li>
-                        <a href="/login" class="article">
+                        <a href="/login">
                             <i class="fas fa-sign-in-alt"></i>
                             <span>Sign In</span>
                         </a>

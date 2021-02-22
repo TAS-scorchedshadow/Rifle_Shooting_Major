@@ -1,3 +1,4 @@
+//By Henry Guo with some edit from Dylan Huynh
 $(document).ready(function(){
     //TODO add loading symbols
     // const queryString = window.location.search;
@@ -8,17 +9,16 @@ $(document).ready(function(){
     function loadTable(user){
         if (userID != null){
             let numLoaded = $("div[class*='stage-overview']").length;
-            $('#spinner').toggleClass('d-flex');
-            $('#spinner').show();
-            console.log(numLoaded);
+            $('#shotSpinner').toggleClass('d-flex');
+            $('#shotSpinner').show();
             $.ajax({
                 type: 'POST',
                 url: "/getShots",
                 data: JSON.stringify([user, numLoaded]),
                 success:(function (data) {
                     console.log(data)
-                    $('#spinner').toggleClass('d-flex');
-                    $('#spinner').hide()
+                    $('#shotSpinner').toggleClass('d-flex');
+                    $('#shotSpinner').hide()
                     if (Array.isArray(data) && data.length){
                         for (let stage in data) {
                             let shots = data[stage]['scores']

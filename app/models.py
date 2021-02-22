@@ -163,11 +163,12 @@ class User(UserMixin, db.Model):
         stages = Stage.query.filter_by(userID=self.id).all()
         for stage in stages:
             stats = stage.stageStats()
-            totalMean += stats[0]
-            totalMedian += stats[1]
-            totalStd += stats[2]
-            totalGroup += stats[3]
-            totalDuration += stats[4]
+            if stats:
+                totalMean += stats[0]
+                totalMedian += stats[1]
+                totalStd += stats[2]
+                totalGroup += stats[3]
+                totalDuration += stats[4]
         mean = totalMean / len(stages)
         median = totalMedian / len(stages)
         std = totalStd / len(stages)
@@ -214,17 +215,13 @@ class Stage(db.Model):
         """
         shots = Shot.query.filter_by(stageID=self.id).all()
         scores = [shot.score for shot in shots if not shot.sighter]
-        try:
+        if scores:
             mean = statistics.mean(scores)
             median = statistics.median(scores)
             std = statistics.stdev(scores)
             duration = int((shots[-1].timestamp - shots[1].timestamp).total_seconds())
             return mean, median, std, self.groupSize, duration
-        except TypeError:
-            raise TypeError("Stage must have associated shots")
-        except statistics.StatisticsError:
-            print("Stage has no shots")
-            pass
+        return
 
 
 class Shot(db.Model):
