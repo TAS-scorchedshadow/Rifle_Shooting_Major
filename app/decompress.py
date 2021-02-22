@@ -1,6 +1,7 @@
 import json
 import os
 import tarfile
+import time
 import zlib
 import datetime
 
@@ -31,35 +32,50 @@ def decompress_zlib(file):
 
 
 @app.route('/archive')
-def read_archive(uploaded,weeks):
-    # Define file directory
-    proj = os.path.dirname(os.path.realpath('__file__'))
-    uploadDir = os.path.join(proj, 'app/static/tar')
+def read_archive(uploaded, weeks):
+    start = time.time()
     # Create a list of Stage IDs present in the database
     idList = [stage.id for stage in Stage.query.all()]
     userList = [user.username for user in User.query.all()]
-    # Define list for return
+
+    # Define some counters for print statements
     files_found = 0
     new_files = 0
     new_files_in_time = 0
     stageList = []
-    # Files must be created earlier than 2yrs ago.
+
+    # lastDate is the last accepted date in dattime. unixTime is the representation of that
     lastDate = datetime.datetime.now() - datetime.timedelta(weeks=weeks)
-    unixTime = (lastDate - datetime.datetime(1970,1,1)).total_seconds()*1000
-    tar = tarfile.open(mode ="r:gz", fileobj=uploaded)
+    unixTime = (lastDate - datetime.datetime(1970, 1, 1)).total_seconds() * 1000
+    tar = tarfile.open(mode="r:gz", fileobj=uploaded)
+
+    # Find and extract "data.txt" in the archive
+    with tar.extractfile(tar.getmember('./data.txt')) as json_file:
+        data_text_dict = json.load(json_file)
+
     # Loop through each member of the tgz file
     for member in tar.getmembers():
         name = member.name
-        # Ensure that regular meta files are not computed
+        # Ensure that expected meta files are not computed
         if name[:9] == "./string-" and name[-4:] == ".zip":
             files_found += 1
             try:
-                id = int(name[9:-4]) # Removes './string-' prefix and '.zip' from string
+                id = int(name[9:-4])  # Removes './string-' prefix and '.zip' from string
                 # Check if the id already exists in the database
                 if id not in idList:
                     new_files += 1
                     data = json.loads(decompress_zlib(tar.extractfile(member).read()))
+
+                    # -- EDIT DATA TO MAKE UPLOAD PROCESS EASIER --
+                    # Make names lowercase
                     data['name'] = data['name'].lower()
+
+                    # Append distance to list if it exists in data.txt
+                    face_id = str(data['face_id'])
+                    if face_id in data_text_dict['faces']:
+                        data['distance'] = data_text_dict['faces'][face_id]['distance']
+                    # -- FINISH EDITING DATA --
+
                     # Check if the file was made in the last 2 years
                     if data['ts'] > unixTime:
                         new_files_in_time += 1
@@ -82,7 +98,8 @@ def read_archive(uploaded,weeks):
 
     print("Found {} files in archive".format(files_found))
     print("Found {} new files in archive".format(new_files))
-    print("Found {} new relevant files in archive (Made in the last 2yrs)".format(new_files_in_time))
+    print("Found {} new relevant files in archive (Made in the last {} weeks)".format(new_files_in_time, weeks))
+    print(time.time()-start)
 
     return stageList
 
