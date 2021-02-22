@@ -48,7 +48,11 @@
             <div class="alert">
                 <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
                 {% if alert[0] == "Failure" %}
-                    {{ alert[1] }} files were in incorrect format and could not be uploaded.
+                    {% if alert[1] > 0 %}
+                        {{ alert[1] }} files were in incorrect format and could not be uploaded.
+                    {% else %}
+                        There were no files to upload.
+                    {% endif %}
                 {% elif alert[0] == "Success" %}
                     {{ alert[2] }} files have been successfully uploaded.
                 {% elif alert[0] == "Warning" %}

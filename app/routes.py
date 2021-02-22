@@ -5,6 +5,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
 import time
+from datetime import datetime
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -17,6 +18,7 @@ from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
+from app.stagesCalc import stage_by_n, stage_by_date
 
 import numpy
 import json
@@ -235,28 +237,13 @@ def profile():
     #    trend.append(result)
     # stub for shooter ID passed to the overview
     # collect data fro graphs
-    def stage_by_date(userID, start, end):
-        query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-        for c in query:
-            print(c.timestamp)
-        for j in query:
-            if (j.timestamp)<end or (j.timestamp)>start:
-                query.remove(j)
-        # print(query)
-        for i in query:
-            print(j.timestamp)
 
     amount = 5
-    def stage_by_n(userID,amount):
-        query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).limit(amount).all()
-        conversion(query)
+    #start = datetime(2016, 6, 28)
+    #end = datetime(2021, 6, 29)
+    #stage_by_date(userID, start, end)
+    value = stage_by_n(userID, amount)
 
-    def conversion(query):
-        timestamps = []
-        for j in query:
-            timestamps.append(j.timestamp)
-            #print(j.sc)
-        print(timestamps)
 
     # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     # info = {}
@@ -421,7 +408,7 @@ def upload():
                     if count["success"] > 0:
                         alert[0] = "Success"
                         alert[2] = count["success"]
-                    if count["failure"] > 0:
+                    if count["failure"] > 0 or count["total"] == 0:
                         alert[0] = "Warning"
                         alert[1] = count["failure"]
                         if count["failure"] == count["total"]:
@@ -431,54 +418,50 @@ def upload():
     else:
         # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
+        stageListID = -1
         userList = [user for user in User.query.all()]
         userDict = {}
         for user in userList:
             userDict[user.username] = user.id
-        print(stageList)
         for key in request.form:
             if "username." in key:
-                id = int(key[9:])
+                stageListID = stageListID + 1
                 username = request.form[key]
-                stageList[id]['username'] = username
-                print('yes' + str(key))
-                if username in userDict:
-                    count["success"] += 1
-                    print(userDict[username])
-                else:
-                    invalidList.append(stageList[id])
+                stageList[stageListID]['username'] = username
+                if username not in userDict:
+                    invalidList.append(stageList[stageListID])
                     count["failure"] += 1
-        if not invalidList:  # todo: Ideally we can remove this so that the files that are done are just uploaded
-            stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
-                           'weather': form.weather.data}
-            print('started')
-            # todo THIS NEEDS TO BE FIXED PROBABLY IT'S KIIINDA JANK
-            for item in stageList:
-                # if item not in invalidList:  # todo: this is jank
-                if 1 == 1:
-                    # Uploads a stage
-                    stage = Stage(id=item['id'], userID=userDict[item['username']],
-                                  timestamp=item['time'],
-                                  groupSize=item['groupSize'],
-                                  rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
-                                  notes="")
-                    db.session.add(stage)
-                    # Uploads all shots in the stage
-                    for point in item['validShots']:
-                        shot = Shot(stageID=item['id'], timestamp=point['ts'],
-                                    xPos=point['x'], yPos=point['y'],
-                                    score=point['score'], numV=point['Vscore'],
-                                    sighter=point['sighter'])
-                        db.session.add(shot)
-                    db.session.commit()
+        stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
+                       'weather': form.weather.data, 'ammoType': form.ammoType.data}
+        print('started')
+        print(count["failure"])
+        for item in stageList:
+            if item not in invalidList:
+                # Uploads a stage
+                # todo: Need to add an ammoType, groupX, and groupY column to the database
+                print(item['username'])
+                stage = Stage(id=item['id'], userID=userDict[item['username']],
+                              timestamp=item['time'],
+                              groupSize=item['groupSize'],
+                              rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
+                              notes="")
+                db.session.add(stage)
+                # Uploads all shots in the stage
+                for point in item['validShots']:
+                    shot = Shot(stageID=item['id'], timestamp=point['ts'],
+                                xPos=point['x'], yPos=point['y'],
+                                score=point['score'], numV=point['Vscore'],
+                                sighter=point['sighter'])
+                    db.session.add(shot)
+                db.session.commit()
                 print('uploaded')
-                count["total"] += 1
-            print("DEBUG: Completed Upload")
+                count["success"] += 1
+            count["total"] += 1
+        print("DEBUG: Completed Upload")
+        stageList = invalidList
+        if count["success"] == count["total"]:
             alert[0] = "Success"
-            alert[2] = count["total"]
-            if count["failure"] > 0:
-                alert[0] = "Warning"
-                alert[1] = count["failure"]
+            alert[2] = count["success"]
             stageList = []
         else:
             template = 'upload/uploadVerify.html'
