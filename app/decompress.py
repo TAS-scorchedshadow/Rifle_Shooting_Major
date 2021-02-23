@@ -4,6 +4,7 @@ import tarfile
 import time
 import zlib
 import datetime
+from math import floor
 
 from app import app
 from app.models import Stage, User
@@ -73,7 +74,7 @@ def read_archive(uploaded, weeks):
                     # Append distance to list if it exists in data.txt
                     face_id = str(data['face_id'])
                     if face_id in data_text_dict['faces']:
-                        data['distance'] = int(data_text_dict['faces'][face_id]['distance'])
+                        data['distance'] = str(floor(data_text_dict['faces'][face_id]['distance']))
                     # -- FINISH EDITING DATA --
 
                     # Check if the file was made in the last 2 years

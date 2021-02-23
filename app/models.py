@@ -197,7 +197,7 @@ class Stage(db.Model):
     groupSize = db.Column(db.Float, default=0)
     groupX = db.Column(db.Float, default=0)
     groupY = db.Column(db.Float, default=0)
-    distance = db.Column(db.Integer)
+    distance = db.Column(db.String(10))
     location = db.Column(db.String(50))
     settings = db.Column(db.JSON)
     notes = db.Column(db.String(255))
