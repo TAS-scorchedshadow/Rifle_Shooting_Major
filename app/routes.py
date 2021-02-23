@@ -428,17 +428,18 @@ def upload():
                         else:
                             count["success"] += 1
                         count["total"] += 1
-                    # Alert message handling
-                    if count["success"] > 0:
-                        alert[0] = "Success"
-                        alert[2] = count["success"]
-                    if count["failure"] > 0 or count["total"] == 0:
-                        alert[0] = "Warning"
-                        alert[1] = count["failure"]
-                        if count["failure"] == count["total"]:
-                            # If ALL files failed, return to upload page
-                            template = 'upload/upload.html'
-                            alert[0] = "Failure"
+
+            # Alert message handling
+            if count["success"] > 0:
+                alert[0] = "Success"
+                alert[2] = count["success"]
+            if count["failure"] > 0 or count["total"] == 0:
+                alert[0] = "Warning"
+                alert[1] = count["failure"]
+                if count["failure"] == count["total"]:
+                    # If ALL files failed, return to upload page
+                    template = 'upload/upload.html'
+                    alert[0] = "Failure"
     else:
         # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
@@ -463,6 +464,7 @@ def upload():
             if item not in invalidList:
                 # Uploads a stage
                 # todo: Need to add an ammoType column to the database
+                # todo: Need to change this to upload with item['distance'], once it actually comes back as a string
                 print(item['username'])
                 stage = Stage(id=item['id'], userID=userDict[item['username']],
                               timestamp=item['time'],
@@ -779,3 +781,17 @@ def getTargetStats():
 
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
+
+#By Andrew Tam
+def groupAvg(userID):
+    XTotal = 0
+    YTotal = 0
+    stages = Stage.query.filter_by(userID=userID).all()
+    length = len(stages)
+    for i in range(length):
+        XTotal = XTotal + stages[i].groupX
+        YTotal = YTotal + stages[i].groupY
+    groupXAvg = XTotal/length
+    groupYAvg = YTotal/length
+
+    return groupXAvg, groupYAvg
