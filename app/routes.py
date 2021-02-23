@@ -266,7 +266,7 @@ def profile():
     #start = datetime(2016, 6, 28)
     #end = datetime(2021, 6, 29)
     #stage_by_date(userID, start, end)
-    value = stage_by_n(userID, amount)
+    # value = stage_by_n(userID, amount)
 
 
     # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
@@ -761,7 +761,7 @@ def getShots():
         stagesList.append({'scores': scores,
                            'totalScore': totalScore,
                            'groupSize': round(stage.groupSize, 1),
-                           'distance': '300m',
+                           'distance': stage.distance,
                            'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
                            'std': std,
                            'duration': duration,

@@ -7,10 +7,10 @@ var target_details = {
     "600m": [600, 160, 320, 660, 1000, 1320, 1800],
     "700m": [700, 255, 510, 815, 1120, 1830, 2400],
     "800m": [700, 255, 510, 815, 1120, 1830, 2400],
-    "300yds": [274.32, 65, 130, 260, 390, 560],
-    "400yds": [365.76, 85, 175, 350, 520, 745],
-    "500yds": [457.20, 130, 260, 600, 915, 1320],
-    "600yds": [548.64, 145, 290, 600, 915, 1320]
+    "274m": [274.32, 65, 130, 260, 390, 560],
+    "365m": [365.76, 85, 175, 350, 520, 745],
+    "457m": [457.20, 130, 260, 600, 915, 1320],
+    "548m": [548.64, 145, 290, 600, 915, 1320]
 };
 //Colors
 var targetFill = '#afafaf';
@@ -93,12 +93,13 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         }
         this.x = this.canvasObj.width/2;
         this.y = this.canvasObj.height/2;
-        this.dist = dist;
+        //Following fixes an indexing issue where array['300'] means get the 300th index of the array
+        this.dist = dist + 'm';
         this.c = this.canvasObj.getContext('2d');
         this.ratio = this.canvasObj.width/target_details[this.dist][5];
         //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
         //it is modified to be in pixels
-        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[dist][0] * this.ratio;
+        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
         this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
 
     }
@@ -195,7 +196,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         this.ratio = this.canvasObj.width/target_details[this.dist][5];
         //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
         //it is modified to be in pixels
-        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[dist][0] * this.ratio;
+        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
         //update the target dimensions
         this.target.update(this.x, this.y, this.canvasObj.width, this.ratio);
     };

@@ -67,7 +67,7 @@ $(document).ready(function(){
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
-                                                                        <th>${data[stage]['rangeDistance']}</th>
+                                                                        <th>${data[stage]['distance']}</th>
                                                                         <th>${htmlSighters}</th>
                                                                         <th>${htmlScoresBody}</th>
                                                                         <th>${data[stage]['totalScore']}</th>
