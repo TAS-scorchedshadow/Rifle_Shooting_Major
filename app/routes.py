@@ -479,10 +479,10 @@ def upload():
                                 score=point['score'], numV=point['Vscore'],
                                 sighter=point['sighter'])
                     db.session.add(shot)
-                db.session.commit()
-                print('uploaded')
+                print('ready for upload')
                 count["success"] += 1
             count["total"] += 1
+        db.session.commit()
         print("DEBUG: Completed Upload")
         stageList = invalidList
         if count["success"] == count["total"]:
