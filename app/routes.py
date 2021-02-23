@@ -97,7 +97,7 @@ def target():
     stageID = request.args.get('stageID')
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:
-        range = json.dumps(stage.rangeDistance)
+        range = json.dumps(stage.distance)
         shots = Shot.query.filter_by(stageID=stageID).all()
         formattedList = []
         scoreList = []
@@ -761,7 +761,7 @@ def getShots():
         stagesList.append({'scores': scores,
                            'totalScore': totalScore,
                            'groupSize': round(stage.groupSize, 1),
-                           'rangeDistance': '300m',
+                           'distance': '300m',
                            'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
                            'std': std,
                            'duration': duration,
