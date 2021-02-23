@@ -49,7 +49,7 @@ class User(UserMixin, db.Model):
     butUp = db.Column(db.String(10))
     ringSize = db.Column(db.String(10))
     sightHole = db.Column(db.String(10))
-    # Elevation Settings
+    # Elevation Settings Old
     PPU300m = db.Column(db.String(8))
     ADI300m = db.Column(db.String(8))
     Fore300m = db.Column(db.String(8))
@@ -74,6 +74,13 @@ class User(UserMixin, db.Model):
     PPU600y = db.Column(db.String(8))
     ADI600y = db.Column(db.String(8))
     Fore600y = db.Column(db.String(8))
+    # New Elevation
+    settings_300m = db.Column(db.JSON)
+    settings_400m = db.Column(db.JSON)
+    settings_500m = db.Column(db.JSON)
+    settings_600m = db.Column(db.JSON)
+    settings_700m = db.Column(db.JSON)
+    settings_800m = db.Column(db.JSON)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -190,8 +197,9 @@ class Stage(db.Model):
     groupSize = db.Column(db.Float, default=0)
     groupX = db.Column(db.Float, default=0)
     groupY = db.Column(db.Float, default=0)
-    rangeDistance = db.Column(db.String(10))
+    distance = db.Column(db.Integer)
     location = db.Column(db.String(50))
+    settings = db.Column(db.JSON)
     notes = db.Column(db.String(255))
     shots = db.relationship('Shot', backref='stage', lazy='dynamic')
 

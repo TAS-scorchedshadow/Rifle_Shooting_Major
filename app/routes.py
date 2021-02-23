@@ -24,6 +24,15 @@ import numpy
 import json
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error/404.html'), 404
+
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template('error/500.html'), 500
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     """
@@ -48,6 +57,21 @@ def change():
             print("group changed")
     return render_template('groupEditor.html')
 
+@app.route('/jsonTest')
+def j():
+    dict = {'PPU_elevation': 100, 'ADI_elevation': 150, 'sight_hole': 2, 'foresight_ring': 2}
+    x = json.dumps(dict)
+    user = User.query.filter_by(username="dylan.h1").first()
+    user.dist_300m = x
+    db.session.commit()
+    return "hello"
+
+@app.route('/jsonRead')
+def s():
+    user = User.query.filter_by(username="dylan.h1").first()
+    y = user.dist_300m
+    print(json.loads(y))
+    return "hello"
 
 @app.route('/landing')
 def landing():
@@ -132,7 +156,7 @@ def target():
                 dayX += shoot.groupX
                 dayY += shoot.groupY
                 myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-            elif shoot.rangeDistance == stage.rangeDistance:
+            elif shoot.distance == stage.distance:
                 otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
         dayAvg = [dayX / count, dayY / count]
         myStages = json.dumps(myStages)
@@ -431,7 +455,7 @@ def upload():
                 if username not in userDict:
                     invalidList.append(stageList[stageListID])
                     count["failure"] += 1
-        stageDefine = {'location': form.location.data, 'rangeDistance': form.rangeDistance.data,
+        stageDefine = {'location': form.location.data, 'distance': form.distance.data,
                        'weather': form.weather.data, 'ammoType': form.ammoType.data}
         print('started')
         print(count["failure"])
@@ -443,7 +467,7 @@ def upload():
                 stage = Stage(id=item['id'], userID=userDict[item['username']],
                               timestamp=item['time'],
                               groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
-                              rangeDistance=stageDefine['rangeDistance'], location=stageDefine['location'],
+                              distance=stageDefine['distance'], location=stageDefine['location'],
                               notes="")
                 db.session.add(stage)
                 # Uploads all shots in the stage

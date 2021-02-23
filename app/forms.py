@@ -15,8 +15,8 @@ class uploadForm(FlaskForm):
     """
     file = MultipleFileField(u'Submit File')
     location = SelectField("Location:", choices=[('Malabar', 'Malabar')])
-    rangeDistance = SelectField("Distance:", choices=[('300m', '300m'), ('500m', '500m'), ('600m', '600m'),
-                                                 ('700m', '700m'), ('800m', '800m')])
+    distance = SelectField("Distance:", choices=[('300m', 300), ('500m', 500), ('600m', 600),
+                                                 ('700m', 700), ('800m', 800)])
     weather = SelectField("Weather:", choices=[('Sunny', 'Sunny'), ('Cloudy', 'Cloudy'), ('Windy', 'Windy'),
                                                ('Rain', 'Rain'), ('Storm', 'Storm')])
     ammoType = SelectField("Ammo Type:", choices=[('ADI', 'ADI'), ('Winchester', 'Winchester'), ('PPU', 'PPU')])
