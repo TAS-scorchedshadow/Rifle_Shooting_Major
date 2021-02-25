@@ -61,7 +61,7 @@ def conversion(stages_array):
         tempStdev = []
         for objects in query:
             tempScore = []
-            if objects.sighter == False:
+            if not objects.sighter:
                 trueTotal += objects.score
                 shots += 1
                 tempStdev.append(objects.score)
@@ -72,9 +72,10 @@ def conversion(stages_array):
             scores.append(tempScore)
         totalPotential = 5 * shots
 
-        total.append((((trueTotal/totalPotential)*100)/100)*50)
-        avgScores.append(float(trueTotal / shots))
-        stDev.append(statistics.pstdev(tempStdev))
+        if shots != 0 and totalPotential != 0 and not tempStdev:
+            total.append((((trueTotal/totalPotential)*100)/100)*50)
+            avgScores.append(float(trueTotal / shots))
+            stDev.append(statistics.pstdev(tempStdev))
 
 
     return timestamps, avgScores, total, stDev, scores

@@ -267,11 +267,6 @@ def profile():
     #end = datetime(2021, 6, 29)
     #stage_by_date(userID, start, end)
     value = stage_by_n(userID, amount)
-    print(value[0])
-    print(value[1])
-    print(value[2])
-    print(value[3])
-    print(value[4])
 
     # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     # info = {}
