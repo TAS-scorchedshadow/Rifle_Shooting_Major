@@ -41,11 +41,11 @@
                         <span>Profile</span>
                     </a>
                 </li>
+                {% if current_user.access >= 1 %}
                 <li>
-                    <!-- todo get pic for profile list -->
-                    <a href="/profileList">
-                        <i class="fas fa-user"></i>
-                        <span>Profile List</span>
+                    <a href="/upload">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload</span>
                     </a>
                 </li>
                 <li>
@@ -54,18 +54,23 @@
                         <span>User List</span>
                     </a>
                 </li>
-                <li>
-                    <a href="/upload">
-                        <i class="fas fa-upload"></i>
-                        <span>Upload</span>
+                {% endif %}
+                {% if current_user.access >=2 %}
+                    <li>
+                    <!-- todo get pic for profile list -->
+                    <a href="/profileList">
+                        <i class="fas fa-user"></i>
+                        <span>Profile List</span>
                     </a>
                 </li>
-                <li>
+                {% endif %}
+                <!-- <li>
                     <a href="/graphs">
                         <i class="fas fa-chart-area"></i>
                         <span>Graphs</span>
                     </a>
                 </li>
+                -->
                 {% if current_user.is_authenticated %}
                     <li>
                         <a href="/logout">
