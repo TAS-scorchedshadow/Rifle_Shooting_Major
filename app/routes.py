@@ -455,20 +455,18 @@ def upload():
                 if username not in userDict:
                     invalidList.append(stageList[stageListID])
                     count["failure"] += 1
-        stageDefine = {'location': form.location.data, 'distance': form.distance.data,
-                       'weather': form.weather.data, 'ammoType': form.ammoType.data}
+        stageDefine = {'distance': form.distance.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
         print('started')
         print(count["failure"])
         for item in stageList:
             if item not in invalidList:
                 # Uploads a stage
                 # todo: Need to add an ammoType column to the database
-                # todo: Need to change this to upload with item['distance'], once it actually comes back as a string
                 print(item['username'])
                 stage = Stage(id=item['id'], userID=userDict[item['username']],
                               timestamp=item['time'],
                               groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
-                              distance=stageDefine['distance'], location=stageDefine['location'],
+                              distance=item['distance'], location=stageDefine['location'],
                               notes="")
                 db.session.add(stage)
                 # Uploads all shots in the stage
