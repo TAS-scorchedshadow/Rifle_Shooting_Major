@@ -455,7 +455,7 @@ def upload():
                 if username not in userDict:
                     invalidList.append(stageList[stageListID])
                     count["failure"] += 1
-        stageDefine = {'distance': form.distance.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
+        stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
         print('started')
         print(count["failure"])
         for item in stageList:
