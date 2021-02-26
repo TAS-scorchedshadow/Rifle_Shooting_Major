@@ -60,7 +60,6 @@
         <div class="row flex-fill">
             <div class="col-lg-5 col-md-12 justify-content-center">
                 <canvas id="title" style="border: 1px solid black"></canvas>
-                <canvas id="tip" width="100" height="25"></canvas>
                 <script>
                     let shotList = {{ jsonList|safe }}; //TODO This is vulnerable to injections fix when we have time
                     let range = {{ range|safe }};
@@ -174,7 +173,7 @@
                                 <div class="col-6">
                                     <canvas id="groupDiagram" style="border: 5px solid black"></canvas>
                                     <script>
-                                        let groupDiagram = new GroupDiagram({{myStages|safe}}, {{otherStages|safe}}, {{[stage.groupX, stage.groupY, stage.rangeDistance]|safe}}, "groupDiagram");
+                                        let groupDiagram = new GroupDiagram({{myStages|safe}}, {{otherStages|safe}}, {{[stage.groupX, stage.groupY, stage.distance]|safe}}, "groupDiagram");
                                         //TODO This is vulnerable to injections fix when we have time
                                     </script>
                                 </div>

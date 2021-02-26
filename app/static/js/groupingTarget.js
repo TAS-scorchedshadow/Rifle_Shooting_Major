@@ -29,14 +29,14 @@ function GroupDiagram(myStages, otherStages, stage, canvasId) {
     this.points = [];
     let canvasParent = this.canvasObj.parentNode;
     for (let i=0; i<myStages.length; i++){
-        let point = new Circle(this.c, this.x + (myStages[i]['groupX']*this.ratio), this.y - (myStages[i]['groupY']*this.ratio), this.circleRadius, 'green');
+        let point = new Circle(this.c, this.x + (myStages[i]['groupX']*this.ratio), this.y - (myStages[i]['groupY']*this.ratio), this.circleRadius, 'green', 'black', 0);
         this.points.push(point);
     }
     for (let i=0; i<otherStages.length; i++){
-        let point = new Circle(this.c, this.x + (otherStages[i]['groupX']*this.ratio), this.y - (otherStages[i]['groupY']*this.ratio), this.circleRadius, 'red');
+        let point = new Circle(this.c, this.x + (otherStages[i]['groupX']*this.ratio), this.y - (otherStages[i]['groupY']*this.ratio), this.circleRadius, 'red', 'black', 0);
         this.points.push(point);
     }
-    this.selectedStage = new Circle(this.c, this.x + (stage[0]*this.ratio), this.y - (stage[1]*this.ratio), this.circleRadius, 'black' );
+    this.selectedStage = new Circle(this.c, this.x + (stage[0]*this.ratio), this.y - (stage[1]*this.ratio), this.circleRadius, 'black', 'black', 0 );
     this.points.push(this.selectedStage);
     this.ratio = this.canvasObj.width/target_details[this.dist][5];
     this.draw = function() {

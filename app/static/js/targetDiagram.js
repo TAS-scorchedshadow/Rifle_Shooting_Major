@@ -25,7 +25,8 @@ var gridLinesColor = '#7b7b7b';
 //c is canvas context object
 //lineWidth is the thickness of the circle's stroke
 function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWidth=1) {
-    this.lineWidth = lineWidth;
+    this.dpr = Math.ceil(window.devicePixelRatio);
+    this.lineWidth = lineWidth*this.dpr;
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -36,8 +37,10 @@ function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWid
         c.fillStyle = fillColor;
         c.fill();
         c.lineWidth = this.lineWidth;
-        c.strokeStyle = strokeColor;
-        c.stroke();
+        if (this.lineWidth > 0){
+            c.strokeStyle = strokeColor;
+            c.stroke();
+        }
         c.closePath();
     };
     this.update = function(x=this.x, y=this.y, radius=this.radius, lineWidth=this.lineWidth) {
@@ -79,30 +82,65 @@ function Target(c, x, y, width, dist){
 //shots is an array of arrays with the following format:
 //[num, x, y, score]
 function DrawTarget(canvasId, dist, shots=[], width='flex'){
+    //Initialise all the variables
     this.init = function() {
+        //collect canvasObj
         this.canvasObj = document.getElementById(canvasId);
+        //get the device pixel ratio
+        //The device pixel ratio is how the screen scales each pixel
+        //For example. on an iPhoneX, it has a device pixel ratio of 3, therefore when drawing a line of size 6px, the screen will render it as 2px but still
+        //draw it at a size of 6px causing pixellation.
+        //For more details see https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
+        this.dpr = Math.ceil(window.devicePixelRatio);
         if (width === 'flex'){
-            let rect = this.canvasObj.parentNode.getBoundingClientRect();
-            this.canvasObj.width = rect.width;
-            this.canvasObj.height = rect.width;
-
+            let parentWidth = $("#" + canvasId).parent().width();
+            //Code borrowed from https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
+            //The code makes the canvas obj draw at double the size
+            //Then we scale the obj down with css so that it appears the same size
+            //More in-depth explanation can be found in above website
+            this.canvasObj.width = parentWidth*this.dpr;
+            this.canvasObj.height = parentWidth*this.dpr;
+            this.canvasObj.style.width = parentWidth + 'px'
+            this.canvasObj.style.height = parentWidth + 'px'
         }
         else{
             this.canvasObj.width = width;
             this.canvasObj.height = width;
         }
+        //Setting vars
         this.x = this.canvasObj.width/2;
         this.y = this.canvasObj.height/2;
-        //Following fixes an indexing issue where array['300'] means get the 300th index of the array
-        this.dist = dist + 'm';
+        this.dist = dist
         this.c = this.canvasObj.getContext('2d');
+        this.shotRadius = 13*this.dpr
+        //Ratio is defined so that the shots and other stuff drawn will be scaled correctly within the canvas obj
         this.ratio = this.canvasObj.width/target_details[this.dist][5];
+
         //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
         //it is modified to be in pixels
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
         this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
 
     }
+    //Update updates all the values in DrawTarget object after it changes sizes
+    this.update = function() {
+        this.dpr = Math.ceil(window.devicePixelRatio);
+        if (width === 'flex'){
+            let parentWidth = $("#" + canvasId).parent().width();
+            this.canvasObj.width = parentWidth*this.dpr;
+            this.canvasObj.height = parentWidth*this.dpr;
+            this.canvasObj.style.width = parentWidth + 'px'
+            this.canvasObj.style.height = parentWidth + 'px'
+        }
+        this.x = this.canvasObj.width/2;
+        this.y = this.canvasObj.height/2;
+        this.ratio = this.canvasObj.width/target_details[this.dist][5];
+        //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
+        //it is modified to be in pixels
+        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
+        //update the target dimensions
+        this.target.update(this.x, this.y, this.canvasObj.width, this.ratio);
+    };
 
     this.draw = function() {
         // Draw all the score rings on the target
@@ -168,16 +206,17 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             shot_y = shots[i][2];
             //Draw Circle
             this.c.beginPath();
-            this.c.arc(this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio), 13, 0, Math.PI * 2, false);
+            this.c.arc(this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio), this.shotRadius, 0, Math.PI * 2, false);
             this.c.fillStyle = shotFill;
             this.c.fill();
             this.c.strokeStyle = shotStroke;
-            this.c.lineWidth = 1;
+            this.c.lineWidth = this.dpr;
             this.c.stroke();
             this.c.closePath();
             //Draw text
             this.c.beginPath();
-            this.c.font = "16px Arial";
+            let font_size = this.shotRadius - 1
+            this.c.font = `${font_size}px Arial`;
             this.c.fillStyle= shotText;
             this.c.textAlign = "center";
             this.c.fillText(shot_num, this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio)+5);
@@ -185,43 +224,28 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         }
     }
 
-    this.update = function() {
-        if (width === 'flex'){
-            let parentWidth = $("#" + canvasId).parent().width();
-            this.canvasObj.width = parentWidth;
-            this.canvasObj.height = parentWidth;
-        }
-        this.x = this.canvasObj.width/2;
-        this.y = this.canvasObj.height/2;
-        this.ratio = this.canvasObj.width/target_details[this.dist][5];
-        //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
-        //it is modified to be in pixels
-        this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
-        //update the target dimensions
-        this.target.update(this.x, this.y, this.canvasObj.width, this.ratio);
-    };
-
     this.init();
     this.draw();
+    //The following variable is needed to changes/get values in the DrawTarget object within other functions e.g the ResizeSensor function
+    let ThisTarget = this;
+
     //Set values for use in the later functions
     let canvasParent = this.canvasObj.parentNode;
-    let targetX = this.x;
-    let targetY = this.y;
     let canvasOffset = $("#" + canvasId).offset();
-    let targetRatio = this.ratio;
     let tipCanvas = document.getElementById('tip');
+    //If the tooltip canvas object doesn't exist, create one
     if (!tipCanvas){
-        console.log('No tipCanvas detected!');
-        console.log("Please add a canvas element with 'tip' as its id to avoid creating multiple unneccessary canvas'");
-        console.log("If no tooltip shows or it lacks a border and background etc. styling may be needed");
         tipCanvas = document.createElement("CANVAS");
         canvasParent.appendChild(tipCanvas);
+        let tipWidth = 100*this.dpr;
+        let tipHeight = 25*this.dpr;
+        tipCanvas.setAttribute('width', `${tipWidth}`);
+        tipCanvas.setAttribute('height', `${tipHeight}`);
+        tipCanvas.setAttribute('id', 'tip');
+        tipCanvas.style.width = '100px';
+        tipCanvas.style.height = '25px';
     }
-    tipCanvas.setAttribute('width', '100');
-    tipCanvas.setAttribute('height', '25');
-    tipCanvas.setAttribute('id', 'tip');
     let tipCtx = tipCanvas.getContext('2d');
-    let ThisTarget = this;
 
     //Change target dimensions if its parent div changes dimensions
     if (width === 'flex'){
@@ -229,33 +253,43 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             ThisTarget.update();
             ThisTarget.draw();
             canvasOffset = $("#" + canvasId).offset();
-            targetX = ThisTarget.x;
-            targetY = ThisTarget.y;
-            targetRatio = ThisTarget.ratio;
         });
     }
+
     this.canvasObj.onmousemove = function (e) {
-        handleMouseMove(e, shots, targetX, targetY, targetRatio);
+        handleMouseMove(e, shots, ThisTarget);
     }
     //Draw tooltip every time the mouse hovers over a shot
     //used some code from https://stackoverflow.com/questions/17064913/display-tooltip-in-canvas-graph
-    function handleMouseMove(e, shots, targetX, targetY, targetRatio){
-        let mouseX = e.pageX - canvasOffset.left - targetX;
-        let mouseY = e.pageY - canvasOffset.top - targetY;
+    function handleMouseMove(e, shots, ThisTarget){
+        //mousePageX and mousePageY are the positions of the mouse relative to the page (i.e (0,0) is the top left of the page)
+        let mousePageX = (e.pageX - canvasOffset.left)
+        let mousePageY = (e.pageY - canvasOffset.top)
+        //mouseX and mouseY are the positions of the mouse relative to the center of the target (i.e (0,0) is the centre of the target)
+        let mouseX = mousePageX*ThisTarget.dpr - ThisTarget.x;
+        let mouseY = mousePageY*ThisTarget.dpr - ThisTarget.y;
         let hit = false;
         for (let i=0; i<shots.length; i++){
-            let dx =  mouseX - shots[i][1]*targetRatio;
-            let dy = mouseY + shots[i][2]*targetRatio;
-            if (dx*dx + dy*dy < 13*13) {
-                tipCanvas.style.left = (targetX + shots[i][1]*targetRatio + 25) + "px";
-                tipCanvas.style.top = (targetY - shots[i][2]*targetRatio - 40) + "px";
+            //dx and dy are the difference between the position of a shot and the position of the mouse
+            let dx =  mouseX - shots[i][1]*ThisTarget.ratio;
+            let dy = mouseY + shots[i][2]*ThisTarget.ratio;
+            //check if the mouse is within a certain distance of the shot position using the circle formula (x^2 + y^2 < r^2)
+            if (dx*dx + dy*dy < ThisTarget.shotRadius*ThisTarget.shotRadius) {
+                //draw the tooltip near the mouse
+                tipCanvas.style.left = (mousePageX + 25) + "px";
+                tipCanvas.style.top = (mousePageY - 40) + "px";
+                //fill the text in the tooltip
                 tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
+                tipCtx.font = 12*ThisTarget.dpr + 'px Arial';
                 tipCtx.fillStyle = "white";
-                tipCtx.fillText('Score: ' + shots[i][3], 5, 15);
+                tipCtx.fillText('Score: ' + shots[i][3], 5*ThisTarget.dpr, 15*ThisTarget.dpr);
+                //set hit to true so that the x position of the tooltip doesn't get set to -200px
                 hit = true;
             }
 
+
         }
+        //if the mouse isn't on a shot, move the tooltip out of the screen
         if (!hit) { tipCanvas.style.left = "-200px"; }
     }
 }
