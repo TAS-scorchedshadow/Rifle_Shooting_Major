@@ -244,6 +244,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         tipCanvas.setAttribute('id', 'tip');
         tipCanvas.style.width = '100px';
         tipCanvas.style.height = '25px';
+        tipCanvas.style.zIndex = '10000';
     }
     let tipCtx = tipCanvas.getContext('2d');
 
@@ -277,7 +278,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             if (dx*dx + dy*dy < ThisTarget.shotRadius*ThisTarget.shotRadius) {
                 //draw the tooltip near the mouse
                 tipCanvas.style.left = (mousePageX + 25) + "px";
-                tipCanvas.style.top = (mousePageY - 40) + "px";
+                tipCanvas.style.top = (mousePageY - 25) + "px";
                 //fill the text in the tooltip
                 tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
                 tipCtx.font = 12*ThisTarget.dpr + 'px Arial';
