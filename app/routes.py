@@ -57,21 +57,6 @@ def change():
             print("group changed")
     return render_template('groupEditor.html')
 
-@app.route('/jsonTest')
-def j():
-    dict = {'PPU_elevation': 100, 'ADI_elevation': 150, 'sight_hole': 2, 'foresight_ring': 2}
-    x = json.dumps(dict)
-    user = User.query.filter_by(username="dylan.h1").first()
-    user.dist_300m = x
-    db.session.commit()
-    return "hello"
-
-@app.route('/jsonRead')
-def s():
-    user = User.query.filter_by(username="dylan.h1").first()
-    y = user.dist_300m
-    print(json.loads(y))
-    return "hello"
 
 @app.route('/landing')
 def landing():
@@ -789,10 +774,10 @@ def submitNotes():
     # Function submits changes in notes
     data = request.get_data()
     loadedData = json.loads(data)
-    stage = loadedData[0]
+    stage = Stage.query.filter_by(id=loadedData[0]).first()
     stage.notes = loadedData[1]
     db.session.commit()
-    return
+    return jsonify({'success': 'success'})
 
 #By Andrew Tam
 def groupAvg(userID):

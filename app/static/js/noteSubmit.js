@@ -2,7 +2,7 @@ $( document ).ready(function() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const stageID = urlParams.get('stageID')
-    $( "#notes").on( "change", "input", function() {
+    $( "#notes" ).change(function() {
         var fieldVal = $( this ).val();
         console.log(fieldVal)
         $.ajax({
