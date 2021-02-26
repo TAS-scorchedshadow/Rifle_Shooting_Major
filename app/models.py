@@ -245,7 +245,7 @@ class Shot(db.Model):
     xPos = db.Column(db.Float)
     yPos = db.Column(db.Float)
     score = db.Column(db.Integer)
-    numV = db.Column(db.Integer)
+    vScore = db.Column(db.Integer)
     sighter = db.Column(db.Boolean)
 
     def __repr__(self):

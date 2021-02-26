@@ -176,7 +176,7 @@ def target():
         seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
         seasonStats.append(seasonDuration)
 
-        return render_template('plotSheet.html', range=range, formattedList=formattedList,
+        return render_template('plotSheet.html', range=range, formattedList=formattedList, user=user,
                                jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
                                dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
     return render_template('index.html')
@@ -473,7 +473,7 @@ def upload():
                 for point in item['validShots']:
                     shot = Shot(stageID=item['id'], timestamp=point['ts'],
                                 xPos=point['x'], yPos=point['y'],
-                                score=point['score'], numV=point['Vscore'],
+                                score=point['score'], vScore=point['Vscore'],
                                 sighter=point['sighter'])
                     db.session.add(shot)
                 print('ready for upload')
@@ -778,6 +778,17 @@ def getTargetStats():
 
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
+
+
+@app.route('/submitNotes', methods=['POST'])
+def submitNotes():
+    # Function submits changes in notes
+    data = request.get_data()
+    loadedData = json.loads(data)
+    stage = loadedData[0]
+    stage.notes = loadedData[1]
+    db.session.commit()
+    return
 
 #By Andrew Tam
 def groupAvg(userID):
