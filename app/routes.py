@@ -442,24 +442,24 @@ def upload():
     else:
         # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
-        stageListID = -1
+        invalidListID = []
         userList = [user for user in User.query.all()]
         userDict = {}
         for user in userList:
             userDict[user.username] = user.id
         for key in request.form:
             if "username." in key:
-                stageListID = stageListID + 1
                 username = request.form[key]
-                stageList[stageListID]['username'] = username
+                stageList[int(key[9:])]['username'] = username
                 if username not in userDict:
-                    invalidList.append(stageList[stageListID])
+                    invalidList.append(stageList[int(key[9:])])
+                    invalidListID.append(int(key[9:]))
                     count["failure"] += 1
         stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
         print('started')
-        print(count["failure"])
+        print(invalidListID)
         for item in stageList:
-            if item not in invalidList:
+            if item['listID'] not in invalidListID:
                 # Uploads a stage
                 # todo: Need to add an ammoType column to the database
                 print(item['username'])
@@ -481,12 +481,16 @@ def upload():
             count["total"] += 1
         db.session.commit()
         print("DEBUG: Completed Upload")
-        stageList = invalidList
         if count["success"] == count["total"]:
+            stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
-            stageList = []
         else:
+            stageList = invalidList
+            count["total"] = 0
+            for item in stageList:
+                item["listID"] = count["total"]
+                count["total"] += 1
             template = 'upload/uploadVerify.html'
             alert[0] = "Incomplete"
             alert[1] = count["failure"]
