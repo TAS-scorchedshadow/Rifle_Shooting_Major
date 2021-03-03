@@ -6,6 +6,7 @@
     <!--Script to detect changes in div dimensions-->
     <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
     <script src="../static/css-element-queries/src/ElementQueries.js"></script>
+    <script src="../static/js/noteSubmit.js"></script>
     <style>
         /*
         @media (min-width: 1200px){
@@ -66,16 +67,30 @@
                     console.log(shotList);
                     let myTarget = new DrawTarget('title',range,shotList);
                 </script>
-                <br>
-                <div class="card shadow border-0">
-                    <div class="d-flex justify-content-around p-2 my-auto">
-                        <!--<a class="btn btn-primary" href="#" role="button">&lt</a>-->
-                        <div>
-                            <h3>{{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y %I:%M %p") }}</h3>
-                            <p>{{ (stage.timestamp|utc_to_nsw).strftime("%Z") }}</p>
+                <div class="card shadow border-0 mt-0 pt-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4>{{ user.fName }} {{ user.sName }}</h4>
+                            <p>
+                                <div>{{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y %I:%M %p %Z") }}</div>
+                                <div>{{ stage.location }} - {{ stage.distance }}</div>
+                            </p>
                         </div>
-                        <!--<a class="btn btn-primary" href="#" role="button">&gt</a>-->
                     </div>
+                    <div>
+                        <h5>
+                            Notes
+                            <div class="spinner-border spinner-border-sm text-primary ml-2"
+                                 id="spinner" role="status" style="display: none; position: absolute">
+                            </div>
+                            <i id="tick" class="fa fa-check ml-2" aria-hidden="true" style="color: lawngreen; display: none; position: absolute"></i>
+                        </h5>
+                    </div>
+                    <div>
+                         <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
+                    </div>
+
+                <!--<a class="btn btn-primary" href="#" role="button">&gt</a>-->
                 </div>
                 <br>
             </div>
@@ -155,15 +170,16 @@
                             <div class="card-header bg-dark">
                                 <div class="row justify-content-between mx-2">
                                     <div>
-                                        <i class="fas fa-cloud-rain"></i>
-                                        <span>Raining</span>
+                                        <i class="fas fa-circle" style="color:blue"></i>
+                                        <span>This Stage</span>
                                     </div>
                                     <div>
-                                        <span>Weather</span>
+                                        <i class="fas fa-circle" style="color:green"></i>
+                                        <span>Shot by this shooter</span>
                                     </div>
                                     <div>
-                                        <i class="fas fa-wind"></i>
-                                        <span>30km/h</span>
+                                        <i class="fas fa-circle" style="color:red"></i>
+                                        <span>Shot by others</span>
                                     </div>
                                 </div>
                             </div>
@@ -171,6 +187,7 @@
                         <div class="card shadow border-0">
                             <div class="row">
                                 <div class="col-6">
+                                    <h4>Stage Centres</h4>
                                     <canvas id="groupDiagram" style="border: 5px solid black"></canvas>
                                     <script>
                                         let groupDiagram = new GroupDiagram({{myStages|safe}}, {{otherStages|safe}}, {{[stage.groupX, stage.groupY, stage.distance]|safe}}, "groupDiagram");
@@ -183,6 +200,7 @@
                 </div>
                 <br>
                 <div class="card shadow border-0">
+                    <!--
                    <table class="table">
                         <thead class="thead-dark">
                             <tr>
@@ -213,6 +231,13 @@
                             </tr>
                         </tbody>
                     </table>
+                    -->
+                     <div class="card-header bg-dark">
+                         <div>Gear Settings</div>
+                     </div>
+                    <br>
+                    <h2 class="text-secondary"><i class="fas fa-cogs"></i>  Coming Soon</h2>
+                    <br>
                 </div>
         </div>
     </div>

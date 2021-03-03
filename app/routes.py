@@ -57,21 +57,6 @@ def change():
             print("group changed")
     return render_template('groupEditor.html')
 
-@app.route('/jsonTest')
-def j():
-    dict = {'PPU_elevation': 100, 'ADI_elevation': 150, 'sight_hole': 2, 'foresight_ring': 2}
-    x = json.dumps(dict)
-    user = User.query.filter_by(username="dylan.h1").first()
-    user.dist_300m = x
-    db.session.commit()
-    return "hello"
-
-@app.route('/jsonRead')
-def s():
-    user = User.query.filter_by(username="dylan.h1").first()
-    y = user.dist_300m
-    print(json.loads(y))
-    return "hello"
 
 @app.route('/landing')
 def landing():
@@ -176,7 +161,7 @@ def target():
         seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
         seasonStats.append(seasonDuration)
 
-        return render_template('plotSheet.html', range=range, formattedList=formattedList,
+        return render_template('plotSheet.html', range=range, formattedList=formattedList, user=user,
                                jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
                                dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
     return render_template('index.html')
@@ -442,24 +427,24 @@ def upload():
     else:
         # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
-        stageListID = -1
+        invalidListID = []
         userList = [user for user in User.query.all()]
         userDict = {}
         for user in userList:
             userDict[user.username] = user.id
         for key in request.form:
             if "username." in key:
-                stageListID = stageListID + 1
                 username = request.form[key]
-                stageList[stageListID]['username'] = username
+                stageList[int(key[9:])]['username'] = username
                 if username not in userDict:
-                    invalidList.append(stageList[stageListID])
+                    invalidList.append(stageList[int(key[9:])])
+                    invalidListID.append(int(key[9:]))
                     count["failure"] += 1
-        stageDefine = {'distance': form.distance.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
+        stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
         print('started')
-        print(count["failure"])
+        print(invalidListID)
         for item in stageList:
-            if item not in invalidList:
+            if item['listID'] not in invalidListID:
                 # Uploads a stage
                 # todo: Need to add an ammoType column to the database
                 print(item['username'])
@@ -473,7 +458,7 @@ def upload():
                 for point in item['validShots']:
                     shot = Shot(stageID=item['id'], timestamp=point['ts'],
                                 xPos=point['x'], yPos=point['y'],
-                                score=point['score'], numV=point['Vscore'],
+                                score=point['score'], vScore=point['Vscore'],
                                 sighter=point['sighter'])
                     db.session.add(shot)
                 print('ready for upload')
@@ -481,12 +466,16 @@ def upload():
             count["total"] += 1
         db.session.commit()
         print("DEBUG: Completed Upload")
-        stageList = invalidList
         if count["success"] == count["total"]:
+            stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
-            stageList = []
         else:
+            stageList = invalidList
+            count["total"] = 0
+            for item in stageList:
+                item["listID"] = count["total"]
+                count["total"] += 1
             template = 'upload/uploadVerify.html'
             alert[0] = "Incomplete"
             alert[1] = count["failure"]
@@ -784,6 +773,17 @@ def getTargetStats():
 
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
+
+
+@app.route('/submitNotes', methods=['POST'])
+def submitNotes():
+    # Function submits changes in notes
+    data = request.get_data()
+    loadedData = json.loads(data)
+    stage = Stage.query.filter_by(id=loadedData[0]).first()
+    stage.notes = loadedData[1]
+    db.session.commit()
+    return jsonify({'success': 'success'})
 
 #By Andrew Tam
 def groupAvg(userID):

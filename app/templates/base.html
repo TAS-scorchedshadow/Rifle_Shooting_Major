@@ -56,21 +56,25 @@
                 </li>
                 {% endif %}
                 {% if current_user.access >=2 %}
-                    <li>
-                    <!-- todo get pic for profile list -->
-                    <a href="/profileList">
-                        <i class="fas fa-user"></i>
-                        <span>Profile List</span>
-                    </a>
-                </li>
+                     <li>
+                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">In development</a>
+                        <ul class="collapse list-unstyled" id="pageSubmenu">
+                            <li>
+                                <a href="/profileList">
+                                    <i class="fas fa-user"></i>
+                                    <span>Profile List</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/graphs">
+                                    <i class="fas fa-chart-area"></i>
+                                    <span>Graphs</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
                 {% endif %}
-                <!-- <li>
-                    <a href="/graphs">
-                        <i class="fas fa-chart-area"></i>
-                        <span>Graphs</span>
-                    </a>
-                </li>
-                -->
                 {% if current_user.is_authenticated %}
                     <li>
                         <a href="/logout">
