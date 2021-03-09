@@ -48,14 +48,14 @@
                         <span>Upload</span>
                     </a>
                 </li>
-                <li>
-                    <a href="/userList">
-                        <i class="fas fa-portrait"></i>
-                        <span>User List</span>
-                    </a>
-                </li>
                 {% endif %}
                 {% if current_user.access >=2 %}
+                    <li>
+                        <a href="/userList">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Manage Users</span>
+                        </a>
+                    </li>
                      <li>
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">In development</a>
                         <ul class="collapse list-unstyled" id="pageSubmenu">

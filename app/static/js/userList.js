@@ -14,35 +14,26 @@ function deleteAccount(user){
 
 }
 
-function setAdmin(sourceElement,user,state){
-    $(sourceElement).attr('disabled','true')
+function setAdmin(sourceElement,user){
+    $(sourceElement).html(`<div class="spinner-border spinner-border-sm text-primary ml-2"
+                                 id="spinner" role="status">
+                            </div>`)
     $.ajax({
-        data: JSON.stringify({"id": user, "state": state}),
+        data: JSON.stringify({"id": user}),
         type: 'POST',
         url: '/admin',
         dataType: "JSON",
         success: (function (data) {
             // data.newState refers to the new value of state that will be taken on next call of this function
-            var stringState = data.newState.toString()
+            var new_access = data.access_lvl
             //newHref is a link inside the html button that calls this function with the given parameters
-            $(sourceElement).attr('disabled', 'false')
-             if (data.newState === false) {
-                $(sourceElement).removeAttr("href")
-                $(sourceElement).attr("data-target","#RemoveModal"+user)
-                $(sourceElement).attr("data-toggle","modal")
-                $(sourceElement).text("Revoke Admin Access")
-                $(sourceElement).removeClass("btn-secondary").addClass("btn-danger")
-                 //Close respective modal
-                modal = "#AdminModal" + user
-                $(modal).modal('toggle')
-            } else {
-                newHref = "javascript:setAdmin('" + sourceElement + "','" + user + "','" + stringState + "')"
-                $(sourceElement).attr("href", newHref)
-                $(sourceElement).removeAttr("data-target")
-                $(sourceElement).removeAttr("data-toggle")
-
-                $(sourceElement).text("Make Admin")
-                $(sourceElement).removeClass("btn-danger").addClass("btn-secondary")
+            if (new_access === 0){
+                $(sourceElement).html("<i class=\"fas fa-lock\"></i> Student")
+                $(sourceElement).removeClass("btn-dark").addClass("btn-secondary")
+            }
+            else{
+                $(sourceElement).html("<i class=\"fas fa-unlock\"></i> Coach")
+                $(sourceElement).removeClass("btn-secondary").addClass("btn-dark")
             }
         })
     })

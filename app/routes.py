@@ -92,7 +92,6 @@ def target():
         shotsList = [stat for stat in enumerate(shots)]
         shotDuration = 'N/A'
         for i, shot in shotsList:
-            shotTotal += shot.score
             scoreList.append(shot.score)
             if i == 0:
                 shotDuration = 'N/A'
@@ -109,6 +108,7 @@ def target():
             else:
                 formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration])
                 num += 1
+                shotTotal += shot.score
         jsonList = json.dumps(formattedList)
 
         # Stage Stats
@@ -251,7 +251,7 @@ def profile():
     #start = datetime(2016, 6, 28)
     #end = datetime(2021, 6, 29)
     #stage_by_date(userID, start, end)
-    value = stage_by_n(userID, amount)
+    #value = stage_by_n(userID, amount)
 
     # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     # info = {}
@@ -611,7 +611,7 @@ def userList():
     """
     if not current_user.access > 1:
         return redirect(url_for('index'))
-    users = User.query.order_by(User.schoolID).all()
+    users = User.query.order_by(User.access).all()
     return render_template('userAuth/userList.html', users=users)
 
 @app.route('/profileList')
@@ -656,17 +656,17 @@ def admin():
     """
     data = request.get_data()
     loadedData = json.loads(data)
-    state = loadedData['state']
     userID = loadedData['id']
     if userID:
-        try:
-            user = User.query.filter_by(id=userID).first()
-            user.isAdmin = strtobool(state)
-            db.session.commit()
-            return jsonify({'id': userID, 'newState': not strtobool(state)})
-        except:
-            print('error')
-            return jsonify({'error': 'Invalid State'})
+        user = User.query.filter_by(id=userID).first()
+        state = 0
+        if user.access == 0:
+            user.access = 1
+            state = 1
+        else:
+            user.access = 0
+        db.session.commit()
+        return jsonify({'access_lvl': state})
 
 
 @app.route('/getGear', methods=['POST'])
