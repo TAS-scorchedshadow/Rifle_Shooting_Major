@@ -22,9 +22,18 @@ var shotText = 'black';
 
 var gridLinesColor = '#7b7b7b';
 
-//c is canvas context object
-//lineWidth is the thickness of the circle's stroke
 function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWidth=1) {
+    /**
+     * Draws a circle.
+     *
+     * @param The canvas.context object
+     * @param x The circle centre's x-coordinate in pixels, respective to the origin of the canvas element
+     * @param y The circle centre's y-coordinate in pixels, respective to the origin of the canvas element
+     * @param radius The radius of the circle
+     * @param fillColor A hex string which is the fill color of the circle
+     * @param strokeColor A hex string which is the color of the circle border
+     * @param lineWidth thickness of the circle border
+     */
     this.dpr = Math.ceil(window.devicePixelRatio);
     this.lineWidth = lineWidth*this.dpr;
     this.x = x;
@@ -32,10 +41,16 @@ function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWid
     this.radius = radius;
 
     this.draw = function() {
+        /**
+         * function draws the circle on the given canvas object
+         */
         c.beginPath();
+        //Draw circle
         c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        //Fill the circle with the set color
         c.fillStyle = fillColor;
         c.fill();
+        //Draw the border, if lineWidth is 0 don't draw the border
         c.lineWidth = this.lineWidth;
         if (this.lineWidth > 0){
             c.strokeStyle = strokeColor;
@@ -44,6 +59,15 @@ function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWid
         c.closePath();
     };
     this.update = function(x=this.x, y=this.y, radius=this.radius, lineWidth=this.lineWidth) {
+        /**
+         * Updates the values of this object to the parameters
+         *
+         * @param c The canvas.context object
+         * @param x The circle centre's x-coordinate respective to the origin of the canvas element
+         * @param y The circle centre's y-coordinate respective to the origin of the canvas element
+         * @param radius The radius of the circle
+         * @param lineWidth The width of the circle border
+         */
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -54,6 +78,13 @@ function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWid
 
 //dist is the target distance of the shot
 function Target(c, x, y, width, dist){
+    /**
+     * @param c the canvas.context object
+     * @param x the circle centre's x-coordinate respective to the origin of the canvas element
+     * @param y the circle centre's y-coordinate respective to the origin of the canvas element
+     * @param width the width (in pixels) of the canvas object
+     * @param dist the distance of the target e.g 300m
+     */
     this.c = c;
     this.dist = dist;
     this.x = x;
@@ -67,6 +98,12 @@ function Target(c, x, y, width, dist){
         this.targetCircles.push(addCircle);
     }
     this.update = function(x,y,width, ratio) {
+        /**
+        * @x The circle centre's x-coordinate respective to the origin of the canvas element
+        * @y The circle centre's y-coordinate respective to the origin of the canvas element
+        * @width The width (in pixels) of the canvas object
+        * @ratio The drawing ratio (defined as width of canvas object divided by radius of outer circle)
+        */
         this.x = x;
         this.y = y;
         this.width = width;
@@ -76,43 +113,47 @@ function Target(c, x, y, width, dist){
         }
     };
 }
-//canvasId is the id of the canvas element
-//dist is a string that describes the distance of the target eg. "300m"
-//width is the width of the target (and height because the target boundaries is a square)
-//shots is an array of arrays with the following format:
-//[num, x, y, score]
+
 function DrawTarget(canvasId, dist, shots=[], width='flex'){
+    /**
+     * @canvasId the id attribute of the canvas object which the target would be drawn on
+     * @dist distance of the target e.g 300m
+     * @shots an array of arrays with the following format: [num, x, y, score]
+     * @width is width of the canvas object
+     */
     //Initialise all the variables
     this.init = function() {
         //collect canvasObj
         this.canvasObj = document.getElementById(canvasId);
-        //get the device pixel ratio
-        //The device pixel ratio is how the screen scales each pixel
-        //For example. on an iPhoneX, it has a device pixel ratio of 3, therefore when drawing a line of size 6px, the screen will render it as 2px but still
-        //draw it at a size of 6px causing pixellation.
-        //For more details see https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
+        /**
+        Following line gets the device pixel ratio
+        The device pixel ratio is how the screen scales each pixel
+        For example. on an iPhoneX, it has a device pixel ratio of 3, so when drawing a line of size 6px,
+        the screen will render it as 2px but still draw it at a size of 6px causing pixellation.
+        For more details see https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
+        */
         this.dpr = Math.ceil(window.devicePixelRatio);
-        if (width === 'flex'){
-            let parentWidth = $("#" + canvasId).parent().width();
-            //Code borrowed from https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
-            //The code makes the canvas obj draw at double the size
-            //Then we scale the obj down with css so that it appears the same size
-            //More in-depth explanation can be found in above website
-            this.canvasObj.width = parentWidth*this.dpr;
-            this.canvasObj.height = parentWidth*this.dpr;
-            this.canvasObj.style.width = parentWidth + 'px'
-            this.canvasObj.style.height = parentWidth + 'px'
-        }
-        else{
-            this.canvasObj.width = width;
-            this.canvasObj.height = width;
-        }
-        //Setting vars
+        let parentWidth = $("#" + canvasId).parent().width();
+        /*
+        Code borrowed from https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
+        The code makes the canvas obj draw at double the size
+        Then we scale the obj down with css so that it appears the same size
+        More in-depth explanation can be found in above website
+         */
+        this.canvasObj.width = parentWidth*this.dpr;
+        this.canvasObj.height = parentWidth*this.dpr;
+        this.canvasObj.style.width = parentWidth + 'px';
+        this.canvasObj.style.height = parentWidth + 'px';
+
+        //Set the centre coordinates of the target
         this.x = this.canvasObj.width/2;
         this.y = this.canvasObj.height/2;
-        this.dist = dist
+        //Set the distance
+        this.dist = dist;
+        //Set the canvas context object
         this.c = this.canvasObj.getContext('2d');
-        this.shotRadius = 13*this.dpr
+        //Radius of the individual shots
+        this.shotRadius = 13*this.dpr;
         //Ratio is defined so that the shots and other stuff drawn will be scaled correctly within the canvas obj
         this.ratio = this.canvasObj.width/target_details[this.dist][5];
 
@@ -129,8 +170,8 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             let parentWidth = $("#" + canvasId).parent().width();
             this.canvasObj.width = parentWidth*this.dpr;
             this.canvasObj.height = parentWidth*this.dpr;
-            this.canvasObj.style.width = parentWidth + 'px'
-            this.canvasObj.style.height = parentWidth + 'px'
+            this.canvasObj.style.width = parentWidth + 'px';
+            this.canvasObj.style.height = parentWidth + 'px';
         }
         this.x = this.canvasObj.width/2;
         this.y = this.canvasObj.height/2;
@@ -222,7 +263,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.c.fillText(shot_num, this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio)+5);
             this.c.closePath();
         }
-    }
+    };
 
     this.init();
     this.draw();
@@ -259,7 +300,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
 
     this.canvasObj.onmousemove = function (e) {
         handleMouseMove(e, shots, ThisTarget);
-    }
+    };
     //Draw tooltip every time the mouse hovers over a shot
     //used some code from https://stackoverflow.com/questions/17064913/display-tooltip-in-canvas-graph
     function handleMouseMove(e, shots, ThisTarget){
@@ -294,34 +335,3 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         if (!hit) { tipCanvas.style.left = "-200px"; }
     }
 }
-
-
-
-//
-// let canvasParent = document.getElementById(canvasId).parentNode;
-// new ResizeSensor(canvasParent, function(){
-//
-// });
-
-
-//Unused (might use later)
-// function Shot(c, x, y, ratio, num) {
-//     this.width = width;
-//     this.c = c;
-//     this.x = x;
-//     this.y = y;
-//     this.ratio = ratio;
-//     this.draw = function(){
-//         //Draw text
-//         this.c.font = "30px Arial";
-//         this.c.textAlign = "center"
-//         this.c.strokeText(num, this.x, this.y);
-//         //Draw Circle
-//         c.beginPath();
-//         c.arc(this.x, this.y, 10*this.ratio, 0, Math.PI * 2, false);
-//     }
-// }
-
-//c is the canvas context object
-//x and y are the coordinates for the centre of the target
-//width of the target

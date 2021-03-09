@@ -18,6 +18,7 @@
               transition: opacity 0.6s; /* 600ms to fade out */
             }
         </style>
+
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
         <!-- if using RTL (Right-To-Left) orientation, load the RTL CSS file after fileinput.css by uncommenting below -->
         <!-- link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/css/fileinput-rtl.min.css" media="all" rel="stylesheet" type="text/css" /-->
@@ -131,5 +132,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="spinner-border spinner-border-sm text-primary ml-2"
+             id="spinner" role="status" style="display: none; position: absolute">
         </div>
 {% endblock %}

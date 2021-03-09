@@ -409,6 +409,7 @@ def upload():
                         stageList.append(stage)
                         if 1 in issue_code:                 # i.e. missing username
                             invalidList.append(stage)
+                            count["failure"] += 1
                         else:
                             count["success"] += 1
                         count["total"] += 1
@@ -704,7 +705,6 @@ def setGear():
 
 @app.route('/getUsers', methods=['POST'])
 def getUsers():
-    print('reached')
     users = User.query.all()
     list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username,
              'group': user.group} for user in
@@ -714,6 +714,10 @@ def getUsers():
 
 @app.route('/getShots', methods=['POST'])
 def getShots():
+    """
+    Collect shots for use in the recent shots card
+    :return:
+    """
     data = request.get_data()
     loadedData = json.loads(data)
     userID = loadedData[0]
@@ -760,7 +764,10 @@ def getShots():
 
 @app.route('/getTargetStats', methods=['POST'])
 def getTargetStats():
-    # Function provides databse information for ajax request in gearSettings.js
+    """
+    Function provides databse information for ajax request in gearSettings.js
+    :return:
+    """
     stageID = request.get_data().decode("utf-8")
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:  # Handles if stageID parameter is given but is not found in database
