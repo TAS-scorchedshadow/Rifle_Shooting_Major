@@ -68,8 +68,7 @@ def landing():
     return render_template('landingPage.html')
 
 
-
-
+@login_required
 @app.route('/target')
 def target():
     """
@@ -400,8 +399,9 @@ def upload():
         if request.method == "POST":
             template = 'upload/uploadVerify.html'
             files = form.file.data
+            upload_time = int(form.weeks.data)
             for file in files:
-                stages = read_archive(file, 57)
+                stages = read_archive(file, upload_time)
                 for stage_dict, issue_code in stages:
                     if 2 not in issue_code:                 # i.e. at least more than 1 counting shot
                         stage = validateShots(stage_dict)   # Reformat shoot stage to obtain usable data

@@ -81,7 +81,6 @@ def read_archive(uploaded, weeks):
                         else:
                             yards = round(x * 0.9144)
                             data['distance'] = f"{yards}y"
-                            print(data['distance'])
                     # -- FINISH EDITING DATA --
 
                     # Check if the file was made in the last 2 years

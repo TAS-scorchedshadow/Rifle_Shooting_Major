@@ -115,6 +115,8 @@
                             <script src="../../node_modules/bootstrap/bootstrap-fileinput/js/fileinput.js"></script>
                             <script src="../../node_modules/bootstrap-fileinput/themes/fa/theme.js"></script>
                             {{ form.csrf_token }}
+                            {{ form.weeks.label }}
+                            {{ form.weeks }}
                             <!--Create upload button-->
                             <div class="file-loading">
                                 {{ form.file(id="input-fa", name_="input-fa[]", multiple_type="file") }}
