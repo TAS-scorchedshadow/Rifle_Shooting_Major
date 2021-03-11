@@ -80,6 +80,7 @@ def target():
     stageID = request.args.get('stageID')
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:
+        user = User.query.filter_by(id=stage.userID).first()
         range = json.dumps(stage.distance)
         shots = Shot.query.filter_by(stageID=stageID).all()
         formattedList = []
@@ -153,15 +154,18 @@ def target():
         # Instead, dayStats[5] is duration as a string
 
         # Get Season Stats
-        user = User.query.filter_by(id=stage.userID).first()
         seasonResponse = user.seasonStats()
         seasonStats = [round(stat, 2) for stat in seasonResponse if isinstance(stat, float)]
         seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
         seasonStats.append(seasonDuration)
-
-        return render_template('plotSheet.html', range=range, formattedList=formattedList, user=user,
-                               jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
-                               dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
+        if current_user.access >= 1:
+            return render_template('plotSheet.html', range=range, formattedList=formattedList, user=user,
+                                   jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
+                                   dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
+        else:
+            return render_template('students/studentPlotSheet.html', range=range, formattedList=formattedList, user=user,
+                                   jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
+                                   dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
     return render_template('index.html')
 
     # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)

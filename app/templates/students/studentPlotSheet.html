@@ -1,0 +1,41 @@
+{% extends "plotsheet.html" %}
+    {% block stat_table %}
+         <div class="card shadow border-0">
+            <table class="table">
+                <thead class="thead-dark">
+                    <tr>
+                      <th scope="col">Stat</th>
+                      <th scope="col">This Stage</th>
+                      <th scope="col">Your Season Average</th>
+                    </tr>
+                </thead>
+                 <tbody>
+                    <tr>
+                      <th scope="row">Avr. Score</th>
+                      <td>{{ stageStats[0] }}</td>
+                      <td>{{ seasonStats[0] }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Median Score</th>
+                      <td>{{ stageStats[1] }}</td>
+                      <td>{{ seasonStats[1] }}</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">S.T.D Score</th>
+                      <td>{{ stageStats[2] }}</td>
+                      <td>{{ seasonStats[2] }}</td>
+                    </tr>
+                 <tr>
+                      <th scope="row">Group Size</th>
+                      <td>{{ stageStats[3] }}</td>
+                      <td>{{ seasonStats[3] }}</td>
+                    </tr>
+                 <tr>
+                      <th scope="row">Duration</th>
+                      <td>{{ stageStats[4] }}</td>
+                      <td>{{ seasonStats[4] }}</td>
+                    </tr>
+                  </tbody>
+            </table>
+        </div>
+    {% endblock %}
