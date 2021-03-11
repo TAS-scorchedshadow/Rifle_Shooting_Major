@@ -9,15 +9,17 @@
     </style>
     <script type="text/javascript" src="../static/js/userList.js"></script>
     <div class="container-fluid">
-        <a type="button" class="btn btn-primary" data-toggle="modal" style="display: none">
-            Make Admin
-        </a>
         <div class="row">
             <div class="col-12">
                 <div class="card h-100 justify-content-center">
                     <div class="card-header text-center">
                         <h1>Accounts List</h1>
                     </div>
+                    <form method='POST' action="" enctype="multipart/form-data">
+                      <p><input type="file" name="file"></p>
+                      <p><input type="submit" value="Submit"></p>
+                    </form>
+                    <hr>
                     <div class="card-body">
                         <div class="table-responsive table-striped">
                             <table class="text-center justify-content-center table table-bordered">

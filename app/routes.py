@@ -11,8 +11,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from app import app, db, mail
-from app.forms import uploadForm, signInForm, signUpForm, reportForm, ResetPasswordRequestForm, ResetPasswordForm, \
-    profileSelect
+from app.forms import *
 from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email
 from app.uploadProcessing import validateShots
@@ -521,7 +520,7 @@ def register():
     if form.validate_on_submit():
         # TODO account for other formats
         email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
-        user = User(fName=form.fName.data.strip(), sName=form.sName.data.strip(), school=form.school.data,
+        user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(), school=form.school.data,
                     schoolID=form.schoolID.data, email=email)
         user.generate_username()
         user.set_password(form.password.data)
@@ -602,7 +601,7 @@ def reset_password(token):
     return render_template('userAuth/resetPassword.html', form=form)
 
 
-@app.route('/userList')
+@app.route('/userList', methods=['GET', 'POST'])
 @login_required
 def userList():
     """
@@ -610,8 +609,29 @@ def userList():
 
     :return: userList html
     """
-    if not current_user.access > 1:
+    if not current_user.access >= 2:
         return redirect(url_for('index'))
+    if request.method == 'POST':
+        file = request.files['file']
+        read_file = file.read().decode('utf-8')
+        for line in read_file.splitlines():
+            if not line == "<end>":
+                student = line.split('\t')
+                sName = student[1].split()[0].strip().lower().title()
+                fName = student[1].split()[1].strip().lower().title()
+                user = User.query.filter_by(fName=fName,sName=sName).first()
+                if user:
+                    user.schoolID = student[0]
+                    user.schoolYr = student[2][:-2]
+                    if not user.email:
+                        user.email = student[0] + "@student.sbhs.nsw.edu.au"
+                else:
+                    user = User(fName=fName,sName=sName, school="SBHS", schoolID=student[0], schoolYr= student[2][:-2],
+                                email=(student[0] + "@student.sbhs.nsw.edu.au"))
+                    user.generate_username()
+                    user.set_password('password')
+                    db.session.add(user)
+        db.session.commit()
     users = User.query.order_by(User.access).all()
     return render_template('userAuth/userList.html', users=users)
 
@@ -621,7 +641,7 @@ def userList():
 def profileList():
     if not current_user.access > 1:
         return redirect(url_for('index'))
-    users= User.query.order_by(User.username).all()
+    users = User.query.order_by(User.username).all()
     return render_template('students/profileList.html', users=users)
 
 
