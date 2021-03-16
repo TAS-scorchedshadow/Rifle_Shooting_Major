@@ -58,10 +58,10 @@ $(document).ready(function(){
                                                                 <thead>
                                                                     <tr>
                                                                         <th style='width: 50px;'>Range</th>
-                                                                        <th style='width: 60px;'>Sighters</th>
+                                                                        <th style='width: 62px;'>Sighters</th>
                                                                         <th>Shots</th>
                                                                         <th style='width: 43px;'>Total</th>
-                                                                        <th style='width: 47px;'>Group</th>
+                                                                        <th style='width: 48px;'>Group</th>
                                                                         <th style='width: 37px;'>Std</th>
                                                                     </tr>
                                                                 </thead>

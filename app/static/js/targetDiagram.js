@@ -134,7 +134,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         */
         this.dpr = Math.ceil(window.devicePixelRatio);
         let parentWidth = $("#" + canvasId).parent().width();
-        /*
+        /**
         Code borrowed from https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
         The code makes the canvas obj draw at double the size
         Then we scale the obj down with css so that it appears the same size
@@ -162,8 +162,8 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
         this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
 
-    }
-    //Update updates all the values in DrawTarget object after it changes sizes
+    };
+    //this.update updates all the values in DrawTarget object after it changes sizes
     this.update = function() {
         this.dpr = Math.ceil(window.devicePixelRatio);
         if (width === 'flex'){
@@ -305,8 +305,8 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
     //used some code from https://stackoverflow.com/questions/17064913/display-tooltip-in-canvas-graph
     function handleMouseMove(e, shots, ThisTarget){
         //mousePageX and mousePageY are the positions of the mouse relative to the page (i.e (0,0) is the top left of the page)
-        let mousePageX = (e.pageX - canvasOffset.left)
-        let mousePageY = (e.pageY - canvasOffset.top)
+        let mousePageX = (e.pageX - canvasOffset.left);
+        let mousePageY = (e.pageY - canvasOffset.top);
         //mouseX and mouseY are the positions of the mouse relative to the center of the target (i.e (0,0) is the centre of the target)
         let mouseX = mousePageX*ThisTarget.dpr - ThisTarget.x;
         let mouseY = mousePageY*ThisTarget.dpr - ThisTarget.y;
