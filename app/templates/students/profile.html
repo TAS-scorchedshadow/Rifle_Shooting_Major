@@ -46,6 +46,7 @@ table.recentShotsTable{
             </div>
             <div class="col-12 col-lg-6">
                 <div class="table-responsive">
+                    <form action ="" method="post" onsubmit="">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -59,12 +60,12 @@ table.recentShotsTable{
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ info["SID"] }}</td>
-                                <td>{{ info["DOB"] }}</td>
-                                <td>{{ info["Rifle Serial"] }}</td>
-                                <td>{{ info["StudentID"] }}</td>
-                                <td>{{ info["Grade"] }}</td>
-                                <td>{{ info["Email"] }}</td>
+                                <td>{{ tableInfo["SID"] }}</td>
+                                <td>{{ tableInfo["DOB"] }}</td>
+                                <td>{{ tableInfo["Rifle Serial"] }}</td>
+                                <td>{{ tableInfo["StudentID"] }}</td>
+                                <td>{{ tableInfo["Grade"] }}</td>
+                                <td>{{ tableInfo["Email"] }}</td>
                             </tr>
                         </tbody>
                         <thead>
@@ -79,12 +80,12 @@ table.recentShotsTable{
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ info["Permit"] }}</td>
-                                <td>{{ info["Expiry"] }}</td>
-                                <td>{{ info["Sharing"] }}</td>
-                                <td>{{ info["Mobile"] }}</td>
-                                <td>{{ info["Roll Class"] }}</td>
-                                <td>{{ info["Mobile"] }}</td>
+                                <td>{{ tableInfo["Permit"] }}</td>
+                                <td>{{ tableInfo["Expiry"] }}</td>
+                                <td>{{ tableInfo["Sharing"] }}</td>
+                                <td>{{ tableInfo["Mobile"] }}</td>
+                                <td>{{ tableInfo["Roll Class"] }}</td>
+                                <td>{{ tableInfo["Mobile"] }}</td>
                             </tr>
                         </tbody>
                     </table>

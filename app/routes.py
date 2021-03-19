@@ -217,6 +217,7 @@ def profile():
         except KeyError:
             userID = current_user.id
         user = User.query.filter_by(id=userID).first()
+    #By Rishi Wig
     form = profileSelect()
     if form.is_submitted():
         change = str(form.cell.data)
@@ -225,19 +226,19 @@ def profile():
         setattr(user, change, newValue)
         db.session.commit()
 
-    info = {}
-    info["SID"] = "NULL"
-    info["DOB"] = user.dob
-    info["Rifle Serial"] = user.rifleSerial
-    info["StudentID"] = user.schoolID
-    info["Grade"] = user.schoolYr
-    info["Email"] = user.email
-    info["Permit"] = user.permitNumber
-    info["Expiry"] = user.permitExpiry
-    info["Sharing"] = user.sharing
-    info["Mobile"] = "NULL"
-    info["Roll Class"] = "NULL"
-    info["Mobile"] = "NULL"
+    tableInfo = {}
+    tableInfo["SID"] = "NULL"
+    tableInfo["DOB"] = user.dob
+    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["StudentID"] = user.schoolID
+    tableInfo["Grade"] = user.schoolYr
+    tableInfo["Email"] = user.email
+    tableInfo["Permit"] = user.permitNumber
+    tableInfo["Expiry"] = user.permitExpiry
+    tableInfo["Sharing"] = user.sharing
+    tableInfo["Mobile"] = "NULL"
+    tableInfo["Roll Class"] = "NULL"
+    tableInfo["Mobile"] = "NULL"
 
     # z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     # p = numpy.poly1d(z)
@@ -249,7 +250,7 @@ def profile():
     # stub for shooter ID passed to the overview
     # collect data fro graphs
 
-    amount = 5
+    #amount = 5
     #start = datetime(2016, 6, 28)
     #end = datetime(2021, 6, 29)
     #stage_by_date(userID, start, end)
@@ -275,7 +276,7 @@ def profile():
     #     scores.append(info[j])
     # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
 
-    return render_template('students/profile.html', form=form, user=user, info=info)
+    return render_template('students/profile.html', form=form, user=user, tableInfo=tableInfo)
 
 #by Henry Guo
 @app.route('/getAvgShotGraphData', methods=['POST'])
@@ -377,9 +378,9 @@ def profile_settings():
     return render_template('students/profile_settings.html', equipmentInfo=eqiupmentInfo, elevationInfo=elevationInfo)
 
 
-@app.route('/graphs')
-def graphs():
-    return render_template('graphs.html')
+@app.route('/table')
+def table():
+    return render_template('table.html')
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -823,3 +824,7 @@ def groupAvg(userID):
     groupYAvg = YTotal/length
 
     return groupXAvg, groupYAvg
+
+@app.route('/submitTable', methods=['POST'])
+def submitTable():
+    data = request.get_data()
