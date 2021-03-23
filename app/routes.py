@@ -112,9 +112,9 @@ def target():
 
         # Stage Stats
         stageResponse = stage.stageStats()
-        stageStats = [round(stat, 2) for stat in stageResponse if isinstance(stat, float)]
+        stageStats = [round(stat, 2) for stat in stageResponse]
         stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
-        stageStats.append(stageDuration)
+        stageStats[4] = stageDuration
 
         formattedList.append(
             ["Total", 0, 0, str(shotTotal), stageDuration])  # Total appended to list to make display of shots easier
@@ -158,7 +158,7 @@ def target():
         seasonStats = [round(stat, 2) for stat in seasonResponse if isinstance(stat, float)]
         seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
         seasonStats.append(seasonDuration)
-        if current_user.access >= 1:
+        if current_user.access > 1:
             return render_template('plotSheet.html', range=range, formattedList=formattedList, user=user,
                                    jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
                                    dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
@@ -621,9 +621,20 @@ def userList():
         for line in read_file.splitlines():
             if not line == "<end>":
                 student = line.split('\t')
-                sName = student[1].split()[0].strip().lower().title()
-                fName = student[1].split()[1].strip().lower().title()
+                names = student[1].split()
+                fNames = []
+                sNames = []
+                for name in names:
+                    if name.isupper():
+                        if name.isalpha():
+                            sNames.append(name.lower())
+                    else:
+                        fNames.append(name.lower())
+                fName = " ".join(fNames).title()
+                sName = " ".join(sNames).title()
+                print(f"#{fName}# #{sName}#")
                 user = User.query.filter_by(fName=fName,sName=sName).first()
+
                 if user:
                     user.schoolID = student[0]
                     user.schoolYr = student[2][:-2]
@@ -636,7 +647,7 @@ def userList():
                     user.set_password('password')
                     db.session.add(user)
         db.session.commit()
-    users = User.query.order_by(User.access).all()
+    users = User.query.order_by(User.access,User.sName).all()
     return render_template('userAuth/userList.html', users=users)
 
 @app.route('/profileList')

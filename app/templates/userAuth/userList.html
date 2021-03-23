@@ -25,10 +25,10 @@
                             <table class="text-center justify-content-center table table-bordered">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col">School</th>
-                                        <th scope="col">Student ID</th>
                                         <th scope="col">Name</th>
-                                        <th SCOPE="col">Username</th>
+                                        <th scope='col'>School Year</th>
+                                        <th scope="col">Student ID</th>
+                                        <th scope="col">Username</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Manage Account</th>
                                      </tr>
@@ -36,9 +36,9 @@
                                 <tbody id="tableBody">
                                     {% for user in users %}
                                         <tr id="row{{ user.id }}">
-                                            <td scope="row">{{ user.school }}</td>
-                                            <td>{{ user.schoolID }}</td>
                                             <td>{{ user.fName }} {{ user.sName }}</td>
+                                            <td>{{ user.schoolYr }}</td>
+                                            <td>{{ user.schoolID }}</td>
                                             <td>{{ user.username }}</td>
                                             <td>{{ user.email }}</td>
                                             <td>

@@ -76,19 +76,20 @@
                             </p>
                         </div>
                     </div>
-                    <div>
-                        <h5>
-                            Notes
-                            <div class="spinner-border spinner-border-sm text-primary ml-2"
-                                 id="spinner" role="status" style="display: none; position: absolute">
-                            </div>
-                            <i id="tick" class="fa fa-check ml-2" aria-hidden="true" style="color: lawngreen; display: none; position: absolute"></i>
-                        </h5>
-                    </div>
-                    <div>
-                         <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
-                    </div>
-
+                    {% block notes %}
+                        <div>
+                            <h5>
+                                Coaches Notes
+                                <div class="spinner-border spinner-border-sm text-primary ml-2"
+                                     id="spinner" role="status" style="display: none; position: absolute">
+                                </div>
+                                <i id="tick" class="fa fa-check ml-2" aria-hidden="true" style="color: lawngreen; display: none; position: absolute"></i>
+                            </h5>
+                        </div>
+                        <div>
+                             <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
+                        </div>
+                    {% endblock %}
                 <!--<a class="btn btn-primary" href="#" role="button">&gt</a>-->
                 </div>
                 <br>
