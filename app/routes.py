@@ -67,6 +67,98 @@ def landing():
     return render_template('landingPage.html')
 
 
+def plotsheet_calc(stage,user):
+    shots = Shot.query.filter_by(stageID=stage.id).all()
+    data = {}
+
+    formattedList = []
+    scoreList = []
+    num = 1
+    letter = ord("A")
+    shotTotal = 0
+    shotsList = [stat for stat in enumerate(shots)]
+    shotDuration = 'N/A'
+    for i, shot in shotsList:
+        scoreList.append(shot.score)
+        if i == 0:
+            shotDuration = 'N/A'
+        else:
+            start = shotsList[i - 1][1].timestamp
+            diff = (shot.timestamp - start).total_seconds()
+            if int(diff / 60) == 0:
+                shotDuration = "{}s".format(int(diff % 60))
+            else:
+                shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
+        if shot.sighter:
+            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration])
+            letter += 1
+        else:
+            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration])
+            num += 1
+            shotTotal += shot.score
+    jsonList = json.dumps(formattedList)
+    data["jsonList"] = jsonList
+
+    # Stage Stats
+    stageResponse = stage.stageStats()
+    stageStats = [round(stat, 2) for stat in stageResponse]
+    stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
+    stageStats[4] = stageDuration
+    data['stageStats'] = stageStats
+
+    formattedList.append(
+        ["Total", 0, 0, str(shotTotal), stageDuration])  # Total appended to list to make display of shots easier
+    data['formattedList'] = formattedList
+
+    # Day Stats
+    dayStages = stage.same_day()
+    # dayX and dayY refers to the grouping coordinates
+    dayX = 0
+    dayY = 0
+    count = 0
+    # stages of other people's shoots on the same day and stores their grouping info
+    otherStages = []
+    # stages of the selected user's shoots on the same day and stores their grouping info
+    myStages = []
+
+    dayStats = [0, 0, 0, 0, 0]
+    for shoot in dayStages:
+        if shoot.userID == stage.userID:
+            count += 1
+            dayResponse = shoot.stageStats()
+            for i, stat in enumerate(dayResponse):
+                dayStats[i] = dayStats[i] + stat
+            dayX += shoot.groupX
+            dayY += shoot.groupY
+            myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
+        elif shoot.distance == stage.distance:
+            otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
+    dayAvg = [dayX / count, dayY / count]
+    myStages = json.dumps(myStages)
+    otherStages = json.dumps(otherStages)
+    for i, stat in enumerate(dayStats):
+        dayStats[i] = round(stat / count, 2)
+    dayDuration = "{}m {}s".format(int(dayStats[4] / 60), int(dayStats[4] % 60))
+    dayStats[4] = dayDuration
+    data['dayStats'] = dayStats
+    data['dayAvg'] = dayAvg
+    data['myStages'] = myStages
+    data['otherStages'] = otherStages
+    # Note: due to averaging method, dayStats[4] is duration in seconds while the other vars like
+    # stageStats[4] or seasonStats[4] is duration as a string
+    # Instead, dayStats[5] is duration as a string
+
+    # Get Season Stats
+    seasonResponse = user.seasonStats()
+    seasonStats = [round(stat, 2) for stat in seasonResponse]
+    seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
+    seasonStats[4] = seasonDuration
+    data['seasonStats'] = seasonStats
+
+    data['range'] = json.dumps(stage.distance)
+
+    return data
+
 @login_required
 @app.route('/target')
 def target():
@@ -81,91 +173,11 @@ def target():
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:
         user = User.query.filter_by(id=stage.userID).first()
-        range = json.dumps(stage.distance)
-        shots = Shot.query.filter_by(stageID=stageID).all()
-        formattedList = []
-        scoreList = []
-        num = 1
-        letter = ord("A")
-        shotTotal = 0
-        shotsList = [stat for stat in enumerate(shots)]
-        shotDuration = 'N/A'
-        for i, shot in shotsList:
-            scoreList.append(shot.score)
-            if i == 0:
-                shotDuration = 'N/A'
-            else:
-                start = shotsList[i - 1][1].timestamp
-                diff = (shot.timestamp - start).total_seconds()
-                if int(diff / 60) == 0:
-                    shotDuration = "{}s".format(int(diff % 60))
-                else:
-                    shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
-            if shot.sighter:
-                formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration])
-                letter += 1
-            else:
-                formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration])
-                num += 1
-                shotTotal += shot.score
-        jsonList = json.dumps(formattedList)
-
-        # Stage Stats
-        stageResponse = stage.stageStats()
-        stageStats = [round(stat, 2) for stat in stageResponse]
-        stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
-        stageStats[4] = stageDuration
-
-        formattedList.append(
-            ["Total", 0, 0, str(shotTotal), stageDuration])  # Total appended to list to make display of shots easier
-
-        # Day Stats
-        dayStages = stage.same_day()
-        # dayX and dayY refers to the grouping coordinates
-        dayX = 0
-        dayY = 0
-        count = 0
-        # stages of other people's shoots on the same day and stores their grouping info
-        otherStages = []
-        # stages of the selected user's shoots on the same day and stores their grouping info
-        myStages = []
-
-        dayStats = [0, 0, 0, 0, 0]
-        for shoot in dayStages:
-            if shoot.userID == stage.userID:
-                count += 1
-                dayResponse = shoot.stageStats()
-                for i, stat in enumerate(dayResponse):
-                    dayStats[i] = dayStats[i] + stat
-                dayX += shoot.groupX
-                dayY += shoot.groupY
-                myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-            elif shoot.distance == stage.distance:
-                otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-        dayAvg = [dayX / count, dayY / count]
-        myStages = json.dumps(myStages)
-        otherStages = json.dumps(otherStages)
-        for i, stat in enumerate(dayStats):
-            dayStats[i] = round(stat / count, 2)
-        dayDuration = "{}m {}s".format(int(dayStats[4] / 60), int(dayStats[4] % 60))
-        dayStats.append(dayDuration)
-        # Note: due to averaging method, dayStats[4] is duration in seconds while the other vars like
-        # stageStats[4] or seasonStats[4] is duration as a string
-        # Instead, dayStats[5] is duration as a string
-
-        # Get Season Stats
-        seasonResponse = user.seasonStats()
-        seasonStats = [round(stat, 2) for stat in seasonResponse if isinstance(stat, float)]
-        seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
-        seasonStats.append(seasonDuration)
+        data = plotsheet_calc(stage,user)
         if current_user.access > 1:
-            return render_template('plotSheet.html', range=range, formattedList=formattedList, user=user,
-                                   jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
-                                   dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
+            return render_template('plotSheet.html', data=data, user=user, stage=stage)
         else:
-            return render_template('students/studentPlotSheet.html', range=range, formattedList=formattedList, user=user,
-                                   jsonList=jsonList, stage=stage, stageStats=stageStats, seasonStats=seasonStats,
-                                   dayStats=dayStats, dayAvg=dayAvg, myStages=myStages, otherStages=otherStages)
+            return render_template('students/studentPlotSheet.html',  data=data, user=user, stage=stage)
     return render_template('index.html')
 
     # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
