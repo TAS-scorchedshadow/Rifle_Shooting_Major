@@ -12,7 +12,7 @@ var target_details = {"details": ['V', '5', '4', '3', '2', '1'],
                   "500yds": [457.20, 130, 260, 600, 915, 1320],
                   "600yds": [548.64, 145, 290, 600, 915, 1320]
 };
-var pointScale = 50
+var pointScale = 50;
 
 function GroupDiagram(myStages, otherStages, stage, canvasId) {
     this.dist = stage[2];

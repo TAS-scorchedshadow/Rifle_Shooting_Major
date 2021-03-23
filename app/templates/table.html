@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% set active_page = "profile" %}
+{% block page_title %} Profile {% endblock %}
+{% block page_content %}
+    <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="../static/js/table.js"></script>
+    </head>
+
+    <div class="col-lg-5 col-md-12 justify-content-center">
+        <table class="editableTable">
+            <thead>
+            <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>001</td>
+                <td>Pedro Augusto</td>
+                <td>pedro.augusto@myemail.com</td>
+                <td>(21) 9999-8888</td> </tr>
+            <tr>
+                <td>002</td>
+                <td>Paula Silva</td>
+                <td>paula.silva@mymail.com</td>
+                <td>(81) 8787-8686</td>
+            </tr>
+            <tr>
+                <td>003</td>
+                <td>Lucas Costa</td>
+                <td>lucas.costa@myemail.com</td>
+                <td>(84) 3232-3232</td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="button">
+            Edit
+        </button>
+
+    </div>
+{% endblock %}
