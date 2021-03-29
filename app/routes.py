@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -21,6 +21,17 @@ from app.stagesCalc import stage_by_n, stage_by_date
 
 import numpy
 import json
+
+
+@app.route('/email')
+def email():
+    user = User.query.filter_by(username="andrew.t1")
+    tsNow = datetime.now()
+    tsBegin = datetime.now() - timedelta(weeks=4)
+    print(tsNow.strftime("%d %m %y"))
+    print(tsBegin.strftime("%d %m %y"))
+    stages = Stage.query.filter(Stage.timestamp.between(tsBegin, tsNow)).order_by(Stage.timestamp).all()
+    return render_template("email/weeklyReport.html",user=user,stages=stages)
 
 
 @app.errorhandler(404)
@@ -173,7 +184,7 @@ def target():
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:
         user = User.query.filter_by(id=stage.userID).first()
-        data = plotsheet_calc(stage,user)
+        data = plotsheet_calc(stage, user)
         if current_user.access > 1:
             return render_template('plotSheet.html', data=data, user=user, stage=stage)
         else:

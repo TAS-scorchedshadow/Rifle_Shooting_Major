@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="font-family: Helvetica">
+    <div>
+        <div style="font: 32px Helvetica; font-weight: bold; display: inline">
+            PARS
+        </div>
+    </div>
+    <hr>
+    {% block email_content %}
+        <p>Dear Blank Blank</p>
+        <p>
+            To reset your password
+            <a href="/home">
+                Click Here
+            </a>
+        <p>If you have not requested a password reset simply ignore this message.</p>
+    {% endblock %}
+    <p>Sincerely</p>
+    <p>PARS Team</p>
+</body>
+</html>

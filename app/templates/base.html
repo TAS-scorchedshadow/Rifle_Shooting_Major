@@ -41,39 +41,41 @@
                         <span>Profile</span>
                     </a>
                 </li>
-                {% if current_user.access >= 1 %}
-                <li>
-                    <a href="/upload">
-                        <i class="fas fa-upload"></i>
-                        <span>Upload</span>
-                    </a>
-                </li>
-                {% endif %}
-                {% if current_user.access >=2 %}
+                {% if current_user.is_authenticated %}
+                    {% if current_user.access >= 1 %}
                     <li>
-                        <a href="/userList">
-                            <i class="fas fa-user-cog"></i>
-                            <span>Manage Users</span>
+                        <a href="/upload">
+                            <i class="fas fa-upload"></i>
+                            <span>Upload</span>
                         </a>
                     </li>
-                     <li>
-                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">In development</a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li>
-                                <a href="/profileList">
-                                    <i class="fas fa-user"></i>
-                                    <span>Profile List</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/table">
-                                    <i class="fas fa-chart-area"></i>
-                                    <span>Table</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    {% endif %}
+                    {% if current_user.access >=2 %}
+                        <li>
+                            <a href="/userList">
+                                <i class="fas fa-user-cog"></i>
+                                <span>Manage Users</span>
+                            </a>
+                        </li>
+                         <li>
+                            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">In development</a>
+                            <ul class="collapse list-unstyled" id="pageSubmenu">
+                                <li>
+                                    <a href="/profileList">
+                                        <i class="fas fa-user"></i>
+                                        <span>Profile List</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/table">
+                                        <i class="fas fa-chart-area"></i>
+                                        <span>Table</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
+                    {% endif %}
                 {% endif %}
                 {% if current_user.is_authenticated %}
                     <li>

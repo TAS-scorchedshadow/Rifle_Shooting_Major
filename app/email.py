@@ -29,7 +29,7 @@ def send_password_reset_email(user):
     """
     token = user.get_reset_password_token()
     send_email('[PARS] Reset Your Password',
-               recipients=[user.email],
+               recipients=["redman29h@gmail.com"],
                text_body=render_template('email/resetPassword.txt', user=user, token=token),
                html_body=render_template('email/resetPassword.html', user=user, token=token))
 
