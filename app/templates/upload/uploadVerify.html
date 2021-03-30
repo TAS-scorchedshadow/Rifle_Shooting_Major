@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="../static/js/autofill.js"></script>
+<!--Verify-->
+<script type="text/javascript" src="../static/js/uploadVerify.js"></script>
 
 <style>
     .alert {
@@ -107,7 +109,7 @@
                                         <td>{{ invalidShoot['distance'] }}</td>
                                         <td>{{ invalidShoot['time'] }}</td>
                                         <td>
-                                            <input type="text" class="user-searchbar" name="username.{{ invalidShoot['listID'] }}" value={{ invalidShoot['username'] }}>
+                                            <input type="text" class="user-searchbar" name="{{ invalidShoot['listID'] }}" value={{ invalidShoot['username'] }}>
                                         </td>
                                         <td>
                                             {% for shot in invalidShoot['shotList'] %}
@@ -119,9 +121,10 @@
                                 </tbody>
                             </table>
                         <!--TODO add proper submit style-->
-                            {{ form.submit(class_="form-control") }}
+                            <!-- {{ form.submit(class_="form-control") }} -->
+                            <button id="submit">Test</button>
                             {{ form.identifier(value="verify") }}
-                            {{ form.stageDump(value=stageDump)}}
+                            {{ form.stageDump(value=stageDump) }}
                         </div>
                     </div>
                 </form>
