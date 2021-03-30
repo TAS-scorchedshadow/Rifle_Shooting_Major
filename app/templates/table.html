@@ -2,6 +2,7 @@
 {% set active_page = "profile" %}
 {% block page_title %} Profile {% endblock %}
 {% block page_content %}
+    <meta id="user-data" data-userid="{{ userID }}">
     <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <script
@@ -13,7 +14,7 @@
     </head>
 
     <div class="col-lg-5 col-md-12 justify-content-center">
-        <table class="editableTable">
+        <table id="editableTable">
             <thead>
             <tr>
                 <th>Code</th>
@@ -24,26 +25,29 @@
             </thead>
             <tbody>
             <tr>
-                <td>001</td>
-                <td>Pedro Augusto</td>
-                <td>pedro.augusto@myemail.com</td>
-                <td>(21) 9999-8888</td> </tr>
+                <td id="code1">001</td>
+                <td id="name1">Pedro Augusto</td>
+                <td id="email1">pedro.augusto@myemail.com</td>
+                <td id="number1">(21) 9999-8888</td> </tr>
             <tr>
-                <td>002</td>
-                <td>Paula Silva</td>
-                <td>paula.silva@mymail.com</td>
-                <td>(81) 8787-8686</td>
+                <td id="code2">002</td>
+                <td id="name2">Paula Silva</td>
+                <td id="email2">paula.silva@mymail.com</td>
+                <td id="number2">(81) 8787-8686</td>
             </tr>
             <tr>
-                <td>003</td>
-                <td>Lucas Costa</td>
-                <td>lucas.costa@myemail.com</td>
-                <td>(84) 3232-3232</td>
+                <td id="code3">003</td>
+                <td id="name3">Lucas Costa</td>
+                <td id="email3">lucas.costa@myemail.com</td>
+                <td id="number3">(84) 3232-3232</td>
             </tr>
             </tbody>
         </table>
-        <button type="button">
+        <button id="edit" type="button">
             Edit
+        </button>
+        <button id="submit" type="button">
+            Submit
         </button>
 
     </div>

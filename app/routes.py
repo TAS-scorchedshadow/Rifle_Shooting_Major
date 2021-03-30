@@ -403,7 +403,8 @@ def profile_settings():
 
 @app.route('/table')
 def table():
-    return render_template('table.html')
+    userID = 43
+    return render_template('table.html', userID= userID)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -861,4 +862,7 @@ def groupAvg(userID):
 
 @app.route('/submitTable', methods=['POST'])
 def submitTable():
-    data = request.get_data()
+    data = request.get_data().decode("utf-8")
+    data = json.loads(data)
+    print(data)
+    return render_template("table.html")
