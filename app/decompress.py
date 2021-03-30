@@ -51,8 +51,14 @@ def read_archive(uploaded, weeks):
     tar = tarfile.open(mode="r:gz", fileobj=uploaded)
 
     # Find and extract "data.txt" in the archive
-    with tar.extractfile(tar.getmember('./data.txt')) as json_file:
-        data_text_dict = json.load(json_file)
+    try:
+        with tar.extractfile(tar.getmember('./faces.txt')) as json_file:
+            data_text_dict = json.load(json_file)
+    except:
+        with tar.extractfile(tar.getmember('./data.txt')) as json_file:
+            print("Old File")
+            data_text_dict = json.load(json_file)
+            data_text_dict = data_text_dict['faces']
 
     # Loop through each member of the tgz file
     for member in tar.getmembers():
@@ -73,8 +79,8 @@ def read_archive(uploaded, weeks):
 
                     # Append distance to list if it exists in data.txt
                     face_id = str(data['face_id'])
-                    if face_id in data_text_dict['faces']:
-                        x = data_text_dict['faces'][face_id]['distance']
+                    if face_id in data_text_dict:
+                        x = data_text_dict[face_id]['distance']
                         if x % 100 == 0:
                             data['distance'] = f"{x}m"
                             print(data['distance'])
