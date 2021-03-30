@@ -1,32 +1,60 @@
 $(document).ready(function () {
     console.log("Confirmed")
 
-    $("button").click(function () {
-        console.log("Click")
+    $("#edit").click(function () {
+        console.log("Click edit")
         var OriginalContent = $(this).text();
 
-        $("td").addClass("cellEditing");
-        $("td").html("<input type='text' value='" + OriginalContent + "' />");
-        $("td").children().focus();
+        $('#editableTable tr').each(function (){
+            $('td', this).each(function (){
+                let value = $(this).text()
 
-        $("td").children().keypress(function (e) {
-            if (e.which == 13) {
-                var newContent = $(this).val();
-                $("td").parent().text(newContent);
-                $("td").parent().removeClass("cellEditing");
-            }
-        });
+                $(this).addClass("cellEditing");
+        $(this).html("<input type='text' value='" + value + "' />");
+        $(this).children().focus();
+            })
+        })
+
 
     $("td").children().first().blur(function(){
         $("td").parent().text(OriginalContent);
         $("td").parent().removeClass("cellEditing");
     });
     });
-    function submitTable(userID, cell, info) {
+
+    let infoDict = {
+        "code1": '',
+        "name1": '',
+        "email1": '',
+        "number1": '',
+        "code2": '',
+        "name2": '',
+        "email2": '',
+        "number2": '',
+        "code3": '',
+        "name3": '',
+        "email3": '',
+        "number3": '',
+    }
+
+    $('#submit').click(function () {
+        console.log("Click submit")
+
+        $('#editableTable tr').each(function () {
+            $('td', this).each(function () {
+                let value = $(this).find(":input").val()
+                infoDict[$(this).attr("id")] = value
+            })
+        })
+        let userID =$('#user-data').data('userid')
+        submitTable(userID, infoDict)
+    })
+
+    function submitTable(userID, infoDict) {
         $.ajax({
                 type: 'POST',
                 url: "/submitTable",
-                data: [userID, cell, info],
+                data: JSON.stringify([userID, infoDict]),
                 success:(function () {
                     console.log('success')
                 })
