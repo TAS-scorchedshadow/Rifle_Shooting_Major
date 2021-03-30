@@ -13,25 +13,13 @@ from werkzeug.urls import url_parse
 from app import app, db, mail
 from app.forms import *
 from app.models import User, Stage, Shot
-from app.email import send_password_reset_email, send_activation_email
+from app.email import send_password_reset_email, send_activation_email, send_report_email
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
 from app.stagesCalc import stage_by_n, stage_by_date
-
 import numpy
 import json
-
-
-@app.route('/email')
-def email():
-    user = User.query.filter_by(username="andrew.t1")
-    tsNow = datetime.now()
-    tsBegin = datetime.now() - timedelta(weeks=4)
-    print(tsNow.strftime("%d %m %y"))
-    print(tsBegin.strftime("%d %m %y"))
-    stages = Stage.query.filter(Stage.timestamp.between(tsBegin, tsNow)).order_by(Stage.timestamp).all()
-    return render_template("email/weeklyReport.html",user=user,stages=stages)
 
 
 @app.errorhandler(404)
@@ -42,6 +30,7 @@ def page_not_found(e):
 @app.errorhandler(500)
 def server_error(e):
     return render_template('error/500.html'), 500
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -78,7 +67,7 @@ def landing():
     return render_template('landingPage.html')
 
 
-def plotsheet_calc(stage,user):
+def plotsheet_calc(stage, user):
     shots = Shot.query.filter_by(stageID=stage.id).all()
     data = {}
 
@@ -170,6 +159,7 @@ def plotsheet_calc(stage,user):
 
     return data
 
+
 @login_required
 @app.route('/target')
 def target():
@@ -188,7 +178,7 @@ def target():
         if current_user.access > 1:
             return render_template('plotSheet.html', data=data, user=user, stage=stage)
         else:
-            return render_template('students/studentPlotSheet.html',  data=data, user=user, stage=stage)
+            return render_template('students/studentPlotSheet.html', data=data, user=user, stage=stage)
     return render_template('index.html')
 
     # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
@@ -240,7 +230,7 @@ def profile():
         except KeyError:
             userID = current_user.id
         user = User.query.filter_by(id=userID).first()
-    #By Rishi Wig
+    # By Rishi Wig
     form = profileSelect()
     if form.is_submitted():
         change = str(form.cell.data)
@@ -273,11 +263,11 @@ def profile():
     # stub for shooter ID passed to the overview
     # collect data fro graphs
 
-    #amount = 5
-    #start = datetime(2016, 6, 28)
-    #end = datetime(2021, 6, 29)
-    #stage_by_date(userID, start, end)
-    #value = stage_by_n(userID, amount)
+    # amount = 5
+    # start = datetime(2016, 6, 28)
+    # end = datetime(2021, 6, 29)
+    # stage_by_date(userID, start, end)
+    # value = stage_by_n(userID, amount)
 
     # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     # info = {}
@@ -301,7 +291,8 @@ def profile():
 
     return render_template('students/profile.html', form=form, user=user, tableInfo=tableInfo)
 
-#by Henry Guo
+
+# by Henry Guo
 @app.route('/getAvgShotGraphData', methods=['POST'])
 def getAvgShotData():
     userID = request.get_data().decode("utf-8")
@@ -318,7 +309,7 @@ def getAvgShotData():
         timestamp_query = j.timestamp
         strTime = (utc_to_nsw(timestamp_query).strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
         times.append(strTime)
-        scores.append(round((score/total), 1))
+        scores.append(round((score / total), 1))
     graphData = jsonify({'scores': scores,
                          'times': times,
                          })
@@ -431,11 +422,11 @@ def upload():
             for file in files:
                 stages = read_archive(file, upload_time)
                 for stage_dict, issue_code in stages:
-                    if 2 not in issue_code:                 # i.e. at least more than 1 counting shot
-                        stage = validateShots(stage_dict)   # Reformat shoot stage to obtain usable data
+                    if 2 not in issue_code:  # i.e. at least more than 1 counting shot
+                        stage = validateShots(stage_dict)  # Reformat shoot stage to obtain usable data
                         stage['listID'] = count["total"]
                         stageList.append(stage)
-                        if 1 in issue_code:                 # i.e. missing username
+                        if 1 in issue_code:  # i.e. missing username
                             invalidList.append(stage)
                             count["failure"] += 1
                         else:
@@ -549,7 +540,8 @@ def register():
     if form.validate_on_submit():
         # TODO account for other formats
         email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
-        user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(), school=form.school.data,
+        user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
+                    school=form.school.data,
                     schoolID=form.schoolID.data, email=email)
         user.generate_username()
         user.set_password(form.password.data)
@@ -658,7 +650,7 @@ def userList():
                 fName = " ".join(fNames).title()
                 sName = " ".join(sNames).title()
                 print(f"#{fName}# #{sName}#")
-                user = User.query.filter_by(fName=fName,sName=sName).first()
+                user = User.query.filter_by(fName=fName, sName=sName).first()
 
                 if user:
                     user.schoolID = student[0]
@@ -666,18 +658,19 @@ def userList():
                     if not user.email:
                         user.email = student[0] + "@student.sbhs.nsw.edu.au"
                 else:
-                    user = User(fName=fName,sName=sName, school="SBHS", schoolID=student[0], schoolYr= student[2][:-2],
+                    user = User(fName=fName, sName=sName, school="SBHS", schoolID=student[0], schoolYr=student[2][:-2],
                                 email=(student[0] + "@student.sbhs.nsw.edu.au"))
                     user.generate_username()
                     user.set_password('password')
                     db.session.add(user)
         db.session.commit()
-    users = User.query.order_by(User.access,User.sName).all()
+    users = User.query.order_by(User.access, User.sName).all()
     return render_template('userAuth/userList.html', users=users)
+
 
 @app.route('/profileList')
 @login_required
-#todo figure out why cards are not appearing
+# todo figure out why cards are not appearing
 def profileList():
     if not current_user.access > 1:
         return redirect(url_for('index'))
@@ -846,7 +839,8 @@ def submitNotes():
     db.session.commit()
     return jsonify({'success': 'success'})
 
-#By Andrew Tam
+
+# By Andrew Tam
 def groupAvg(userID):
     XTotal = 0
     YTotal = 0
@@ -855,10 +849,11 @@ def groupAvg(userID):
     for i in range(length):
         XTotal = XTotal + stages[i].groupX
         YTotal = YTotal + stages[i].groupY
-    groupXAvg = XTotal/length
-    groupYAvg = YTotal/length
+    groupXAvg = XTotal / length
+    groupYAvg = YTotal / length
 
     return groupXAvg, groupYAvg
+
 
 @app.route('/submitTable', methods=['POST'])
 def submitTable():
@@ -866,3 +861,9 @@ def submitTable():
     data = json.loads(data)
     print(data)
     return render_template("table.html")
+
+
+@app.route('/sendWeeklyReport',methods=['POST'])
+def sendWeeklyReport(banned_IDs):
+    send_report_email(banned_userIDs=banned_IDs)
+    return

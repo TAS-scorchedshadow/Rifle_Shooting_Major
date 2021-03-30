@@ -4,23 +4,32 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body style="font-family: Helvetica">
-    <div>
-        <div style="font: 32px Helvetica; font-weight: bold; display: inline">
-            PARS
-        </div>
-    </div>
-    <hr>
-    {% block email_content %}
-        <p>Dear Blank Blank</p>
-        <p>
-            To reset your password
-            <a href="/home">
-                Click Here
-            </a>
-        <p>If you have not requested a password reset simply ignore this message.</p>
-    {% endblock %}
-    <p>Sincerely</p>
-    <p>PARS Team</p>
+<body style="margin: 0; padding: 0; font-family: Helvetica">
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f8f8f8">
+        <tr>
+            <td>
+                <table align="center" cellpadding="0" border="1" cellspacing="0" width="600" style="border-collapse: collapse;">
+                    <tr>
+                        <td>
+                            <h1 style="margin: 0;">PARS</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="margin: 0;">{% block secondary_heading %}Base Template{% endblock %}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p style="margin: 0;">
+                                {% block email_content %}
+                                {% endblock %}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

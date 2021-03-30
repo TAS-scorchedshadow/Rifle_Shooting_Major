@@ -15,12 +15,20 @@
                     <div class="card-header text-center">
                         <h1>Accounts List</h1>
                     </div>
-                    <form method='POST' action="" enctype="multipart/form-data">
-                      <p><input type="file" name="file"></p>
-                      <p><input type="submit" value="Submit"></p>
-                    </form>
-                    <hr>
                     <div class="card-body">
+                        <div class = row>
+                            <div class="col-12 col-lg-6">
+                                <label for="file">Attendance File</label>
+                                <form method='POST' action="" enctype="multipart/form-data">
+                                  <p><input type="file" name="file" id="file" style="border: black"><input type="submit" value="Submit"></p>
+                                </form>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                Email Report system
+                                <a class="btn btn-primary" href="#" role="button">Link</a>
+                            </div>
+                        </div>
+                        <hr>
                         <div class="table-responsive table-striped">
                             <table class="text-center justify-content-center table table-bordered">
                                 <thead class="thead-dark">

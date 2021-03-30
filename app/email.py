@@ -1,6 +1,9 @@
+from datetime import datetime, timedelta
+
 from flask import render_template
 from flask_mail import Message
 from app import app, mail
+from app.models import User, Stage
 
 
 def send_email(subject ,recipients, text_body, html_body):
@@ -45,3 +48,16 @@ def send_activation_email(user):
                recipients=[user.email],
                text_body=render_template('email/activate.txt', user=user, token=token),
                html_body=render_template('email/activate.html', user=user, token=token))
+
+
+def send_report_email(banned_userIDs):
+    users = User.query.all()
+    tsNow = datetime.now()
+    tsBegin = datetime.now() - timedelta(weeks=1)
+    stages = Stage.query.filter(Stage.timestamp.between(tsBegin, tsNow)).all()
+    for user in users:
+        if user.id not in banned_userIDs:
+            userStages = [stage for stage in stages if stage.userID == user.id]
+            if userStages and user.email:
+                send_email("Weekly Report",[user.email],render_template('email/weeklyReport.txt',tsBegin=tsBegin,tsNow=tsNow, user=user)
+                           ,render_template('email/weeklyReport.html', stages=stages))
