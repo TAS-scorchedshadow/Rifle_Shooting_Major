@@ -240,7 +240,7 @@ def profile():
         db.session.commit()
 
     tableInfo = {}
-    tableInfo["SID"] = "NULL"
+    tableInfo["SID"] = user.shooterID
     tableInfo["DOB"] = user.dob
     tableInfo["Rifle Serial"] = user.rifleSerial
     tableInfo["StudentID"] = user.schoolID
@@ -249,9 +249,7 @@ def profile():
     tableInfo["Permit"] = user.permitNumber
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
-    tableInfo["Mobile"] = "NULL"
-    tableInfo["Roll Class"] = "NULL"
-    tableInfo["Mobile"] = "NULL"
+    tableInfo["Mobile"] = user.mobile
 
     # z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     # p = numpy.poly1d(z)
@@ -395,7 +393,19 @@ def profile_settings():
 @app.route('/table')
 def table():
     userID = 43
-    return render_template('table.html', userID= userID)
+    user = User.query.filter_by(id=userID).first()
+    tableInfo = {}
+    tableInfo["SID"] = user.shooterID
+    tableInfo["DOB"] = user.dob
+    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["StudentID"] = user.schoolID
+    tableInfo["Grade"] = user.schoolYr
+    tableInfo["Email"] = user.email
+    tableInfo["Permit"] = user.permitNumber
+    tableInfo["Expiry"] = user.permitExpiry
+    tableInfo["Sharing"] = user.sharing
+    tableInfo["Mobile"] = user.mobile
+    return render_template('table.html', userID= userID, tableInfo=tableInfo)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -886,8 +896,29 @@ def groupAvg(userID):
 def submitTable():
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
-    print(data)
-    return render_template("table.html")
+    userID = data[0]
+    print(userID)
+    tableDict = data[1]
+    user = User.query.filter_by(id=userID).first()
+
+    tableInfo = {}
+    tableInfo["SID"] = user.shooterID
+    #tableInfo["DOB"] = user.dob
+    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["StudentID"] = user.schoolID
+    tableInfo["Grade"] = user.schoolYr
+    tableInfo["Email"] = user.email
+    tableInfo["Permit"] = user.permitNumber
+    tableInfo["Expiry"] = user.permitExpiry
+    tableInfo["Sharing"] = user.sharing
+    tableInfo["Mobile"] = user.mobile
+
+    for cell in tableDict:
+        if cell != "dob" or cell != "expiry":
+            setattr(user, cell, tableDict[cell])
+    db.session.commit()
+
+    return render_template('table.html', userID=userID, tableInfo=tableInfo)
 
 
 @app.route('/sendWeeklyReport',methods=['POST'])

@@ -1,8 +1,15 @@
 $(document).ready(function () {
     console.log("Confirmed")
+    let hideSubmit = document.getElementById("submit")
+    hideSubmit.style.display = "none"
 
     $("#edit").click(function () {
         console.log("Click edit")
+
+        let hideEdit = document.getElementById("edit")
+        hideEdit.style.display = "none"
+        hideSubmit.style.display = "block"
+
         var OriginalContent = $(this).text();
 
         $('#editableTable tr').each(function (){
@@ -23,18 +30,16 @@ $(document).ready(function () {
     });
 
     let infoDict = {
-        "code1": '',
-        "name1": '',
-        "email1": '',
-        "number1": '',
-        "code2": '',
-        "name2": '',
-        "email2": '',
-        "number2": '',
-        "code3": '',
-        "name3": '',
-        "email3": '',
-        "number3": '',
+        "shooterID": '',
+        "dob": '',
+        "rifleSerial": '',
+        "schoolID": '',
+        "schoolYr": '',
+        "email": '',
+        "permitNumber": '',
+        "permitExpiry": '',
+        "sharing": '',
+        "mobile": '',
     }
 
     $('#submit').click(function () {
