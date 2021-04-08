@@ -1,20 +1,29 @@
 // Ryan T
+/*
 $(document).ready(function() {
     // When submit button is pressed run fetchData
-    $(#submit).click(function() {
+    $("#test").click(function() {
         let usernameDict = {};
         $(".user-searchbar").each(function() {
             let name = $(this).attr("name")
             let value = $(this).attr("value")
             usernameDict[name] = value;
-        console.log(usernameDict)
         })
-        // fetchData()
+        console.log(usernameDict);
+        let stageList = $("#stageDump").attr("value");
+        console.log(stageList)
+        $('#spinner').toggleClass('d-flex');
+        $('#spinner').show();
+        let oldData = [stageList, usernameDict]
+        let newData = fetchData(oldData);
+        console.log(newData)
+
     })
-    function fetchData() {
+    function fetchData(oldData) {
         $.ajax({
             type: 'POST',
-            url: '/uploadVerify'
+            url: '/uploadVerify',
+            data: oldData
         })
     }
     // Data needs to be returned in a variable stageList, as well as invalidListID,
@@ -25,3 +34,4 @@ $(document).ready(function() {
 
     // After completion, depending on number of success or failure, switch to correct page
 })
+*/

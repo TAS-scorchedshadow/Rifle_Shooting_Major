@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block page_content %}
+<script type="text/javascript"
+    src="/static/js/sijax/sijax.js"></script>
+<script type="text/javascript">
+    {{ g.sijax.get_js()|safe }}
+</script>
+<body>
+    <a href="javascript://" onclick="Sijax.request('say_hi');">Click here</a>
+</body>
+{% endblock %}

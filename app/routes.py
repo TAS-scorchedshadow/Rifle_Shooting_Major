@@ -21,6 +21,9 @@ from app.stagesCalc import stage_by_n, stage_by_date
 import numpy
 import json
 
+import flask_sijax
+from flask import g
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -505,30 +508,52 @@ def upload():
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
 
 
-def uploadVerify(methods=['POST']):
-    form = uploadForm()
+#todo: Learning sijax
+@flask_sijax.route(app, '/testsijax')
+def hello():
+    # Every Sijax handler function (like this one) receives at least
+    # one parameter automatically, much like Python passes `self`
+    # to object methods.
+    # The `obj_response` parameter is the function's way of talking
+    # back to the browser
+    def say_hi(obj_response):
+        obj_response.alert('Hi there!')
+
+    if g.sijax.is_sijax_request:
+        # Sijax request detected - let Sijax handle it
+        g.sijax.register_callback('say_hi', say_hi)
+        return g.sijax.process_request()
+
+    # Regular (non-Sijax request) - render the page template
+    return render_template('/testsijax.html')
+
+
+@app.route('/uploadVerify', methods=['POST'])
+def uploadVerify():
+    # todo: here
+    print('reached')
+    oldData = request.get_data()
+    print(oldData)
+    stageList = oldData[0]
+    usernameDict = oldData[1]
     invalidList = []
     # Verifying Upload
-    stageList = json.loads(request.form["stageDump"])
     invalidListID = []
     userList = [user for user in User.query.all()]
     userDict = {}
     for user in userList:
         userDict[user.username] = user.id
-    for key in request.form:
-        if "username." in key:
-            username = request.form[key]
-            stageList[int(key[9:])]['username'] = username
-            if username not in userDict:
-                invalidList.append(stageList[int(key[9:])])
-                invalidListID.append(int(key[9:]))
-    stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
-    print('started')
-    print(invalidListID)
-    return stageList, invalidListID
+    for key in usernameDict:
+        print(key)
+        stageList[key]['username'] = usernameDict[key]
+        if usernameDict[key] not in userDict:
+            invalidList.append(stageList[key])
+            invalidListID.append(key)
+    newData = [stageList, invalidListID]
+    return newData
 
 
-def uploadDatabase(methods=['POST']):
+def uploadDatabase():
     print("a")
 
 

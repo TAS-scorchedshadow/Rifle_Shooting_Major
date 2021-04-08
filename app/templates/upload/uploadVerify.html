@@ -121,13 +121,17 @@
                                 </tbody>
                             </table>
                         <!--TODO add proper submit style-->
+
                             <!-- {{ form.submit(class_="form-control") }} -->
-                            <button id="submit">Test</button>
                             {{ form.identifier(value="verify") }}
                             {{ form.stageDump(value=stageDump) }}
+                            <div class="spinner-border spinner-border-sm text-primary ml-2"
+                                name="spinner" id="spinner" role="status" style="display: none; position: absolute">
+                            </div>
                         </div>
                     </div>
                 </form>
+                <button id="test">Test</button>
             </div>
         </div>
     </div>
