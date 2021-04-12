@@ -855,6 +855,7 @@ def getTargetStats():
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
 
+
 @app.route('/testHeatmap')
 def testHeatmap():
     user = 61
@@ -870,6 +871,30 @@ def testHeatmap():
     shotList = json.dumps(shotList)
     print(data)
     return render_template('testHeatmap.html', data=data, shotList=shotList)
+
+
+@app.route('/getAllShotsSeason', methods=['POST'])
+def getAllShotsSeason():
+    """
+    Function collects every shot from the user in the season
+    :return:
+    """
+    input_ = request.get_data().decode('utf-8')
+    loadedInput = json.loads(input_)
+    dist = loadedInput['distance']
+    userID = loadedInput['userID']
+    data = {'heatmap': [], 'target': []}
+    stages = Stage.query.filter_by(distance=dist, userID=userID).all()
+    for stage in stages:
+        shots = Shot.query.filter_by(stageID=stage.id).all()
+        for shot in shots:
+            data['heatmap'].append({'x': round(2*shot.xPos + 600), 'y': round(600 - 2*shot.yPos), 'value': 1})
+            data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
+    dataDump = json.dumps(data)
+    data = jsonify(data)
+    print(dataDump)
+    print(data)
+    return data
 
 
 @app.route('/submitNotes', methods=['POST'])

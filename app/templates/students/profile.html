@@ -18,6 +18,12 @@
 <script type="text/javascript" src="../static/js/autofill.js" defer></script>
 
 <meta id="my-data" data-userid="{{ user.id }}">
+
+<!--Scripts for season stats page-->
+<script src="../static/css-element-queries/src/ResizeSensor.js"></script>
+<script src=../static/heatmap.js-master/build/heatmap.min.js></script>
+<script src="../static/js/targetDiagram.js"></script>
+<script src="../static/js/seasonAjax.js"></script>
 <style>
 body {
     overflow-y: scroll
@@ -193,7 +199,10 @@ table.recentShotsTable{
                 </div>
             </div>
             <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
-                Season Stats
+              <div id='heatMap' style="height: 1200px; width: 1200px">
+                <canvas class='canvas' width="1200" height="1200" style="position:absolute; left: 0; top: 0; border:1px solid black"></canvas>
+                <canvas class='canvas' id="title" style="border: 1px solid black"></canvas>
+              </div>
             </div>
         </div>
     </div>
