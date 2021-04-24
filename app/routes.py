@@ -938,7 +938,7 @@ def submitTable():
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
     userID = data[0]
-    print(data)
+    #print(data)
     tableDict = data[1]
     # user = User.query.filter_by(id=userID).first()
     #

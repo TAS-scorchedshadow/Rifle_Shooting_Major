@@ -1,4 +1,4 @@
-//Henry & Rishi
+///Henry & Rishi
 $(document).ready(function () {
     console.log("Confirmed")
     let hideSubmit = document.getElementById("submit")
