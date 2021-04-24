@@ -897,28 +897,28 @@ def submitTable():
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
     userID = data[0]
-    print(userID)
+    print(data)
     tableDict = data[1]
-    user = User.query.filter_by(id=userID).first()
+    # user = User.query.filter_by(id=userID).first()
+    #
+    # tableInfo = {}
+    # tableInfo["SID"] = user.shooterID
+    # #tableInfo["DOB"] = user.dob
+    # tableInfo["Rifle Serial"] = user.rifleSerial
+    # tableInfo["StudentID"] = user.schoolID
+    # tableInfo["Grade"] = user.schoolYr
+    # tableInfo["Email"] = user.email
+    # tableInfo["Permit"] = user.permitNumber
+    # tableInfo["Expiry"] = user.permitExpiry
+    # tableInfo["Sharing"] = user.sharing
+    # tableInfo["Mobile"] = user.mobile
+    #
+    # for cell in tableDict:
+    #     if cell != "dob" or cell != "expiry":
+    #         setattr(user, cell, tableDict[cell])
+    # db.session.commit()
 
-    tableInfo = {}
-    tableInfo["SID"] = user.shooterID
-    #tableInfo["DOB"] = user.dob
-    tableInfo["Rifle Serial"] = user.rifleSerial
-    tableInfo["StudentID"] = user.schoolID
-    tableInfo["Grade"] = user.schoolYr
-    tableInfo["Email"] = user.email
-    tableInfo["Permit"] = user.permitNumber
-    tableInfo["Expiry"] = user.permitExpiry
-    tableInfo["Sharing"] = user.sharing
-    tableInfo["Mobile"] = user.mobile
-
-    for cell in tableDict:
-        if cell != "dob" or cell != "expiry":
-            setattr(user, cell, tableDict[cell])
-    db.session.commit()
-
-    return render_template('table.html', userID=userID, tableInfo=tableInfo)
+    return render_template('table.html', userID=userID)
 
 
 @app.route('/sendWeeklyReport',methods=['POST'])
