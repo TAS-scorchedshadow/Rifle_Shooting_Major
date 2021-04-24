@@ -7,27 +7,93 @@
         <h1> Profile List </h1>
     </div>
 </div>
+    <!-- simple cards Andrew Tam -->
 <div class="container-fluid">
-<!-- todo fix up what is not allowing the cards to appear -->
-    {%  for schoolYr in users %}
-        <div class="row">
-            <div class="col-12">
-                <h4>Year {{ schoolYr }}</h4>
-            </div>
-            {% for user in users[schoolYr] %}
-                <div class="col-2">
-                    <div class="card">
-                        <div style="padding-top: 10px">
-                            <a href="/profile?username={{ user.username }}">
-                                <p style="text-align: center"><u>{{ user.fName }} {{ user.sName }}</u></p>
-                            </a>
+    <div class="row">
+        <div class="col-12">
+            <h3> Year 7 </h3>
+            <div class="row">
+            {%  for user in users %}
+                {% if user.schoolYr == '7' %}
+                        <div class="col-2">
+                            <h6> {{ user.fName }} {{ user.sName }}</h6>
                         </div>
                     </div>
-                </div>
-            {%  endfor %}
+                {%  endif %}
+            {% endfor %}
+            </div>
+            <h3> Year 8 </h3>
+            <div class="row">
+                {%  for user in users %}
+                    {% if user.schoolYr == '8' %}
+                        <div class="col-2">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {%  endif %}
+                {% endfor %}
+            </div>
+            <h3> Year 9 </h3>
+            <div class="row">
+                {%  for user in users %}
+                    {%  if user.schoolYr == '9' %}
+                        <div class="col-2">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                     <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {%  endif %}
+                {% endfor %}
+            </div>
+            <h3> Year 10 </h3>
+            <div class="row">
+                {%  for user in users %}
+                    {% if user.schoolYr == '10' %}
+                        <div class="col-2">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {%  endif %}
+                {% endfor %}
+            </div>
+            <h3> Year 11 </h3>
+            <div class="row">
+                {%  for user in users %}
+                    {% if user.schoolYr == '11' %}
+                        <div class="col-2">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                     <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {%  endif %}
+                {% endfor %}
+            </div>
+            <h3> Year 12 </h3>
+            <div class="row">
+                {%  for user in users %}
+                    {% if user.schoolYr == '12' %}
+                        <div class="col-2">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {%  endif %}
+                {% endfor %}
+            </div>
         </div>
-        <hr>
-    {% endfor %}
+    </div>
 </div>
 {%  endblock %}
 
