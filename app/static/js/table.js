@@ -16,9 +16,10 @@ $(document).ready(function () {
         $('#editableTable tr').each(function (){
             $('td', this).each(function (){
                 let value = $(this).text()
-
+                let width = $(this).width();
+                console.log(width)
                 $(this).addClass("cellEditing");
-                $(this).html("<input type='text' value='" + value + "' />");
+                $(this).html("<input style=width:" + width+ "px type='text' value='" + value + "' />");
                 $(this).children().focus();
             })
         })
@@ -52,7 +53,7 @@ $(document).ready(function () {
             $('td', this).each(function () {
                 let value = $(this).find(":input").val()
                 infoDict[$(this).attr("id")] = value
-                $(this).html("<td>" + value +  "</>");
+                $(this).html(value);
             })
         })
         let userID =$('#user-data').data('userid')
