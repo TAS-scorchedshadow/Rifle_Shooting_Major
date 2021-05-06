@@ -79,6 +79,3 @@ def conversion(stages_array):
 
     return timestamps, avgScores, total, stDev, scores
 
-userID = 56
-stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-conversion(stages_query)
