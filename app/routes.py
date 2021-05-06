@@ -317,9 +317,10 @@ def getAvgShotData():
 @app.route('/overview')
 def profile_overview():
     # stub for shooter ID passed to the overview
-    shooterID = 31
+    shooterID = 56
 
     stages_query = Stage.query.filter_by(userID=shooterID).all()
+    print(stages_query)
     info = {}
     times = []
     scores = []

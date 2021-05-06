@@ -59,8 +59,8 @@ def conversion(stages_array):
         trueTotal = 0
         shots = 0
         tempStdev = []
+        tempScore = []
         for objects in query:
-            tempScore = []
             if not objects.sighter:
                 trueTotal += objects.score
                 shots += 1
@@ -69,13 +69,16 @@ def conversion(stages_array):
                     tempScore.append("V")
                 else:
                     tempScore.append(objects.score)
-            scores.append(tempScore)
+        scores.append(tempScore)
         totalPotential = 5 * shots
 
-        if shots != 0 and totalPotential != 0 and not tempStdev:
+        if shots != 0 and totalPotential != 0:
             total.append((((trueTotal/totalPotential)*100)/100)*50)
             avgScores.append(float(trueTotal / shots))
             stDev.append(statistics.pstdev(tempStdev))
 
-
     return timestamps, avgScores, total, stDev, scores
+
+userID = 56
+stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
+conversion(stages_query)
