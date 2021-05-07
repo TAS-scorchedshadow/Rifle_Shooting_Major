@@ -240,7 +240,7 @@ def profile():
         db.session.commit()
 
     tableInfo = {}
-    tableInfo["SID"] = "NULL"
+    tableInfo["SID"] = user.shooterID
     tableInfo["DOB"] = user.dob
     tableInfo["Rifle Serial"] = user.rifleSerial
     tableInfo["StudentID"] = user.schoolID
@@ -249,9 +249,7 @@ def profile():
     tableInfo["Permit"] = user.permitNumber
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
-    tableInfo["Mobile"] = "NULL"
-    tableInfo["Roll Class"] = "NULL"
-    tableInfo["Mobile"] = "NULL"
+    tableInfo["Mobile"] = user.mobile
 
     # z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     # p = numpy.poly1d(z)
@@ -319,9 +317,10 @@ def getAvgShotData():
 @app.route('/overview')
 def profile_overview():
     # stub for shooter ID passed to the overview
-    shooterID = 31
+    shooterID = 56
 
     stages_query = Stage.query.filter_by(userID=shooterID).all()
+    print(stages_query)
     info = {}
     times = []
     scores = []
@@ -395,7 +394,19 @@ def profile_settings():
 @app.route('/table')
 def table():
     userID = 43
-    return render_template('table.html', userID= userID)
+    user = User.query.filter_by(id=userID).first()
+    tableInfo = {}
+    tableInfo["SID"] = user.shooterID
+    tableInfo["DOB"] = user.dob
+    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["StudentID"] = user.schoolID
+    tableInfo["Grade"] = user.schoolYr
+    tableInfo["Email"] = user.email
+    tableInfo["Permit"] = user.permitNumber
+    tableInfo["Expiry"] = user.permitExpiry
+    tableInfo["Sharing"] = user.sharing
+    tableInfo["Mobile"] = user.mobile
+    return render_template('table.html', userID= userID, tableInfo=tableInfo)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -874,6 +885,47 @@ def getTargetStats():
     return jsonify({'error': 'userID'})
 
 
+@app.route('/testHeatmap')
+def testHeatmap():
+    user = 61
+    data = []
+    shotList = []
+    stages = Stage.query.filter_by(distance='300m').all()
+    for stage in stages:
+        shots = Shot.query.filter_by(stageID=stage.id).all()
+        for shot in shots:
+            data.append({'x': 2*shot.xPos + 600, 'y': 600 - 2*shot.yPos, 'value': 1})
+            shotList.append(['1', shot.xPos, shot.yPos, shot.score])
+    data = json.dumps(data)
+    shotList = json.dumps(shotList)
+    print(data)
+    return render_template('testHeatmap.html', data=data, shotList=shotList)
+
+
+@app.route('/getAllShotsSeason', methods=['POST'])
+def getAllShotsSeason():
+    """
+    Function collects every shot from the user in the season
+    :return:
+    """
+    input_ = request.get_data().decode('utf-8')
+    loadedInput = json.loads(input_)
+    dist = loadedInput['distance']
+    userID = loadedInput['userID']
+    data = {'heatmap': [], 'target': []}
+    stages = Stage.query.filter_by(distance=dist, userID=userID).all()
+    for stage in stages:
+        shots = Shot.query.filter_by(stageID=stage.id).all()
+        for shot in shots:
+            data['heatmap'].append({'x': round(2*shot.xPos + 600), 'y': round(600 - 2*shot.yPos), 'value': 1})
+            data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
+    dataDump = json.dumps(data)
+    data = jsonify(data)
+    print(dataDump)
+    print(data)
+    return data
+
+
 @app.route('/submitNotes', methods=['POST'])
 def submitNotes():
     # Function submits changes in notes
@@ -904,8 +956,25 @@ def groupAvg(userID):
 def submitTable():
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
-    print(data)
-    return render_template("table.html")
+    userID = data[0]
+    print(userID)
+    tableDict = data[1]
+    print(tableDict)
+    user = User.query.filter_by(id=userID).first()
+    tableInfo = {}
+    tableInfo["SID"] = user.shooterID
+    #tableInfo["DOB"] = user.dob
+    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["StudentID"] = user.schoolID
+    tableInfo["Grade"] = user.schoolYr
+    tableInfo["Email"] = user.email
+    tableInfo["Permit"] = user.permitNumber
+    tableInfo["Expiry"] = user.permitExpiry
+    tableInfo["Sharing"] = user.sharing
+    tableInfo["Mobile"] = user.mobile
+    db.session.commit()
+
+    return jsonify({'success': 'success'})
 
 
 @app.route('/sendWeeklyReport',methods=['POST'])

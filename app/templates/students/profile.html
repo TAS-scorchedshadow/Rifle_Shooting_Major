@@ -12,12 +12,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
+<!-- Editable Table-->
+<script type="text/javascript" src="../static/js/table.js"></script>
 <!--Username Autofill-->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
 <script type="text/javascript" src="../static/js/autofill.js" defer></script>
 
 <meta id="my-data" data-userid="{{ user.id }}">
+
+<!--Scripts for season stats page-->
+<script src="../static/css-element-queries/src/ResizeSensor.js"></script>
+<script src=../static/heatmap.js-master/build/heatmap.min.js></script>
+<script src="../static/js/targetDiagram.js"></script>
+<script src="../static/js/seasonAjax.js"></script>
 <style>
 body {
     overflow-y: scroll
@@ -35,77 +43,60 @@ table.recentShotsTable{
 }
 </style>
     <div class="container-fluid" style="padding-bottom: 50px">
-        <div class="row justify-content-center align-items-center">
+        <div class="row align-items-center">
             <div class="col-12 col-lg-2">
-                <div class="card text-center bg-primary">
+                <div class="card text-center bg-primary mt-0 pt-0">
                     <div class="card-body">
                         <i class="fas fa-user-graduate fa-6x"></i>
                         <h4 class="card-text text-center">{{ user.fName }} {{ user.sName }}</h4>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="table-responsive">
-                    <form action ="" method="post" onsubmit="">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">SID</th>
-                                <th scope="col">DOB</th>
-                                <th scope="col">Rifle Serial</th>
-                                <th scope="col">Student ID</th>
-                                <th scope="col">Grade</th>
-                                <th scope="col">Email</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ tableInfo["SID"] }}</td>
-                                <td>{{ tableInfo["DOB"] }}</td>
-                                <td>{{ tableInfo["Rifle Serial"] }}</td>
-                                <td>{{ tableInfo["StudentID"] }}</td>
-                                <td>{{ tableInfo["Grade"] }}</td>
-                                <td>{{ tableInfo["Email"] }}</td>
-                            </tr>
-                        </tbody>
-                        <thead>
-                            <tr>
-                                <th scope="col">Permit</th>
-                                <th scope="col">Expiry</th>
-                                <th scope="col">Sharing</th>
-                                <th scope="col">Mobile</th>
-                                <th scope="col">Roll Class</th>
-                                <th scope="col">Mobile</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{{ tableInfo["Permit"] }}</td>
-                                <td>{{ tableInfo["Expiry"] }}</td>
-                                <td>{{ tableInfo["Sharing"] }}</td>
-                                <td>{{ tableInfo["Mobile"] }}</td>
-                                <td>{{ tableInfo["Roll Class"] }}</td>
-                                <td>{{ tableInfo["Mobile"] }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="col-12 col-md-8" style="height: 15rem">
+                <table id="editableTable" class="table table-responsive">
+                    <tbody>
+                        <tr>
+                            <th scope="col">SID</th>
+                            <th scope="col">DOB</th>
+                            <th scope="col">Rifle Serial</th>
+                            <th scope="col">Student ID</th>
+                            <th scope="col">Grade</th>
+                            <th scope="col">Email</th>
+                        </tr>
+                        <tr>
+                            <td id="shooterID">{{ tableInfo["SID"] }}</td>
+                            <td id="dob">{{ tableInfo["DOB"] }}</td>
+                            <td id="rifleSerial">{{ tableInfo["Rifle Serial"] }}</td>
+                            <td id="schoolID">{{ tableInfo["StudentID"] }}</td>
+                            <td id="schoolYr">{{ tableInfo["Grade"] }}</td>
+                            <td id="email">{{ tableInfo["Email"] }}</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <th scope="col">Permit</th>
+                            <th scope="col">Expiry</th>
+                            <th scope="col">Sharing</th>
+                            <th scope="col">Mobile</th>
+                        </tr>
+                        <tr>
+                            <td id="permitNumber">{{ tableInfo["Permit"] }}</td>
+                            <td id="permitExpiry">{{ tableInfo["Expiry"] }}</td>
+                            <td id="sharing">{{ tableInfo["Sharing"] }}</td>
+                            <td id="mobile">{{ tableInfo["Mobile"] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="col-12 col-lg-4">
-                <form action ="" method="post" onsubmit="">
-                        {{ form.hidden_tag() }}
-                    <p>
-                        {{ form.cell.label }}<br>
-                        {{ form.cell(size = 1)  }}
-                    </p>
-                    <p>
-                        {{ form.data.label }}<br>
-                        {{ form.data(size = 12)  }}
-                    </p>
-                    <p>
-                        {{ form.submit() }}
-                    </p>
-                </form>
+            <div class="col-12 col-md-2 text-center">
+                <button class="btn btn-primary btn-block" id="edit">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                </button>
+                <button class="btn btn-warning btn-block" id="submit">
+                    <i class="far fa-save"></i>
+                    Submit
+                </button>
             </div>
         </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
@@ -193,7 +184,10 @@ table.recentShotsTable{
                 </div>
             </div>
             <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
-                Season Stats
+              <div id='heatMap' style="height: 1200px; width: 1200px">
+                <canvas class='canvas' width="1200" height="1200" style="position:absolute; left: 0; top: 0; border:1px solid black"></canvas>
+                <canvas class='canvas' id="title" style="border: 1px solid black"></canvas>
+              </div>
             </div>
         </div>
     </div>

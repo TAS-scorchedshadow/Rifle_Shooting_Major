@@ -16,32 +16,41 @@
     <div class="col-lg-5 col-md-12 justify-content-center">
         <table id="editableTable">
             <thead>
-            <tr>
-                <th>Code</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-            </tr>
+                <tr>
+                    <th scope="col">SID</th>
+                    <th scope="col">DOB</th>
+                    <th scope="col">Rifle Serial</th>
+                    <th scope="col">Student ID</th>
+                    <th scope="col">Grade</th>
+                    <th scope="col">Email</th>
+                </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td id="code1">001</td>
-                <td id="name1">Pedro Augusto</td>
-                <td id="email1">pedro.augusto@myemail.com</td>
-                <td id="number1">(21) 9999-8888</td> </tr>
-            <tr>
-                <td id="code2">002</td>
-                <td id="name2">Paula Silva</td>
-                <td id="email2">paula.silva@mymail.com</td>
-                <td id="number2">(81) 8787-8686</td>
-            </tr>
-            <tr>
-                <td id="code3">003</td>
-                <td id="name3">Lucas Costa</td>
-                <td id="email3">lucas.costa@myemail.com</td>
-                <td id="number3">(84) 3232-3232</td>
-            </tr>
-            </tbody>
+                <tbody>
+                    <tr>
+                        <td id="shooterID">{{ tableInfo["SID"] }}</td>
+                        <td id="dob">{{ tableInfo["DOB"] }}</td>
+                        <td id="rifleSerial">{{ tableInfo["Rifle Serial"] }}</td>
+                        <td id="schoolID">{{ tableInfo["StudentID"] }}</td>
+                        <td id="schoolYr">{{ tableInfo["Grade"] }}</td>
+                        <td id="email">{{ tableInfo["Email"] }}</td>
+                    </tr>
+                </tbody>
+                <thead>
+                    <tr>
+                        <th scope="col">Permit</th>
+                        <th scope="col">Expiry</th>
+                        <th scope="col">Sharing</th>
+                        <th scope="col">Mobile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="permitNumber">{{ tableInfo["Permit"] }}</td>
+                        <td id="permitExpiry">{{ tableInfo["Expiry"] }}</td>
+                        <td id="sharing">{{ tableInfo["Sharing"] }}</td>
+                        <td id="mobile">{{ tableInfo["Mobile"] }}</td>
+                    </tr>
+                </tbody>
         </table>
         <button id="edit" type="button">
             Edit

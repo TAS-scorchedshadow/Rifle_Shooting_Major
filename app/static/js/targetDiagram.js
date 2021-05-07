@@ -234,7 +234,6 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.c.closePath();
         }
 
-
         //Draw all the individual shots
         let shotsLength = shots.length;
         let shot_x = 0;
