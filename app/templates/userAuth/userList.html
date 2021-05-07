@@ -8,6 +8,7 @@
         }
     </style>
     <script type="text/javascript" src="../static/js/userList.js"></script>
+    <div id="testing" data-test="{{ newUsers }}"></div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -128,6 +129,46 @@
                             </table>
                         <!--TODO add submit style-->
                         </div>
+                        {% if missingUsers and newUsers %}
+                            <script type="text/javascript">
+                                    $(window).on('load', function() {
+                                        $('#rollManagement').modal('show');
+                                    });
+                            </script>
+                             <div class="modal fade" id="rollManagement" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Manage Users</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                             </button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <h5>New Users</h5>
+                                            {% for user in newUsers %}
+                                                <div>{{ user.fName }} {{ user.sName }}</div>
+                                                 <a type="button" id="create{{ user.schoolID }}" class="btn btn-primary"
+                                                   href="javascript:createAccount('#create{{ user.schoolID }}','{{ user }}')">
+                                                    Make Admin
+                                                </a>
+                                            {% endfor %}
+                                            <hr>
+                                            <h5>Users not found in roll</h5>
+                                            {% for user in missingUsers %}
+                                                <div class="row justify-content-around">
+                                                    <div>{{ user.fName }} {{ user.sName }}</div>
+                                                    <div>Test</div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

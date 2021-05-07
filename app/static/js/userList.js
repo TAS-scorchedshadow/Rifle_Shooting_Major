@@ -39,3 +39,21 @@ function setAdmin(sourceElement,user){
     })
 
 }
+
+function createAccount(sourceElement,user_obj){
+    var djangoData = $('#testing').data();
+    console.log(djangoData[0])
+     $(sourceElement).html(`<div class="spinner-border spinner-border-sm text-primary ml-2"
+                                 id="spinner" role="status">
+                            </div>`)
+    console.log(user_obj)
+     $.ajax({
+        data: JSON.stringify(djangoData),
+        type: 'POST',
+        url: '/createAccount',
+        dataType: "JSON",
+        success: (function (data) {
+            console.log("hello")
+        })
+    })
+}

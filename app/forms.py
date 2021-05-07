@@ -24,7 +24,7 @@ class uploadForm(FlaskForm):
     identifier = HiddenField("Upload/Verify", default="upload")
     stageDump = HiddenField("Data")
     success = HiddenField("Success")
-    weeks = SelectField(u'Uploading From', choices=[(1, 'Last Week'), (4, 'Last Month'), (12, 'Last 3 Months'), (56, 'Last Year')])
+    weeks = SelectField(u'Uploading Shot Data From', choices=[(1, 'Last Week'), (4, 'Last Month'), (12, 'Last 3 Months'), (56, 'Last Year')])
     total = HiddenField("Total")
 
 

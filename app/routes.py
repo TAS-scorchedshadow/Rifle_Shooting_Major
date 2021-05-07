@@ -659,9 +659,12 @@ def userList():
     """
     if not current_user.access >= 2:
         return redirect(url_for('index'))
+    users = User.query.order_by(User.access, User.sName).all()
     if request.method == 'POST':
         file = request.files['file']
         read_file = file.read().decode('utf-8')
+        newUsers = []
+        roll = []
         for line in read_file.splitlines():
             if not line == "<end>":
                 student = line.split('\t')
@@ -678,20 +681,19 @@ def userList():
                 sName = " ".join(sNames).title()
                 print(f"#{fName}# #{sName}#")
                 user = User.query.filter_by(fName=fName, sName=sName).first()
-
                 if user:
-                    user.schoolID = student[0]
-                    user.schoolYr = student[2][:-2]
-                    if not user.email:
-                        user.email = student[0] + "@student.sbhs.nsw.edu.au"
+                    roll.append(user)
                 else:
-                    user = User(fName=fName, sName=sName, school="SBHS", schoolID=student[0], schoolYr=student[2][:-2],
-                                email=(student[0] + "@student.sbhs.nsw.edu.au"))
-                    user.generate_username()
-                    user.set_password('password')
-                    db.session.add(user)
-        db.session.commit()
-    users = User.query.order_by(User.access, User.sName).all()
+                    # Create User object from SBHS data
+                    newUser = User(fName=fName,sName=sName,schoolID=student[0],schoolYr=student[2][:-2],
+                                   email=student[0] + "@student.sbhs.nsw.edu.au")
+                    newUser.generate_username()
+                    newUser.set_password("password")
+                    newUsers.append(newUser)
+        missingUsers = [user for user in users if user not in roll]
+        print(f"New Users {newUsers}")
+        print(f"Missing Users {missingUsers}")
+        return render_template('userAuth/userList.html',users=users, newUsers=newUsers,missingUsers=missingUsers)
     return render_template('userAuth/userList.html', users=users)
 
 
@@ -748,6 +750,22 @@ def admin():
             user.access = 0
         db.session.commit()
         return jsonify({'access_lvl': state})
+
+
+# TODO merge both functions
+@app.route('/createAccount', methods=['POST'])
+def createAccount():
+    """
+    TO BE FILLED
+
+    :return: TO BE FILLED
+    """
+    data = request.get_data()
+    loadedData = json.loads(data)
+    user = loadedData['test']
+    print(user)
+    print(user.sName)
+
 
 
 @app.route('/getGear', methods=['POST'])
