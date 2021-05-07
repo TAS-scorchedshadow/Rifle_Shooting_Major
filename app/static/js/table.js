@@ -25,10 +25,6 @@ $(document).ready(function () {
         })
 
 
-    $("td").children().first().blur(function(){
-        $("td").parent().text(OriginalContent);
-        $("td").parent().removeClass("cellEditing");
-    });
     });
 
     let infoDict = {
@@ -56,7 +52,8 @@ $(document).ready(function () {
                 $(this).html(value);
             })
         })
-        let userID =$('#user-data').data('userid')
+        let userID =$('#my-data').data('userid')
+        console.log(userID)
         submitTable(userID, infoDict)
     })
 

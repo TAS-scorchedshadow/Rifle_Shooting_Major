@@ -938,28 +938,24 @@ def submitTable():
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
     userID = data[0]
-    #print(data)
+    print(userID)
     tableDict = data[1]
-    # user = User.query.filter_by(id=userID).first()
-    #
-    # tableInfo = {}
-    # tableInfo["SID"] = user.shooterID
-    # #tableInfo["DOB"] = user.dob
-    # tableInfo["Rifle Serial"] = user.rifleSerial
-    # tableInfo["StudentID"] = user.schoolID
-    # tableInfo["Grade"] = user.schoolYr
-    # tableInfo["Email"] = user.email
-    # tableInfo["Permit"] = user.permitNumber
-    # tableInfo["Expiry"] = user.permitExpiry
-    # tableInfo["Sharing"] = user.sharing
-    # tableInfo["Mobile"] = user.mobile
-    #
-    # for cell in tableDict:
-    #     if cell != "dob" or cell != "expiry":
-    #         setattr(user, cell, tableDict[cell])
-    # db.session.commit()
+    print(tableDict)
+    user = User.query.filter_by(id=userID).first()
+    tableInfo = {}
+    tableInfo["SID"] = user.shooterID
+    #tableInfo["DOB"] = user.dob
+    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["StudentID"] = user.schoolID
+    tableInfo["Grade"] = user.schoolYr
+    tableInfo["Email"] = user.email
+    tableInfo["Permit"] = user.permitNumber
+    tableInfo["Expiry"] = user.permitExpiry
+    tableInfo["Sharing"] = user.sharing
+    tableInfo["Mobile"] = user.mobile
+    db.session.commit()
 
-    return render_template('table.html', userID=userID)
+    return jsonify({'success': 'success'})
 
 
 @app.route('/sendWeeklyReport',methods=['POST'])
