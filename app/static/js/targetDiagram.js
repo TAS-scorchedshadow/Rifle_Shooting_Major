@@ -300,7 +300,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
     this.canvasObj.onmousemove = function (e) {
         handleMouseMove(e, shots, ThisTarget);
     };
-    //Draw tooltip every time the mouse hovers over a shot
+    //Move the tooltip to the mouse when it hovers over a shot
     //used some code from https://stackoverflow.com/questions/17064913/display-tooltip-in-canvas-graph
     function handleMouseMove(e, shots, ThisTarget){
         //mousePageX and mousePageY are the positions of the mouse relative to the page (i.e (0,0) is the top left of the page)
@@ -316,7 +316,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             let dy = mouseY + shots[i][2]*ThisTarget.ratio;
             //check if the mouse is within a certain distance of the shot position using the circle formula (x^2 + y^2 < r^2)
             if (dx*dx + dy*dy < ThisTarget.shotRadius*ThisTarget.shotRadius) {
-                //draw the tooltip near the mouse
+                //Move the tooltip to near the mouse
                 tipCanvas.style.left = (mousePageX + 25) + "px";
                 tipCanvas.style.top = (mousePageY - 25) + "px";
                 //fill the text in the tooltip
