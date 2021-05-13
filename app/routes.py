@@ -516,33 +516,6 @@ def upload():
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
 
 
-def uploadVerify(methods=['POST']):
-    form = uploadForm()
-    invalidList = []
-    # Verifying Upload
-    stageList = json.loads(request.form["stageDump"])
-    invalidListID = []
-    userList = [user for user in User.query.all()]
-    userDict = {}
-    for user in userList:
-        userDict[user.username] = user.id
-    for key in request.form:
-        if "username." in key:
-            username = request.form[key]
-            stageList[int(key[9:])]['username'] = username
-            if username not in userDict:
-                invalidList.append(stageList[int(key[9:])])
-                invalidListID.append(int(key[9:]))
-    stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
-    print('started')
-    print(invalidListID)
-    return stageList, invalidListID
-
-
-def uploadDatabase(methods=['POST']):
-    print("a")
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """

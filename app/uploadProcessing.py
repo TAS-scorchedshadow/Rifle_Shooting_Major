@@ -111,8 +111,8 @@ def getScore(shot):
     """
     # Note that for a HIT, shot[score] is 1, but shot[value] is HIT.
     score = {'score': 0, 'Vscore': 0}  # Vscore = 0 if none was given
-    if shot['value'] == "V":                # JSON includes array if shot included a Vscore
-        score['score'] = shot['score'][0]
+    if shot['value'] == "V" or shot['value'] == "X":                # JSON includes array if shot included a Vscore
+        score['score'] = 5                                          # todo: Need better handling for X
         score['Vscore'] = shot['score'][1]
     else:
         score['score'] = shot['score']

@@ -109,7 +109,7 @@
                                         <td>{{ invalidShoot['distance'] }}</td>
                                         <td>{{ invalidShoot['time'] }}</td>
                                         <td>
-                                            <input type="text" class="user-searchbar" name="{{ invalidShoot['listID'] }}" value={{ invalidShoot['username'] }}>
+                                            <input type="text" class="user-searchbar" name="username.{{ invalidShoot['listID'] }}" value={{ invalidShoot['username'] }}>
                                         </td>
                                         <td>
                                             {% for shot in invalidShoot['shotList'] %}
@@ -121,8 +121,7 @@
                                 </tbody>
                             </table>
                         <!--TODO add proper submit style-->
-                            <!-- {{ form.submit(class_="form-control") }} -->
-                            <button id="submit">Test</button>
+                            {{ form.submit(class_="form-control") }}
                             {{ form.identifier(value="verify") }}
                             {{ form.stageDump(value=stageDump) }}
                         </div>

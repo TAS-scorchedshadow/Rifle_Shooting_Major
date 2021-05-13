@@ -1,22 +1,19 @@
 // Ryan T
-$(document).ready(function() {
-    // When submit button is pressed run fetchData
-    $(#submit).click(function() {
-        let usernameDict = {};
-        $(".user-searchbar").each(function() {
-            let name = $(this).attr("name")
-            let value = $(this).attr("value")
-            usernameDict[name] = value;
-        console.log(usernameDict)
-        })
-        // fetchData()
-    })
-    function fetchData() {
-        $.ajax({
-            type: 'POST',
-            url: '/uploadVerify'
-        })
-    }
+// $(document).ready(function() {
+//     // When submit button is pressed run fetchData
+//     $(#submit).click(function() {
+//         let usernameDict = {};
+//         $(".user-searchbar").each(function() {
+//             let name = $(this).attr("name")
+//             let value = $(this).attr("value")
+//             usernameDict[name] = value;
+//         console.log(usernameDict)
+//         })
+//         // fetchData()
+//     })
+        //
+
+    // Redundant code...
     // Data needs to be returned in a variable stageList, as well as invalidListID,
     // which then needs to be broken down into parts
 
@@ -24,4 +21,4 @@ $(document).ready(function() {
     // Each pass increments a loading bar, as well as adds to a 'success' or 'failure' count, as well as 'total' count
 
     // After completion, depending on number of success or failure, switch to correct page
-})
+// })
