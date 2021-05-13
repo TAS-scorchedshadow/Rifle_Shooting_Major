@@ -458,6 +458,7 @@ def upload():
     else:
         # Verifying Upload
         stageList = json.loads(request.form["stageDump"])
+        stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
         invalidListID = []
         userList = [user for user in User.query.all()]
         userDict = {}
@@ -471,7 +472,6 @@ def upload():
                     invalidList.append(stageList[int(key[9:])])
                     invalidListID.append(int(key[9:]))
                     count["failure"] += 1
-        stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
         print('started')
         print(invalidListID)
         for item in stageList:
