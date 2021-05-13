@@ -451,7 +451,8 @@ def upload():
             if count["failure"] > 0 or count["total"] == 0:
                 alert[0] = "Warning"
                 alert[1] = count["failure"]
-                if count["failure"] == count["total"]:
+                # todo: if ALL files failed doesn't work in current state
+                if count["total"] == 0:
                     # If ALL files failed, return to upload page
                     template = 'upload/upload.html'
                     alert[0] = "Failure"
