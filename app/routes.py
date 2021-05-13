@@ -20,7 +20,7 @@ from app.decompress import read_archive
 from app.stagesCalc import stage_by_n, stage_by_date
 import numpy
 import json
-
+from app.stagesCalc import conversion
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -175,7 +175,6 @@ def target():
     if stage:
         user = User.query.filter_by(id=stage.userID).first()
         data = plotsheet_calc(stage, user)
-        print(user.settings_300m)
         if current_user.access > 1:
             return render_template('plotSheet.html', data=data, user=user, stage=stage)
         else:
@@ -288,28 +287,15 @@ def profile():
     #     scores.append(info[j])
     # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
     return render_template('students/profile.html', form=form, user=user, tableInfo=tableInfo)
-
-
 # by Henry Guo
 @app.route('/getAvgShotGraphData', methods=['POST'])
 def getAvgShotData():
     userID = request.get_data().decode("utf-8")
     stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-    times = []
-    scores = []
-    for j in stages_query:
-        shots_query = Shot.query.filter_by(stageID=j.id).all()
-        total = 0
-        score = 0
-        for k in range(len(shots_query)):
-            total += 1
-            score += shots_query[k].score
-        timestamp_query = j.timestamp
-        strTime = (utc_to_nsw(timestamp_query).strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
-        times.append(strTime)
-        scores.append(round((score / total), 1))
-    graphData = jsonify({'scores': scores,
-                         'times': times,
+    timestamps, avgScores, total, stDev, scores = conversion(stages_query)
+    graphData = jsonify({'scores': avgScores,
+                         'times': timestamps,
+                         'sd': stDev,
                          })
     return graphData
 
@@ -398,7 +384,7 @@ def table():
     tableInfo = {}
     tableInfo["SID"] = user.shooterID
     tableInfo["DOB"] = user.dob
-    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["Rifle Serial"] = user.rifle_serial
     tableInfo["StudentID"] = user.schoolID
     tableInfo["Grade"] = user.schoolYr
     tableInfo["Email"] = user.email
@@ -866,7 +852,7 @@ def testHeatmap():
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()
         for shot in shots:
-            data.append({'x': 2 * shot.xPos + 600, 'y': 600 - 2 * shot.yPos, 'value': 1})
+            data.append({'x': 2*shot.xPos + 600, 'y': 600 - 2*shot.yPos, 'value': 1})
             shotList.append(['1', shot.xPos, shot.yPos, shot.score])
     data = json.dumps(data)
     shotList = json.dumps(shotList)
@@ -889,7 +875,8 @@ def getAllShotsSeason():
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()
         for shot in shots:
-            data['heatmap'].append({'x': round(2 * shot.xPos + 600), 'y': round(600 - 2 * shot.yPos), 'value': 1})
+            #TODO change the value 300 depending on the shoot distance
+            data['heatmap'].append({'x': round(shot.xPos + 300), 'y': round(300 - shot.yPos), 'value': 1})
             data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
     dataDump = json.dumps(data)
     data = jsonify(data)
@@ -935,7 +922,7 @@ def submitTable():
     user = User.query.filter_by(id=userID).first()
     tableInfo = {}
     tableInfo["SID"] = user.shooterID
-    # tableInfo["DOB"] = user.dob
+    #tableInfo["DOB"] = user.dob
     tableInfo["Rifle Serial"] = user.rifle_serial
     tableInfo["StudentID"] = user.schoolID
     tableInfo["Grade"] = user.schoolYr

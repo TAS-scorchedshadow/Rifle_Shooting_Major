@@ -15,12 +15,24 @@ $(document).ready(function() {
                     data: {
                         labels: data['times'],
                         datasets: [{
-                            label: 'Averages',
-                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                            label: 'Average',
+                            yAxisID: 'Score',
+                            backgroundColor: 'rgba(255, 0, 0, 0.1)',
                             borderColor: 'rgba(255,0,0,1)',
                             borderWidth: 1,
                             fill: true,
                             data: data['scores'],
+                            pointRadius: 5,
+                            pointHitRadius: 20,
+                        },
+                        {
+                            label: 'Standard Deviation',
+                            yAxisID: 'Standard Deviation',
+                            backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                            borderColor: 'rgba(0,0,255,1)',
+                            borderWidth: 1,
+                            fill: true,
+                            data: data['sd'],
                             pointRadius: 5,
                             pointHitRadius: 20,
                         }],
@@ -35,11 +47,17 @@ $(document).ready(function() {
                         },
                         scales: {
                             yAxes: [{
-                                min: 0,
+                                id: 'Score',
+                                type: 'linear',
+                                position: 'left',
                                 ticks: {
-                                    min: 0,
-                                    beginAtZero:true
+                                  max: 50,
+                                  min: 0
                                 }
+                            }, {
+                                id: 'Standard Deviation',
+                                type: 'linear',
+                                position: 'right',
                             }]
                         }
                     }
