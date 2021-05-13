@@ -19,7 +19,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
 <script type="text/javascript" src="../static/js/autofill.js" defer></script>
 
-<meta id="my-data" data-userid="{{ user.id }}">
+<meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submitTable">
 
 <!--Scripts for season stats page-->
 <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
@@ -53,7 +53,7 @@ table.recentShotsTable{
                 </div>
             </div>
             <div class="col-12 col-md-8" style="height: 15rem">
-                <table id="editableTable" class="table table-responsive">
+                <table class="table table-responsive editableTable">
                     <tbody>
                         <tr>
                             <th scope="col">SID</th>

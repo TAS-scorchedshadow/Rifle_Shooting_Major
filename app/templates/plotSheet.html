@@ -7,6 +7,8 @@
     <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
     <script src="../static/css-element-queries/src/ElementQueries.js"></script>
     <script src="../static/js/noteSubmit.js"></script>
+    <script src="../static/js/table.js"></script>
+    <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submitGear">
     <style>
         /*
         @media (min-width: 1200px){
@@ -204,96 +206,86 @@
                 </div>
                 <br>
                 <div class="card shadow border-0">
-                    <!--
-                   <table class="table">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="row"></th>
-                                <th scope="col"></th>
-                                <th scope="row"></th>
-                                <th scope="col"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">Shooter Name</th>
-                                <td>Dylan Huynh </td>
-                                <th>Coach</th>
-                                <td>Jeff</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Date and Time</th>
-                                <td>23/12/2020 10:45am</td>
-                                <th>Rifle Serial</th>
-                                <td>SDV-248</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Location</th>
-                                <td>Malabar</td>
-                                <th>...</th>
-                                <td>...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    -->
                      <div class="card-header bg-dark">
                          <div>Gear Settings</div>
                      </div>
-                    <!--
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-2" id="settings-button">
-                                <button type="button" class="btn btn-primary btn-lg btn-block">
-                                    <i class="fas fa-pencil-alt"></i>
-                                    <h5>Edit</h5>
-                                </button>
-                            </div>
-                            <div class="col-10">
-                                 <table class="table" id="stage-table" style="overflow-x: scroll">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="row">Elevation</th>
-                                            <th scope="row">Foresight Ring</th>
-                                            <th scope="row">Sight Hole</th>
-                                            <th scope="row">Sling</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td scope="row"><b>100</b></td>
-                                            <td>10</td>
-                                            <td>4</td>
-                                            <td>7</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
                         <div>
-                            <table class="table">
-                                    <thead class="thead-dark">
-                                        <tr>
-                                            <th scope="row">Elevation</th>
-                                            <th scope="row">Foresight Ring</th>
-                                            <th scope="row">Sight Hole</th>
-                                            <th scope="row">Sling</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="distance-settings">
-                                        <tr>
-                                            <th scope="row">100</th>
-                                            <td>10</td>
-                                            <td>4</td>
-                                            <td>7</td>
-                                        </tr>
-                                    </tbody>
+                            <table class="table table-bordered editableTable">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Sling Point</th>
+                                        <th>Butt Length</th>
+                                        <th>Butt Height</th>
+                                        <th>Sight Hole</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>100</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                        <td>10</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
-                    </div>
-                    -->
-                    <br>
-                    <h2 class="text-secondary"><i class="fas fa-cogs"></i>  Coming Soon</h2>
-                    <br>
+                        <div class="row" style="height: 7rem">
+                                <div class="col-2" id="settings-button">
+                                    <button type="button" class="btn btn-primary btn-lg btn-block" id="edit">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        <h5>Edit</h5>
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-lg btn-block" id="submit">
+                                        <i class="fas fa-save"></i>
+                                        <h5>Save</h5>
+                                    </button>
+                                </div>
+                                <div class="col-10" style="height: inherit; overflow-y: scroll;">
+                                     <table class="table table-bordered editableTable" id="stage-table">
+                                        <thead class="thead-dark" style="position: sticky; top: 0;">
+                                            <tr>
+                                                <th>Distance</th>
+                                                <th>Elevation</th>
+                                                <th>Ring Size</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>300m</th>
+                                                <td>{{ user.settings_300m["elevation"] }}</td>
+                                                <td>{{ user.settings_300m["ringSize"] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>400m</th>
+                                                <td>{{ user.settings_400m["elevation"] }}</td>
+                                                <td>{{ user.settings_400m["ringSize"] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>500m</th>
+                                                <td>{{ user.settings_500m["elevation"] }}</td>
+                                                <td>{{ user.settings_500m["ringSize"] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>600m</th>
+                                                <td>{{ user.settings_600m["elevation"] }}</td>
+                                                <td>{{ user.settings_600m["ringSize"] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>700m</th>
+                                                <td>{{ user.settings_700m["elevation"] }}</td>
+                                                <td>{{ user.settings_700m["ringSize"] }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>800m</th>
+                                                <td>{{ user.settings_800m["elevation"] }}</td>
+                                                <td>{{ user.settings_800m["ringSize"] }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                 </div>
         </div>
     </div>

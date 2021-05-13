@@ -13,11 +13,10 @@ $(document).ready(function () {
 
         var OriginalContent = $(this).text();
 
-        $('#editableTable tr').each(function (){
+        $('.editableTable tr').each(function (){
             $('td', this).each(function (){
                 let value = $(this).text()
                 let width = $(this).width();
-                console.log(width)
                 $(this).addClass("cellEditing");
                 $(this).html("<input style=width:" + width+ "px type='text' value='" + value + "' />");
                 $(this).children().focus();
@@ -28,16 +27,7 @@ $(document).ready(function () {
     });
 
     let infoDict = {
-        "shooterID": '',
-        "dob": '',
-        "rifleSerial": '',
-        "schoolID": '',
-        "schoolYr": '',
-        "email": '',
-        "permitNumber": '',
-        "permitExpiry": '',
-        "sharing": '',
-        "mobile": '',
+        "empty": ''
     }
 
     $('#submit').click(function () {
@@ -45,7 +35,7 @@ $(document).ready(function () {
         hideEdit.style.display = "block"
         hideSubmit.style.display = "none"
 
-        $('#editableTable tr').each(function () {
+        $('.editableTable tr').each(function () {
             $('td', this).each(function () {
                 let value = $(this).find(":input").val()
                 infoDict[$(this).attr("id")] = value
@@ -53,14 +43,14 @@ $(document).ready(function () {
             })
         })
         let userID =$('#my-data').data('userid')
-        console.log(userID)
-        submitTable(userID, infoDict)
+        let endroute =$('#my-data').data('endroute')
+        submitTable(userID, infoDict, endroute)
     })
 
-    function submitTable(userID, infoDict) {
+    function submitTable(userID, infoDict, url) {
         $.ajax({
                 type: 'POST',
-                url: "/submitTable",
+                url: url,
                 data: JSON.stringify([userID, infoDict]),
                 success:(function () {
                     console.log('success')

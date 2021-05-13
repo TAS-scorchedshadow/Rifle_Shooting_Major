@@ -175,6 +175,7 @@ def target():
     if stage:
         user = User.query.filter_by(id=stage.userID).first()
         data = plotsheet_calc(stage, user)
+        print(user.settings_300m)
         if current_user.access > 1:
             return render_template('plotSheet.html', data=data, user=user, stage=stage)
         else:
@@ -242,7 +243,7 @@ def profile():
     tableInfo = {}
     tableInfo["SID"] = user.shooterID
     tableInfo["DOB"] = user.dob
-    tableInfo["Rifle Serial"] = user.rifleSerial
+    tableInfo["Rifle Serial"] = user.rifle_serial
     tableInfo["StudentID"] = user.schoolID
     tableInfo["Grade"] = user.schoolYr
     tableInfo["Email"] = user.email
@@ -286,7 +287,6 @@ def profile():
     #         times.append(utc_to_nsw(timestamp_query[m].timestamp))
     #     scores.append(info[j])
     # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
-
     return render_template('students/profile.html', form=form, user=user, tableInfo=tableInfo)
 
 
@@ -406,7 +406,7 @@ def table():
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
-    return render_template('table.html', userID= userID, tableInfo=tableInfo)
+    return render_template('table.html', userID=userID, tableInfo=tableInfo)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -451,8 +451,7 @@ def upload():
             if count["failure"] > 0 or count["total"] == 0:
                 alert[0] = "Warning"
                 alert[1] = count["failure"]
-                # todo: if ALL files failed doesn't work in current state
-                if count["total"] == 0:
+                if count["failure"] == count["total"]:
                     # If ALL files failed, return to upload page
                     template = 'upload/upload.html'
                     alert[0] = "Failure"
@@ -670,7 +669,7 @@ def userList():
                     roll.append(user)
                 else:
                     # Create User object from SBHS data
-                    newUser = User(fName=fName,sName=sName,schoolID=student[0],schoolYr=student[2][:-2],
+                    newUser = User(fName=fName, sName=sName, schoolID=student[0], schoolYr=student[2][:-2],
                                    email=student[0] + "@student.sbhs.nsw.edu.au")
                     newUser.generate_username()
                     newUser.set_password("password")
@@ -678,7 +677,7 @@ def userList():
         missingUsers = [user for user in users if user not in roll]
         print(f"New Users {newUsers}")
         print(f"Missing Users {missingUsers}")
-        return render_template('userAuth/userList.html',users=users, newUsers=newUsers,missingUsers=missingUsers)
+        return render_template('userAuth/userList.html', users=users, newUsers=newUsers, missingUsers=missingUsers)
     return render_template('userAuth/userList.html', users=users)
 
 
@@ -750,7 +749,6 @@ def createAccount():
     user = loadedData['test']
     print(user)
     print(user.sName)
-
 
 
 @app.route('/getGear', methods=['POST'])
@@ -868,7 +866,7 @@ def testHeatmap():
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()
         for shot in shots:
-            data.append({'x': 2*shot.xPos + 600, 'y': 600 - 2*shot.yPos, 'value': 1})
+            data.append({'x': 2 * shot.xPos + 600, 'y': 600 - 2 * shot.yPos, 'value': 1})
             shotList.append(['1', shot.xPos, shot.yPos, shot.score])
     data = json.dumps(data)
     shotList = json.dumps(shotList)
@@ -891,7 +889,7 @@ def getAllShotsSeason():
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()
         for shot in shots:
-            data['heatmap'].append({'x': round(2*shot.xPos + 600), 'y': round(600 - 2*shot.yPos), 'value': 1})
+            data['heatmap'].append({'x': round(2 * shot.xPos + 600), 'y': round(600 - 2 * shot.yPos), 'value': 1})
             data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
     dataDump = json.dumps(data)
     data = jsonify(data)
@@ -937,8 +935,8 @@ def submitTable():
     user = User.query.filter_by(id=userID).first()
     tableInfo = {}
     tableInfo["SID"] = user.shooterID
-    #tableInfo["DOB"] = user.dob
-    tableInfo["Rifle Serial"] = user.rifleSerial
+    # tableInfo["DOB"] = user.dob
+    tableInfo["Rifle Serial"] = user.rifle_serial
     tableInfo["StudentID"] = user.schoolID
     tableInfo["Grade"] = user.schoolYr
     tableInfo["Email"] = user.email
@@ -951,7 +949,7 @@ def submitTable():
     return jsonify({'success': 'success'})
 
 
-@app.route('/sendWeeklyReport',methods=['POST'])
+@app.route('/sendWeeklyReport', methods=['POST'])
 def sendWeeklyReport(banned_IDs):
     send_report_email(banned_userIDs=banned_IDs)
     return
