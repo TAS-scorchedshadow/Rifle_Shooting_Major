@@ -21,6 +21,7 @@ def validateShots(data):
             individualShot['score'] = score['score']
             individualShot['Vscore'] = score['Vscore']
             sighter = checkSighter(individualShot)
+
             individualShot['sighter'] = sighter
             validShotList.append(individualShot)
             totalShots += 1
@@ -132,6 +133,11 @@ def checkSighter(shot):
 
 
 def getGroupSize(shots):
+    """
+    :param shots: TO BE FILLED
+    :return groupX: x-coordinate of group
+    :return groupY: y-coordinate of group
+    """
     totalX = 0
     totalY = 0
     sighterNum = 0

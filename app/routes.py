@@ -299,7 +299,7 @@ def getAvgShotData():
                          })
     return graphData
 
-
+#Rishi
 @app.route('/overview')
 def profile_overview():
     # stub for shooter ID passed to the overview
@@ -331,7 +331,7 @@ def profile_overview():
     times = json.dumps(times)
     return render_template('students/profile_overview.html', dates=times, scores=scores)
 
-
+#Rishi
 @app.route('/settings')
 def profile_settings():
     stubID = 31
@@ -940,3 +940,4 @@ def submitTable():
 def sendWeeklyReport(banned_IDs):
     send_report_email(banned_userIDs=banned_IDs)
     return
+

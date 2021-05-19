@@ -28,8 +28,8 @@ def stage_by_n(userID, amount):
     :param amount: The N number of stages which is wished to be seen by the user
     :return:
     """
-    query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).limit(amount).all()
-    return conversion(query)
+    stages = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).limit(amount).all()
+    return conversion(stages)
 
 
 def conversion(stages_array):
@@ -65,7 +65,7 @@ def conversion(stages_array):
                 trueTotal += objects.score
                 shots += 1
                 tempStdev.append(objects.score)
-                if objects.score == 5:
+                if objects.vScore == 1:
                     tempScore.append("V")
                 else:
                     tempScore.append(objects.score)
@@ -74,8 +74,8 @@ def conversion(stages_array):
 
         if shots != 0 and totalPotential != 0:
             total.append((((trueTotal/totalPotential)*100)/100)*50)
-            avgScores.append(float(trueTotal / shots))
-            stDev.append(statistics.pstdev(tempStdev))
+            avgScores.append(round((float(trueTotal / shots)*10)))
+            stDev.append(round((statistics.pstdev(tempStdev)),1))
 
     return timestamps, avgScores, total, stDev, scores
 
