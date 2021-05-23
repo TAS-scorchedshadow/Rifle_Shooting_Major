@@ -230,14 +230,6 @@ def profile():
         except KeyError:
             userID = current_user.id
         user = User.query.filter_by(id=userID).first()
-    # By Rishi Wig
-    form = profileSelect()
-    if form.is_submitted():
-        change = str(form.cell.data)
-        newValue = form.data.data
-        # user.(change) = newValue
-        setattr(user, change, newValue)
-        db.session.commit()
 
     tableInfo = {}
     tableInfo["SID"] = user.shooterID
@@ -250,6 +242,16 @@ def profile():
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
+
+    # By Rishi Wig
+    # form = profileSelect()
+    # if form.is_submitted():
+    #     change = str(form.cell.data)
+    #     newValue = form.data.data
+    #     # user.(change) = newValue
+    #     setattr(user, change, newValue)
+    #     db.session.commit()
+    #
 
     # z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
     # p = numpy.poly1d(z)
@@ -286,7 +288,7 @@ def profile():
     #         times.append(utc_to_nsw(timestamp_query[m].timestamp))
     #     scores.append(info[j])
     # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
-    return render_template('students/profile.html', form=form, user=user, tableInfo=tableInfo)
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo)
 # by Henry Guo
 @app.route('/getAvgShotGraphData', methods=['POST'])
 def getAvgShotData():
@@ -769,7 +771,6 @@ def setGear():
         return jsonify('success')
     return jsonify({'error': 'userID'})
 
-
 @app.route('/getUsers', methods=['POST'])
 def getUsers():
     users = User.query.all()
@@ -920,18 +921,14 @@ def submitTable():
     tableDict = data[1]
     print(tableDict)
     user = User.query.filter_by(id=userID).first()
-    tableInfo = {}
-    tableInfo["SID"] = user.shooterID
-    #tableInfo["DOB"] = user.dob
-    tableInfo["Rifle Serial"] = user.rifle_serial
-    tableInfo["StudentID"] = user.schoolID
-    tableInfo["Grade"] = user.schoolYr
-    tableInfo["Email"] = user.email
-    tableInfo["Permit"] = user.permitNumber
-    tableInfo["Expiry"] = user.permitExpiry
-    tableInfo["Sharing"] = user.sharing
-    tableInfo["Mobile"] = user.mobile
-    db.session.commit()
+    # In this case setattr changes the value of a certain field in the database to the given value.
+    # e.g. user.sightHole = "5"
+    if user:
+        for field in tableDict:
+            value = tableDict[field]
+            if value != "None":
+                setattr(user, field,tableDict[field])
+        db.session.commit()
 
     return jsonify({'success': 'success'})
 

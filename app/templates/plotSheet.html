@@ -8,7 +8,7 @@
     <script src="../static/css-element-queries/src/ElementQueries.js"></script>
     <script src="../static/js/noteSubmit.js"></script>
     <script src="../static/js/table.js"></script>
-    <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submitGear">
+    <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submitTable">
     <style>
         /*
         @media (min-width: 1200px){
@@ -214,18 +214,18 @@
                             <table class="table table-bordered editableTable">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th>Sling Point</th>
                                         <th>Butt Length</th>
                                         <th>Butt Height</th>
                                         <th>Sight Hole</th>
+                                        <th>Sling Point</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>100</td>
-                                        <td>10</td>
-                                        <td>10</td>
-                                        <td>10</td>
+                                        <td id="rifle_buttLength">{{ user.rifle_buttLength }}</td>
+                                        <td id="rifle_buttHeight">{{ user.rifle_buttHeight }}</td>
+                                        <td id="rifle_sightHole">{{ user.rifle_sightHole }}</td>
+                                        <td id="rifle_slingPointLength">{{ user.rifle_slingPointLength }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -253,33 +253,33 @@
                                         <tbody>
                                             <tr>
                                                 <th>300m</th>
-                                                <td>{{ user.settings_300m["elevation"] }}</td>
-                                                <td>{{ user.settings_300m["ringSize"] }}</td>
+                                                <td id="elevation_300m">{{ user.elevation_300m }}</td>
+                                                <td id="ringSize_300m">{{ user.ringSize_300m }}</td>
                                             </tr>
                                             <tr>
                                                 <th>400m</th>
-                                                <td>{{ user.settings_400m["elevation"] }}</td>
-                                                <td>{{ user.settings_400m["ringSize"] }}</td>
+                                                <td id="elevation_400m">{{ user.elevation_400m }}</td>
+                                                <td id="ringSize_400m">{{ user.ringSize_400m }}</td>
                                             </tr>
                                             <tr>
                                                 <th>500m</th>
-                                                <td>{{ user.settings_500m["elevation"] }}</td>
-                                                <td>{{ user.settings_500m["ringSize"] }}</td>
+                                                <td id="elevation_500m">{{ user.elevation_500m }}</td>
+                                                <td id="ringSize_500m">{{ user.ringSize_500m }}</td>
                                             </tr>
                                             <tr>
                                                 <th>600m</th>
-                                                <td>{{ user.settings_600m["elevation"] }}</td>
-                                                <td>{{ user.settings_600m["ringSize"] }}</td>
+                                                <td id="elevation_600m">{{ user.elevation_600m }}</td>
+                                                <td id="ringSize_600m">{{ user.ringSize_600m }}</td>
                                             </tr>
                                             <tr>
                                                 <th>700m</th>
-                                                <td>{{ user.settings_700m["elevation"] }}</td>
-                                                <td>{{ user.settings_700m["ringSize"] }}</td>
+                                                <td id="elevation_700m">{{ user.elevation_700m }}</td>
+                                                <td id="ringSize_700m">{{ user.ringSize_700m }}</td>
                                             </tr>
                                             <tr>
                                                 <th>800m</th>
-                                                <td>{{ user.settings_800m["elevation"] }}</td>
-                                                <td>{{ user.settings_800m["ringSize"] }}</td>
+                                                <td id="elevation_800m">{{ user.elevation_800m }}</td>
+                                                <td id="ringSize_800m">{{ user.ringSize_800m }}</td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -27,13 +27,12 @@ $(document).ready(function () {
     });
 
     let infoDict = {
-        "empty": ''
     }
 
     $('#submit').click(function () {
         console.log("Click submit")
-        hideEdit.style.display = "block"
-        hideSubmit.style.display = "none"
+        $("#spinner").show()
+
 
         $('.editableTable tr').each(function () {
             $('td', this).each(function () {
@@ -53,7 +52,9 @@ $(document).ready(function () {
                 url: url,
                 data: JSON.stringify([userID, infoDict]),
                 success:(function () {
-                    console.log('success')
+                    $("#spinner").hide();
+                    hideEdit.style.display = "block"
+                    hideSubmit.style.display = "none"
                 })
             })
     }

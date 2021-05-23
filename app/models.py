@@ -29,7 +29,7 @@ class User(UserMixin, db.Model):
     permitNumber = db.Column(db.String(20))
     permitType = db.Column(db.String(20))
     sharing = db.Column(db.String(20))
-    dob = db.Column(db.Date)
+    dob = db.Column(db.String(20))
     mobile = db.Column(db.String(20))
     permitExpiry = db.Column(db.Date)
     access = db.Column(db.Integer, default=0)
@@ -40,19 +40,29 @@ class User(UserMixin, db.Model):
 
     # Gear Settings
     rifle_serial = db.Column(db.String(20))
-    rifle_slingPointLength = db.Column(db.String(10))
-    rifle_buttLength = db.Column(db.String(10))
-    rifle_buttHeight = db.Column(db.String(10))
-    rifle_sightHole = db.Column(db.String(10))
+    rifle_slingPointLength = db.Column(db.String(20))
+    rifle_buttLength = db.Column(db.String(20))
+    rifle_buttHeight = db.Column(db.String(20))
+    rifle_sightHole = db.Column(db.String(20))
 
     # New Elevation
-    # Settings ["elevation": value, "ringSize": value]
-    settings_300m = db.Column(db.JSON)
-    settings_400m = db.Column(db.JSON)
-    settings_500m = db.Column(db.JSON)
-    settings_600m = db.Column(db.JSON)
-    settings_700m = db.Column(db.JSON)
-    settings_800m = db.Column(db.JSON)
+    elevation_300m = db.Column(db.String(20))
+    ringSize_300m = db.Column(db.String(20))
+
+    elevation_400m = db.Column(db.String(20))
+    ringSize_400m = db.Column(db.String(20))
+
+    elevation_500m = db.Column(db.String(20))
+    ringSize_500m = db.Column(db.String(20))
+
+    elevation_600m = db.Column(db.String(20))
+    ringSize_600m = db.Column(db.String(20))
+
+    elevation_700m = db.Column(db.String(20))
+    ringSize_700m = db.Column(db.String(20))
+
+    elevation_800m = db.Column(db.String(20))
+    ringSize_800m = db.Column(db.String(20))
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
