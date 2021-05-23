@@ -295,13 +295,16 @@ def getAvgShotData():
     userID = request.get_data().decode("utf-8")
     stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
     timestamps, avgScores, total, stDev, scores = conversion(stages_query)
+    formattedTime = []
+    for date in timestamps:
+        formattedTime.append(utc_to_nsw(date).strftime("%d/%m/%y"))
     graphData = jsonify({'scores': avgScores,
-                         'times': timestamps,
+                         'times': formattedTime,
                          'sd': stDev,
                          })
     return graphData
 
-
+#Rishi
 @app.route('/overview')
 def profile_overview():
     # stub for shooter ID passed to the overview
@@ -333,7 +336,7 @@ def profile_overview():
     times = json.dumps(times)
     return render_template('students/profile_overview.html', dates=times, scores=scores)
 
-
+#Rishi
 @app.route('/settings')
 def profile_settings():
     stubID = 31
@@ -857,7 +860,6 @@ def testHeatmap():
             shotList.append(['1', shot.xPos, shot.yPos, shot.score])
     data = json.dumps(data)
     shotList = json.dumps(shotList)
-    print(data)
     return render_template('testHeatmap.html', data=data, shotList=shotList)
 
 
@@ -881,8 +883,6 @@ def getAllShotsSeason():
             data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
     dataDump = json.dumps(data)
     data = jsonify(data)
-    print(dataDump)
-    print(data)
     return data
 
 
@@ -917,9 +917,7 @@ def submitTable():
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
     userID = data[0]
-    print(userID)
     tableDict = data[1]
-    print(tableDict)
     user = User.query.filter_by(id=userID).first()
     # In this case setattr changes the value of a certain field in the database to the given value.
     # e.g. user.sightHole = "5"
@@ -937,3 +935,4 @@ def submitTable():
 def sendWeeklyReport(banned_IDs):
     send_report_email(banned_userIDs=banned_IDs)
     return
+

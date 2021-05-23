@@ -36,7 +36,7 @@ function GroupDiagram(myStages, otherStages, stage, canvasId) {
         let point = new Circle(this.c, this.x + (otherStages[i]['groupX']*this.ratio), this.y - (otherStages[i]['groupY']*this.ratio), this.circleRadius, 'red', 'black', 0);
         this.points.push(point);
     }
-    this.selectedStage = new Circle(this.c, this.x + (stage[0]*this.ratio), this.y - (stage[1]*this.ratio), this.circleRadius, 'black', 'black', 0 );
+    this.selectedStage = new Circle(this.c, this.x + (stage[0]*this.ratio), this.y - (stage[1]*this.ratio), this.circleRadius, 'blue', 'black', 0 );
     this.points.push(this.selectedStage);
     this.ratio = this.canvasObj.width/target_details[this.dist][5];
     this.draw = function() {
