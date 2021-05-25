@@ -18,16 +18,44 @@
                     </div>
                     <div class="card-body">
                         <div class = row>
+
+                            <!--Deprecated w/ new administration system
                             <div class="col-12 col-lg-6">
                                 <label for="file">Attendance File</label>
                                 <form method='POST' action="" enctype="multipart/form-data">
                                   <p><input type="file" name="file" id="file" style="border: black"><input type="submit" value="Submit"></p>
                                 </form>
                             </div>
-                            <div class="col-12 col-lg-6">
-                                Email Report system
-                                <a class="btn btn-primary" href="#" role="button">Link</a>
-                            </div>
+                            -->
+                            <div class="col-12">
+                                <h3>
+                                    Emailing System
+                                    <span class="spinner-border spinner-border-sm text-primary"
+                                        id="spinner" role="status" style="display: none;">
+                                    </span>
+                                    <span style="display: none" id="tick">
+                                        <i class="fa fa-check ml-2" aria-hidden="true" style="color: lawngreen;"></i>
+                                        <span style="font-size: 16px; color: lawngreen">Changes Saved</span>
+                                    </span>
+                                </h3>
+                                <div id="emailContext">
+                                    <div style="display: none">
+                                        When new stages are uploaded students will <b>not</b> be notified.
+                                    </div>
+                                    <div style="display: none">
+                                        When a stage is uploaded a prompt will appear asking the uploader if they want to send a notification to the student
+                                    </div>
+                                    <div style="display: none">
+                                        When new stages are uploaded students will <b>automatically</b> be sent an email.
+                                    </div>
+                                </div>
+                                <h4>Options</h4>
+                                Send Notification Email to Students
+                                <select class="form-select" aria-label="Default select example" id="select">
+                                  <option value="0">Never</option>
+                                  <option value="1">Prompt Coaches</option>
+                                  <option value="2">Always</option>
+                                </select>
                         </div>
                         <hr>
                         <div class="table-responsive table-striped">
@@ -129,6 +157,7 @@
                             </table>
                         <!--TODO add submit style-->
                         </div>
+                    <!-- Deprecated Feature
                         {% if missingUsers and newUsers %}
                             <script type="text/javascript">
                                     $(window).on('load', function() {
@@ -169,6 +198,7 @@
                                 </div>
                             </div>
                         {% endif %}
+                    -->
                     </div>
                 </div>
             </div>

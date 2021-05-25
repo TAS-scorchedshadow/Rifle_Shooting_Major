@@ -57,3 +57,29 @@ function createAccount(sourceElement,user_obj){
         })
     })
 }
+
+$(document).ready(function () {
+    update_email_context()
+    $( "#select" ).change(function() {
+        update_email_context()
+        $("#spinner").show()
+         $.ajax({
+        data: JSON.stringify($( this ).val()),
+        type: 'POST',
+        url: '/emailSettings',
+        dataType: "JSON",
+        success: (function () {
+            $("#spinner").hide()
+            $("#tick").fadeIn("slow")
+            $("#tick").fadeOut(10000)
+        })
+    })
+    });
+}
+)
+
+function update_email_context(){
+    var fieldVal = $( "#select" ).val();
+    $("#emailContext").children().hide()
+    $("#emailContext").children().eq(fieldVal).fadeIn("slow")
+}
