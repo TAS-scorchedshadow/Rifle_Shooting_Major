@@ -636,7 +636,6 @@ def userList():
     if not current_user.access >= 2:
         return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
-    form = userManagementForm()
     # if request.method == 'POST':
     #     file = request.files['file']
     #     read_file = file.read().decode('utf-8')
@@ -671,7 +670,7 @@ def userList():
     #     print(f"New Users {newUsers}")
     #     print(f"Missing Users {missingUsers}")
     #     return render_template('userAuth/userList.html', users=users, newUsers=newUsers, missingUsers=missingUsers)
-    return render_template('userAuth/userList.html', users=users, form=form)
+    return render_template('userAuth/userList.html', users=users)
 
 
 @app.route('/profileList')

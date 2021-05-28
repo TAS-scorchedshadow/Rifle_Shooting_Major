@@ -46,7 +46,7 @@ $(document).ready(function(){
                                                         <p display="block" class="text-center" style="font-size:12px;">${data[stage]['timestamp']}</p>
                                                     </div>
                                                     <div class="col-4 align-self-center">
-                                                        <p class="text-right" style="font-size:12px">weather</p>
+                                                        <p class="text-right" style="font-size:12px"></p>
                                                     </div>
                                                 </div>
                                             </div>
