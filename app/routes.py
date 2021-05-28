@@ -176,7 +176,7 @@ def target():
     if stage:
         user = User.query.filter_by(id=stage.userID).first()
         data = plotsheet_calc(stage, user)
-        if current_user.access > 1:
+        if current_user.access >= 1:
             return render_template('plotSheet.html', data=data, user=user, stage=stage)
         else:
             return render_template('students/studentPlotSheet.html', data=data, user=user, stage=stage)
