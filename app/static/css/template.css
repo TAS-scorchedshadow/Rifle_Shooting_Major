@@ -10390,6 +10390,10 @@ body {
   background-color: #84ceeb;
 }
 
+.background-secondary {
+  background-color: #6086e5;
+}
+
 label {
   color: #000000;
 }
@@ -10591,12 +10595,12 @@ ul.CTAs a {
   margin-bottom: 5px;
 }
 
-.fnt-righteous {
-  font-family: "Righteous", cursive;
+.fnt-play {
+  font-family: "Play", sans-serif;
 }
 
 .logo {
-  width: 60px;
+  width: 50px;
 }
 
 .card-hover:hover .recent-header {
