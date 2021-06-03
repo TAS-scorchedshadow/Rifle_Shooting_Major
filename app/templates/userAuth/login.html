@@ -1,7 +1,7 @@
 {% extends "userAuth/noNavbarBase.html" %}
 {% set active_page = "Login" %}
 {% block page_title %} Login {% endblock %}
-{% block page_content %}
+{% block login_content %}
 <h2 class="text-center my-5">Account Login</h2>
 <div class="text-center">
     {% with messages = get_flashed_messages(with_categories=true) %}

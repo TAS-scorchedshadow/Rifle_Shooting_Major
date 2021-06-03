@@ -10614,6 +10614,10 @@ ul.CTAs a {
   padding-bottom: 0px;
 }
 
+.big-fnt {
+  font-size: 10rem;
+}
+
 /*
 
 ::-webkit-scrollbar {
