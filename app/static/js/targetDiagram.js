@@ -140,10 +140,17 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         Then we scale the obj down with css so that it appears the same size
         More in-depth explanation can be found in above website
          */
-        this.canvasObj.width = parentWidth*this.dpr;
-        this.canvasObj.height = parentWidth*this.dpr;
-        this.canvasObj.style.width = parentWidth + 'px';
-        this.canvasObj.style.height = parentWidth + 'px';
+        if (width === 'flex'){
+            this.canvasObj.width = parentWidth*this.dpr;
+            this.canvasObj.height = parentWidth*this.dpr;
+            this.canvasObj.style.width = parentWidth + 'px';
+            this.canvasObj.style.height = parentWidth + 'px';
+        } else {
+            this.canvasObj.width = width*this.dpr;
+            this.canvasObj.height = width*this.dpr;
+            this.canvasObj.style.width = width + 'px';
+            this.canvasObj.style.height = width + 'px';
+        }
 
         //Set the centre coordinates of the target
         this.x = this.canvasObj.width/2;

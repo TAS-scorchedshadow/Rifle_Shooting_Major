@@ -62,7 +62,7 @@
     <script type="text/javascript" src="../static/js/groupingTarget.js"></script>
     <div class="container-fluid cover-container text-center">
         <div class="row flex-fill">
-            <div class="col-lg-5 col-md-12 justify-content-center">
+            <div class="justify-content-center" style="width:800px">
                 <canvas id="title" style="border: 1px solid black"></canvas>
                 <script>
                     let shotList = {{ data['jsonList']|safe }}; //TODO This is vulnerable to injections fix when we have time
