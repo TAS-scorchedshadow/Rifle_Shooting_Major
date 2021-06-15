@@ -75,9 +75,11 @@ def plotsheet_calc(stage, user):
     arrx = []
     arry = []
     for shot in shots:
-        distances = shot.positionfromCenterMOA(stage.distance)
-        arrx.append(distances[0])
-        arry.append(distances[1])
+        # distances = shot.positionfromCenterMOA(stage.distance)
+        # arrx.append(distances[0])
+        # arry.append(distances[1])
+        arrx.append(shot.xPos)
+        arry.append(shot.yPos)
     averageX = numpy.average(arrx)
     averageY = numpy.average(arry)
 
@@ -90,12 +92,18 @@ def plotsheet_calc(stage, user):
     Q1 = df['xPos'].quantile(0.25)
     Q3 = df['xPos'].quantile(0.75)
     IQR = Q3 - Q1
-    filteredByX = df.query('(@Q1 - 1.5 * @IQR) <= xPos <= (@Q3 + 1.5 * @IQR)')
+    lower = numpy.sign(Q1) * (abs(Q1) - 1.5*IQR)
+    upper = numpy.sign(Q3) * (abs(Q3) - 1.5 * IQR)
+    print(df)
+    filteredByX = df.query('(@lower) <= xPos <= (@upper)')
+    print(filteredByX)
 
     Q1 = df['yPos'].quantile(0.25)
     Q3 = df['yPos'].quantile(0.75)
     IQR = Q3 - Q1
-    filteredBoth = filteredByX.query('(@Q1 - 1.5 * @IQR) <= yPos <= (@Q3 + 1.5 * @IQR)')
+    lower = numpy.sign(Q1) * (abs(Q1) - 1.5 * IQR)
+    upper = numpy.sign(Q3) * (abs(Q3) - 1.5 * IQR)
+    filteredBoth = filteredByX.query('(@lower) <= yPos <= (@upper)')
     nonOutlier = filteredBoth.set_index('shot').T.to_dict('list')
     totalDistance = 0
     for shot in shots:
