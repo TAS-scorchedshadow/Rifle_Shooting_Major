@@ -229,9 +229,21 @@ class Shot(db.Model):
     score = db.Column(db.Integer)
     vScore = db.Column(db.Integer)
     sighter = db.Column(db.Boolean)
+    outlier = False
 
     def __repr__(self):
         return '<Shot {}>'.format(self.id)
+
+    def positionfromCenterMOA(self,distance):
+        if distance[-1:] == "m": #If in meters
+            #Finding MOA(Square) in Millimetres
+            moa = ((1.047 * 25.4) / 100) * (39.37 / 36) * int(distance[:-1])
+            xChangeMoa = self.xPos / moa
+            yChangeMoa = self.yPos / moa
+            shortestDistance = (self.xPos**2 + self.yPos**2)**0.5
+            # print(xChangeMoa, yChangeMoa, shortestDistance)
+            return xChangeMoa, yChangeMoa, shortestDistance
+        return "Invalid Distance"
 
 
 @login.user_loader

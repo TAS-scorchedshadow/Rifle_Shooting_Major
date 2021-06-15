@@ -18,10 +18,11 @@ from app.email import send_password_reset_email, send_activation_email, send_rep
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
-from app.stagesCalc import stage_by_n, stage_by_date
+from app.stagesCalc import stage_by_n, stage_by_date, separateOutliers
 import numpy
 import json
 from app.stagesCalc import conversion
+import pandas as pd
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -70,6 +71,36 @@ def landing():
 
 def plotsheet_calc(stage, user):
     shots = Shot.query.filter_by(stageID=stage.id).all()
+
+    arrx = []
+    arry = []
+    for shot in shots:
+        distances = shot.positionfromCenterMOA(stage.distance)
+        arrx.append(distances[0])
+        arry.append(distances[1])
+    d = { "xPos": numpy.asarray(arrx),
+         "yPos": numpy.asarray(arry),
+        "shot": numpy.asarray(shots)}
+    df = pd.DataFrame(d)
+    print(df)
+
+    # https://stackoverflow.com/questions/34782063/how-to-use-pandas-filter-with-iqr
+    Q1 = df['xPos'].quantile(0.25)
+    Q3 = df['xPos'].quantile(0.75)
+    IQR = Q3 - Q1
+    filteredByX = df.query('(@Q1 - 1.5 * @IQR) <= xPos <= (@Q3 + 1.5 * @IQR)')
+
+    Q1 = df['yPos'].quantile(0.25)
+    Q3 = df['yPos'].quantile(0.75)
+    IQR = Q3 - Q1
+    filteredBoth = filteredByX.query('(@Q1 - 1.5 * @IQR) <= yPos <= (@Q3 + 1.5 * @IQR)')
+    print(filteredBoth)
+    nonOutlier = filteredBoth.set_index('shot').T.to_dict('list')
+    for shot in shots:
+        if shot not in nonOutlier:
+            shot.outlier = True
+
+
     data = {}
 
     formattedList = []
@@ -91,10 +122,10 @@ def plotsheet_calc(stage, user):
             else:
                 shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
         if shot.sighter:
-            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration])
+            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration,shot.outlier])
             letter += 1
         else:
-            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration])
+            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration,shot.outlier])
             num += 1
             shotTotal += shot.score
     jsonList = json.dumps(formattedList)
@@ -157,6 +188,7 @@ def plotsheet_calc(stage, user):
     data['seasonStats'] = seasonStats
 
     data['range'] = json.dumps(stage.distance)
+
 
     return data
 
