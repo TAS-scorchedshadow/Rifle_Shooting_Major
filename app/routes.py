@@ -83,27 +83,20 @@ def plotsheet_calc(stage, user):
     averageX = numpy.average(arrx)
     averageY = numpy.average(arry)
 
-    print(averageX,averageY)
     d = { "xPos": numpy.asarray(arrx),
          "yPos": numpy.asarray(arry),
         "shot": numpy.asarray(shots)}
     df = pd.DataFrame(d)
     # https://stackoverflow.com/questions/34782063/how-to-use-pandas-filter-with-iqr
-    Q1 = df['xPos'].quantile(0.25)
-    Q3 = df['xPos'].quantile(0.75)
-    IQR = Q3 - Q1
-    lower = numpy.sign(Q1) * (abs(Q1) - 1.5*IQR)
-    upper = numpy.sign(Q3) * (abs(Q3) - 1.5 * IQR)
-    print(df)
-    filteredByX = df.query('(@lower) <= xPos <= (@upper)')
-    print(filteredByX)
+    Q1x = df['xPos'].quantile(0.25)
+    Q3x = df['xPos'].quantile(0.75)
+    IQRx = Q3x - Q1x
+    filteredByX = df.query('(@Q1x - 1.5 * @IQRx) <= xPos <= (@Q3x + 1.5 * @IQRx)')
 
-    Q1 = df['yPos'].quantile(0.25)
-    Q3 = df['yPos'].quantile(0.75)
-    IQR = Q3 - Q1
-    lower = numpy.sign(Q1) * (abs(Q1) - 1.5 * IQR)
-    upper = numpy.sign(Q3) * (abs(Q3) - 1.5 * IQR)
-    filteredBoth = filteredByX.query('(@lower) <= yPos <= (@upper)')
+    Q1y = df['yPos'].quantile(0.25)
+    Q3y = df['yPos'].quantile(0.75)
+    IQRy = Q3y - Q1y
+    filteredBoth = filteredByX.query('(@Q1y - 1.5 * @IQRy) <= yPos <= (@Q3y + 1.5 * @IQRy)')
     nonOutlier = filteredBoth.set_index('shot').T.to_dict('list')
     totalDistance = 0
     for shot in shots:
