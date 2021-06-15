@@ -78,12 +78,14 @@ def plotsheet_calc(stage, user):
         distances = shot.positionfromCenterMOA(stage.distance)
         arrx.append(distances[0])
         arry.append(distances[1])
+    averageX = numpy.average(arrx)
+    averageY = numpy.average(arry)
+
+    print(averageX,averageY)
     d = { "xPos": numpy.asarray(arrx),
          "yPos": numpy.asarray(arry),
         "shot": numpy.asarray(shots)}
     df = pd.DataFrame(d)
-    print(df)
-
     # https://stackoverflow.com/questions/34782063/how-to-use-pandas-filter-with-iqr
     Q1 = df['xPos'].quantile(0.25)
     Q3 = df['xPos'].quantile(0.75)
@@ -94,14 +96,16 @@ def plotsheet_calc(stage, user):
     Q3 = df['yPos'].quantile(0.75)
     IQR = Q3 - Q1
     filteredBoth = filteredByX.query('(@Q1 - 1.5 * @IQR) <= yPos <= (@Q3 + 1.5 * @IQR)')
-    print(filteredBoth)
     nonOutlier = filteredBoth.set_index('shot').T.to_dict('list')
+    totalDistance = 0
     for shot in shots:
+        totalDistance += ((shot.xPos-averageX)**2 + (shot.yPos-averageY)**2)**0.5
         if shot not in nonOutlier:
             shot.outlier = True
-
+    averageDistance = totalDistance / len(shots)
 
     data = {}
+    data['newGroup'] = [averageX, averageY, 2 * averageDistance]
 
     formattedList = []
     scoreList = []
