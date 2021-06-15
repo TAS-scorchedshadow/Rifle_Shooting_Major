@@ -263,6 +263,10 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
             this.c.beginPath();
             this.c.arc(this.x + (shot_x), this.y - (shot_y), this.shotRadius, 0, Math.PI * 2, false);
             this.c.fillStyle = shotFill;
+            //Check if outlier
+            if (shots[i][5] === true) {
+                this.c.fillStyle = 'red';
+            }
             this.c.fill();
             this.c.strokeStyle = shotStroke;
             this.c.lineWidth = this.dpr;

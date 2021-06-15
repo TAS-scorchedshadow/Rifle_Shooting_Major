@@ -18,7 +18,7 @@ from app.email import send_password_reset_email, send_activation_email, send_rep
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
-from app.stagesCalc import stage_by_n, stage_by_date, separateOutliers
+from app.stagesCalc import stage_by_n, stage_by_date
 import numpy
 import json
 from app.stagesCalc import conversion
