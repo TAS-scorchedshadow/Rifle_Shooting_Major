@@ -99,10 +99,10 @@ function Target(c, x, y, width, dist){
     }
     this.update = function(x,y,width, ratio) {
         /**
-        * @x The circle centre's x-coordinate respective to the origin of the canvas element
-        * @y The circle centre's y-coordinate respective to the origin of the canvas element
-        * @width The width (in pixels) of the canvas object
-        * @ratio The drawing ratio (defined as width of canvas object divided by radius of outer circle)
+        * @param x The circle centre's x-coordinate respective to the origin of the canvas element
+        * @param y The circle centre's y-coordinate respective to the origin of the canvas element
+        * @param width The width (in pixels) of the canvas object
+        * @param ratio The drawing ratio (defined as width of canvas object divided by radius of outer circle)
         */
         this.x = x;
         this.y = y;
@@ -114,12 +114,12 @@ function Target(c, x, y, width, dist){
     };
 }
 
-function DrawTarget(canvasId, dist, shots=[], width='flex'){
+function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
     /**
-     * @canvasId the id attribute of the canvas object which the target would be drawn on
-     * @dist distance of the target e.g 300m
-     * @shots an array of arrays with the following format: [num, x, y, score]
-     * @width is width of the canvas object
+     * @param canvasId the id attribute of the canvas object which the target would be drawn on
+     * @param dist distance of the target e.g 300m
+     * @param shots an array of arrays with the following format: [num, x, y, score]
+     * @param width is width of the canvas object
      */
     //Initialise all the variables
     this.init = function() {
@@ -169,6 +169,11 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
         this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
 
+        //grouping circle dimensions
+        if (groupCircle) {
+            this.grouping = {'x': this.x + groupCircle[0]*this.ratio, 'y': this.y - groupCircle[1]*this.ratio, 'r': groupCircle[2]*this.ratio/2}
+        }
+
     };
     //this.update updates all the values in DrawTarget object after it changes sizes
     this.update = function() {
@@ -188,6 +193,9 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
         //update the target dimensions
         this.target.update(this.x, this.y, this.canvasObj.width, this.ratio);
+        if (groupCircle) {
+            this.grouping = {'x': this.x + groupCircle[0]*this.ratio, 'y': this.y - groupCircle[1]*this.ratio, 'r': groupCircle[2]*this.ratio/2}
+        }
     };
 
     this.draw = function() {
@@ -249,11 +257,11 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         let font_size = '';
         for (let i=0; i<shotsLength; i++){
             shot_num = shots[i][0];
-            shot_x = shots[i][1];
-            shot_y = shots[i][2];
+            shot_x = shots[i][1]*this.ratio;
+            shot_y = shots[i][2]*this.ratio;
             //Draw Circle
             this.c.beginPath();
-            this.c.arc(this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio), this.shotRadius, 0, Math.PI * 2, false);
+            this.c.arc(this.x + (shot_x), this.y - (shot_y), this.shotRadius, 0, Math.PI * 2, false);
             this.c.fillStyle = shotFill;
             this.c.fill();
             this.c.strokeStyle = shotStroke;
@@ -266,7 +274,17 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             this.c.font = `${font_size}px Arial`;
             this.c.fillStyle= shotText;
             this.c.textAlign = "center";
-            this.c.fillText(shot_num, this.x + (shot_x*this.ratio), this.y - (shot_y*this.ratio)+5);
+            this.c.fillText(shot_num, this.x + (shot_x), this.y - (shot_y)+5);
+            this.c.closePath();
+        }
+        //Draw grouping circle if needed
+        if (groupCircle) {
+            console.log('drawing group')
+            this.c.beginPath();
+            this.c.arc(this.grouping.x, this.grouping.y, this.grouping.r, 0, Math.PI * 2, false);
+            this.c.lineWidth = this.dpr;
+            this.c.strokeStyle = 'red';
+            this.c.stroke();
             this.c.closePath();
         }
     };
@@ -279,8 +297,8 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
     //Set values for use in the later functions
     let canvasParent = this.canvasObj.parentNode;
     let canvasOffset = $("#" + canvasId).offset();
-    let tipCanvas = document.getElementById('tip');
     //If the tooltip canvas object doesn't exist, create one
+    let tipCanvas = document.getElementById('tip');
     if (!tipCanvas){
         tipCanvas = document.createElement("CANVAS");
         canvasParent.appendChild(tipCanvas);
@@ -292,6 +310,7 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
         tipCanvas.style.width = '100px';
         tipCanvas.style.height = '25px';
         tipCanvas.style.zIndex = '10000';
+        tipCanvas.style.left = "-20000px";
     }
     let tipCtx = tipCanvas.getContext('2d');
 
@@ -303,10 +322,9 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
             canvasOffset = $("#" + canvasId).offset();
         });
     }
-
-    this.canvasObj.onmousemove = function (e) {
+    canvasParent.addEventListener('mousemove', e => {
         handleMouseMove(e, shots, ThisTarget);
-    };
+    });
     //Move the tooltip to the mouse when it hovers over a shot
     //used some code from https://stackoverflow.com/questions/17064913/display-tooltip-in-canvas-graph
     function handleMouseMove(e, shots, ThisTarget){
@@ -338,6 +356,6 @@ function DrawTarget(canvasId, dist, shots=[], width='flex'){
 
         }
         //if the mouse isn't on a shot, move the tooltip out of the screen
-        if (!hit) { tipCanvas.style.left = "-200px"; }
+        if (!hit) { tipCanvas.style.left = "-20000px"; }
     }
 }
