@@ -23,6 +23,8 @@ import numpy
 import json
 from app.stagesCalc import conversion
 import pandas as pd
+from sklearn.cluster import DBSCAN
+from sklearn import preprocessing
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -58,6 +60,9 @@ def change():
             print("group changed")
     return render_template('groupEditor.html')
 
+@app.route('/boxPlot')
+def boxPlot():
+    return render_template('test.html')
 
 @app.route('/landing')
 def landing():
@@ -70,23 +75,28 @@ def landing():
 
 
 def plotsheet_calc(stage, user):
-    shots = Shot.query.filter_by(stageID=stage.id).all()
+    shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
 
     arrx = []
     arry = []
+    arrz = []
     for shot in shots:
         # distances = shot.positionfromCenterMOA(stage.distance)
         # arrx.append(distances[0])
         # arry.append(distances[1])
         arrx.append(shot.xPos)
         arry.append(shot.yPos)
+        arrz.append([shot.xPos,shot.yPos])
     averageX = numpy.average(arrx)
     averageY = numpy.average(arry)
-
+    nparrz = numpy.array(arrz)
     d = { "xPos": numpy.asarray(arrx),
          "yPos": numpy.asarray(arry),
         "shot": numpy.asarray(shots)}
     df = pd.DataFrame(d)
+    clustering = DBSCAN(eps=50, min_samples=2).fit_predict(nparrz)
+    cluster_labels = clustering.tolist()
+    print(cluster_labels)
     # https://stackoverflow.com/questions/34782063/how-to-use-pandas-filter-with-iqr
     Q1x = df['xPos'].quantile(0.25)
     Q3x = df['xPos'].quantile(0.75)
@@ -127,10 +137,10 @@ def plotsheet_calc(stage, user):
             else:
                 shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
         if shot.sighter:
-            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration,shot.outlier])
+            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration,cluster_labels[i]])
             letter += 1
         else:
-            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration,shot.outlier])
+            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration,cluster_labels[i]])
             num += 1
             shotTotal += shot.score
     jsonList = json.dumps(formattedList)
@@ -526,7 +536,7 @@ def upload():
             count["total"] += 1
         db.session.commit()
         print("DEBUG: Completed Upload")
-        if count["success"] == count["total"]:
+        if count["success"] == count["total"]: #successfully uploaded
             stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
