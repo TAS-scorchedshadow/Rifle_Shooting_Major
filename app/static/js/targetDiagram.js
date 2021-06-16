@@ -15,7 +15,7 @@ var target_details = {
 //Colors
 var targetFill = '#afafaf';
 var targetStroke = 'black';
-
+var groupColours = ['red', 'blue', 'green', 'yellow', 'brown']
 var shotFill = '#afafaf';
 var shotStroke = 'black';
 var shotText = 'black';
@@ -171,7 +171,11 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
 
         //grouping circle dimensions
         if (groupCircle) {
-            this.grouping = {'x': this.x + groupCircle[0]*this.ratio, 'y': this.y - groupCircle[1]*this.ratio, 'r': groupCircle[2]*this.ratio/2}
+            this.grouping = []
+            for (let i=0; i<groupCircle.length; i++){
+                console.log(groupCircle)
+                this.grouping.push({'x': this.x + groupCircle[i][0]*this.ratio, 'y': this.y - groupCircle[i][1]*this.ratio, 'r': groupCircle[i][2]*this.ratio/2})
+            }
         }
 
     };
@@ -193,9 +197,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
         //update the target dimensions
         this.target.update(this.x, this.y, this.canvasObj.width, this.ratio);
-        if (groupCircle) {
-            this.grouping = {'x': this.x + groupCircle[0]*this.ratio, 'y': this.y - groupCircle[1]*this.ratio, 'r': groupCircle[2]*this.ratio/2}
-        }
     };
 
     this.draw = function() {
@@ -283,13 +284,15 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         }
         //Draw grouping circle if needed
         if (groupCircle) {
-            console.log('drawing group')
-            this.c.beginPath();
-            this.c.arc(this.grouping.x, this.grouping.y, this.grouping.r, 0, Math.PI * 2, false);
-            this.c.lineWidth = this.dpr;
-            this.c.strokeStyle = 'red';
-            this.c.stroke();
-            this.c.closePath();
+            for (let j=0; j<this.grouping.length; j++){
+                console.log('drawing group')
+                this.c.beginPath();
+                this.c.arc(this.grouping[j].x, this.grouping[j].y, this.grouping[j].r, 0, Math.PI * 2, false);
+                this.c.lineWidth = this.dpr;
+                this.c.strokeStyle = groupColours[j];
+                this.c.stroke();
+                this.c.closePath();
+            }
         }
     };
 

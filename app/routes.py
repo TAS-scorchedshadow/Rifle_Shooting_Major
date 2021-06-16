@@ -70,7 +70,7 @@ def landing():
 
 
 def plotsheet_calc(stage, user):
-    shots = Shot.query.filter_by(stageID=stage.id).all()
+    shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
 
     arrx = []
     arry = []
