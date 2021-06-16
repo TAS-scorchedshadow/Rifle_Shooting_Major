@@ -24,7 +24,6 @@ import json
 from app.stagesCalc import conversion
 import pandas as pd
 from sklearn.cluster import DBSCAN
-from sklearn import preprocessing
 
 @app.errorhandler(404)
 def page_not_found(e):
