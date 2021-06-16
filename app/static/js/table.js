@@ -1,15 +1,10 @@
 ///Henry & Rishi
 $(document).ready(function () {
-    console.log("Confirmed")
-    let hideSubmit = document.getElementById("submit")
-    let hideEdit = document.getElementById("edit")
-    hideSubmit.style.display = "none"
+    $(".submit").hide()
 
-    $("#edit").click(function () {
-        console.log("Click edit")
-
-        hideEdit.style.display = "none"
-        hideSubmit.style.display = "block"
+    $(".edit").click(function () {
+        $(this).hide()
+        $(".submit").show()
 
         var OriginalContent = $(this).text();
 
@@ -29,8 +24,7 @@ $(document).ready(function () {
     let infoDict = {
     }
 
-    $('#submit').click(function () {
-        console.log("Click submit")
+    $('.submit').click(function () {
         $("#spinner").show()
 
 
@@ -53,8 +47,8 @@ $(document).ready(function () {
                 data: JSON.stringify([userID, infoDict]),
                 success:(function () {
                     $("#spinner").hide();
-                    hideEdit.style.display = "block"
-                    hideSubmit.style.display = "none"
+                    $(".edit").show()
+                    $(".submit").hide()
                 })
             })
     }
