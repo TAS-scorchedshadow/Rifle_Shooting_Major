@@ -1,3 +1,4 @@
+//heatmap
 var heatmapInstance = h337.create({
   container: document.getElementById('heatMap')
 });
@@ -9,3 +10,4 @@ var testData = {
 
 };
 heatmapInstance.setData(testData);
+

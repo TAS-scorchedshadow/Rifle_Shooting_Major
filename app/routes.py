@@ -291,52 +291,16 @@ def profile():
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
 
-    # By Rishi Wig
-    # form = profileSelect()
-    # if form.is_submitted():
-    #     change = str(form.cell.data)
-    #     newValue = form.data.data
-    #     # user.(change) = newValue
-    #     setattr(user, change, newValue)
-    #     db.session.commit()
-    #
+    # Stubs for season page
+    allScores = [49, 48, 48, 49, 48, 49, 48, 50, 50, 59, 58, 58, 50, 50, 50, 47]
+    boxData = {
+        'canvasID': 'boxPlot',
+        'values': allScores
+    }
 
-    # z = numpy.polyfit(yearStubAvgLine, scoreStubAvgLine, 1)
-    # p = numpy.poly1d(z)
-    # pylab.plot(yearStubAvgLine, p(yearStubAvgLine), "r--")
-    # trend = []
-    # for j in range(len(yearStubAvgLine)):
-    #    result = ((yearStubAvgLine[j]) * z[0]) + z[1]
-    #    trend.append(result)
-    # stub for shooter ID passed to the overview
-    # collect data fro graphs
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo, boxData=boxData)
 
-    # amount = 5
-    # start = datetime(2016, 6, 28)
-    # end = datetime(2021, 6, 29)
-    # stage_by_date(userID, start, end)
-    # value = stage_by_n(userID, amount)
 
-    # stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-    # info = {}
-    # times = []
-    # scores = []
-    # for i in range(len(stages_query)):
-    #     info[stages_query[i].id] = 0
-    # for j in info:
-    #     shots_query = Shot.query.filter_by(stageID=j).all()
-    #     total = 0
-    #     score = 0
-    #     for k in range(len(shots_query)):
-    #         total += 1
-    #         score += (shots_query[k].score)
-    #     info[j] = (score/total)
-    #     timestamp_query = Stage.query.filter_by(id=j).order_by(Stage.timestamp).all()
-    #     for m in range(len(timestamp_query)):
-    #         times.append(utc_to_nsw(timestamp_query[m].timestamp))
-    #     scores.append(info[j])
-    # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
-    return render_template('students/profile.html', user=user, tableInfo=tableInfo)
 # by Henry Guo
 @app.route('/getAvgShotGraphData', methods=['POST'])
 def getAvgShotData():

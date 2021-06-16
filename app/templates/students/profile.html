@@ -20,11 +20,18 @@
 <script type="text/javascript" src="../static/js/autofill.js" defer></script>
 
 <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submitTable">
+<script>
+    const boxData = {{ boxData | safe }}
+</script>
 
 <!--Scripts for season stats page-->
 <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
 <script src=../static/heatmap.js-master/build/heatmap.min.js></script>
 <script src="../static/js/targetDiagram.js"></script>
+
+<!--Box Plot Modules-->
+<script src="https://unpkg.com/chart.js@3.3.2/dist/chart.js"></script>
+<script src="../static/node_modules/@sgratzl/chartjs-chart-boxplot/build/index.umd.js"></script>
 <script src="../static/js/seasonAjax.js"></script>
 <style>
 body {
@@ -48,6 +55,11 @@ table.recentShotsTable{
     background-color: black;
     border-radius: 6px;
 }
+canvas {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
 </style>
     <div class="container-fluid" style="padding-bottom: 50px">
         <div class="row align-items-center">
@@ -197,6 +209,9 @@ table.recentShotsTable{
               <div id='heatMap' style="height: 600px; width: 600px">
                 <canvas class='canvas' style="position:absolute; left: 0; top: 0;"></canvas>
                 <canvas class='canvas' id="title" style="border: 1px solid black"></canvas>
+              </div>
+              <div id="boxPlotDiv">
+                  <canvas id="boxPlot"></canvas>
               </div>
             </div>
         </div>
