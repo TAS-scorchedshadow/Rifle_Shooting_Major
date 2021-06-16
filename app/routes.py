@@ -707,7 +707,7 @@ def userList():
     #     print(f"New Users {newUsers}")
     #     print(f"Missing Users {missingUsers}")
     #     return render_template('userAuth/userList.html', users=users, newUsers=newUsers, missingUsers=missingUsers)
-    return render_template('userAuth/userList.html', users=users)
+    return render_template('userAuth/userList.html', users=users,mail_setting=os.environ["MAIL_SETTING"])
 
 
 @app.route('/profileList')
@@ -724,7 +724,7 @@ def profileList():
 def emailSettings():
     setting = json.loads(request.get_data())
     os.environ["MAIL_SETTING"] = setting
-    #print(os.environ["MAIL_SETTING"])
+    print(os.environ["MAIL_SETTING"])
     return jsonify("complete")
 
 @app.route('/deleteAccount', methods=['POST'])

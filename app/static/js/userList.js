@@ -59,7 +59,9 @@ function createAccount(sourceElement,user_obj){
 }
 
 $(document).ready(function () {
-    update_email_context()
+    var x = $("#emailContext").data()['mail']
+    console.log(x)
+    $("#emailContext").children().eq(x).fadeIn("slow")
     $( "#select" ).change(function() {
         update_email_context()
         $("#spinner").show()
