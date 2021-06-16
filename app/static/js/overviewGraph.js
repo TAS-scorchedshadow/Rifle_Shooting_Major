@@ -39,6 +39,7 @@ $(document).ready(function() {
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         title: {
                             display: true,
                             text: 'Averages Line'
@@ -58,6 +59,10 @@ $(document).ready(function() {
                                 id: 'Standard Deviation',
                                 type: 'linear',
                                 position: 'right',
+                                ticks: {
+                                    max: 3,
+                                    min: 0
+                                }
                             }]
                         }
                     }

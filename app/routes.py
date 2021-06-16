@@ -58,6 +58,9 @@ def change():
             print("group changed")
     return render_template('groupEditor.html')
 
+@app.route('/boxPlot')
+def boxPlot():
+    return render_template('test.html')
 
 @app.route('/landing')
 def landing():
