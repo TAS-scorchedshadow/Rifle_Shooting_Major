@@ -145,11 +145,35 @@ def stats_day(stages):
 
     return stats
 
-def stats_week(userID, stages):
+def stats_week(stages):
     return
-def stats_month(userID, stages):
+def stats_month(stages):
     return
-def stats_year(userID, stages):
-    return
+
+def stats_year(stages):
+    stats = []
+    stagesList = []
+    date = []
+    stages.sort(key=lambda x: x.timestamp, reverse=False)
+
+    for stage in stages:
+        time = (stage.timestamp)
+        if time.year == date:
+            stagesList.append(stage)
+            stats.pop(-1)
+        else:
+            date = time.year
+            stagesList = [stage]
+
+        data = conversion(stagesList)
+        avg_stdv = {}
+        avgScore = sum(data[1]) / len(data[1])
+        avgStdev = sum(data[3]) / len(data[3])
+        avg_stdv["avg"] = avgScore
+        avg_stdv["stDev"] = avgStdev
+        stats.append(avg_stdv)
+
+    return stats
+
 
 
