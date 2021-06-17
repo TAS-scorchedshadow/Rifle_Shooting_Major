@@ -3,7 +3,7 @@ $(document).ready(function () {
     $(".submit").hide()
 
     $(".edit").click(function () {
-        $(this).hide()
+        $(".edit").hide()
         $(".submit").show()
 
         var OriginalContent = $(this).text();
