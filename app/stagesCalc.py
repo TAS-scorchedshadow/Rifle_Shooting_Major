@@ -1,7 +1,10 @@
 ##   --Rishi--
 ## To make calculations for the stages information
+import datetime as datetime
 
 from app.models import User, Stage, Shot
+from app.timeConvert import utc_to_nsw, nsw_to_utc
+from datetime import datetime
 import statistics
 
 def stage_by_date(userID, start, end):
@@ -78,4 +81,75 @@ def conversion(stages_array):
             stDev.append(round((statistics.pstdev(tempStdev)),1))
 
     return timestamps, avgScores, total, stDev, scores
+
+def avg_and_stdev(stageIDs):
+    scores = []
+    for id in stageIDs:
+        shots = Shot.query.filter_by(stageID=id).all()
+        for shot in shots:
+            pass
+    average = 0
+    stDev = 0
+    return
+
+def stats_of_period(userID, periodType, start, end):
+    """
+    Function which checks the periodType string
+    :param userID: The shooter whose stage stats are to be viewed
+    :param periodType: The time period interval
+    :param start: The start of measurement
+    :param end: The end of measurement
+    :return:
+    """
+    dayStartAEST = utc_to_nsw(start).replace(hour=0, minute=0, second=0, microsecond=0)
+    dayEndAEST = utc_to_nsw(end).replace(hour=23, minute=59, second=59, microsecond=0)
+    start = nsw_to_utc(dayStartAEST)
+    end = nsw_to_utc(dayEndAEST)
+    stages = Stage.query.filter(Stage.timestamp.between(start, end), Stage.userID == userID).all()
+
+    if periodType == "day":
+        return stats_day(stages)
+    if periodType == "week":
+        return stats_week(stages)
+    if periodType == "month":
+        return stats_month(stages)
+    if periodType == "year":
+        return stats_year(stages)
+
+def stats_day(stages):
+    """
+    Finds the average and standard deviation for shots based off day
+    :param stages: List of stagess
+    :return: Statistics in the form [{'avg': 48.5, 'stDev': 0.35}, {'avg': 48.0, 'stDev': 0.4}....]
+    """
+    stats = []
+    stagesList = []
+    date = 0
+
+    for stage in stages:
+        time = (stage.timestamp).replace(hour=0, minute=0, second=0)
+        if time == date:
+            stagesList.append(stage)
+            stats.pop(-1)
+        else:
+            date = time
+            stagesList = [stage]
+
+        data = conversion(stagesList)
+        avg_stdv = {}
+        avgScore = sum(data[1])/len(data[1])
+        avgStdev = sum(data[3])/len(data[3])
+        avg_stdv["avg"] = avgScore
+        avg_stdv["stDev"] = avgStdev
+        stats.append(avg_stdv)
+
+    return stats
+
+def stats_week(userID, stages):
+    return
+def stats_month(userID, stages):
+    return
+def stats_year(userID, stages):
+    return
+
 
