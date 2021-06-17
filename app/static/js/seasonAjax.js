@@ -27,44 +27,45 @@ $( document ).ready(function() {
                     console.log(heatmapInstance.getData());
                     //TODO add slider to change intensity of heatmap
                     let myTarget = new DrawTarget('title','300m', shotData['target'])
+                    console.log(shotData['boxPlot'])
+                    boxPlot(boxData['canvasID'], shotData['boxPlot'])
+                    function boxPlot(canvasID, values) {
+                        const ctx = document.getElementById("boxPlot").getContext('2d');
+                        const myBar = new Chart(ctx, {
+                          type: 'boxplot',
+                          data: {
+                                labels: ['A'],
+                                datasets: [
+                                    {
+                                        label: 'Test',
+                                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                        borderColor: 'rgba(255,0,0,1)',
+                                        borderWidth: 1,
+                                        data: [values],
+                                    },
+                                ]
+                            },
+                          options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            legend: {
+                              position: 'top',
+                            },
+                            title: {
+                              display: true,
+                              text: 'Chart.js Box Plot Chart',
+                            },
+                             scales: {
+                                      x: {
+                                          max: 50,
+                                          min: 40,
+                                      }
+                                  }
+                          },
+                        });
+                    }
                 })
             })
         }
-    }
-    boxPlot(boxData['canvasID'], boxData['values'])
-    function boxPlot(canvasID, values) {
-        const ctx = document.getElementById("boxPlot").getContext('2d');
-        const myBar = new Chart(ctx, {
-          type: 'boxplot',
-          data: {
-                labels: ['A'],
-                datasets: [
-                    {
-                        label: 'Test',
-                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                        borderColor: 'rgba(255,0,0,1)',
-                        borderWidth: 1,
-                        data: [values],
-                    },
-                ]
-            },
-          options: {
-            indexAxis: 'y',
-            responsive: true,
-            legend: {
-              position: 'top',
-            },
-            title: {
-              display: true,
-              text: 'Chart.js Box Plot Chart',
-            },
-             scales: {
-                      x: {
-                          max: 50,
-                          min: 40,
-                      }
-                  }
-          },
-        });
     }
 });

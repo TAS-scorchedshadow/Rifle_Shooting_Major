@@ -8,12 +8,13 @@ from datetime import timezone
 def utc_to_nsw(utc_dt):
     """
     Converts database time(naive utc) to NSW time
+    Does not work with datetime.date objects
 
-    :param utc_dt: TO BE FILLED
-    :return: TO BE FILLED
+    :param utc_dt: A datetime object in UTC
+    :return: A datetime object in NSW Australia time
     """
     nsw = pytz.timezone('Australia/NSW')
-    return utc_dt.replace(tzinfo=timezone.utc).astimezone(tz=nsw)
+    return utc_dt.astimezone(tz=nsw)
 
 
 def nsw_to_utc(nsw_dt):

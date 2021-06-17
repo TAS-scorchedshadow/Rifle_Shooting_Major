@@ -120,7 +120,7 @@ def stats_day(stages):
     """
     Finds the average and standard deviation for shots based off day
     :param stages: List of stagess
-    :return: Statistics in the form [{'avg': 48.5, 'stDev': 0.35}, {'avg': 48.0, 'stDev': 0.4}....]
+    :return: Statistics in the form [{'avg': 48.5, 'stDev': 0.35, 'date': datetime.datetime(2021, 3, 27, 3, 5, 54)}, ....]
     """
     stats = []
     stagesList = []
@@ -141,6 +141,7 @@ def stats_day(stages):
         avgStdev = sum(data[3])/len(data[3])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
+        avg_stdv["date"] = date
         stats.append(avg_stdv)
 
     return stats

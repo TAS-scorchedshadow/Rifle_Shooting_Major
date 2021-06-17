@@ -6,7 +6,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
 import time
-from datetime import datetime, timedelta
+import datetime
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -18,10 +18,9 @@ from app.email import send_password_reset_email, send_activation_email, send_rep
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
-from app.stagesCalc import stage_by_n, stage_by_date
+from app.stagesCalc import stage_by_n, stage_by_date, stats_of_period, conversion
 import numpy
 import json
-from app.stagesCalc import conversion
 import pandas as pd
 from sklearn.cluster import DBSCAN
 
@@ -303,9 +302,21 @@ def profile():
 # by Henry Guo
 @app.route('/getAvgShotGraphData', methods=['POST'])
 def getAvgShotData():
+    endDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
+
+    # start date is a stub
+    startDate = datetime.datetime.strptime('2021-01-01', '%Y-%m-%d')
+    startDate = datetime.datetime.combine(startDate, datetime.datetime.min.time())
+
     userID = request.get_data().decode("utf-8")
-    stages_query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-    timestamps, avgScores, total, stDev, scores = conversion(stages_query)
+    stats = stats_of_period(userID, 'day', startDate, endDate)
+    avgScores = []
+    stDev = []
+    timestamps = []
+    for stage in stats:
+        avgScores.append(stage['avg'])
+        stDev.append(stage['stDev'])
+        timestamps.append(stage['date'])
     formattedTime = []
     for date in timestamps:
         formattedTime.append(utc_to_nsw(date).strftime("%d/%m/%y"))
@@ -315,7 +326,8 @@ def getAvgShotData():
                          })
     return graphData
 
-#Rishi
+
+# Rishi
 @app.route('/overview')
 def profile_overview():
     # stub for shooter ID passed to the overview
@@ -347,7 +359,8 @@ def profile_overview():
     times = json.dumps(times)
     return render_template('students/profile_overview.html', dates=times, scores=scores)
 
-#Rishi
+
+# Rishi
 @app.route('/settings')
 def profile_settings():
     stubID = 31
@@ -792,6 +805,7 @@ def setGear():
         return jsonify('success')
     return jsonify({'error': 'userID'})
 
+
 @app.route('/getUsers', methods=['POST'])
 def getUsers():
     users = User.query.all()
@@ -836,7 +850,6 @@ def getShots():
         duration = duration.split(':')
         # str(int()) is done to remove the zero in single digit numbers
         duration = '{}m {}s'.format(str(int(duration[1])), str(int(duration[2])))
-        # TODO add weather
         stagesList.append({'scores': scores,
                            'totalScore': totalScore,
                            'groupSize': round(stage.groupSize, 1),
@@ -885,20 +898,24 @@ def testHeatmap():
 def getAllShotsSeason():
     """
     Function collects every shot from the user in the season
-    :return:
+    :return: data in the format of {'heatmap': [{'x': 10, 'y': 20, 'value': 1}, ...], 'target': [['1', 10, 20, 5], ...], 'boxPlot': [50, 49, 48, ...]}
     """
     input_ = request.get_data().decode('utf-8')
     loadedInput = json.loads(input_)
     dist = loadedInput['distance']
     userID = loadedInput['userID']
-    data = {'heatmap': [], 'target': []}
+    data = {'heatmap': [], 'target': [], 'boxPlot': []}
     stages = Stage.query.filter_by(distance=dist, userID=userID).all()
     for stage in stages:
-        shots = Shot.query.filter_by(stageID=stage.id).all()
+        totalScore = 0
+        shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
         for shot in shots:
-            #TODO change the value 300 depending on the shoot distance
+            # TODO change the value 300 depending on the shoot distance
             data['heatmap'].append({'x': round(shot.xPos + 300), 'y': round(300 - shot.yPos), 'value': 1})
             data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
+            totalScore += shot.score
+        fiftyScore = (totalScore/len(shots))*10
+        data['boxPlot'].append(fiftyScore)
     dataDump = json.dumps(data)
     data = jsonify(data)
     return data

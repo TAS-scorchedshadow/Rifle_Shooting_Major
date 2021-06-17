@@ -16,7 +16,7 @@ $(document).ready(function() {
                         labels: data['times'],
                         datasets: [{
                             label: 'Average',
-                            yAxisID: 'Score',
+                            yAxisID: 'score',
                             backgroundColor: 'rgba(255, 0, 0, 0.1)',
                             borderColor: 'rgba(255,0,0,1)',
                             borderWidth: 1,
@@ -27,7 +27,7 @@ $(document).ready(function() {
                         },
                         {
                             label: 'Standard Deviation',
-                            yAxisID: 'Standard Deviation',
+                            yAxisID: 'standard-deviation',
                             backgroundColor: 'rgba(0, 0, 255, 0.1)',
                             borderColor: 'rgba(0,0,255,1)',
                             borderWidth: 1,
@@ -47,23 +47,16 @@ $(document).ready(function() {
                         plugins: {
                         },
                         scales: {
-                            yAxes: [{
-                                id: 'Score',
-                                type: 'linear',
+                            'score': {
                                 position: 'left',
-                                ticks: {
-                                  max: 50,
-                                  min: 0
-                                }
-                            }, {
-                                id: 'Standard Deviation',
-                                type: 'linear',
+                                max: 50,
+                                min: 40
+                            },
+                            'standard-deviation': {
                                 position: 'right',
-                                ticks: {
-                                    max: 3,
-                                    min: 0
-                                }
-                            }]
+                                max: 3,
+                                min: 0
+                            }
                         }
                     }
                 });
