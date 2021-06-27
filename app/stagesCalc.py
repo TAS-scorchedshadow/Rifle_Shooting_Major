@@ -82,16 +82,6 @@ def conversion(stages_array):
 
     return timestamps, avgScores, total, stDev, scores
 
-def avg_and_stdev(stageIDs):
-    scores = []
-    for id in stageIDs:
-        shots = Shot.query.filter_by(stageID=id).all()
-        for shot in shots:
-            pass
-    average = 0
-    stDev = 0
-    return
-
 def stats_of_period(userID, periodType, start, end):
     """
     Function which checks the periodType string
