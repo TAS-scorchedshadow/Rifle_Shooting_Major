@@ -454,7 +454,6 @@ def upload():
                         stageList.append(stage)
                         if 1 in issue_code:  # i.e. missing username
                             invalidList.append(stage)
-                            count["failure"] += 1
                         else:
                             count["success"] += 1
                         count["total"] += 1
