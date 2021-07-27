@@ -54,6 +54,7 @@ function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWid
         c.lineWidth = this.lineWidth;
         if (this.lineWidth > 0){
             c.strokeStyle = strokeColor;
+            console.log(c.strokeStyle);
             c.stroke();
         }
         c.closePath();
@@ -62,7 +63,6 @@ function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWid
         /**
          * Updates the values of this object to the parameters
          *
-         * @param c The canvas.context object
          * @param x The circle centre's x-coordinate respective to the origin of the canvas element
          * @param y The circle centre's y-coordinate respective to the origin of the canvas element
          * @param radius The radius of the circle
@@ -94,7 +94,7 @@ function Target(c, x, y, width, dist){
     //Ratio in pixels per millimetre
     this.ratio = this.width/target_details[this.dist][5];
     for (let i=1; i<=5; i++){
-        let addCircle = new Circle(this.c, this.x, this.y,target_details[this.dist][i]*this.ratio/2, targetFill, targetStroke, 1*this.ratio);
+        let addCircle = new Circle(this.c, this.x, this.y,target_details[this.dist][i]*this.ratio/2, targetFill, targetStroke,1*this.ratio);
         this.targetCircles.push(addCircle);
     }
     this.update = function(x,y,width, ratio) {
@@ -136,10 +136,10 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         let parentWidth = $("#" + canvasId).parent().width();
         /**
         Code borrowed from https://dev.to/pahund/how-to-fix-blurry-text-on-html-canvases-on-mobile-phones-3iep
-        The code makes the canvas obj draw at double the size
-        Then we scale the obj down with css so that it appears the same size
-        More in-depth explanation can be found in above website
+        The following code makes the canvas obj draw at double the size
+        Then we scale the obj down with css so that its shown at the original size
          */
+        console.log(parentWidth)
         if (width === 'flex'){
             this.canvasObj.width = parentWidth*this.dpr;
             this.canvasObj.height = parentWidth*this.dpr;
@@ -167,6 +167,9 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         //measurement from https://www.silvermountaintargets.com/uploads/1/1/7/5/117527890/n-icfra-f-australia.tgt
         //it is modified to be in pixels
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
+
+        console.log(this.canvasObj.width)
+        // Create the object which draws each the circles of each score
         this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
 
         //grouping circle dimensions

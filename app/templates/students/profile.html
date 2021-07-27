@@ -58,6 +58,9 @@ canvas {
       -webkit-user-select: none;
       -ms-user-select: none;
     }
+.heatmap-canvas{
+    pointer-events: none;
+}
 </style>
     <div class="container-fluid" style="padding-bottom: 50px">
         <div class="row align-items-center">
@@ -142,7 +145,7 @@ canvas {
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                <div class="container-fluid pt-5" style="padding-left: 0px; padding-right: 0px;">
+                <div class="container-fluid pt-2" style="padding-left: 0px; padding-right: 0px;">
                     <div class="row">
                         <div class="col-xl-6 col-md-6">
                                 <div class="card" style="min-width:300px">
@@ -176,8 +179,7 @@ canvas {
                 </div>
             </div>
             <div class="tab-pane fade" id="rifle-settings" role="tabpanel" aria-labelledby="rifle-settings-tab">
-                <div class="container-fluid">
-                    <br>
+                <div class="container-fluid pt-2 pl-0 pr-0">
                     <div class="card shadow border-0">
                         <div class="card-header bg-dark text-white text-center">
                             <div>Gear Settings</div>
@@ -263,13 +265,31 @@ canvas {
                 </div>
             </div>
             <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
-              <div id='heatMap' style="height: 600px; width: 600px">
-                <canvas class='canvas' style="position:absolute; left: 0; top: 0;"></canvas>
-                <canvas class='canvas' id="title" style="border: 1px solid black"></canvas>
-              </div>
-              <div id="boxPlotDiv">
-                  <canvas id="boxPlot"></canvas>
-              </div>
+                <div class="container-fluid pt-2 pl-0 pr-0">
+                    <div class="row">
+                        <div class="col-xl-6">
+                              <div id='heatMap' style="width:600px; height:600px">
+                                  <canvas class='canvas' id="title" style="border: 1px solid black"></canvas>
+                              </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="boxPlotDiv">
+                                        <canvas id="boxPlot"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div id="seasonLineDiv">
+                                        <canvas id="seasonLine"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

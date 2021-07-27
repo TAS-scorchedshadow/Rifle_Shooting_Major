@@ -901,8 +901,23 @@ def getAllShotsSeason():
     """
     input_ = request.get_data().decode('utf-8')
     loadedInput = json.loads(input_)
+    print(loadedInput)
     dist = loadedInput['distance']
     userID = loadedInput['userID']
+    size = int(loadedInput['size'])
+    target_widths = {
+        "300m": 600,
+        "400m": 800,
+        "500m": 1320,
+        "600m": 1320,
+        "700m": 1830,
+        "800m": 1830,
+        "274m": 390,
+        "365m": 520,
+        "457m": 915,
+        "548m": 915,
+    };
+    ratio = size/target_widths[dist]
     data = {'heatmap': [], 'target': [], 'boxPlot': []}
     stages = Stage.query.filter_by(distance=dist, userID=userID).all()
     for stage in stages:
@@ -910,11 +925,13 @@ def getAllShotsSeason():
         shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
         for shot in shots:
             # TODO change the value 300 depending on the shoot distance
-            data['heatmap'].append({'x': round(shot.xPos + 300), 'y': round(300 - shot.yPos), 'value': 1})
+            data['heatmap'].append({'x': round(shot.xPos*ratio + (size/2)), 'y': round(size/2 - shot.yPos*ratio), 'value': 1})
             data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
             totalScore += shot.score
         fiftyScore = (totalScore/len(shots))*10
         data['boxPlot'].append(fiftyScore)
+    # Sort the scores for boxPlot so the lowest value can be taken. The lowest value is used to determine the lower bound of the box plot
+    data['boxPlot'].sort()
     dataDump = json.dumps(data)
     data = jsonify(data)
     return data

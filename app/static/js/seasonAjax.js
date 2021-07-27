@@ -1,10 +1,11 @@
 $( document ).ready(function() {
     const userID = $('#my-data').data("userid");
     //Stub
-    const distance = '300m'
+    let distance = '300m'
+    let size = '600'
     //End of Stub
-    loadAllShots(userID, distance)
-    function loadAllShots(userID, distance){
+    loadAllShots(userID, distance, size)
+    function loadAllShots(userID, distance, size){
         if (userID != null){
             $.ajax({
                 type: 'POST',
@@ -12,6 +13,7 @@ $( document ).ready(function() {
                 data: JSON.stringify({
                         'userID': userID,
                         'distance': distance,
+                        'size': size,
                         }),
                 success:(function (shotData) {
                     var heatmapInstance = h337.create({
@@ -26,10 +28,13 @@ $( document ).ready(function() {
                     heatmapInstance.setData(testData);
                     console.log(heatmapInstance.getData());
                     //TODO add slider to change intensity of heatmap
-                    let myTarget = new DrawTarget('title','300m', shotData['target'])
+                    let myTarget = new DrawTarget('title',distance, shotData['target'], null, size)
                     console.log(shotData['boxPlot'])
                     boxPlot(boxData['canvasID'], shotData['boxPlot'])
                     function boxPlot(canvasID, values) {
+                        var lowerbound = 0
+                        let lowest = values[0]
+                        lowerbound = Math.floor(lowest/5)*5
                         const ctx = document.getElementById("boxPlot").getContext('2d');
                         const myBar = new Chart(ctx, {
                           type: 'boxplot',
@@ -58,7 +63,7 @@ $( document ).ready(function() {
                              scales: {
                                       x: {
                                           max: 50,
-                                          min: 40,
+                                          min: lowerbound,
                                       }
                                   }
                           },
