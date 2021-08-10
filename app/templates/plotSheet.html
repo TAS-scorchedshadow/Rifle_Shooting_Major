@@ -62,46 +62,48 @@
     <script type="text/javascript" src="../static/js/groupingTarget.js"></script>
     <div class="container-fluid cover-container text-center">
         <div class="row flex-fill">
-            <div class="justify-content-center" style="width:800px">
-                <canvas id="title" style="border: 1px solid black"></canvas>
-                <script>
-                    let shotList = {{ data['jsonList']|safe }}; //TODO This is vulnerable to injections fix when we have time
-                    let newGroup = {{ data['newGroup']|safe }};
-                    let range = {{ data['range']|safe }};
-                    let groupX = {{ stage.groupX|safe }};
-                    let groupY = {{ stage.groupY|safe }};
-                    let groupSize = {{ stage.groupSize|safe }};
-                    let myTarget = new DrawTarget('title',range,shotList,[[groupX, groupY, groupSize]]);
-                </script>
-                <div class="card shadow border-0 mt-0 pt-0">
-                    <div class="row">
-                        <div class="col-12">
-                            <h4>{{ user.fName }} {{ user.sName }}</h4>
-                            <p>
-                                <div>{{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y %I:%M %p %Z") }}</div>
-                                <div>{{ stage.location }} - {{ stage.distance }}</div>
-                            </p>
+            <div class="col-md-6">
+                <div class="justify-content-center">
+                    <canvas id="title" style="border: 1px solid black"></canvas>
+                    <script>
+                        let shotList = {{ data['jsonList']|safe }}; //TODO This is vulnerable to injections fix when we have time
+                        let newGroup = {{ data['newGroup']|safe }};
+                        let range = {{ data['range']|safe }};
+                        let groupX = {{ stage.groupX|safe }};
+                        let groupY = {{ stage.groupY|safe }};
+                        let groupSize = {{ stage.groupSize|safe }};
+                        let myTarget = new DrawTarget('title',range,shotList,[[groupX, groupY, groupSize]]);
+                    </script>
+                    <div class="card shadow border-0 mt-0 pt-0">
+                        <div class="row">
+                            <div class="col-12">
+                                <h4>{{ user.fName }} {{ user.sName }}</h4>
+                                <p>
+                                    <div>{{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y %I:%M %p %Z") }}</div>
+                                    <div>{{ stage.location }} - {{ stage.distance }}</div>
+                                </p>
+                            </div>
                         </div>
+                        {% block notes %}
+                            <div>
+                                <h5>
+                                    Coaches Notes
+                                    <div class="spinner-border spinner-border-sm text-primary ml-2"
+                                         id="spinner" role="status" style="display: none; position: absolute">
+                                    </div>
+                                    <i id="tick" class="fa fa-check ml-2" aria-hidden="true" style="color: lawngreen; display: none; position: absolute"></i>
+                                </h5>
+                            </div>
+                            <div>
+                                 <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
+                            </div>
+                        {% endblock %}
+                    <!--<a class="btn btn-primary" href="#" role="button">&gt</a>-->
                     </div>
-                    {% block notes %}
-                        <div>
-                            <h5>
-                                Coaches Notes
-                                <div class="spinner-border spinner-border-sm text-primary ml-2"
-                                     id="spinner" role="status" style="display: none; position: absolute">
-                                </div>
-                                <i id="tick" class="fa fa-check ml-2" aria-hidden="true" style="color: lawngreen; display: none; position: absolute"></i>
-                            </h5>
-                        </div>
-                        <div>
-                             <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
-                        </div>
-                    {% endblock %}
-                <!--<a class="btn btn-primary" href="#" role="button">&gt</a>-->
+                    <br>
                 </div>
-                <br>
             </div>
-            <div class="col-lg col-md-12 h-100">
+            <div class="col-lg col-md-6 h-100">
                 <div class="row h-60">
                     <div class="pl-3 pr-1 d-none d-sm-flex">
                         <div class="card shadow border-0">
@@ -290,7 +292,7 @@
                             </div>
                         </div>
                 </div>
-        </div>
+            </div>
     </div>
 </div>
 {% endblock %}
