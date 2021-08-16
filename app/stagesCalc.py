@@ -109,7 +109,7 @@ def stats_of_period(userID, periodType, start, end):
 def stats_day(stages):
     """
     Finds the average and standard deviation for shots based off day
-    :param stages: List of stagess
+    :param stages: List of stages
     :return: Statistics in the form [{'avg': 48.5, 'stDev': 0.35, 'date': datetime.datetime(2021, 3, 27, 3, 5, 54)}, ....]
     """
     stats = []
@@ -135,12 +135,12 @@ def stats_day(stages):
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
         avg_stdv["date"] = date
+        print(avg_stdv)
         stats.append(avg_stdv)
 
     return stats
 
 def stats_week(stages):
-    print(stages)
     stats = []
     stagesList = []
     date = 0
@@ -150,7 +150,6 @@ def stats_week(stages):
     for stage in stages:
         year = (stage.timestamp).year
         time = datetime.date(stage.timestamp).isocalendar()[1]
-        print(time)
         if time == date and year == years:
             stagesList.append(stage)
             stats.pop(-1)
@@ -163,11 +162,12 @@ def stats_week(stages):
         avg_stdv = {}
         avgScore = sum(data[1]) / len(data[1])
         avgStdev = sum(data[3]) / len(data[3])
+        avg_stdv["timestamp"] = (data[0])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
+        avg_stdv["date"] = date
         stats.append(avg_stdv)
 
-    print(stats)
     return stats
 
 def stats_month(stages):
@@ -193,6 +193,7 @@ def stats_month(stages):
         avgStdev = sum(data[3]) / len(data[3])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
+        avg_stdv["date"] = date
         stats.append(avg_stdv)
 
     return stats
@@ -218,9 +219,12 @@ def stats_year(stages):
         avgStdev = sum(data[3]) / len(data[3])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
+        avg_stdv["date"] = date
         stats.append(avg_stdv)
 
     return stats
 
 
-
+day_start = datetime.strptime("1/1/2018", "%d/%m/%Y")
+day_end = datetime.strptime("12/12/2018", "%d/%m/%Y")
+stats_of_period(65, "day", day_start, day_end)
