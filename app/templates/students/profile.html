@@ -23,6 +23,41 @@
     const boxData = {{ boxData | safe }}
 </script>
 
+<!--JQuery Ui-->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  $( function() {
+    var dateFormat = "mm/dd/yy",
+      from = $( "#from" )
+        .datepicker({
+          defaultDate: "+1w",
+          changeMonth: true,
+          numberOfMonths: 1
+        })
+        .on( "change", function() {
+          to.datepicker( "option", "minDate", getDate( this ) );
+        }),
+      to = $( "#to" ).datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        numberOfMonths: 1
+      })
+      .on( "change", function() {
+        from.datepicker( "option", "maxDate", getDate( this ) );
+      });
+
+    function getDate( element ) {
+      var date;
+      try {
+        date = $.datepicker.parseDate( dateFormat, element.value );
+      } catch( error ) {
+        date = null;
+      }
+
+      return date;
+    }
+  } );
+</script>
 <!--Scripts for season stats page-->
 <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
 <script src=../static/heatmap.js-master/build/heatmap.min.js></script>
@@ -151,7 +186,16 @@ canvas {
                                 <div class="card" style="min-width:300px">
                                     <div class="card-body" id="recentShotsContainer">
                                         <div class="row">
-                                            <div class="col align-self-center">
+                                            <div class="justify-content-between">
+                                                <!--Input Dates-->
+                                                <div>
+                                                    <label for="from">From</label>
+                                                    <input type="text" id="from" name="from">
+                                                    <label for="to">to</label>
+                                                    <input type="text" id="to" name="to">
+                                                </div>
+                                                <button type="button" class="btn btn-primary" style="justify-self: end;">Go</button>
+                                                <!--Show shots-->
                                                 <div id="recentShots" class="container-fluid">
                                                     <script type="text/javascript" src="../static/js/recentShots.js"></script>
                                                 </div>
