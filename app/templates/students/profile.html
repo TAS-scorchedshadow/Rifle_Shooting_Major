@@ -3,14 +3,15 @@
 {% block page_title %} Profile {% endblock %}
 {% block page_content %}
 <!-- Profile page to view shooter's performance -->
-<!-- Rishi and Henry-->
-    <script
+<!--Henry (user info table by Rishi)-->
+<script
   src="https://code.jquery.com/jquery-3.5.1.min.js"
   integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-  crossorigin="anonymous"></script>
-    <!-- ChartJS modules -->
-<script src="https://unpkg.com/chart.js@3.3.2/dist/chart.js"></script>
+  crossorigin="anonymous">
 
+</script>
+<!-- ChartJS modules -->
+<script src="https://unpkg.com/chart.js@3.3.2/dist/chart.js"></script>
 <!-- Editable Table-->
 <script type="text/javascript" src="../static/js/table.js"></script>
 <!--Username Autofill-->
@@ -23,41 +24,40 @@
     const boxData = {{ boxData | safe }}
 </script>
 
-<!--JQuery Ui-->
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-  $( function() {
-    var dateFormat = "mm/dd/yy",
-      from = $( "#from" )
-        .datepicker({
-          defaultDate: "+1w",
-          changeMonth: true,
-          numberOfMonths: 1
-        })
-        .on( "change", function() {
-          to.datepicker( "option", "minDate", getDate( this ) );
-        }),
-      to = $( "#to" ).datepicker({
-        defaultDate: "+1w",
-        changeMonth: true,
-        numberOfMonths: 1
-      })
-      .on( "change", function() {
-        from.datepicker( "option", "maxDate", getDate( this ) );
-      });
+<!--Date range picker (see https://www.daterangepicker.com)-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-    function getDate( element ) {
-      var date;
-      try {
-        date = $.datepicker.parseDate( dateFormat, element.value );
-      } catch( error ) {
-        date = null;
-      }
+<script type="text/javascript">
+$(function() {
 
-      return date;
+    var start = moment().subtract(29, 'days');
+    var end = moment();
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
-  } );
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'This Year': [moment().startOf('year'), moment().endOf('year')],
+        }
+    }, cb);
+
+    cb(start, end);
+
+});
 </script>
+<!--Date range picker-->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 <!--Scripts for season stats page-->
 <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
 <script src=../static/heatmap.js-master/build/heatmap.min.js></script>
@@ -187,9 +187,10 @@ canvas {
                                     <div class="card-body" id="recentShotsContainer">
                                         <div class="row justify-content-center">
                                                 <!--Input Dates-->
-                                                <input type="text" id="from" name="from" placeholder="Start Date">
-                                                <input type="text" id="to" name="to" placeholder="End Date">
-                                                <button type="button" class="btn btn-primary" style="justify-self: end;">Go</button>
+                                                <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                                    <i class="fa fa-calendar"></i>&nbsp;
+                                                    <span id="date-selector"></span> <i class="fa fa-caret-down"></i>
+                                                </div>
                                         </div>
                                         <br>
                                         <!--Show shots-->

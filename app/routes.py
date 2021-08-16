@@ -309,7 +309,7 @@ def getAvgShotData():
     startDate = datetime.datetime.combine(startDate, datetime.datetime.min.time())
 
     userID = request.get_data().decode("utf-8")
-    stats = stats_of_period(userID, 'day', startDate, endDate)
+    stats = stats_of_period(userID, 'week', startDate, endDate)
     avgScores = []
     stDev = []
     timestamps = []
@@ -319,6 +319,7 @@ def getAvgShotData():
         timestamps.append(stage['date'])
     formattedTime = []
     for date in timestamps:
+        print(date)
         formattedTime.append(utc_to_nsw(date).strftime("%d/%m/%y"))
     graphData = jsonify({'scores': avgScores,
                          'times': formattedTime,
@@ -824,7 +825,16 @@ def getShots():
     userID = loadedData[0]
     # numLoaded are the number of tables already loaded
     numLoaded = loadedData[1]
-    stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
+    dateRange = loadedData[2]
+    if dateRange:
+        dates = dateRange.split(' - ')
+        print(dates)
+        startDate = datetime.datetime.strptime(dates[0], '%B %d, %Y')
+        endDate = datetime.datetime.strptime(dates[1], '%B %d, %Y')
+        print(startDate, endDate)
+        stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.userID == userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
+    else:
+        stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
     stagesList = []
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()

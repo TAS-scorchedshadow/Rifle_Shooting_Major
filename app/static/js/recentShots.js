@@ -1,12 +1,16 @@
 //By Henry Guo with some edit from Dylan Huynh
 $(document).ready(function(){
-    //TODO add loading symbols
     // const queryString = window.location.search;
     // const urlParams = new URLSearchParams(queryString);
     // const userID = urlParams.get('userID')
+    let dateRange = $('#date-selector').html();
     const userID = $('#my-data').data("userid");
-    loadTable(userID)
-    function loadTable(user){
+    loadTable(userID, dateRange);
+    function removeTables(){
+        $('.stage-overview').remove();
+        $('.no-stages-found').remove();
+    }
+    function loadTable(user, dateRange){
         if (userID != null){
             let numLoaded = $("div[class*='stage-overview']").length;
             $('#shotSpinner').toggleClass('d-flex');
@@ -14,7 +18,7 @@ $(document).ready(function(){
             $.ajax({
                 type: 'POST',
                 url: "/getShots",
-                data: JSON.stringify([user, numLoaded]),
+                data: JSON.stringify([user, numLoaded, dateRange]),
                 success:(function (data) {
                     console.log(data)
                     $('#shotSpinner').toggleClass('d-flex');
@@ -92,7 +96,7 @@ $(document).ready(function(){
                     }
                     else{
                         let htmlstring = `
-                        <div class="text-center align-items-center p-3">
+                        <div class="text-center align-items-center p-3 no-stages-found">
                             <h2>No Stages Found :(</h2>
                             <svg class="py-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2" style="width:10rem;">
                                <polygon class="logoCol" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
@@ -112,9 +116,19 @@ $(document).ready(function(){
             console.log('Error: No userID');
         }
     }
+    //Append more shoots when the more button has been clicked
     $('#moreShoots').click(function() {
             console.log('running loadTable');
             $(this).prop("disabled", true);
             loadTable(userID);
         })
+    //Check for date range change then update the shoots accordingly
+    $('#date-selector').on('DOMSubtreeModified', function () {
+      if ($(this).html() !== '') {
+          console.log($('#date-selector').html());
+          let dateRange = $('#date-selector').html();
+          removeTables();
+          loadTable(userID, dateRange);
+      }
+    });
 })

@@ -154,7 +154,7 @@ def stats_week(stages):
             stagesList.append(stage)
             stats.pop(-1)
         else:
-            date = time
+            date = (stage.timestamp).replace(hour=0, minute=0, second=0)
             years = year
             stagesList = [stage]
 
@@ -165,6 +165,7 @@ def stats_week(stages):
         avg_stdv["timestamp"] = (data[0])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
+        print(date)
         avg_stdv["date"] = date
         stats.append(avg_stdv)
 
@@ -183,7 +184,7 @@ def stats_month(stages):
             stagesList.append(stage)
             stats.pop(-1)
         else:
-            date = time.month
+            date = (stage.timestamp).replace(hour=0, minute=0, second=0)
             stage = time.year
             stagesList = [stage]
 
@@ -210,7 +211,7 @@ def stats_year(stages):
             stagesList.append(stage)
             stats.pop(-1)
         else:
-            date = time.year
+            date = (stage.timestamp).replace(hour=0, minute=0, second=0)
             stagesList = [stage]
 
         data = conversion(stagesList)
