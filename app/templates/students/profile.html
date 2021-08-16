@@ -185,21 +185,16 @@ canvas {
                         <div class="col-xl-6 col-md-6">
                                 <div class="card" style="min-width:300px">
                                     <div class="card-body" id="recentShotsContainer">
-                                        <div class="row">
-                                            <div class="justify-content-between">
+                                        <div class="row justify-content-center">
                                                 <!--Input Dates-->
-                                                <div>
-                                                    <label for="from">From</label>
-                                                    <input type="text" id="from" name="from">
-                                                    <label for="to">to</label>
-                                                    <input type="text" id="to" name="to">
-                                                </div>
+                                                <input type="text" id="from" name="from" placeholder="Start Date">
+                                                <input type="text" id="to" name="to" placeholder="End Date">
                                                 <button type="button" class="btn btn-primary" style="justify-self: end;">Go</button>
-                                                <!--Show shots-->
-                                                <div id="recentShots" class="container-fluid">
-                                                    <script type="text/javascript" src="../static/js/recentShots.js"></script>
-                                                </div>
-                                            </div>
+                                        </div>
+                                        <br>
+                                        <!--Show shots-->
+                                        <div id="recentShots" class="container-fluid">
+                                            <script type="text/javascript" src="../static/js/recentShots.js"></script>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 pb-2">
