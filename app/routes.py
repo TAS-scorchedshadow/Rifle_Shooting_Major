@@ -73,48 +73,8 @@ def landing():
 
 
 def plotsheet_calc(stage, user):
-    shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
-
-    arrx = []
-    arry = []
-    arrz = []
-    for shot in shots:
-        # distances = shot.positionfromCenterMOA(stage.distance)
-        # arrx.append(distances[0])
-        # arry.append(distances[1])
-        arrx.append(shot.xPos)
-        arry.append(shot.yPos)
-        arrz.append([shot.xPos,shot.yPos])
-    averageX = numpy.average(arrx)
-    averageY = numpy.average(arry)
-    nparrz = numpy.array(arrz)
-    d = { "xPos": numpy.asarray(arrx),
-         "yPos": numpy.asarray(arry),
-        "shot": numpy.asarray(shots)}
-    df = pd.DataFrame(d)
-    clustering = DBSCAN(eps=50, min_samples=2).fit_predict(nparrz)
-    cluster_labels = clustering.tolist()
-    print(cluster_labels)
-    # https://stackoverflow.com/questions/34782063/how-to-use-pandas-filter-with-iqr
-    Q1x = df['xPos'].quantile(0.25)
-    Q3x = df['xPos'].quantile(0.75)
-    IQRx = Q3x - Q1x
-    filteredByX = df.query('(@Q1x - 1.5 * @IQRx) <= xPos <= (@Q3x + 1.5 * @IQRx)')
-
-    Q1y = df['yPos'].quantile(0.25)
-    Q3y = df['yPos'].quantile(0.75)
-    IQRy = Q3y - Q1y
-    filteredBoth = filteredByX.query('(@Q1y - 1.5 * @IQRy) <= yPos <= (@Q3y + 1.5 * @IQRy)')
-    nonOutlier = filteredBoth.set_index('shot').T.to_dict('list')
-    totalDistance = 0
-    for shot in shots:
-        totalDistance += ((shot.xPos-averageX)**2 + (shot.yPos-averageY)**2)**0.5
-        if shot not in nonOutlier:
-            shot.outlier = True
-    averageDistance = totalDistance / len(shots)
-
+    shots = Shot.query.filter_by(stageID=stage.id).all()
     data = {}
-    data['newGroup'] = [averageX, averageY, 2 * averageDistance]
 
     formattedList = []
     scoreList = []
@@ -135,10 +95,10 @@ def plotsheet_calc(stage, user):
             else:
                 shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
         if shot.sighter:
-            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration,cluster_labels[i]])
+            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration,0])
             letter += 1
         else:
-            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration,cluster_labels[i]])
+            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration,0])
             num += 1
             shotTotal += shot.score
     jsonList = json.dumps(formattedList)

@@ -17,6 +17,7 @@ var targetFill = '#afafaf';
 var targetStroke = 'black';
 var groupColours = ['red', 'blue', 'green', 'yellow', 'brown']
 var shotFill = '#afafaf';
+var shotFillAlternatives = [shotFill,'#95b0b0','#b09595','#7db281']
 var shotStroke = 'black';
 var shotText = 'black';
 
@@ -259,7 +260,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         let shot_y = 0;
         let shot_num = '';
         let font_size = '';
-        let colours = [shotFill,'#95b0b0','#b09595','#7db281']
         for (let i=0; i<shotsLength; i++){
             shot_num = shots[i][0];
             shot_x = shots[i][1]*this.ratio;
@@ -268,11 +268,11 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
             this.c.beginPath();
             this.c.arc(this.x + (shot_x), this.y - (shot_y), this.shotRadius, 0, Math.PI * 2, false);
             this.c.fillStyle = shotFill;
-            //Check if outlier
-            if (shots[i][5] === true) {
-                this.c.fillStyle = 'red';
-            }
-            this.c.fillStyle = colours[shots[i][5]+1]
+            // //Check if outlier
+            // if (shots[i][5] === true) {
+            //     this.c.fillStyle = 'red';
+            // }
+            this.c.fillStyle = colours[shots[i][5]]
             this.c.fill();
             this.c.strokeStyle = shotStroke;
             this.c.lineWidth = this.dpr;
