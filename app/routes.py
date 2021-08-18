@@ -452,7 +452,7 @@ def upload():
         for item in stageList:
             if item['listID'] not in invalidListID:
                 # Uploads a stage
-                # todo: Need to add an ammoType column to the shot database
+                # todo: Need to add an ammoType column to the stage database
                 print(item['username'])
                 stage = Stage(id=item['id'], userID=userDict[item['username']],
                               timestamp=item['time'],
@@ -472,11 +472,15 @@ def upload():
             count["total"] += 1
         db.session.commit()
         print("DEBUG: Completed Upload")
-        if count["success"] == count["total"]: #successfully uploaded
+        if count["success"] == count["total"]:  # Successfully uploaded
+            for user in userList:
+                print(user)
+                print(stageList)
+                # doThing(user, stageList)
             stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
-        else:
+        else:                                   # Failed to upload
             stageList = invalidList
             count["total"] = 0
             for item in stageList:
