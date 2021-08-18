@@ -1,11 +1,37 @@
 $( document ).ready(function() {
     const userID = $('#my-data').data("userid");
     //Stub
-    let distance = '300m'
-    let size = '600'
+    var distance = '300m'
+    var size = '600'
     //End of Stub
     loadAllShots(userID, distance, size)
     function loadAllShots(userID, distance, size){
+        //generate the needed html if they are missing
+        console.log($('#heatMap').length)
+        if ($('#heatMap').length <= 0) {
+            let heatMapHtml = `
+              <div id='heatMap' style="width:600px; height:600px">
+              </div>
+            `;
+            $('#heatMapDiv').append(heatMapHtml);
+        }
+        if ($('#boxPlot').length <= 0) {
+            let boxPlotHtml = `
+                <canvas id="boxPlot"></canvas>
+            `;
+            $('#boxPlotDiv').append(boxPlotHtml);
+        }
+        if ($('#seasonLine').length <= 0) {
+            let seasonlineHtml = `
+            <div class="col-12" id="seasonlineDiv">
+                <div id="seasonLineDiv">
+                    <canvas id="seasonLine"></canvas>
+                </div>
+            </div>
+            `;
+            $('#seasonlineDiv').append(seasonlineHtml);
+        }
+        //load shots
         if (userID != null){
             $.ajax({
                 type: 'POST',
@@ -16,6 +42,10 @@ $( document ).ready(function() {
                         'size': size,
                         }),
                 success:(function (shotData) {
+                    //Add canvas for target (if missing)
+                    if ($('#title').length <= 0) {
+                        $('#heatMap').append(`<canvas class='canvas' id="title" style="border: 1px solid black"></canvas>`)
+                    }
                     var heatmapInstance = h337.create({
                       container: document.getElementById('heatMap')
                     });
@@ -73,4 +103,17 @@ $( document ).ready(function() {
             })
         }
     }
+    function removeGraphs() {
+        $('#heatMap').remove();
+        $('#boxPlot').remove();
+        $('#seasonlineDiv').remove();
+    }
+    $('#date-selector-season').on('DOMSubtreeModified', function () {
+      if ($(this).html() !== '') {
+          console.log($('#date-selector-season').html());
+          let dateRange = $('#date-selector-season').html();
+          removeGraphs();
+          loadAllShots(userID, distance, size);
+      }
+    });
 });

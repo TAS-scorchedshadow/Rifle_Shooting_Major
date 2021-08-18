@@ -927,6 +927,8 @@ def getAllShotsSeason():
         "548m": 915,
     };
     ratio = size/target_widths[dist]
+    print(size, dist)
+    print(ratio)
     data = {'heatmap': [], 'target': [], 'boxPlot': []}
     stages = Stage.query.filter_by(distance=dist, userID=userID).all()
     for stage in stages:
