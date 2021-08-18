@@ -80,12 +80,13 @@ def read_archive(uploaded, weeks):
                     # Append distance to list if it exists in data.txt
                     face_id = str(data['face_id'])
                     if face_id in data_text_dict:
-                        x = data_text_dict[face_id]['distance']
-                        if x % 100 == 0:
-                            data['distance'] = f"{x}m"
+                        distance = data_text_dict[face_id]['distance']
+                        if distance % 100 == 0:
+                            data['distance'] = f"{distance}m"
                             #print(data['distance'])
                         else:
-                            data['distance'] = f"{x}y"
+                            distance = round(distance * 1.094)
+                            data['distance'] = f"{distance}y"
                     # -- FINISH EDITING DATA --
 
                     # Check if the file was made in the last 2 years

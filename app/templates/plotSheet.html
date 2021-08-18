@@ -67,7 +67,7 @@
                     <canvas id="title" style="border: 1px solid black"></canvas>
                     <script>
                         let shotList = {{ data['jsonList']|safe }}; //TODO This is vulnerable to injections fix when we have time
-                        let newGroup = {{ data['newGroup']|safe }};
+                        //let newGroup = {{ data['newGroup']|safe }};
                         let range = {{ data['range']|safe }};
                         let groupX = {{ stage.groupX|safe }};
                         let groupY = {{ stage.groupY|safe }};
