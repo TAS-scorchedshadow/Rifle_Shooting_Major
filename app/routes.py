@@ -682,6 +682,7 @@ def profileList():
         if user.schoolYr == '12':
             year12 = year12 + 1
 
+
     return render_template('students/profileList.html', users=users, year7=year7, year8=year8, year9=year9, year10=year10, year11=year11, year12=year12)
 
 
