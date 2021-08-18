@@ -15,9 +15,12 @@
             <div class="row">
             {%  for user in users %}
                 {% if user.schoolYr == '7' %}
-                        <div class="col-2">
-                            <h6> {{ user.fName }} {{ user.sName }}</h6>
-                        </div>
+                    <div class="col-2">
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                </div>
+                            </div>
                     </div>
                 {%  endif %}
             {% endfor %}
@@ -39,7 +42,7 @@
             <h3> Year 9 </h3>
             <div class="row">
                 {%  for user in users %}
-                    {%  if user.schoolYr == '9' %}
+                    {%  if user.schoolYr == ' 9' %}
                         <div class="col-2">
                             <div class="card mt-3">
                                 <div class="card-body">
