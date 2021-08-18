@@ -11,89 +11,143 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h3> Year 7 </h3>
+            <h3> <u> Year 7 </u></h3>
             <div class="row">
-            {%  for user in users %}
-                {% if user.schoolYr == '7' %}
-                    <div class="col-2">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                </div>
-                            </div>
+             {%  if year8 == 0 %}
+                <div class="col-2">
+                    <div class="text-muted">
+                        Nobody's here. :(
                     </div>
-                {%  endif %}
-            {% endfor %}
-            </div>
-            <h3> Year 8 </h3>
-            <div class="row">
-                {%  for user in users %}
-                    {% if user.schoolYr == '8' %}
-                        <div class="col-2">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
+                </div>
+                {%  else %}
+                    {%  for user in users %}
+                        {% if user.schoolYr == '7' %}
+                            <div class="col-2">
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        <a href="#" class="stretched-link"></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {%  endif %}
-                {% endfor %}
+                        {%  endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
-            <h3> Year 9 </h3>
+            <h3><u> Year 8 </u></h3>
             <div class="row">
-                {%  for user in users %}
-                    {%  if user.schoolYr == ' 9' %}
-                        <div class="col-2">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                     <h6> {{ user.fName }} {{ user.sName }}</h6>
+            {%  if year8 == 0 %}
+                <div class="col-2">
+                    <div class="text-muted">
+                        Nobody's here. :(
+                    </div>
+                </div>
+                {%  else %}
+                    {%  for user in users %}
+                        {% if user.schoolYr == '8' %}
+                            <div class="col-2">
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        <a href="#" class="stretched-link"></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {%  endif %}
-                {% endfor %}
+                        {%  endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
-            <h3> Year 10 </h3>
+            <h3><u> Year 9 </u></h3>
             <div class="row">
-                {%  for user in users %}
-                    {% if user.schoolYr == '10' %}
-                        <div class="col-2">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
+            {%  if year9 == 0 %}
+                <div class="col-2">
+                    <div class="text-muted">
+                        Nobody's here. :(
+                    </div>
+                </div>
+                {%  else %}
+                    {%  for user in users %}
+                        {%  if user.schoolYr == ' 9' %}
+                            <div class="col-2">
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        <a href="#" class="stretched-link"></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {%  endif %}
-                {% endfor %}
+                        {%  endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
-            <h3> Year 11 </h3>
+            <h3><u> Year 10 </u></h3>
             <div class="row">
-                {%  for user in users %}
-                    {% if user.schoolYr == '11' %}
-                        <div class="col-2">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                     <h6> {{ user.fName }} {{ user.sName }}</h6>
+            {%  if year10 == 0 %}
+                <div class="col-2">
+                    <div class="text-muted">
+                        Nobody's here. :(
+                    </div>
+                </div>
+                {%  else %}
+                    {%  for user in users %}
+                        {% if user.schoolYr == '10' %}
+                            <div class="col-2">
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        <a href="#" class="stretched-link"></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {%  endif %}
-                {% endfor %}
+                        {%  endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
-            <h3> Year 12 </h3>
+            <h3><u> Year 11 </u></h3>
             <div class="row">
-                {%  for user in users %}
-                    {% if user.schoolYr == '12' %}
-                        <div class="col-2">
-                            <div class="card mt-3">
-                                <div class="card-body">
-                                    <h6> {{ user.fName }} {{ user.sName }}</h6>
+                {%  if year11 == 0 %}
+                <div class="col-2">
+                    <div class="text-muted">
+                        Nobody's here. :(
+                    </div>
+                </div>
+                {%  else %}
+                    {%  for user in users %}
+                        {% if user.schoolYr == '11' %}
+                            <div class="col-2">
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        <a href="#" class="stretched-link"></a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    {%  endif %}
-                {% endfor %}
+                        {%  endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <h3><u> Year 12 </u></h3>
+            <div class="row">
+                {%  if year12 == 0 %}
+                <div class="col-2">
+                    <div class="text-muted">
+                        Nobody's here. :(
+                    </div>
+                </div>
+                {%  else %}
+                    {%  for user in users %}
+                        {% if user.schoolYr == '12' %}
+                            <div class="col-2">
+                                <div class="card mt-3">
+                                    <div class="card-body">
+                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        <a href="#" class="stretched-link"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        {%  endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
