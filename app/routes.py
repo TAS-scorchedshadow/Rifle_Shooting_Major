@@ -658,12 +658,31 @@ def userList():
 
 @app.route('/profileList')
 @login_required
-# todo figure out why cards are not appearing
 def profileList():
     if not current_user.access > 1:
         return redirect(url_for('index'))
     users = User.query.order_by(User.username).all()
-    return render_template('students/profileList.html', users=users)
+    year7 = 0
+    year8 = 0
+    year9 = 0
+    year10 = 0
+    year11 = 0
+    year12 = 0
+    for user in users:
+        if user.schoolYr == '7':
+            year7 = year7 + 1
+        if user.schoolYr == '8':
+            year8 = year8 + 1
+        if user.schoolYr == '9':
+            year9 = year9 + 1
+        if user.schoolYr == '10':
+            year10 = year10 + 1
+        if user.schoolYr == '11':
+            year11 = year11 + 1
+        if user.schoolYr == '12':
+            year12 = year12 + 1
+
+    return render_template('students/profileList.html', users=users, year7=year7, year8=year8, year9=year9, year10=year10, year11=year11, year12=year12)
 
 
 @app.route('/emailSettings', methods=['POST'])
@@ -952,6 +971,7 @@ def LowestStage(userID):
         if stages[i] < stages[LowestStage]:
             LowestStage = stages[i]
     return LowestStage
+
 
 
 @app.route('/submitTable', methods=['POST'])
