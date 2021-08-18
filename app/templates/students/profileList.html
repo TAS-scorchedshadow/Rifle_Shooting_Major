@@ -2,6 +2,10 @@
 {% set active_page = "Profile List" %}
 {% block page_title %} Profile List {% endblock %}
 {% block page_content %}
+<!--Username Autofill-->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+<script type="text/javascript" src="../static/js/autofill.js" defer></script>
 <div class="jumbotron jumbotron-fluid">
     <div class=" text-center container-fluid justify-content-lg-center">
         <h1> Profile List </h1>
@@ -9,149 +13,156 @@
 </div>
     <!-- simple cards Andrew Tam -->
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <h3> <u> Year 7 </u></h3>
-            <div class="row">
-             {%  if year7 == 0 %}
-                <div class="col-2">
-                    <div class="text-muted">
-                        Nobody's here. :(
+    <form method="post">
+        <div class="row">
+            <label for="username"><i class="fas fa-search"></i></label>
+             <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user-search">
+            <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
+            <div class="col-12">
+                <h3> <u> Year 7 </u></h3>
+                <div class="row">
+                 {%  if year7 == 0 %}
+                    <div class="col-2">
+                        <div class="text-muted">
+                            Nobody's here. :(
+                        </div>
                     </div>
-                </div>
-                {%  else %}
-                    {%  for user in users %}
-                        {% if user.schoolYr == '7' %}
-                            <div class="col-lg-2 col-md-7 col-sm-12">
-                                <div class="card mt-3">
-                                    <div class="card-body">
-                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                        <a href="#" id="{{ user.id }}" class="stretched-link"></a>
+                    {%  else %}
+                        {%  for user in users %}
+                            {% if user.schoolYr == '7' %}
+                                <div class="col-lg-2 col-md-7 col-sm-12">
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                            <a href="#" id="{{ user.id }}" class="stretched-link"></a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {%  endif %}
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <h3><u> Year 8 </u></h3>
-            <div class="row">
-            {%  if year8 == 0 %}
-                <div class="col-2">
-                    <div class="text-muted">
-                        Nobody's here. :(
-                    </div>
+                            {%  endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                {%  else %}
-                    {%  for user in users %}
-                        {% if user.schoolYr == '8' %}
-                            <div class="col-lg-2 col-md-7 col-sm-12">
-                                <div class="card mt-3">
-                                    <div class="card-body">
-                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                        <a href="#" id="{{ user.id }}" class="stretched-link"></a>
+                <h3><u> Year 8 </u></h3>
+                <div class="row">
+                {%  if year8 == 0 %}
+                    <div class="col-2">
+                        <div class="text-muted">
+                            Nobody's here. :(
+                        </div>
+                    </div>
+                    {%  else %}
+                        {%  for user in users %}
+                            {% if user.schoolYr == '8' %}
+                                <div class="col-lg-2 col-md-7 col-sm-12">
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                            <a href="#" id="{{ user.id }}" class="stretched-link"></a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {%  endif %}
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <h3><u> Year 9 </u></h3>
-            <div class="row">
-            {%  if year9 == 0 %}
-                <div class="col-2">
-                    <div class="text-muted">
-                        Nobody's here. :(
-                    </div>
+                            {%  endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                {%  else %}
-                    {%  for user in users %}
-                        {%  if user.schoolYr == ' 9' %}
-                            <div class="col-lg-2 col-md-7 col-sm-12">
-                                <div class="card mt-3">
-                                    <div class="card-body" style="width=600px">
-                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                        <a href="#" id="{{ user.id }}" class="stretched-link"></a>
+                <h3><u> Year 9 </u></h3>
+                <div class="row">
+                {%  if year9 == 0 %}
+                    <div class="col-2">
+                        <div class="text-muted">
+                            Nobody's here. :(
+                        </div>
+                    </div>
+                    {%  else %}
+                        {%  for user in users %}
+                            {%  if user.schoolYr == ' 9' %}
+                                <div class="col-lg-2 col-md-7 col-sm-12">
+                                    <div class="card mt-3">
+                                        <div class="card-body" style="width=600px">
+                                            <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                            <a href="#" id="{{ user.id }}" class="stretched-link"></a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {%  endif %}
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <h3><u> Year 10 </u></h3>
-            <div class="row">
-            {%  if year10 == 0 %}
-                <div class="col-2">
-                    <div class="text-muted">
-                        Nobody's here. :(
-                    </div>
+                            {%  endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                {%  else %}
-                    {%  for user in users %}
-                        {% if user.schoolYr == '10' %}
-                            <div class="col-lg-2 col-md-7 col-sm-12">
-                                <div class="card mt-3">
-                                    <div class="card-body">
-                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                        <a href="#" class="stretched-link"></a>
+                <h3><u> Year 10 </u></h3>
+                <div class="row">
+                {%  if year10 == 0 %}
+                    <div class="col-2">
+                        <div class="text-muted">
+                            Nobody's here. :(
+                        </div>
+                    </div>
+                    {%  else %}
+                        {%  for user in users %}
+                            {% if user.schoolYr == '10' %}
+                                <div class="col-lg-2 col-md-7 col-sm-12">
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                            <a href="#" class="stretched-link"></a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {%  endif %}
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <h3><u> Year 11 </u></h3>
-            <div class="row">
-                {%  if year11 == 0 %}
-                <div class="col-2">
-                    <div class="text-muted">
-                        Nobody's here. :(
-                    </div>
+                            {%  endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                {%  else %}
-                    {%  for user in users %}
-                        {% if user.schoolYr == '11' %}
-                            <div class="col-lg-2 col-md-7 col-sm-12">
-                                <div class="card mt-3">
-                                    <div class="card-body" style="width=1000px">
-                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                        <a href="#" class="stretched-link"></a>
+                <h3><u> Year 11 </u></h3>
+                <div class="row">
+                    {%  if year11 == 0 %}
+                    <div class="col-2">
+                        <div class="text-muted">
+                            Nobody's here. :(
+                        </div>
+                    </div>
+                    {%  else %}
+                        {%  for user in users %}
+                            {% if user.schoolYr == '11' %}
+                                <div class="pl-2 pr-2">
+                                    <button class="card mt-3 pl-1 pr-1" style="width:300px" type="submit" onclick="document.getElementById('idInput').value = {{ user.id }}; console.log('code running')">
+                                        <div class="card-body" style="width:300px">
+                                            <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        </div>
+                                    </button>
+                                </div>
+                            {%  endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <h3><u> Year 12 </u></h3>
+                <div class="row">
+                    {%  if year12 == 0 %}
+                    <div class="col-2">
+                        <div class="text-muted">
+                            Nobody's here. :(
+                        </div>
+                    </div>
+                    {%  else %}
+                        {%  for user in users %}
+                            {% if user.schoolYr == '12' %}
+                                <div class="col-lg-2 col-md-7 col-sm-12">
+                                    <div class="card mt-3">
+                                        <div class="card-body">
+                                            <h6> {{ user.fName }} {{ user.sName }}</h6>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        {%  endif %}
-                    {% endfor %}
-                {% endif %}
-            </div>
-            <h3><u> Year 12 </u></h3>
-            <div class="row">
-                {%  if year12 == 0 %}
-                <div class="col-2">
-                    <div class="text-muted">
-                        Nobody's here. :(
-                    </div>
+                            {%  endif %}
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                {%  else %}
-                    {%  for user in users %}
-                        {% if user.schoolYr == '12' %}
-                            <div class="col-lg-2 col-md-7 col-sm-12">
-                                <div class="card mt-3">
-                                    <div class="card-body">
-                                        <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                        <a href="#" class="stretched-link"></a>
-                                    </div>
-                                </div>
-                            </div>
-                        {%  endif %}
-                    {% endfor %}
-                {% endif %}
             </div>
         </div>
-    </div>
+        <!--Hidden input to submit user id-->
+        <input type="text" id="idInput" style="display:none" name="user">
+    </form>
 </div>
+
+
 {%  endblock %}
 
 

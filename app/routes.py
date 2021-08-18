@@ -224,6 +224,7 @@ def profile():
     # user = User.query.filter_by(id=userID).first()
     if request.method == "POST":
         username = request.form['user']
+        print(request.form)
         if username:
             user = User.query.filter_by(username=username).first()
             flask_session['profileID'] = user.id
@@ -656,11 +657,20 @@ def userList():
     return render_template('userAuth/userList.html', users=users,mail_setting=os.environ["MAIL_SETTING"])
 
 
-@app.route('/profileList')
+@app.route('/profileList', methods=['GET', 'POST'])
 @login_required
 def profileList():
-    if not current_user.access > 1:
-        return redirect(url_for('index'))
+    if request.method == "POST":
+        print(request.form)
+        textInput = request.form['user-search']
+        cardInput = request.form['user']
+        if textInput:
+            user = User.query.filter_by(username=textInput).first()
+            flask_session['profileID'] = user.id
+            return redirect('/profile')
+        if cardInput:
+            flask_session['profileID'] = int(cardInput)
+            return redirect('/profile')
     users = User.query.order_by(User.username).all()
     year7 = 0
     year8 = 0

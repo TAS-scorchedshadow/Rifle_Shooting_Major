@@ -272,7 +272,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
             // if (shots[i][5] === true) {
             //     this.c.fillStyle = 'red';
             // }
-            this.c.fillStyle = colours[shots[i][5]]
             this.c.fill();
             this.c.strokeStyle = shotStroke;
             this.c.lineWidth = this.dpr;
