@@ -931,6 +931,25 @@ def groupAvg(userID):
 
     return groupXAvg, groupYAvg
 
+# By Andrew Tam
+def HighestStage(userID):
+    HighestStage = 0
+    stages = Stage.query.filter_by(userID=userID).all()
+    length = len(stages)
+    for i in range(length):
+        if stages[i] > stages[HighestStage]:
+            HighestStage = stages[i]
+    return HighestStage
+
+def LowestStage(userID):
+    LowestStage = 0
+    stages = Stage.query.filter_by(userID=userID).all()
+    length = len(stages)
+    for i in range(length):
+        if stages[i] < stages[LowestStage]:
+            LowestStage = stages[i]
+    return LowestStage
+
 
 @app.route('/submitTable', methods=['POST'])
 def submitTable():
