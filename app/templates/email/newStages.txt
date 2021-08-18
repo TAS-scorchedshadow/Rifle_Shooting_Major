@@ -1,0 +1,6 @@
+Recently uploaded stages
+{% for stage in stages %}
+            {{ (stage.timestamp|utc_to_nsw).strftime("%d %b %I:%M %p") }}
+            - {{ stage.location }} {{ stage.distance }} -
+{% endfor %}
+

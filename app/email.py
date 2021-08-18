@@ -4,9 +4,11 @@ from flask import render_template
 from flask_mail import Message
 from app import app, mail
 from app.models import User, Stage
+
+
 # Email functions adapted from examples from Flask-Mail's documentation by Dylan Huynh
 
-def send_email(subject ,recipients, text_body, html_body):
+def send_email(subject, recipients, text_body, html_body):
     """
     Sends an email to the relevant recipients
 
@@ -35,6 +37,7 @@ def send_password_reset_email(user):
                text_body=render_template('email/resetPassword.txt', user=user, token=token),
                html_body=render_template('email/resetPassword.html', user=user, token=token))
 
+
 def send_activation_email(user):
     """
     Sends a confirmation email to the newly registered user
@@ -46,6 +49,7 @@ def send_activation_email(user):
                recipients=[user.email],
                text_body=render_template('email/activate.txt', user=user, token=token),
                html_body=render_template('email/activate.html', user=user, token=token))
+
 
 # Dylan Huynh
 def send_report_email(banned_userIDs):
@@ -62,5 +66,17 @@ def send_report_email(banned_userIDs):
         if user.id not in banned_userIDs:
             userStages = [stage for stage in stages if stage.userID == user.id]
             if userStages and user.email:
-                send_email("Weekly Report",[user.email],render_template('email/weeklyReport.txt',tsBegin=tsBegin,tsNow=tsNow, user=user)
-                           ,render_template('email/weeklyReport.html', stages=stages))
+                send_email("Weekly Report", [user.email],
+                           render_template('email/weeklyReport.txt', tsBegin=tsBegin, tsNow=tsNow, user=user)
+                           , render_template('email/weeklyReport.html', stages=stages))
+
+
+def send_upload_email(user, stages):
+    """
+        Sends user an email notifying that the given stages has been uploaded
+
+        :param user: user object
+        :param stages: list of stage objects
+    """
+    send_email("New Stages", [user.email], render_template('email/weeklyReport.txt', user=user)
+               , render_template('email/weeklyReport.html', stages=stages))

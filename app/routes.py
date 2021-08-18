@@ -472,6 +472,7 @@ def upload():
             count["total"] += 1
         db.session.commit()
         print("DEBUG: Completed Upload")
+        #TODO mail thing does here
         if count["success"] == count["total"]: #successfully uploaded
             stageList = []
             alert[0] = "Success"
