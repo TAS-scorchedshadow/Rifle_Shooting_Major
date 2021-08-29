@@ -9,6 +9,7 @@ from app import app
 from app.models import Stage, User
 from app.uploadProcessing import checkSighter
 
+
 # Dylan Huynh
 # Compresses all zlib files at directory. Used for testing an uncompressed shot archive
 def decompress_all_zlib():
@@ -25,11 +26,13 @@ def decompress_all_zlib():
         f.write(decode)
         f.close()
 
+
 # Dylan Huynh
 def decompress_zlib(file):
     decompressed_data = zlib.decompress(file)
     decoded = decompressed_data.decode("utf-8")
     return decoded
+
 
 # Dylan Huynh
 def read_archive(uploaded, weeks):
@@ -83,8 +86,8 @@ def read_archive(uploaded, weeks):
                         distance = data_text_dict[face_id]['distance']
                         if distance % 100 == 0:
                             data['distance'] = f"{distance}m"
-                            #print(data['distance'])
-                        else:
+                            # print(data['distance'])
+                        else:  # Covert to yards if the distance is not a standard distance in metric units
                             distance = round(distance * 1.094)
                             data['distance'] = f"{distance}y"
                     # -- FINISH EDITING DATA --
@@ -116,6 +119,7 @@ def read_archive(uploaded, weeks):
 
     return stageList
 
+
 # Dylan Huynh
 def num_shots(data):
     num = 0
@@ -125,6 +129,7 @@ def num_shots(data):
             if not checkSighter(individualShot):
                 num += 1
     return num
+
 
 # Dylan Huynh
 def check_valid_group_info(data):

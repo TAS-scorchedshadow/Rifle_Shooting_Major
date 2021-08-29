@@ -24,6 +24,7 @@ import json
 import pandas as pd
 from sklearn.cluster import DBSCAN
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error/404.html'), 404
@@ -58,9 +59,11 @@ def change():
             print("group changed")
     return render_template('groupEditor.html')
 
+
 @app.route('/boxPlot')
 def boxPlot():
     return render_template('test.html')
+
 
 @app.route('/landing')
 def landing():
@@ -73,6 +76,15 @@ def landing():
 
 
 def plotsheet_calc(stage, user):
+    """
+        Calculating data required for the display of plotsheet.html
+
+        :parameter stage: Stage object
+        :parameter user: User object
+
+        :return: Landing html page
+    """
+    # Dylan
     shots = Shot.query.filter_by(stageID=stage.id).all()
     data = {}
 
@@ -83,39 +95,40 @@ def plotsheet_calc(stage, user):
     shotTotal = 0
     shotsList = [stat for stat in enumerate(shots)]
     shotDuration = 'N/A'
-    for i, shot in shotsList:
+    # Shot duration is calculated by the time between registered shots on the target --> 1st shot has no duration.
+    for idx, shot in shotsList:
         scoreList.append(shot.score)
-        if i == 0:
-            shotDuration = 'N/A'
-        else:
-            start = shotsList[i - 1][1].timestamp
+        if idx != 0:
+            start = shotsList[idx - 1][1].timestamp
             diff = (shot.timestamp - start).total_seconds()
             if int(diff / 60) == 0:
                 shotDuration = "{}s".format(int(diff % 60))
             else:
                 shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
         if shot.sighter:
-            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration,0])
+            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
             letter += 1
         else:
-            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration,0])
+            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
             num += 1
             shotTotal += shot.score
     jsonList = json.dumps(formattedList)
     data["jsonList"] = jsonList
 
-    # Stage Stats
+    # Formatting calculated data for the particular stage.
     stageResponse = stage.stageStats()
     stageStats = [round(stat, 2) for stat in stageResponse]
     stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
     stageStats[4] = stageDuration
     data['stageStats'] = stageStats
 
-    formattedList.append(
-        ["Total", 0, 0, str(shotTotal), stageDuration])  # Total appended to list to make display of shots easier
+    # Total appended to list to match the format of existing plot sheet
+    formattedList.append(["Total", 0, 0, str(shotTotal), stageDuration])
     data['formattedList'] = formattedList
 
-    # Day Stats
+    # Henry
+
+    # Calculating statistics for stages shot on the same day
     dayStages = stage.same_day()
     # dayX and dayY refers to the grouping coordinates
     dayX = 0
@@ -161,7 +174,6 @@ def plotsheet_calc(stage, user):
     data['seasonStats'] = seasonStats
 
     data['range'] = json.dumps(stage.distance)
-
 
     return data
 
@@ -473,12 +485,12 @@ def upload():
             count["total"] += 1
         db.session.commit()
         print("DEBUG: Completed Upload")
-        #TODO mail thing does here
-        if count["success"] == count["total"]: #successfully uploaded
+        # TODO mail thing does here
+        if count["success"] == count["total"]:  # successfully uploaded
             stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
-        else:                                   # Failed to upload
+        else:  # Failed to upload
             stageList = invalidList
             count["total"] = 0
             for item in stageList:
@@ -519,7 +531,7 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """
-    Allows user to register an account on the system
+    GET route displays registration form, POST route generates a new user object and uploads it to the database
 
     :return:
     """
@@ -554,7 +566,7 @@ def logout():
 @app.route('/emailActivation/<token>', methods=['GET', 'POST'])
 def emailActivation(token):
     """
-    TO BE FILLED
+    Deprecated
 
     :param token: TO BE FILLED
     :return: TO BE FILLED
@@ -613,7 +625,7 @@ def reset_password(token):
 @login_required
 def userList():
     """
-    List of all current users on the system
+    List of all current users on the system.
 
     :return: userList html
     """
@@ -654,7 +666,7 @@ def userList():
     #     print(f"New Users {newUsers}")
     #     print(f"Missing Users {missingUsers}")
     #     return render_template('userAuth/userList.html', users=users, newUsers=newUsers, missingUsers=missingUsers)
-    return render_template('userAuth/userList.html', users=users,mail_setting=os.environ["MAIL_SETTING"])
+    return render_template('userAuth/userList.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
 
 
 @app.route('/profileList', methods=['GET', 'POST'])
@@ -692,23 +704,26 @@ def profileList():
         if user.schoolYr == '12':
             year12 = year12 + 1
 
-
-    return render_template('students/profileList.html', users=users, year7=year7, year8=year8, year9=year9, year10=year10, year11=year11, year12=year12)
+    return render_template('students/profileList.html', users=users, year7=year7, year8=year8, year9=year9,
+                           year10=year10, year11=year11, year12=year12)
 
 
 @app.route('/emailSettings', methods=['POST'])
 def emailSettings():
+    """
+    AJAX route used to update the enviroment variable MAIL_SETTING
+
+    """
     setting = json.loads(request.get_data())
     os.environ["MAIL_SETTING"] = setting
-    print(os.environ["MAIL_SETTING"])
     return jsonify("complete")
+
 
 @app.route('/deleteAccount', methods=['POST'])
 def deleteAccount():
     """
-    Allows users to remove their account from the system
+    AJAX route for deleting user accounts. Route is accessible by admins through the buttons on the userList page
 
-    :return: TO BE FILLED
     """
     print('reached')
     data = request.get_data()
@@ -729,9 +744,9 @@ def deleteAccount():
 @app.route('/admin', methods=['POST'])
 def admin():
     """
-    TO BE FILLED
+     AJAX route for changing the account level of specific users.
+     Route is accessible by admins through the buttons on the userList page
 
-    :return: TO BE FILLED
     """
     data = request.get_data()
     loadedData = json.loads(data)
@@ -748,13 +763,11 @@ def admin():
         return jsonify({'access_lvl': state})
 
 
-# TODO merge both functions
 @app.route('/createAccount', methods=['POST'])
 def createAccount():
     """
-    TO BE FILLED
+    deprecated
 
-    :return: TO BE FILLED
     """
     data = request.get_data()
     loadedData = json.loads(data)
@@ -765,10 +778,13 @@ def createAccount():
 
 @app.route('/getGear', methods=['POST'])
 def getGear():
+    """
+     AJAX request to obtain gear data before display. Route accessible from plotsheet.html and profile.html
+
+    :return: JSON containing gear information
+    """
     # Function provides databse information for ajax request in gearSettings.js
-    print('reached')
     userID = request.get_data().decode("utf-8")
-    print(userID)
     user = User.query.filter_by(id=userID).first()
     if user:  # Handles if userID parameter is given but is not found in database
         return jsonify({'jacket': user.jacket, 'glove': user.glove,
@@ -780,6 +796,9 @@ def getGear():
 
 @app.route('/setGear', methods=['POST'])
 def setGear():
+    """
+         AJAX request to update the database with changes to the gear. Route accessible from plotsheet.html and profile.html
+    """
     # Function takes input information from gearSettings.js and makes appropiate changes to the database
     data = request.get_data()
     loadedData = json.loads(data)
@@ -823,7 +842,8 @@ def getShots():
         startDate = datetime.datetime.strptime(dates[0], '%B %d, %Y')
         endDate = datetime.datetime.strptime(dates[1], '%B %d, %Y')
         print(startDate, endDate)
-        stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.userID == userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
+        stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.userID == userID).order_by(
+            desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
     else:
         stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
     stagesList = []
@@ -886,7 +906,7 @@ def testHeatmap():
     for stage in stages:
         shots = Shot.query.filter_by(stageID=stage.id).all()
         for shot in shots:
-            data.append({'x': 2*shot.xPos + 600, 'y': 600 - 2*shot.yPos, 'value': 1})
+            data.append({'x': 2 * shot.xPos + 600, 'y': 600 - 2 * shot.yPos, 'value': 1})
             shotList.append(['1', shot.xPos, shot.yPos, shot.score])
     data = json.dumps(data)
     shotList = json.dumps(shotList)
@@ -917,7 +937,7 @@ def getAllShotsSeason():
         "457m": 915,
         "548m": 915,
     };
-    ratio = size/target_widths[dist]
+    ratio = size / target_widths[dist]
     print(size, dist)
     print(ratio)
     data = {'heatmap': [], 'target': [], 'boxPlot': []}
@@ -927,10 +947,11 @@ def getAllShotsSeason():
         shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
         for shot in shots:
             # TODO change the value 300 depending on the shoot distance
-            data['heatmap'].append({'x': round(shot.xPos*ratio + (size/2)), 'y': round(size/2 - shot.yPos*ratio), 'value': 1})
+            data['heatmap'].append(
+                {'x': round(shot.xPos * ratio + (size / 2)), 'y': round(size / 2 - shot.yPos * ratio), 'value': 1})
             data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
             totalScore += shot.score
-        fiftyScore = (totalScore/len(shots))*10
+        fiftyScore = (totalScore / len(shots)) * 10
         data['boxPlot'].append(fiftyScore)
     # Sort the scores for boxPlot so the lowest value can be taken. The lowest value is used to determine the lower bound of the box plot
     data['boxPlot'].sort()
@@ -964,6 +985,7 @@ def groupAvg(userID):
 
     return groupXAvg, groupYAvg
 
+
 # By Andrew Tam
 def HighestStage(userID):
     HighestStage = 0
@@ -973,6 +995,7 @@ def HighestStage(userID):
         if stages[i] > stages[HighestStage]:
             HighestStage = stages[i]
     return HighestStage
+
 
 def LowestStage(userID):
     LowestStage = 0
@@ -984,9 +1007,11 @@ def LowestStage(userID):
     return LowestStage
 
 
-
 @app.route('/submitTable', methods=['POST'])
 def submitTable():
+    """
+       AJAX request updates a user object(given by ID) with the new information provided in the table.
+    """
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
     userID = data[0]
@@ -998,7 +1023,7 @@ def submitTable():
         for field in tableDict:
             value = tableDict[field]
             if value != "None":
-                setattr(user, field,tableDict[field])
+                setattr(user, field, tableDict[field])
         db.session.commit()
 
     return jsonify({'success': 'success'})
@@ -1008,4 +1033,3 @@ def submitTable():
 def sendWeeklyReport(banned_IDs):
     send_report_email(banned_userIDs=banned_IDs)
     return
-
