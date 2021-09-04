@@ -337,11 +337,6 @@ ul.CTAs a {
     width: 50px;
 }
 
-.card-hover:hover .recent-header{
-    color: #1b1e21;
-    background-color: $secondary;
-    transition: 0.3s;
- }
 .recent-header{
     color: #ffffff;
     padding-bottom: 0px;
@@ -351,6 +346,13 @@ ul.CTAs a {
     font-size: 10rem
 }
 
+#tip {
+    position: absolute;
+    left: -200px;
+    top: 100px;
+    background-color: black;
+    border-radius: 6px;
+}
 /*
 
 ::-webkit-scrollbar {
