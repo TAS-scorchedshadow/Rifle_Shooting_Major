@@ -51,8 +51,8 @@ $(document).ready(function(){
                                                 <div class="col-4 align-self-center">
                                                     <p class="text-right" style="font-size:12px; color: black">
                                                         <a href="/target?stageID=${data[stage]['stageID']}" class="stage-view">
-                                                            <span><u>Show Sheet</u></span>
-                                                            <i class="fas fa-expand-alt"></i>
+                                                            <span><u style="color:black;">Show Sheet</u></span>
+                                                            <i class="fas fa-expand-alt" style="color:black;"></i>
                                                         </a>
                                                     </p>
                                                 </div>

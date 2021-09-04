@@ -1,16 +1,16 @@
 $( document ).ready(function() {
     const userID = $('#my-data').data("userid");
-    //Stub
+    //Initialise variables
     var distance = '300m'
     var size = '600'
-    //End of Stub
-    loadAllShots(userID, distance, size)
-    function loadAllShots(userID, distance, size){
+    var dateRange = $('#date-selector-season').html();
+    loadAllShots(userID, distance, size, dateRange)
+    function loadAllShots(userID, distance, size, dateRange){
         //generate the needed html if they are missing
         console.log($('#heatMap').length)
         if ($('#heatMap').length <= 0) {
             let heatMapHtml = `
-              <div id='heatMap' style="width:600px; height:600px">
+              <div class='pt-2' id='heatMap' style="width:600px; height:600px">
               </div>
             `;
             $('#heatMapDiv').append(heatMapHtml);
@@ -40,6 +40,7 @@ $( document ).ready(function() {
                         'userID': userID,
                         'distance': distance,
                         'size': size,
+                        'dateRange': dateRange,
                         }),
                 success:(function (shotData) {
                     //Add canvas for target (if missing)
@@ -111,9 +112,17 @@ $( document ).ready(function() {
     $('#date-selector-season').on('DOMSubtreeModified', function () {
       if ($(this).html() !== '') {
           console.log($('#date-selector-season').html());
-          let dateRange = $('#date-selector-season').html();
+          dateRange = $('#date-selector-season').html();
           removeGraphs();
-          loadAllShots(userID, distance, size);
+          loadAllShots(userID, distance, size, dateRange);
+      }
+    });
+    $('#select-range-span').on('DOMSubtreeModified', function () {
+      if ($(this).html() !== '') {
+          console.log($('#select-range-span').html());
+          distance = $('#select-range-span').html();
+          removeGraphs();
+          loadAllShots(userID, distance, size, dateRange);
       }
     });
 });

@@ -828,13 +828,13 @@ def getUsers():
 def getShots():
     """
     Collect shots for use in the recent shots card
-    :return:
     """
     data = request.get_data()
     loadedData = json.loads(data)
     userID = loadedData[0]
     # numLoaded are the number of tables already loaded
     numLoaded = loadedData[1]
+    # convert dateRange string into datetime objects
     dateRange = loadedData[2]
     if dateRange:
         dates = dateRange.split(' - ')
@@ -925,6 +925,13 @@ def getAllShotsSeason():
     dist = loadedInput['distance']
     userID = loadedInput['userID']
     size = int(loadedInput['size'])
+    dateRange = loadedInput['dateRange']
+    # need to confirm if time needs to be converted to UTC
+    dates = dateRange.split(' - ')
+    print(dates)
+    startDate = datetime.datetime.strptime(dates[0], '%B %d, %Y')
+    endDate = datetime.datetime.strptime(dates[1], '%B %d, %Y')
+    print(startDate, endDate)
     target_widths = {
         "300m": 600,
         "400m": 800,
@@ -941,7 +948,7 @@ def getAllShotsSeason():
     print(size, dist)
     print(ratio)
     data = {'heatmap': [], 'target': [], 'boxPlot': []}
-    stages = Stage.query.filter_by(distance=dist, userID=userID).all()
+    stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist, Stage.userID == userID).all()
     for stage in stages:
         totalScore = 0
         shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
@@ -949,7 +956,7 @@ def getAllShotsSeason():
             # TODO change the value 300 depending on the shoot distance
             data['heatmap'].append(
                 {'x': round(shot.xPos * ratio + (size / 2)), 'y': round(size / 2 - shot.yPos * ratio), 'value': 1})
-            data['target'].append(['1', shot.xPos, shot.yPos, shot.score])
+            data['target'].append(['', shot.xPos, shot.yPos, shot.score])
             totalScore += shot.score
         fiftyScore = (totalScore / len(shots)) * 10
         data['boxPlot'].append(fiftyScore)
