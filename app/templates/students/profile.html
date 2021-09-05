@@ -105,8 +105,12 @@ canvas {
     }
 .heatmap-canvas{
     pointer-events: none;
-
-
+}
+a.show-sheet {
+    color: black;
+}
+a.show-sheet:hover {
+    color: #3b5fbf;
 }
 </style>
     <div class="container-fluid" style="padding-bottom: 50px">
@@ -208,6 +212,7 @@ canvas {
                                         <br>
                                         <!--Show shots-->
                                         <div id="recentShots" class="container-fluid">
+                                            <!--Cards showing the stages will be added here-->
                                             <script type="text/javascript" src="../static/js/recentShots.js"></script>
                                         </div>
                                         <div class="row">
@@ -216,13 +221,14 @@ canvas {
                                                 </div>
                                             </div>
                                             <div class="col text-center">
-                                                <button id="moreShoots" class="btn btn-primary">Show More</button>
+                                                <button id="moreShoots" class="btn btn-primary" style="display: none;">Show More</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                         </div>
                         <div class="col-xl-6 col-lg-6">
+                            <!--Show line graph here-->
                             <script type="text/javascript" src="../static/js/overviewGraph.js"></script>
                             <div class="spinner-border text-primary justify-content-center" id="graphSpinner" role="status" style="margin: auto; padding: 10px;">
                             </div>

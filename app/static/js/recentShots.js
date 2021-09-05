@@ -43,15 +43,17 @@ $(document).ready(function(){
                                         <div class="card-header recent-header">
                                             <div class="row">
                                                 <div class="col-4 align-self-center">
-                                                    <p style="font-size:12px">${data[stage]['duration']}</p>
+                                                    <p class="text-left" style="font-size:12px; color: black">
+                                                    <i class="fas fa-clock"></i><span class="pl-1">${data[stage]['duration']}</span>
+                                                    </p>
                                                 </div>
                                                 <div class="col-4 align-self-center">
                                                     <p display="block" class="text-center" style="font-size:12px;">${data[stage]['timestamp']}</p>
                                                 </div>
                                                 <div class="col-4 align-self-center">
                                                     <p class="text-right" style="font-size:12px; color: black">
-                                                        <a href="/target?stageID=${data[stage]['stageID']}" class="stage-view">
-                                                            <span><u style="color:black;">Show Sheet</u></span>
+                                                        <a href="/target?stageID=${data[stage]['stageID']}" class="stage-view show-sheet" target="_blank">
+                                                            <span><u>Show Sheet</u></span>
                                                             <i class="fas fa-expand-alt" style="color:black;"></i>
                                                         </a>
                                                     </p>
@@ -94,6 +96,7 @@ $(document).ready(function(){
                         </div>
                         `;
                             $("#recentShots").append(htmlstring);
+                            $('#moreShoots').show();
                             $("#moreShoots").prop("disabled", false);
                         }
                     }
