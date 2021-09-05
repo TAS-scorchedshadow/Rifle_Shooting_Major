@@ -689,6 +689,7 @@ def userList():
 @app.route('/profileList', methods=['GET', 'POST'])
 @login_required
 def profileList():
+    # with assistance from Henry and using Dylan's existing code
     if request.method == "POST":
         print(request.form)
         textInput = request.form['user-search']
@@ -700,6 +701,7 @@ def profileList():
         if cardInput:
             flask_session['profileID'] = int(cardInput)
             return redirect('/profile')
+    #Andrew stuff
     users = User.query.order_by(User.username).all()
     year7 = 0
     year8 = 0
