@@ -15,13 +15,16 @@
 <div class="container-fluid">
     <form method="post">
         <div class="row">
-            <label for="username"><i class="fas fa-search"></i></label>
-             <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user-search">
-            <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
+            <div class="col-6" style="justify-self: center">
+                <label for="username"><i class="fas fa-search"></i></label>
+                <input id="username" placeholder="Find Shooter" class="user-searchbar w-50" autocomplete="off" name="user-search">
+                <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
+            </div>
             <div class="col-12">
                 <h3> <u> Year 7 </u></h3>
-                <div class="row">
-                 {%  if year7 == 0 %}
+                <div class="row" style="">
+                    <div class="col-12" style="justify-self: center">
+                    {%  if year7 == 0 %}
                     <div class="col-2">
                         <div class="text-muted">
                             Nobody's here. :(
@@ -30,21 +33,22 @@
                     {%  else %}
                         {%  for user in users %}
                             {% if user.schoolYr == '7' %}
-                                <div class="col-lg-2 col-md-7 col-sm-12">
-                                    <div class="card mt-3">
-                                        <div class="card-body">
+                                <div class="pl-2 pr-2" style="display: inline-flex;">
+                                    <button class="card mt-3 pl-1 pr-1" style="width:300px" type="submit" onclick="document.getElementById('idInput').value = {{ user.id }}; console.log('code running')">
+                                        <div class="card-body" style="width:300px">
                                             <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                            <a href="#" id="{{ user.id }}" class="stretched-link"></a>
                                         </div>
-                                    </div>
+                                    </button>
                                 </div>
                             {%  endif %}
                         {% endfor %}
                     {% endif %}
+                    </div>
                 </div>
                 <h3><u> Year 8 </u></h3>
-                <div class="row">
-                {%  if year8 == 0 %}
+                 <div class="row" style="">
+                    <div class="col-12" style="justify-self: center">
+                    {%  if year8 == 0 %}
                     <div class="col-2">
                         <div class="text-muted">
                             Nobody's here. :(
@@ -53,21 +57,22 @@
                     {%  else %}
                         {%  for user in users %}
                             {% if user.schoolYr == '8' %}
-                                <div class="col-lg-2 col-md-7 col-sm-12">
-                                    <div class="card mt-3">
-                                        <div class="card-body">
+                                <div class="pl-2 pr-2" style="display: inline-flex;">
+                                    <button class="card mt-3 pl-1 pr-1" style="width:300px" type="submit" onclick="document.getElementById('idInput').value = {{ user.id }}; console.log('code running')">
+                                        <div class="card-body" style="width:300px">
                                             <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                            <a href="#" id="{{ user.id }}" class="stretched-link"></a>
                                         </div>
-                                    </div>
+                                    </button>
                                 </div>
                             {%  endif %}
                         {% endfor %}
                     {% endif %}
+                    </div>
                 </div>
                 <h3><u> Year 9 </u></h3>
-                <div class="row">
-                {%  if year9 == 0 %}
+                <div class="row" style="">
+                    <div class="col-12" style="justify-self: center">
+                    {%  if year9 == 0 %}
                     <div class="col-2">
                         <div class="text-muted">
                             Nobody's here. :(
@@ -76,21 +81,22 @@
                     {%  else %}
                         {%  for user in users %}
                             {%  if user.schoolYr == ' 9' %}
-                                <div class="col-lg-2 col-md-7 col-sm-12">
-                                    <div class="card mt-3">
-                                        <div class="card-body" style="width=600px">
+                                <div class="pl-2 pr-2" style="display: inline-flex;">
+                                    <button class="card mt-3 pl-1 pr-1" style="width:300px" type="submit" onclick="document.getElementById('idInput').value = {{ user.id }}; console.log('code running')">
+                                        <div class="card-body" style="width:300px">
                                             <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                            <a href="#" id="{{ user.id }}" class="stretched-link"></a>
                                         </div>
-                                    </div>
+                                    </button>
                                 </div>
                             {%  endif %}
                         {% endfor %}
                     {% endif %}
+                    </div>
                 </div>
                 <h3><u> Year 10 </u></h3>
-                <div class="row">
-                {%  if year10 == 0 %}
+                <div class="row" style="">
+                    <div class="col-12" style="justify-self: center">
+                    {%  if year10 == 0 %}
                     <div class="col-2">
                         <div class="text-muted">
                             Nobody's here. :(
@@ -99,17 +105,17 @@
                     {%  else %}
                         {%  for user in users %}
                             {% if user.schoolYr == '10' %}
-                                <div class="col-lg-2 col-md-7 col-sm-12">
-                                    <div class="card mt-3">
-                                        <div class="card-body">
+                               <div class="pl-2 pr-2" style="display: inline-flex;">
+                                    <button class="card mt-3 pl-1 pr-1" style="width:300px" type="submit" onclick="document.getElementById('idInput').value = {{ user.id }}; console.log('code running')">
+                                        <div class="card-body" style="width:300px">
                                             <h6> {{ user.fName }} {{ user.sName }}</h6>
-                                            <a href="#" class="stretched-link"></a>
                                         </div>
-                                    </div>
+                                    </button>
                                 </div>
                             {%  endif %}
                         {% endfor %}
                     {% endif %}
+                    </div>
                 </div>
                 <h3><u> Year 11 </u></h3>
                 <div class="row" style="">
@@ -136,7 +142,8 @@
                     </div>
                 </div>
                 <h3><u> Year 12 </u></h3>
-                <div class="row">
+               <div class="row" style="">
+                    <div class="col-12" style="justify-self: center">
                     {%  if year12 == 0 %}
                     <div class="col-2">
                         <div class="text-muted">
@@ -146,16 +153,17 @@
                     {%  else %}
                         {%  for user in users %}
                             {% if user.schoolYr == '12' %}
-                                <div class="col-lg-2 col-md-7 col-sm-12">
-                                    <div class="card mt-3">
-                                        <div class="card-body">
+                                <div class="pl-2 pr-2" style="display: inline-flex;">
+                                    <button class="card mt-3 pl-1 pr-1" style="width:300px" type="submit" onclick="document.getElementById('idInput').value = {{ user.id }}; console.log('code running')">
+                                        <div class="card-body" style="width:300px">
                                             <h6> {{ user.fName }} {{ user.sName }}</h6>
                                         </div>
-                                    </div>
+                                    </button>
                                 </div>
                             {%  endif %}
                         {% endfor %}
                     {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
