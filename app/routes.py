@@ -44,6 +44,12 @@ def index():
     """
     if not current_user.is_authenticated:
         return redirect(url_for('landing'))
+    if request.method == "POST":
+        username = request.form['user']
+        if username:
+            user = User.query.filter_by(username=username).first()
+            flask_session['profileID'] = user.id
+            return redirect('/profile')
     return render_template('index.html')
 
 

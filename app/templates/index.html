@@ -2,6 +2,10 @@
 {% set active_page = "home" %}
 {% block page_title %} Admin Home {% endblock %}
 {% block page_content %}
+<!--Username Autofill-->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+<script type="text/javascript" src="../static/js/autofill.js" defer></script>
 
 <div class = "text-center justify-content-center">
     <div>
@@ -20,25 +24,32 @@
         <a href="/upload" class="custom-card">
           <div class="card linked-card h-100">
               <div class="inner">
-                  <img class="card-img-top" src="../static/images/upload.png" alt="Upload">
+                  <img class="card-img-top" src="../static/images/home-01.png" alt="Upload">
               </div>
               <div class="card-title">
                   <h4>Upload</h4>
               </div>
-              <p>Upload files from on site system</p>
+              <p>Upload archive files from <b>Silverback Mountain Targets</b>.</p>
           </div>
         </a>
     </div>
     <div class="col-10 col-md-4">
-        <a href="/" class="custom-card">
+        <a class="custom-card">
           <div class="card linked-card h-100">
               <div class="inner">
-                <img class="card-img-top" src="../static/images/findastudent.png" alt="Find A Student">
+                <img class="card-img-top" src="../static/images/home-02.png" alt="Find A Student">
               </div>
               <div class="card-title">
-                  <h4>Find A Shooter (WIP)</h4>
+                  <h4>Shooter Profile</h4>
               </div>
-               <p>Investigate the performance of a specific shooter.</p>
+               <p>A comprehensive overview of a shooter's performance.</p>
+              <div class="ui-widget pl-2">
+                    <form method="post">
+                        <label for="username"><i class="fas fa-search"></i></label>
+                         <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
+                        <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Go</button>
+                    </form>
+                </div>
           </div>
         </a>
     </div>
@@ -46,12 +57,12 @@
          <a href="/" class="custom-card">
           <div class="card linked-card h-100">
               <div class="inner">
-                <img class="card-img-top" src="../static/images/comparisons.png" alt="Comparisons">
+                <img class="card-img-top" src="../static/images/home-03.png" alt="Comparisons">
               </div>
               <div class="card-title">
-                  <h4>Comparisons (WIP)</h4>
+                  <h4>User Management</h4>
               </div>
-              <p>Line graphs, pie charts and other interesting visualisations!</p>
+              <p>Manage emails, delete accounts and designate admins.</p>
           </div>
         </a>
     </div>

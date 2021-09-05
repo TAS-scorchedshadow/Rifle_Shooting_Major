@@ -47,8 +47,8 @@
                     {% if current_user.access >= 1 %}
                     <li>
                         <a href="/profile">
-                            <i class="fas fa-user"></i>
-                            <span>User Profiles</span>
+                            <i class="fas fa-address-card"></i>
+                            <span>Shooter Profiles</span>
                         </a>
                     </li>
                     <li>
@@ -65,24 +65,6 @@
                                 <span>Manage Users</span>
                             </a>
                         </li>
-                         <li>
-                            <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">In development</a>
-                            <ul class="collapse list-unstyled" id="pageSubmenu">
-                                <li>
-                                    <a href="/profileList">
-                                        <i class="fas fa-user"></i>
-                                        <span>Profile List</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/table">
-                                        <i class="fas fa-chart-area"></i>
-                                        <span>Table</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
                     {% endif %}
                 {% endif %}
                 {% if current_user.is_authenticated %}
@@ -104,21 +86,21 @@
         </nav>
 
     {% endblock %}
-    <div id="content">
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-success text-center" role='alert'>
-                    <ul class="flashes" style="list-style-type: none">
-                    {% for message in messages %}
-                        <li><b>{{ message }}</b></li>
-                    {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-        {% endwith %}
+        <div id="content">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success text-center" role='alert'>
+                        <ul class="flashes" style="list-style-type: none">
+                        {% for message in messages %}
+                            <li><b>{{ message }}</b></li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-        {% block page_content %}
-        {% endblock %}
+            {% block page_content %}
+            {% endblock %}
         </div>
     </div>
 </body>
