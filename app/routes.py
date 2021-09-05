@@ -385,7 +385,6 @@ def table():
     return render_template('table.html', userID=userID, tableInfo=tableInfo)
 
 
-# Ryan T
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -474,19 +473,7 @@ def upload():
         db.session.commit()
         print("DEBUG: Completed Upload")
         #TODO mail thing does here
-        if count["success"] == count["total"]:  # successfully uploaded
-            stageClassList = []
-            for item in stageList:
-                stage = Stage(id=item['id'], userID=userDict[item['username']],
-                              timestamp=item['time'],
-                              groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
-                              distance=item['distance'], location=stageDefine['location'],
-                              notes="")
-                stageClassList.append(stage)
-            for user in userList:
-                print(user)
-                print(stageClassList)
-                # doThing(user, stageList)
+        if count["success"] == count["total"]: #successfully uploaded
             stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
