@@ -10603,12 +10603,6 @@ ul.CTAs a {
   width: 50px;
 }
 
-.card-hover:hover .recent-header {
-  color: #1b1e21;
-  background-color: #6086e5;
-  transition: 0.3s;
-}
-
 .recent-header {
   color: #ffffff;
   padding-bottom: 0px;

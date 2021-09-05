@@ -36,10 +36,10 @@ $(function() {
     var end = moment();
 
     function cb(start, end) {
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
 
-    $('#reportrange').daterangepicker({
+    $('.reportrange').daterangepicker({
         startDate: start,
         endDate: end,
         ranges: {
@@ -81,13 +81,6 @@ table.recentShotsTable{
     padding-left:0px;
     padding-right:0px;
 }
-#tip {
-    position: absolute;
-    left: -200px;
-    top: 100px;
-    background-color: black;
-    border-radius: 6px;
-}
 canvas {
       -moz-user-select: none;
       -webkit-user-select: none;
@@ -95,6 +88,14 @@ canvas {
     }
 .heatmap-canvas{
     pointer-events: none;
+
+a:link{
+    color: #051638
+}
+.stage-view:hover{
+    color: black
+}
+
 }
 </style>
     <div class="container-fluid" style="padding-bottom: 50px">
@@ -143,7 +144,7 @@ canvas {
                     </tbody>
                 </table>
             </div>
-            <div class="col-12 col-md-2 text-center">
+            <div class="col-12 col-md-2">
                 <button class="btn btn-primary btn-block edit">
                     <i class="fas fa-edit"></i>
                     Edit
@@ -188,7 +189,7 @@ canvas {
                                         <div class="row justify-content-center">
                                                 <p>Recent Stages</p>
                                                 <!--Input Dates-->
-                                                <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                                <div class="reportrange mx-4" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
                                                     <i class="fa fa-calendar"></i>&nbsp;
                                                     <span id="date-selector"></span> <i class="fa fa-caret-down"></i>
                                                 </div>
@@ -248,11 +249,11 @@ canvas {
                             </div>
                             <div class="row">
                                 <div class="col-2" id="settings-button">
-                                    <button type="button" class="btn btn-primary btn-lg btn-block edit">
+                                    <button type="button" class="btn btn-primary btn-lg btn-block edit h-100">
                                         <i class="fas fa-pencil-alt"></i>
                                         <h5>Edit</h5>
                                     </button>
-                                    <button type="button" class="btn btn-warning btn-lg btn-block submit" id="submit" style="display: none">
+                                    <button type="button" class="btn btn-warning btn-lg btn-block submit h-100" id="submit" style="display: none">
                                         <i class="fas fa-save"></i>
                                         <h5>Save</h5>
                                     </button>
@@ -307,22 +308,23 @@ canvas {
             </div>
             <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
                 <div class="container-fluid pt-2 pl-0 pr-0">
-                    <div class="row">
-                        <div class="col-xl-6">
+                    <div class="row" id="seasonRow1">
+                        <div class="col-xl-6" id="heatMapDiv">
+                              <div class="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                <i class="fa fa-calendar"></i>&nbsp;
+                                <span id="date-selector-season"></span> <i class="fa fa-caret-down"></i>
+                              </div>
                               <div id='heatMap' style="width:600px; height:600px">
-                                  <canvas class='canvas' id="title" style="border: 1px solid black"></canvas>
                               </div>
                         </div>
                         <div class="col-6">
                             <div class="row">
-                                <div class="col-12">
-                                    <div id="boxPlotDiv">
-                                        <canvas id="boxPlot"></canvas>
-                                    </div>
+                                <div class="col-12" id="boxPlotDiv">
+                                    <canvas id="boxPlot"></canvas>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-12" id="seasonlineDiv">
                                     <div id="seasonLineDiv">
                                         <canvas id="seasonLine"></canvas>
                                     </div>

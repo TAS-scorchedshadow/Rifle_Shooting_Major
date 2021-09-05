@@ -140,13 +140,13 @@ def stats_day(stages):
 
     return stats
 
+
 def stats_week(stages):
     stats = []
     stagesList = []
     date = 0
     years = 0
     stages.sort(key=lambda x: x.timestamp, reverse=False)
-
     for stage in stages:
         year = (stage.timestamp).year
         time = datetime.date(stage.timestamp).isocalendar()[1]
@@ -154,22 +154,21 @@ def stats_week(stages):
             stagesList.append(stage)
             stats.pop(-1)
         else:
-            date = (stage.timestamp).replace(hour=0, minute=0, second=0)
+            date = time
             years = year
             stagesList = [stage]
-
         data = conversion(stagesList)
         avg_stdv = {}
         avgScore = sum(data[1]) / len(data[1])
         avgStdev = sum(data[3]) / len(data[3])
-        avg_stdv["timestamp"] = (data[0])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
-        print(date)
-        avg_stdv["date"] = date
+        avg_stdv["date"] = data[0][0]
         stats.append(avg_stdv)
 
+    print(stats)
     return stats
+
 
 def stats_month(stages):
     stats = []
@@ -177,24 +176,22 @@ def stats_month(stages):
     date = 0
     years = 0
     stages.sort(key=lambda x: x.timestamp, reverse=False)
-
     for stage in stages:
         time = (stage.timestamp)
         if time.month == date and time.year == years:
             stagesList.append(stage)
             stats.pop(-1)
         else:
-            date = (stage.timestamp).replace(hour=0, minute=0, second=0)
+            date = time.month
             stage = time.year
             stagesList = [stage]
-
         data = conversion(stagesList)
         avg_stdv = {}
         avgScore = sum(data[1]) / len(data[1])
         avgStdev = sum(data[3]) / len(data[3])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
-        avg_stdv["date"] = date
+        avg_stdv["date"] = data[0]
         stats.append(avg_stdv)
 
     return stats
@@ -204,23 +201,21 @@ def stats_year(stages):
     stagesList = []
     date = 0
     stages.sort(key=lambda x: x.timestamp, reverse=False)
-
     for stage in stages:
         time = (stage.timestamp)
         if time.year == date:
             stagesList.append(stage)
             stats.pop(-1)
         else:
-            date = (stage.timestamp).replace(hour=0, minute=0, second=0)
+            date = time.year
             stagesList = [stage]
-
         data = conversion(stagesList)
         avg_stdv = {}
         avgScore = sum(data[1]) / len(data[1])
         avgStdev = sum(data[3]) / len(data[3])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
-        avg_stdv["date"] = date
+        avg_stdv["date"] = data[0]
         stats.append(avg_stdv)
 
     return stats

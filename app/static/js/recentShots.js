@@ -39,53 +39,56 @@ $(document).ready(function(){
                         <div class="stage-overview">
                             <div class="row">
                                 <div class="col-12 pb-4">
-                                    <a href="/target?stageID=${data[stage]['stageID']}" target="_blank">
-                                        <div class="card shadow border-0 card-hover">
-                                            <div class="card-header recent-header">
-                                                <div class="row">
-                                                    <div class="col-4 align-self-center">
-                                                        <p style="font-size:12px">${data[stage]['duration']}</p>
-                                                    </div>
-                                                    <div class="col-4 align-self-center">
-                                                        <p display="block" class="text-center" style="font-size:12px;">${data[stage]['timestamp']}</p>
-                                                    </div>
-                                                    <div class="col-4 align-self-center">
-                                                        <p class="text-right" style="font-size:12px"></p>
-                                                    </div>
+                                    <div class="card shadow border-0 card-hover">
+                                        <div class="card-header recent-header">
+                                            <div class="row">
+                                                <div class="col-4 align-self-center">
+                                                    <p style="font-size:12px">${data[stage]['duration']}</p>
+                                                </div>
+                                                <div class="col-4 align-self-center">
+                                                    <p display="block" class="text-center" style="font-size:12px;">${data[stage]['timestamp']}</p>
+                                                </div>
+                                                <div class="col-4 align-self-center">
+                                                    <p class="text-right" style="font-size:12px; color: black">
+                                                        <a href="/target?stageID=${data[stage]['stageID']}" class="stage-view">
+                                                            <span><u>Show Sheet</u></span>
+                                                            <i class="fas fa-expand-alt"></i>
+                                                        </a>
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div class="recent-body">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-sm table-bordered recentShotsTable">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th style='width: 50px;'>Range</th>
-                                                                        <th style='width: 62px;'>Sighters</th>
-                                                                        <th>Shots</th>
-                                                                        <th style='width: 43px;'>Total</th>
-                                                                        <th style='width: 48px;'>Group</th>
-                                                                        <th style='width: 37px;'>Std</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <th>${data[stage]['distance']}</th>
-                                                                        <th>${htmlSighters}</th>
-                                                                        <th>${htmlScoresBody}</th>
-                                                                        <th>${data[stage]['totalScore']}</th>
-                                                                        <th>${data[stage]['groupSize']}</th>
-                                                                        <th>${data[stage]['std']}</th>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                        </div>
+                                        <div class="recent-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm table-bordered recentShotsTable">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th style='width: 50px;'>Range</th>
+                                                                    <th style='width: 62px;'>Sighters</th>
+                                                                    <th>Shots</th>
+                                                                    <th style='width: 43px;'>Total</th>
+                                                                    <th style='width: 48px;'>Group</th>
+                                                                    <th style='width: 37px;'>Std</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th>${data[stage]['distance']}</th>
+                                                                    <th>${htmlSighters}</th>
+                                                                    <th>${htmlScoresBody}</th>
+                                                                    <th>${data[stage]['totalScore']}</th>
+                                                                    <th>${data[stage]['groupSize']}</th>
+                                                                    <th>${data[stage]['std']}</th>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>

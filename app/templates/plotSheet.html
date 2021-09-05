@@ -61,8 +61,16 @@
     <script type="text/javascript" src="../static/js/targetAjax.js"></script>
     <script type="text/javascript" src="../static/js/groupingTarget.js"></script>
     <div class="container-fluid cover-container text-center">
+        <br>
         <div class="row flex-fill">
             <div class="col-md-6">
+                <div class="justify-content-start">
+                    <a href="/profile" class="btn btn-primary btn-block" role="button">
+                        <i class="fas fa-backward"></i>
+                        Return to {{ user.fName }} {{ user.sName }}'s Profile
+                    </a>
+                </div>
+                <br>
                 <div class="justify-content-center">
                     <canvas id="title" style="border: 1px solid black"></canvas>
                     <script>
