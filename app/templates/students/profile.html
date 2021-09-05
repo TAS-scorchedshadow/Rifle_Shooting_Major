@@ -35,21 +35,38 @@ $(function() {
     var start = moment().subtract(29, 'days');
     var end = moment();
 
-    function cb(start, end) {
-        $('.reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    function cbStages(start, end) {
+        $('.selectStages span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+    function cbSeason(start, end) {
+        $('.selectSeason span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
 
-    $('.reportrange').daterangepicker({
+    $('.selectStages').daterangepicker({
         startDate: start,
         endDate: end,
+        "showDropdowns": true,
         ranges: {
            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
            'This Month': [moment().startOf('month'), moment().endOf('month')],
            'This Year': [moment().startOf('year'), moment().endOf('year')],
         }
-    }, cb);
+    }, cbStages);
 
-    cb(start, end);
+    $('.selectSeason').daterangepicker({
+        startDate: start,
+        endDate: end,
+        "showDropdowns": true,
+        ranges: {
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'This Year': [moment().startOf('year'), moment().endOf('year')],
+        }
+    }, cbSeason);
+
+    cbStages(start, end);
+    cbSeason(start, end);
+
 
 });
 </script>
@@ -89,12 +106,6 @@ canvas {
 .heatmap-canvas{
     pointer-events: none;
 
-a:link{
-    color: #051638
-}
-.stage-view:hover{
-    color: black
-}
 
 }
 </style>
@@ -170,7 +181,7 @@ a:link{
                 <a class="nav-link" id="season-tab" data-toggle="tab" href="#season" role="tab" aria-controls="season" aria-selected="false">Season Stats</a>
             </li>
             {% if current_user.access >= 1 %}
-                <div class="ui-widget">
+                <div class="ui-widget pl-2">
                     <form method="post">
                         <label for="username"><i class="fas fa-search"></i></label>
                          <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
@@ -189,7 +200,7 @@ a:link{
                                         <div class="row justify-content-center">
                                                 <p>Recent Stages</p>
                                                 <!--Input Dates-->
-                                                <div class="reportrange mx-4" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                                <div class="selectStages mx-4" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
                                                     <i class="fa fa-calendar"></i>&nbsp;
                                                     <span id="date-selector"></span> <i class="fa fa-caret-down"></i>
                                                 </div>
@@ -310,11 +321,24 @@ a:link{
                 <div class="container-fluid pt-2 pl-0 pr-0">
                     <div class="row" id="seasonRow1">
                         <div class="col-xl-6" id="heatMapDiv">
-                              <div class="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                              <div class="selectSeason pb-2" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; display:inline;">
                                 <i class="fa fa-calendar"></i>&nbsp;
                                 <span id="date-selector-season"></span> <i class="fa fa-caret-down"></i>
                               </div>
-                              <div id='heatMap' style="width:600px; height:600px">
+                              <div class="dropdown pl-2" style="display:inline; position:static;">
+                                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                      <span id="select-range-span">300m</span> <i class="fa fa-caret-down" style="color: white;"></i>
+                                  </button>
+                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '300m'">300m</a>
+                                    <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '400m'">400m</a>
+                                    <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '500m'">500m</a>
+                                    <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '600m'">600m</a>
+                                    <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
+                                    <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
+                                  </div>
+                              </div>
+                              <div class="pt-2" id='heatMap' style="width:600px; height:600px">
                               </div>
                         </div>
                         <div class="col-6">
