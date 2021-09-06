@@ -14,7 +14,7 @@ from werkzeug.urls import url_parse
 from app import app, db, mail
 from app.forms import *
 from app.models import User, Stage, Shot
-from app.email import send_password_reset_email, send_activation_email, send_report_email
+from app.email import send_password_reset_email, send_activation_email, send_report_email, send_upload_email
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
@@ -44,6 +44,8 @@ def index():
     """
     if not current_user.is_authenticated:
         return redirect(url_for('landing'))
+    if current_user.access == 0:
+        return redirect(url_for('profile'))
     searchError = False
     if request.method == "POST":
         username = request.form['user']
@@ -385,7 +387,6 @@ def upload():
             count["total"] += 1
         db.session.commit()
         print("DEBUG: Completed Upload")
-        # TODO mail thing does here
         if count["success"] == count["total"]:  # successfully uploaded
             stageClassList = []
             for item in stageList:
@@ -398,7 +399,8 @@ def upload():
             for user in userList:
                 print(user)
                 print(stageClassList)
-                # doThing(user, stageList)
+                if os.environ["MAIL_SETTING"] == 2:
+                    send_upload_email(user, stageList)
             stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
