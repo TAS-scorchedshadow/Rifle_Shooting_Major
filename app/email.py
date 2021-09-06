@@ -78,5 +78,7 @@ def send_upload_email(user, stages):
         :param user: user object
         :param stages: list of stage objects
     """
-    send_email("New Stages", [user.email], render_template('email/weeklyReport.txt', user=user)
-               , render_template('email/weeklyReport.html', stages=stages))
+    send_email('[Riflelytics] New Stages have been uploaded',
+               recipients=[user.email],
+               text_body=render_template('email/newStages.txt', user=user, stages=stages),
+               html_body=render_template('email/newStages.html', user=user, stages=stages))

@@ -42,6 +42,11 @@ def index():
 
     :return: Index html page
     """
+    user = User.query.filter_by(username="sbhs.admin").first()
+    stages = Stage.query.filter_by(userID=user.id).all()
+    print(user)
+    print(stages)
+    send_upload_email(user,stages)
     if not current_user.is_authenticated:
         return redirect(url_for('landing'))
     if current_user.access == 0:
