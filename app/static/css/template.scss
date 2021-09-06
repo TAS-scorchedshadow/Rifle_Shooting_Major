@@ -1,75 +1,13 @@
-//Sidebar by Dylan
-//Rest by Henry
 
-/*
-    DEMO STYLE
-    Taken from https://bootstrapious.com/p/bootstrap-sidebar
-*/
+/* ---------------------------------------------------
+    HENRY'S CODE
+----------------------------------------------------- */
 
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #fafafa;
-}
+/* ---------------------------------------------------
+    MODIFYING BOOTSTRAP
+----------------------------------------------------- */
 
-p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
-    font-weight: 300;
-    line-height: 1.7em;
-    color: #999;
-}
-
-a.custom-card:hover {
-  color: inherit;
-}
-
-.linked-card:hover{
-    -webkit-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
-    -moz-box-shadow: -1px 9px 40px -12px rgba(0,0,0,0.75);
-    box-shadow: -5px 9px 40px -12px rgba(0,0,0,0.75);
-}
-
-.navbar {
-    padding: 15px 10px;
-    background: #fff;
-    border: none;
-    border-radius: 0;
-    margin-bottom: 40px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-btn {
-    box-shadow: none;
-    outline: none !important;
-    border: none;
-}
-
-.line {
-    width: 100%;
-    height: 1px;
-    border-bottom: 1px dashed #ddd;
-    margin: 40px 0;
-}
-
-.inner{
-    overflow: hidden;
-}
-
-.inner img{
-    transition: all 1.2s ease;
-}
-
-.inner:hover img{
-    transform: scale(1.2);
-}
-
-//Modifying bootstrap css
-//Color palette where 1 is the primary color
-// 2 is the secondary color
-// 3 is the background color
-// 4 is the background of the cards
-// 5 is the header of the cards
+//Color palette
 $secondary: #6086e5;
 $primary: #84ceeb;
 $bg: #ffffff;
@@ -95,7 +33,9 @@ $link-hover-decoration : none;
 
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
-//Alerts
+/* ---------------------------------------------------
+    ALERTS
+----------------------------------------------------- */
 .alert-secondary {
   color: #121415;
   background-color: $bg-highlight-1 !important;
@@ -105,7 +45,9 @@ $link-hover-decoration : none;
   border-top-color: #b4b5b6;
 }
 
-//Tab Headers
+/* ---------------------------------------------------
+    TAB HEADERS
+----------------------------------------------------- */
 .nav-tabs {
   .nav-link.active,
   .nav-item.show .nav-link {
@@ -113,15 +55,55 @@ $link-hover-decoration : none;
     background-color: $bg-highlight-1 !important;
   }
 }
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+/* ---------------------------------------------------
+    CARDS
+----------------------------------------------------- */
+.card {
+    background-color: $bg-highlight-1;
+}
+.card-header{
+    background-color: $bg-highlight-2;
+}
 
 
-//Non-bootstrap css
-
-//General
-
-body{
+/* ---------------------------------------------------
+    SET FONTS AND COLORS
+----------------------------------------------------- */
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+    font-family: 'Poppins', sans-serif;
     background-color: $bg;
 }
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
 
 .background-light{
     background-color: $bg-highlight-2;
@@ -139,15 +121,8 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     color: $txt-color;
 }
 
-.card {
-    background-color: $bg-highlight-1;
-}
-
 .modal-content{
     background-color: $bg-highlight-1;
-}
-.card-header{
-    background-color: $bg-highlight-2;
 }
 
 .input-group-text{
@@ -155,7 +130,6 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     color: $txt-color;
     border: 1px solid $bg-highlight-2;
 }
-
 .text-primary{
     color: $primary;
 }
@@ -173,36 +147,6 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 
 .fa-clock{
     color: white;
-}
-
-a[data-toggle="collapse"] {
-    position: relative;
-}
-
-.dropdown-toggle::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-}
-
-ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: $bg
-}
-
-ul.CTAs {
-    padding: 20px;
-}
-
-ul.CTAs a {
-    text-align: center;
-    font-size: 0.9em !important;
-    display: block;
-    border-radius: 5px;
-    margin-bottom: 5px;
 }
 
 .fnt-play{
@@ -228,6 +172,26 @@ ul.CTAs a {
     top: 100px;
     background-color: black;
     border-radius: 6px;
+}
+
+/* ---------------------------------------------------
+    DYLAN'S CODE
+----------------------------------------------------- */
+
+/* ---------------------------------------------------
+    IMAGES ON HOME PAGE
+----------------------------------------------------- */
+
+.inner{
+    overflow: hidden;
+}
+
+.inner img{
+    transition: all 1.2s ease;
+}
+
+.inner:hover img{
+    transform: scale(1.2);
 }
 
 /* ---------------------------------------------------
