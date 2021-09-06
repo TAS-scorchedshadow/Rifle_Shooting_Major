@@ -1,3 +1,6 @@
+//Sidebar by Dylan
+//Rest by Henry
+
 /*
     DEMO STYLE
     Taken from https://bootstrapious.com/p/bootstrap-sidebar
@@ -172,6 +175,60 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     color: white;
 }
 
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: $bg
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.fnt-play{
+    font-family: 'Play', sans-serif;
+}
+
+.logo{
+    width: 50px;
+}
+
+.recent-header{
+    color: #ffffff;
+    padding-bottom: 0px;
+}
+
+.big-fnt{
+    font-size: 10rem
+}
+
+#tip {
+    position: absolute;
+    left: -200px;
+    top: 100px;
+    background-color: black;
+    border-radius: 6px;
+}
 
 /* ---------------------------------------------------
     SIDEBAR STYLE (Extracted to studentSidebar.css)
@@ -199,7 +256,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     MEDIAQUERIES
 ----------------------------------------------------- */
 
-//Small Screens TODO figure out the weird location with opening window
+//Small Screens
 @media (max-width: 768px) {
     #sidebar {
         top: 0;
@@ -299,60 +356,6 @@ a[aria-expanded="true"] {
     background: $bg;
 }
 
-a[data-toggle="collapse"] {
-    position: relative;
-}
-
-.dropdown-toggle::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-}
-
-ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: $bg
-}
-
-ul.CTAs {
-    padding: 20px;
-}
-
-ul.CTAs a {
-    text-align: center;
-    font-size: 0.9em !important;
-    display: block;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
-
-.fnt-play{
-    font-family: 'Play', sans-serif;
-}
-
-.logo{
-    width: 50px;
-}
-
-.recent-header{
-    color: #ffffff;
-    padding-bottom: 0px;
-}
-
-.big-fnt{
-    font-size: 10rem
-}
-
-#tip {
-    position: absolute;
-    left: -200px;
-    top: 100px;
-    background-color: black;
-    border-radius: 6px;
-}
 /*
 
 ::-webkit-scrollbar {
