@@ -5,7 +5,6 @@ $( document ).ready(function() {
     loadTable(stageID)
     function loadTable(stage){
         if (stageID != null){
-            console.log(stage)
             $.ajax({
                 type: 'POST',
                 url: "/getTargetStats",

@@ -45,7 +45,7 @@ function lineGraph(dateData, scores){
         data: {
             labels: dateData,
             datasets: [{
-                label: 'Averages',
+                label: 'Total Score',
                 backgroundColor: 'rgba(0, 0, 0, 0.1)',
                 borderColor: 'rgba(255,0,0,1)',
                 borderWidth: 1,
