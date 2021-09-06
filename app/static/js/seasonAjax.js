@@ -1,6 +1,7 @@
 $( document ).ready(function() {
     const userID = $('#my-data').data("userid");
     //Initialise variables
+    $('.season-spinner').show()
     var distance = '300m'
     var size = '600'
     var dateRange = $('#date-selector-season').html();
@@ -10,7 +11,7 @@ $( document ).ready(function() {
         console.log($('#heatMap').length)
         if ($('#heatMap').length <= 0) {
             let heatMapHtml = `
-              <div class='pt-2' id='heatMap' style="width:600px; height:600px">
+              <div class='pt-2' id='heatMap' style="width:600px; height:600px; margin: auto; padding: 10px;">
               </div>
             `;
             $('#heatMapDiv').append(heatMapHtml);
@@ -21,15 +22,12 @@ $( document ).ready(function() {
             `;
             $('#boxPlotDiv').append(boxPlotHtml);
         }
-        if ($('#seasonLine').length <= 0) {
-            let seasonlineHtml = `
-            <div class="col-12" id="seasonlineDiv">
-                <div id="seasonLineDiv">
-                    <canvas id="seasonLine"></canvas>
+        if ($('#bestWorstDiv').length <= 0) {
+            let bestWorstHtml = `
+                <div id="bestWorstDiv" style="display: flex; justify-content: space-around">
                 </div>
-            </div>
             `;
-            $('#seasonlineDiv').append(seasonlineHtml);
+            $('#bestWorstCol').append(bestWorstHtml);
         }
         //load shots
         if (userID != null){
@@ -45,7 +43,7 @@ $( document ).ready(function() {
                 success:(function (shotData) {
                     //Add canvas for target (if missing)
                     if ($('#title').length <= 0) {
-                        $('#heatMap').append(`<canvas class='canvas' id="title" style="border: 1px solid black"></canvas>`)
+                        $('#heatMap').append(`<canvas class='canvas' id="title" style="border: 1px solid black; position: absolute; top: 0px; left: 0px;"></canvas>`)
                     }
                     var heatmapInstance = h337.create({
                       container: document.getElementById('heatMap')
@@ -58,10 +56,15 @@ $( document ).ready(function() {
                     };
                     heatmapInstance.setData(testData);
                     console.log(heatmapInstance.getData());
-                    //TODO add slider to change intensity of heatmap
                     let myTarget = new DrawTarget('title',distance, shotData['target'], null, size)
                     console.log(shotData['boxPlot'])
-                    boxPlot(boxData['canvasID'], shotData['boxPlot'])
+                    if (shotData['boxPlot'].length > 1) {
+                        $('#boxAlert').hide();
+                        boxPlot(boxData['canvasID'], shotData['boxPlot'])
+                    }
+                    else {
+                        $('#boxAlert').show();
+                    }
                     function boxPlot(canvasID, values) {
                         var lowerbound = 0
                         let lowest = values[0]
@@ -73,7 +76,7 @@ $( document ).ready(function() {
                                 labels: ['A'],
                                 datasets: [
                                     {
-                                        label: 'Test',
+                                        label: 'Scores',
                                         backgroundColor: 'rgba(255, 0, 0, 0.1)',
                                         borderColor: 'rgba(255,0,0,1)',
                                         borderWidth: 1,
@@ -100,6 +103,26 @@ $( document ).ready(function() {
                           },
                         });
                     }
+                    $('.season-spinner').hide()
+
+                    //Show best and worst stages
+                    console.log(shotData)
+                    let bestHtml = `
+                    <div style="display: flex; flex-direction: column; justify-content: space-between">
+                    <h4>Best Stage: ${shotData['bestStage'].score} / 50</h4>
+                    <a href="/target?stageID=${shotData['bestStage'].id}" class="btn btn-primary" target="_blank">View Plotsheet <i class="fas fa-external-link-alt" style="color:black;"></i></a>
+                    </div>
+                 
+                    `;
+                    $('#bestWorstDiv').append(bestHtml);
+                    let worstHtml = `
+                    <div style="display: flex; flex-direction: column; justify-content: space-between">
+                    <h4>Worst Stage: ${shotData['worstStage'].score} / 50</h4>
+                    <a href="/target?stageID=${shotData['worstStage'].id}" class="btn btn-primary" target="_blank">View Plotsheet <i class="fas fa-external-link-alt" style="color:black;"></i></a>
+                    </div>
+                    `;
+                    $('#bestWorstDiv').append(worstHtml);
+
                 })
             })
         }
@@ -107,7 +130,10 @@ $( document ).ready(function() {
     function removeGraphs() {
         $('#heatMap').remove();
         $('#boxPlot').remove();
-        $('#seasonlineDiv').remove();
+        $('#bestWorstDiv').remove();
+        $('.season-spinner').show();
+        $('#boxAlert').hide();
+
     }
     $('#date-selector-season').on('DOMSubtreeModified', function () {
       if ($(this).html() !== '') {

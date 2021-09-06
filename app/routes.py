@@ -170,7 +170,6 @@ def plotsheet_calc(stage, user):
     data['otherStages'] = otherStages
     # Note: due to averaging method, dayStats[4] is duration in seconds while the other vars like
     # stageStats[4] or seasonStats[4] is duration as a string
-    # Instead, dayStats[5] is duration as a string
 
     # Get Season Stats
     seasonResponse = user.seasonStats()
@@ -945,11 +944,10 @@ def getAllShotsSeason():
     userID = loadedInput['userID']
     size = int(loadedInput['size'])
     dateRange = loadedInput['dateRange']
-    # need to confirm if time needs to be converted to UTC
     dates = dateRange.split(' - ')
     print(dates)
-    startDate = datetime.datetime.strptime(dates[0], '%B %d, %Y')
-    endDate = datetime.datetime.strptime(dates[1], '%B %d, %Y')
+    startDate = nsw_to_utc(datetime.datetime.strptime(dates[0], '%B %d, %Y'))
+    endDate = nsw_to_utc(datetime.datetime.strptime(dates[1], '%B %d, %Y'))
     print(startDate, endDate)
     target_widths = {
         "300m": 600,
@@ -966,7 +964,7 @@ def getAllShotsSeason():
     ratio = size / target_widths[dist]
     print(size, dist)
     print(ratio)
-    data = {'heatmap': [], 'target': [], 'boxPlot': []}
+    data = {'heatmap': [], 'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist, Stage.userID == userID).all()
     for stage in stages:
         totalScore = 0
@@ -981,6 +979,17 @@ def getAllShotsSeason():
         data['boxPlot'].append(fiftyScore)
     # Sort the scores for boxPlot so the lowest value can be taken. The lowest value is used to determine the lower bound of the box plot
     data['boxPlot'].sort()
+    # Stub for collecting best and worst stages (Andrew's code has errors)
+    data['bestStage'] = {
+        'id': 1618015180199,
+        'score': 50,
+        'time': '31 August'
+                         }
+    data['worstStage'] = {
+        'id': 1618015180199,
+        'score': 10,
+        'time': '22 June'
+                         }
     dataDump = json.dumps(data)
     data = jsonify(data)
     return data
