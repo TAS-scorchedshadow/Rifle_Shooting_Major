@@ -1,12 +1,14 @@
-##   --Rishi--
 ## To make calculations for the stages information
 import datetime as datetime
+import json
 
 from app.models import User, Stage, Shot
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from datetime import datetime
 import statistics
 
+
+# Rishi Wig
 def stage_by_date(userID, start, end):
     """
     Queries database and creates list between the start & end dates specified
@@ -23,6 +25,8 @@ def stage_by_date(userID, start, end):
             stages.append(j)
     return conversion(stages)
 
+
+# Rishi Wig
 def stage_by_n(userID, amount):
     """
     Queries database and creates a list of stages with N (amount) objects
@@ -35,6 +39,7 @@ def stage_by_n(userID, amount):
     return conversion(stages)
 
 
+# Rishi Wig
 def conversion(stages_array):
     """
     Obtains the list of stage objects to create lists of data required
@@ -76,12 +81,14 @@ def conversion(stages_array):
         totalPotential = 5 * shots
 
         if shots != 0 and totalPotential != 0:
-            total.append((((trueTotal/totalPotential)*100)/100)*50)
-            avgScores.append(round((float(trueTotal / shots)*10)))
-            stDev.append(round((statistics.pstdev(tempStdev)),1))
+            total.append((((trueTotal / totalPotential) * 100) / 100) * 50)
+            avgScores.append(round((float(trueTotal / shots) * 10)))
+            stDev.append(round((statistics.pstdev(tempStdev)), 1))
 
     return timestamps, avgScores, total, stDev, scores
 
+
+# Rishi Wig
 def stats_of_period(userID, periodType, start, end):
     """
     Function which checks the periodType string
@@ -106,6 +113,8 @@ def stats_of_period(userID, periodType, start, end):
     if periodType == "year":
         return stats_year(stages)
 
+
+# Rishi Wig
 def stats_day(stages):
     """
     Finds the average and standard deviation for shots based off day
@@ -130,8 +139,8 @@ def stats_day(stages):
 
         data = conversion(stagesList)
         avg_stdv = {}
-        avgScore = sum(data[1])/len(data[1])
-        avgStdev = sum(data[3])/len(data[3])
+        avgScore = sum(data[1]) / len(data[1])
+        avgStdev = sum(data[3]) / len(data[3])
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
         avg_stdv["date"] = date
@@ -141,6 +150,7 @@ def stats_day(stages):
     return stats
 
 
+# Rishi Wig
 def stats_week(stages):
     stats = []
     stagesList = []
@@ -170,6 +180,7 @@ def stats_week(stages):
     return stats
 
 
+# Rishi Wig
 def stats_month(stages):
     stats = []
     stagesList = []
@@ -196,6 +207,8 @@ def stats_month(stages):
 
     return stats
 
+
+# Rishi Wig
 def stats_year(stages):
     stats = []
     stagesList = []
@@ -224,3 +237,143 @@ def stats_year(stages):
 day_start = datetime.strptime("1/1/2018", "%d/%m/%Y")
 day_end = datetime.strptime("12/12/2018", "%d/%m/%Y")
 stats_of_period(65, "day", day_start, day_end)
+
+
+# By Andrew Tam
+def groupAvg(userID):
+    XTotal = 0
+    YTotal = 0
+    stages = Stage.query.filter_by(userID=userID).all()
+    length = len(stages)
+    for i in range(length):
+        XTotal = XTotal + stages[i].groupX
+        YTotal = YTotal + stages[i].groupY
+    groupXAvg = XTotal / length
+    groupYAvg = YTotal / length
+
+    return groupXAvg, groupYAvg
+
+
+# By Andrew Tam
+def HighestStage(userID):
+    HighestStage = 0
+    stages = Stage.query.filter_by(userID=userID).all()
+    length = len(stages)
+    for i in range(length):
+        if stages[i] > stages[HighestStage]:
+            HighestStage = stages[i]
+    return HighestStage
+
+
+# By Andrew Tam
+def LowestStage(userID):
+    LowestStage = 0
+    stages = Stage.query.filter_by(userID=userID).all()
+    length = len(stages)
+    for i in range(length):
+        if stages[i] < stages[LowestStage]:
+            LowestStage = stages[i]
+    return LowestStage
+
+
+# Dylan Huynh & Henry Guo
+def plotsheet_calc(stage, user):
+    """
+        Calculating data required for the display of plotsheet.html
+
+        :parameter stage: Stage object
+        :parameter user: User object
+
+        :return: Landing html page
+    """
+    # Dylan
+    shots = Shot.query.filter_by(stageID=stage.id).all()
+    data = {}
+
+    formattedList = []
+    scoreList = []
+    num = 1
+    letter = ord("A")
+    shotTotal = 0
+    shotsList = [stat for stat in enumerate(shots)]
+    shotDuration = 'N/A'
+    # Shot duration is calculated by the time between registered shots on the target --> 1st shot has no duration.
+    for idx, shot in shotsList:
+        scoreList.append(shot.score)
+        if idx != 0:
+            start = shotsList[idx - 1][1].timestamp
+            diff = (shot.timestamp - start).total_seconds()
+            if int(diff / 60) == 0:
+                shotDuration = "{}s".format(int(diff % 60))
+            else:
+                shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
+        if shot.sighter:
+            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
+            letter += 1
+        else:
+            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
+            num += 1
+            shotTotal += shot.score
+    jsonList = json.dumps(formattedList)
+    data["jsonList"] = jsonList
+
+    # Formatting calculated data for the particular stage.
+    stageResponse = stage.stageStats()
+    stageStats = [round(stat, 2) for stat in stageResponse]
+    stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
+    stageStats[4] = stageDuration
+    data['stageStats'] = stageStats
+
+    # Total appended to list to match the format of existing plot sheet
+    formattedList.append(["Total", 0, 0, str(shotTotal), stageDuration])
+    data['formattedList'] = formattedList
+
+    # Henry
+
+    # Calculating statistics for stages shot on the same day
+    dayStages = stage.same_day()
+    # dayX and dayY refers to the grouping coordinates
+    dayX = 0
+    dayY = 0
+    count = 0
+    # stages of other people's shoots on the same day and stores their grouping info
+    otherStages = []
+    # stages of the selected user's shoots on the same day and stores their grouping info
+    myStages = []
+
+    dayStats = [0, 0, 0, 0, 0]
+    for shoot in dayStages:
+        if shoot.userID == stage.userID:
+            count += 1
+            dayResponse = shoot.stageStats()
+            for i, stat in enumerate(dayResponse):
+                dayStats[i] = dayStats[i] + stat
+            dayX += shoot.groupX
+            dayY += shoot.groupY
+            myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
+        elif shoot.distance == stage.distance:
+            otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
+    dayAvg = [dayX / count, dayY / count]
+    myStages = json.dumps(myStages)
+    otherStages = json.dumps(otherStages)
+    for i, stat in enumerate(dayStats):
+        dayStats[i] = round(stat / count, 2)
+    dayDuration = "{}m {}s".format(int(dayStats[4] / 60), int(dayStats[4] % 60))
+    dayStats[4] = dayDuration
+    data['dayStats'] = dayStats
+    data['dayAvg'] = dayAvg
+    data['myStages'] = myStages
+    data['otherStages'] = otherStages
+    # Note: due to averaging method, dayStats[4] is duration in seconds while the other vars like
+    # stageStats[4] or seasonStats[4] is duration as a string
+
+    # Get Season Stats
+    seasonResponse = user.seasonStats()
+    seasonStats = [round(stat, 2) for stat in seasonResponse]
+    seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
+    seasonStats[4] = seasonDuration
+    data['seasonStats'] = seasonStats
+
+    data['range'] = json.dumps(stage.distance)
+
+    return data

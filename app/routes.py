@@ -18,7 +18,7 @@ from app.email import send_password_reset_email, send_activation_email, send_rep
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
-from app.stagesCalc import stage_by_n, stage_by_date, stats_of_period, conversion
+from app.stagesCalc import plotsheet_calc, stats_of_period
 import numpy
 import json
 import pandas as pd
@@ -53,24 +53,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/changeGroups', methods=['GET', 'POST'])
-def change():
-    if request.method == "POST":
-        username = request.form['user']
-        group = request.form['group']
-        if username:
-            user = User.query.filter_by(username=username).first()
-            user.group = int(group)
-            db.session.commit()
-            print("group changed")
-    return render_template('groupEditor.html')
-
-
-@app.route('/boxPlot')
-def boxPlot():
-    return render_template('test.html')
-
-
 @app.route('/landing')
 def landing():
     """
@@ -81,108 +63,7 @@ def landing():
     return render_template('landingPage.html')
 
 
-def plotsheet_calc(stage, user):
-    """
-        Calculating data required for the display of plotsheet.html
-
-        :parameter stage: Stage object
-        :parameter user: User object
-
-        :return: Landing html page
-    """
-    # Dylan
-    shots = Shot.query.filter_by(stageID=stage.id).all()
-    data = {}
-
-    formattedList = []
-    scoreList = []
-    num = 1
-    letter = ord("A")
-    shotTotal = 0
-    shotsList = [stat for stat in enumerate(shots)]
-    shotDuration = 'N/A'
-    # Shot duration is calculated by the time between registered shots on the target --> 1st shot has no duration.
-    for idx, shot in shotsList:
-        scoreList.append(shot.score)
-        if idx != 0:
-            start = shotsList[idx - 1][1].timestamp
-            diff = (shot.timestamp - start).total_seconds()
-            if int(diff / 60) == 0:
-                shotDuration = "{}s".format(int(diff % 60))
-            else:
-                shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
-        if shot.sighter:
-            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
-            letter += 1
-        else:
-            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
-            num += 1
-            shotTotal += shot.score
-    jsonList = json.dumps(formattedList)
-    data["jsonList"] = jsonList
-
-    # Formatting calculated data for the particular stage.
-    stageResponse = stage.stageStats()
-    stageStats = [round(stat, 2) for stat in stageResponse]
-    stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
-    stageStats[4] = stageDuration
-    data['stageStats'] = stageStats
-
-    # Total appended to list to match the format of existing plot sheet
-    formattedList.append(["Total", 0, 0, str(shotTotal), stageDuration])
-    data['formattedList'] = formattedList
-
-    # Henry
-
-    # Calculating statistics for stages shot on the same day
-    dayStages = stage.same_day()
-    # dayX and dayY refers to the grouping coordinates
-    dayX = 0
-    dayY = 0
-    count = 0
-    # stages of other people's shoots on the same day and stores their grouping info
-    otherStages = []
-    # stages of the selected user's shoots on the same day and stores their grouping info
-    myStages = []
-
-    dayStats = [0, 0, 0, 0, 0]
-    for shoot in dayStages:
-        if shoot.userID == stage.userID:
-            count += 1
-            dayResponse = shoot.stageStats()
-            for i, stat in enumerate(dayResponse):
-                dayStats[i] = dayStats[i] + stat
-            dayX += shoot.groupX
-            dayY += shoot.groupY
-            myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-        elif shoot.distance == stage.distance:
-            otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-    dayAvg = [dayX / count, dayY / count]
-    myStages = json.dumps(myStages)
-    otherStages = json.dumps(otherStages)
-    for i, stat in enumerate(dayStats):
-        dayStats[i] = round(stat / count, 2)
-    dayDuration = "{}m {}s".format(int(dayStats[4] / 60), int(dayStats[4] % 60))
-    dayStats[4] = dayDuration
-    data['dayStats'] = dayStats
-    data['dayAvg'] = dayAvg
-    data['myStages'] = myStages
-    data['otherStages'] = otherStages
-    # Note: due to averaging method, dayStats[4] is duration in seconds while the other vars like
-    # stageStats[4] or seasonStats[4] is duration as a string
-
-    # Get Season Stats
-    seasonResponse = user.seasonStats()
-    seasonStats = [round(stat, 2) for stat in seasonResponse]
-    seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
-    seasonStats[4] = seasonDuration
-    data['seasonStats'] = seasonStats
-
-    data['range'] = json.dumps(stage.distance)
-
-    return data
-
-
+# By Dylan Huynh
 @login_required
 @app.route('/target')
 def target():
@@ -228,6 +109,24 @@ def target():
     return render_template('index.html')
 
 
+# By Dylan Huynh
+@app.route('/submitNotes', methods=['POST'])
+def submitNotes():
+    """
+    AJAX route for updating the notes of a stage from the plotsheet.
+
+    :return: indication of submission success
+    """
+    # Function submits changes in notes
+    data = request.get_data()
+    loadedData = json.loads(data)
+    stage = Stage.query.filter_by(id=loadedData[0]).first()
+    stage.notes = loadedData[1]
+    db.session.commit()
+    return jsonify({'success': 'success'})
+
+
+# By Dylan Huynh
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
@@ -384,24 +283,6 @@ def profile_settings():
     return render_template('students/profile_settings.html', equipmentInfo=eqiupmentInfo, elevationInfo=elevationInfo)
 
 
-@app.route('/table')
-def table():
-    userID = 43
-    user = User.query.filter_by(id=userID).first()
-    tableInfo = {}
-    tableInfo["SID"] = user.shooterID
-    tableInfo["DOB"] = user.dob
-    tableInfo["Rifle Serial"] = user.rifle_serial
-    tableInfo["StudentID"] = user.schoolID
-    tableInfo["Grade"] = user.schoolYr
-    tableInfo["Email"] = user.email
-    tableInfo["Permit"] = user.permitNumber
-    tableInfo["Expiry"] = user.permitExpiry
-    tableInfo["Sharing"] = user.sharing
-    tableInfo["Mobile"] = user.mobile
-    return render_template('table.html', userID=userID, tableInfo=tableInfo)
-
-
 @app.route('/testdelshoot', methods=['GET', 'POST'])
 @login_required
 def testdelshoot():
@@ -418,6 +299,7 @@ def testdelshoot():
     return render_template(template)
 
 
+# By Ryan Tan
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -537,6 +419,7 @@ def upload():
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
 
 
+# Adapted from Flask Megatutorial by Dylan Huynh
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """
@@ -560,6 +443,7 @@ def login():
     return render_template('userAuth/login.html', form=form)
 
 
+# Dylan Huynh
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     """
@@ -569,7 +453,6 @@ def register():
     """
     form = signUpForm()
     if form.validate_on_submit():
-        # TODO account for other formats
         email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
                     school=form.school.data,
@@ -588,19 +471,18 @@ def register():
 def logout():
     """
     Allows users to exit from the system
-
-    :return: TO BE FILLED
     """
     logout_user()
     return redirect(url_for('index'))
 
 
+# By Dylan Huynh
 @app.route('/emailActivation/<token>', methods=['GET', 'POST'])
 def emailActivation(token):
     """
     Deprecated
 
-    :param token: TO BE FILLED
+    :param token: Time sensitive token sent by email.
     :return: TO BE FILLED
     """
     if current_user.is_authenticated:
@@ -613,6 +495,7 @@ def emailActivation(token):
     return render_template('userAuth/resetPassword.html')
 
 
+# By Dylan Huynh
 @app.route('/requestResetPassword', methods=['GET', 'POST'])
 def requestResetPassword():
     """
@@ -632,6 +515,7 @@ def requestResetPassword():
     return render_template('userAuth/requestResetPassword.html', form=form)
 
 
+# By Dylan Huynh
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     """
@@ -653,17 +537,19 @@ def reset_password(token):
     return render_template('userAuth/resetPassword.html', form=form)
 
 
+# By Dylan Huynh
 @app.route('/userList', methods=['GET', 'POST'])
 @login_required
 def userList():
     """
     List of all current users on the system.
 
-    :return: userList html
+    :return: userList.html
     """
     if not current_user.access >= 2:
         return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
+    # <-- Code for creating new accounts from Mr Dowdell's file system. Abandoned after administration change -->
     # if request.method == 'POST':
     #     file = request.files['file']
     #     read_file = file.read().decode('utf-8')
@@ -701,6 +587,77 @@ def userList():
     return render_template('userAuth/userList.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
 
 
+# By Dylan Huynh
+@app.route('/emailSettings', methods=['POST'])
+def emailSettings():
+    """
+    AJAX route used to update the enviroment variable MAIL_SETTING
+
+    """
+    setting = json.loads(request.get_data())
+    os.environ["MAIL_SETTING"] = setting
+    return jsonify("complete")
+
+
+# By Dylan Huynh
+@app.route('/deleteAccount', methods=['POST'])
+def deleteAccount():
+    """
+    AJAX route for deleting user accounts. Route is accessible by admins through the buttons on the userList page
+
+    """
+    data = request.get_data()
+    userID = json.loads(data)
+    if userID:
+        try:
+            user = User.query.filter_by(id=userID).first()
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify('success')
+        except:
+            print('error')
+            return jsonify({'error': 'Invalid State'})
+    return jsonify({'error': 'userID'})
+
+
+# By Dylan Huynh
+@app.route('/admin', methods=['POST'])
+def admin():
+    """
+     AJAX route for changing the account level of specific users.
+     Route is accessible by admins through the buttons on the userList page
+
+    """
+    data = request.get_data()
+    loadedData = json.loads(data)
+    userID = loadedData['id']
+    if userID:
+        user = User.query.filter_by(id=userID).first()
+        state = 0
+        if user.access == 0:
+            user.access = 1
+            state = 1
+        else:
+            user.access = 0
+        db.session.commit()
+        return jsonify({'access_lvl': state})
+
+
+# By Dylan Huynh
+@app.route('/createAccount', methods=['POST'])
+def createAccount():
+    """
+    @deprecated
+
+    """
+    data = request.get_data()
+    loadedData = json.loads(data)
+    user = loadedData['test']
+    print(user)
+    print(user.sName)
+
+
+# By Andrew Tam
 @app.route('/profileList', methods=['GET', 'POST'])
 @login_required
 def profileList():
@@ -716,7 +673,7 @@ def profileList():
         if cardInput:
             flask_session['profileID'] = int(cardInput)
             return redirect('/profile')
-    #Andrew stuff
+    # Andrew stuff
     users = User.query.order_by(User.username).all()
     year7 = 0
     year8 = 0
@@ -742,74 +699,7 @@ def profileList():
                            year10=year10, year11=year11, year12=year12)
 
 
-@app.route('/emailSettings', methods=['POST'])
-def emailSettings():
-    """
-    AJAX route used to update the enviroment variable MAIL_SETTING
-
-    """
-    setting = json.loads(request.get_data())
-    os.environ["MAIL_SETTING"] = setting
-    return jsonify("complete")
-
-
-@app.route('/deleteAccount', methods=['POST'])
-def deleteAccount():
-    """
-    AJAX route for deleting user accounts. Route is accessible by admins through the buttons on the userList page
-
-    """
-    print('reached')
-    data = request.get_data()
-    userID = json.loads(data)
-    if userID:
-        try:
-            user = User.query.filter_by(id=userID).first()
-            db.session.delete(user)
-            db.session.commit()
-            return jsonify('success')
-        except:
-            print('error')
-            return jsonify({'error': 'Invalid State'})
-    return jsonify({'error': 'userID'})
-
-
-# TODO merge both functions
-@app.route('/admin', methods=['POST'])
-def admin():
-    """
-     AJAX route for changing the account level of specific users.
-     Route is accessible by admins through the buttons on the userList page
-
-    """
-    data = request.get_data()
-    loadedData = json.loads(data)
-    userID = loadedData['id']
-    if userID:
-        user = User.query.filter_by(id=userID).first()
-        state = 0
-        if user.access == 0:
-            user.access = 1
-            state = 1
-        else:
-            user.access = 0
-        db.session.commit()
-        return jsonify({'access_lvl': state})
-
-
-@app.route('/createAccount', methods=['POST'])
-def createAccount():
-    """
-    deprecated
-
-    """
-    data = request.get_data()
-    loadedData = json.loads(data)
-    user = loadedData['test']
-    print(user)
-    print(user.sName)
-
-
+# By Dylan Huynh
 @app.route('/getGear', methods=['POST'])
 def getGear():
     """
@@ -828,36 +718,28 @@ def getGear():
     return jsonify({'error': 'userID'})
 
 
-@app.route('/setGear', methods=['POST'])
-def setGear():
-    """
-         AJAX request to update the database with changes to the gear. Route accessible from plotsheet.html and profile.html
-    """
-    # Function takes input information from gearSettings.js and makes appropiate changes to the database
-    data = request.get_data()
-    loadedData = json.loads(data)
-    userID = loadedData[0]
-    user = User.query.filter_by(id=userID).first()
-    if user:  # Handles if userID parameter is given but is not found in database
-        field = loadedData[1]
-        value = loadedData[2]
-        # In this case setattr changes the value of a certain field in the database to the given value.
-        # e.g. user.sightHole = "5"
-        setattr(user, field, value)
-        db.session.commit()
-        return jsonify('success')
-    return jsonify({'error': 'userID'})
-
-
+# By Dylan Huynh
 @app.route('/getUsers', methods=['POST'])
 def getUsers():
+    """
+    Generates a list of names used to complete the autofill fields. Used in autofill.js
+
+    :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
+    """
     users = User.query.all()
     list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username,
-             'group': user.group} for user in
-            users]
+             'group': user.group} for user in users]
     return jsonify(list)
 
 
+# By Dylan Huynh
+@app.route('/sendWeeklyReport', methods=['POST'])
+def sendWeeklyReport(banned_IDs):
+    send_report_email(banned_userIDs=banned_IDs)
+    return
+
+
+# By Henry Guo
 @app.route('/getShots', methods=['POST'])
 def getShots():
     """
@@ -917,10 +799,11 @@ def getShots():
     # stage = Stage.query.filter_by(userID=userID).all()
 
 
+# By Henry Guo
 @app.route('/getTargetStats', methods=['POST'])
 def getTargetStats():
     """
-    Function provides databse information for ajax request in gearSettings.js
+    Function provides databse information for ajax request in targetAjax.js
     :return:
     """
     stageID = request.get_data().decode("utf-8")
@@ -931,22 +814,7 @@ def getTargetStats():
     return jsonify({'error': 'userID'})
 
 
-@app.route('/testHeatmap')
-def testHeatmap():
-    user = 61
-    data = []
-    shotList = []
-    stages = Stage.query.filter_by(distance='300m').all()
-    for stage in stages:
-        shots = Shot.query.filter_by(stageID=stage.id).all()
-        for shot in shots:
-            data.append({'x': 2 * shot.xPos + 600, 'y': 600 - 2 * shot.yPos, 'value': 1})
-            shotList.append(['1', shot.xPos, shot.yPos, shot.score])
-    data = json.dumps(data)
-    shotList = json.dumps(shotList)
-    return render_template('testHeatmap.html', data=data, shotList=shotList)
-
-
+# By Henry Guo
 @app.route('/getAllShotsSeason', methods=['POST'])
 def getAllShotsSeason():
     """
@@ -981,7 +849,8 @@ def getAllShotsSeason():
     print(size, dist)
     print(ratio)
     data = {'heatmap': [], 'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
-    stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist, Stage.userID == userID).all()
+    stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
+                                Stage.userID == userID).all()
     for stage in stages:
         totalScore = 0
         shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
@@ -1000,68 +869,45 @@ def getAllShotsSeason():
         'id': 1618015180199,
         'score': 50,
         'time': '31 August'
-                         }
+    }
     data['worstStage'] = {
         'id': 1618015180199,
         'score': 10,
         'time': '22 June'
-                         }
+    }
     dataDump = json.dumps(data)
     data = jsonify(data)
     return data
 
 
-@app.route('/submitNotes', methods=['POST'])
-def submitNotes():
-    # Function submits changes in notes
+# Dylan Huynh
+@app.route('/setGear', methods=['POST'])
+def setGear():
+    """
+        @ Deprecated
+         AJAX request to update the database with changes to the gear. Route accessible from plotsheet.html and profile.html
+    """
+    # Function takes input information from gearSettings.js and makes appropiate changes to the database
     data = request.get_data()
     loadedData = json.loads(data)
-    stage = Stage.query.filter_by(id=loadedData[0]).first()
-    stage.notes = loadedData[1]
-    db.session.commit()
-    return jsonify({'success': 'success'})
+    userID = loadedData[0]
+    user = User.query.filter_by(id=userID).first()
+    if user:  # Handles if userID parameter is given but is not found in database
+        field = loadedData[1]
+        value = loadedData[2]
+        # In this case setattr changes the value of a certain field in the database to the given value.
+        # e.g. user.sightHole = "5"
+        setattr(user, field, value)
+        db.session.commit()
+        return jsonify('success')
+    return jsonify({'error': 'userID'})
 
 
-# By Andrew Tam
-def groupAvg(userID):
-    XTotal = 0
-    YTotal = 0
-    stages = Stage.query.filter_by(userID=userID).all()
-    length = len(stages)
-    for i in range(length):
-        XTotal = XTotal + stages[i].groupX
-        YTotal = YTotal + stages[i].groupY
-    groupXAvg = XTotal / length
-    groupYAvg = YTotal / length
-
-    return groupXAvg, groupYAvg
-
-
-# By Andrew Tam
-def HighestStage(userID):
-    HighestStage = 0
-    stages = Stage.query.filter_by(userID=userID).all()
-    length = len(stages)
-    for i in range(length):
-        if stages[i] > stages[HighestStage]:
-            HighestStage = stages[i]
-    return HighestStage
-
-
-def LowestStage(userID):
-    LowestStage = 0
-    stages = Stage.query.filter_by(userID=userID).all()
-    length = len(stages)
-    for i in range(length):
-        if stages[i] < stages[LowestStage]:
-            LowestStage = stages[i]
-    return LowestStage
-
-
+# Rishi Wig & Dylan Huynh
 @app.route('/submitTable', methods=['POST'])
 def submitTable():
     """
-       AJAX request updates a user object(given by ID) with the new information provided in the table.
+       AJAX request updates a user object(given by ID) with the new information provided in the table. Used in
     """
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
@@ -1080,7 +926,15 @@ def submitTable():
     return jsonify({'success': 'success'})
 
 
-@app.route('/sendWeeklyReport', methods=['POST'])
-def sendWeeklyReport(banned_IDs):
-    send_report_email(banned_userIDs=banned_IDs)
-    return
+# Dylan Huynh
+@app.route('/changeGroups', methods=['GET', 'POST'])
+def change():
+    if request.method == "POST":
+        username = request.form['user']
+        group = request.form['group']
+        if username:
+            user = User.query.filter_by(username=username).first()
+            user.group = int(group)
+            db.session.commit()
+            print("group changed")
+    return render_template('groupEditor.html')

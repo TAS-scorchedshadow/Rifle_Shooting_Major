@@ -40,6 +40,7 @@ function setAdmin(sourceElement,user){
 
 }
 
+// Function deprecated
 function createAccount(sourceElement,user_obj){
     var djangoData = $('#testing').data();
     console.log(djangoData[0])
