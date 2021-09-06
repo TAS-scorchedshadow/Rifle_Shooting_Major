@@ -1,3 +1,4 @@
+// Deprecated see table.js
 $( document ).ready(function() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -23,7 +24,8 @@ $( document ).ready(function() {
                     console.log(data)
                     for (var key in data) {
                         var value = data[key]
-                        var htmlstring = `<tr><td>`+key+`</td><td><input type="test" id="cD" class="ajaxField" name="` + key + `" value=` + value + `></td></tr>`
+                        var htmlstring = `<tr><td>`+key+`</td><td><input type="test" id="cD" class="ajaxField"
+                            name="` + key + `" value=` + value + `></td></tr>`
                         $("#gearTable").append(htmlstring);
                     }
 

@@ -67,9 +67,10 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
+    # By Dylan Huynh
     def generate_username(self):
         """
-        :return: TO BE FILLED
+        Create username eg. Bob Smith --> Bob.S2
         """
         # Must have fName and sName initialised
         num = 1
@@ -82,44 +83,25 @@ class User(UserMixin, db.Model):
             temp = self.fName.lower() + "." + self.sName[0].lower() + str(num)
         self.username = temp
 
+    # The following password and token verification functions are adapted from Miguel Grinberg's Flask Megatutorial
     def set_password(self, password):
-        """
-        :param password: The password set
-        :return: TO BE FILLED
-        """
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        """
-        :param password: Entered password
-        :return: Checks is password is correct
-        """
         return check_password_hash(self.password_hash, password)
 
     def get_reset_password_token(self, expires_in=600):
-        """
-        :param expires_in: TO BE FILLED
-        :return: TO BE FILLED
-        """
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
     def get_activation_token(self, expires_in=600):
-        """
-        :param expires_in: TO BE FILLED
-        :return: TO BE FILLED
-        """
         return jwt.encode(
             {'activate': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
     @staticmethod
     def verify_reset_token(token):
-        """
-        :param token: TO BE FILLED
-        :return: ID of the user
-        """
         try:
             id = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')['reset_password']
         except:
@@ -129,7 +111,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_activation_token(token):
         """
-        :param token: TO BE FILLED
+        :param token: Token inputted by user, currently given by email
         :return: ID of the user
         """
         try:
@@ -138,6 +120,7 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
+    # By Dylan Huynh
     def seasonStats(self):
         """
         Statistics on the season
@@ -169,9 +152,6 @@ class User(UserMixin, db.Model):
 class Stage(db.Model):
     """
     Stages database table
-
-    :type: Class
-    :parameter: TO BE FILLED
     """
     id = db.Column(db.BigInteger, primary_key=True)
     userID = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -218,8 +198,6 @@ class Shot(db.Model):
     """
     Shot database table
 
-    :type: Class
-    :parameter: TO BE FILLED
     """
     id = db.Column(db.Integer, primary_key=True)
     stageID = db.Column(db.BigInteger, db.ForeignKey('stage.id'))
@@ -234,13 +212,14 @@ class Shot(db.Model):
     def __repr__(self):
         return '<Shot {}>'.format(self.id)
 
-    def positionfromCenterMOA(self,distance):
-        if distance[-1:] == "m": #If in meters
-            #Finding MOA(Square) in Millimetres
+    # By Dylan Huynh
+    def positionfromCenterMOA(self, distance):
+        if distance[-1:] == "m":  # If in meters
+            # Finding MOA(Square) in Millimetres
             moa = ((1.047 * 25.4) / 100) * (39.37 / 36) * int(distance[:-1])
             xChangeMoa = self.xPos / moa
             yChangeMoa = self.yPos / moa
-            shortestDistance = (self.xPos**2 + self.yPos**2)**0.5
+            shortestDistance = (self.xPos ** 2 + self.yPos ** 2) ** 0.5
             # print(xChangeMoa, yChangeMoa, shortestDistance)
             return xChangeMoa, yChangeMoa, shortestDistance
         return "Invalid Distance"
