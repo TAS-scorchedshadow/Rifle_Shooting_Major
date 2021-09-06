@@ -414,8 +414,7 @@ def testdelshoot():
         print(stage)
         db.session.delete(stage)
     db.session.commit()
-    template = "index.html"
-    return render_template(template)
+    return "OK"
 
 
 @app.route('/upload', methods=['GET', 'POST'])
