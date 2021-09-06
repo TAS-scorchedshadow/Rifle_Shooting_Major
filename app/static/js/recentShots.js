@@ -53,10 +53,8 @@ $(document).ready(function(){
                                                 <div class="col-4 align-self-center">
                                                     <p class="text-right" style="font-size:12px; color: black">
                                                         <a href="/target?stageID=${data[stage]['stageID']}" class="stage-view show-sheet" target="_blank">
-                                                            <p>
                                                                 <u>View Plotsheet</u>
                                                                 <i class="fas fa-external-link-alt" style="color:black;"></i>
-                                                            </p>
                                                         </a>
                                                     </p>
                                                 </div>

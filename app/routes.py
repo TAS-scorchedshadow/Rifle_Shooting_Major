@@ -168,15 +168,8 @@ def profile():
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
-
-    # Stubs for season page
-    allScores = [49, 48, 48, 49, 48, 49, 48, 50, 50, 59, 58, 58, 50, 50, 50, 47]
-    boxData = {
-        'canvasID': 'boxPlot',
-        'values': allScores
-    }
-
-    return render_template('students/profile.html', user=user, tableInfo=tableInfo, boxData=boxData)
+    print(user)
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo)
 
 
 # by Henry Guo
@@ -184,8 +177,7 @@ def profile():
 def getAvgShotData():
     endDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
 
-    # start date is a stub
-    startDate = datetime.datetime.strptime('2021-01-01', '%Y-%m-%d')
+    startDate = datetime.datetime.strptime('2010-01-01', '%Y-%m-%d')
     startDate = datetime.datetime.combine(startDate, datetime.datetime.min.time())
 
     userID = request.get_data().decode("utf-8")
@@ -786,7 +778,7 @@ def getShots():
         std = round(numpy.std(shot_list), 1)
         duration = str(shots[-1].timestamp - shots[1].timestamp)
         duration = duration.split(':')
-        # str(int()) is done to remove the zero in single digit numbers
+        # str(int()) is used to remove the extra zero in front of single digit numbers
         duration = '{}m {}s'.format(str(int(duration[1])), str(int(duration[2])))
         stagesList.append({'scores': scores,
                            'totalScore': totalScore,
@@ -807,7 +799,6 @@ def getShots():
 def getTargetStats():
     """
     Function provides databse information for ajax request in targetAjax.js
-    :return:
     """
     stageID = request.get_data().decode("utf-8")
     stage = Stage.query.filter_by(id=stageID).first()
@@ -821,8 +812,7 @@ def getTargetStats():
 @app.route('/getAllShotsSeason', methods=['POST'])
 def getAllShotsSeason():
     """
-    Function collects every shot from the user in the season
-    :return: data in the format of {'heatmap': [{'x': 10, 'y': 20, 'value': 1}, ...], 'target': [['1', 10, 20, 5], ...], 'boxPlot': [50, 49, 48, ...]}
+    Function collects every shot in the time-frame selected by the user
     """
     input_ = request.get_data().decode('utf-8')
     loadedInput = json.loads(input_)
@@ -858,7 +848,6 @@ def getAllShotsSeason():
         totalScore = 0
         shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
         for shot in shots:
-            # TODO change the value 300 depending on the shoot distance
             data['heatmap'].append(
                 {'x': round(shot.xPos * ratio + (size / 2)), 'y': round(size / 2 - shot.yPos * ratio), 'value': 1})
             data['target'].append(['', shot.xPos, shot.yPos, shot.score])
