@@ -171,6 +171,9 @@ def profile():
 # by Henry Guo
 @app.route('/getAvgShotGraphData', methods=['POST'])
 def getAvgShotData():
+    """
+    Collect shots for use in the averages line graph
+    """
     endDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
 
     startDate = datetime.datetime.strptime('2010-01-01', '%Y-%m-%d')

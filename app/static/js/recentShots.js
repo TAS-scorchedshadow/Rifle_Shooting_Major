@@ -34,7 +34,6 @@ $(document).ready(function(){
                             for (let shot in data[stage]['sighters']){
                                 htmlSighters = htmlSighters + `${data[stage]['sighters'][shot]} `;
                             }
-                            //missing icons for duration and weather
                             let htmlstring = `
                         <div class="stage-overview">
                             <div class="row">

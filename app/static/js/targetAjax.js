@@ -11,7 +11,6 @@ $( document ).ready(function() {
                 url: "/getTargetStats",
                 data: stage,
                 success:(function (data) {
-                    console.log(data)
                 })
             })
         }

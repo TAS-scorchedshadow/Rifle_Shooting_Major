@@ -8,7 +8,6 @@ $( document ).ready(function() {
     loadAllShots(userID, distance, size, dateRange)
     function loadAllShots(userID, distance, size, dateRange){
         //generate the needed html if they are missing
-        console.log($('#heatMap').length)
         if ($('#heatMap').length <= 0) {
             let heatMapHtml = `
               <div class='pt-2' id='heatMap' style="width:600px; height:600px; margin: auto; padding: 10px;">
@@ -55,9 +54,7 @@ $( document ).ready(function() {
 
                     };
                     heatmapInstance.setData(testData);
-                    console.log(heatmapInstance.getData());
                     let myTarget = new DrawTarget('title',distance, shotData['target'], null, size)
-                    console.log(shotData['boxPlot'])
                     if (shotData['boxPlot'].length > 1) {
                         $('#boxAlert').hide();
                         boxPlot("boxPlot", shotData['boxPlot'])
@@ -106,7 +103,6 @@ $( document ).ready(function() {
                     $('.season-spinner').hide()
 
                     //Show best and worst stages
-                    console.log(shotData)
                     let bestHtml = `
                     <div style="display: flex; flex-direction: column; justify-content: space-between">
                     <h4>Best Stage: ${shotData['bestStage'].score} / 50</h4>

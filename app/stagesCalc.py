@@ -364,8 +364,6 @@ def plotsheet_calc(stage, user):
     data['dayAvg'] = dayAvg
     data['myStages'] = myStages
     data['otherStages'] = otherStages
-    # Note: due to averaging method, dayStats[4] is duration in seconds while the other vars like
-    # stageStats[4] or seasonStats[4] is duration as a string
 
     # Get Season Stats
     seasonResponse = user.seasonStats()
