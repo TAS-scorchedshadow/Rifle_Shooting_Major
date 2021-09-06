@@ -60,7 +60,7 @@ $( document ).ready(function() {
                     console.log(shotData['boxPlot'])
                     if (shotData['boxPlot'].length > 1) {
                         $('#boxAlert').hide();
-                        boxPlot(boxData['canvasID'], shotData['boxPlot'])
+                        boxPlot("boxPlot", shotData['boxPlot'])
                     }
                     else {
                         $('#boxAlert').show();
@@ -69,7 +69,7 @@ $( document ).ready(function() {
                         var lowerbound = 0
                         let lowest = values[0]
                         lowerbound = Math.floor(lowest/5)*5
-                        const ctx = document.getElementById("boxPlot").getContext('2d');
+                        const ctx = document.getElementById(canvasID).getContext('2d');
                         const myBar = new Chart(ctx, {
                           type: 'boxplot',
                           data: {
@@ -137,7 +137,6 @@ $( document ).ready(function() {
     }
     $('#date-selector-season').on('DOMSubtreeModified', function () {
       if ($(this).html() !== '') {
-          console.log($('#date-selector-season').html());
           dateRange = $('#date-selector-season').html();
           removeGraphs();
           loadAllShots(userID, distance, size, dateRange);
@@ -145,7 +144,6 @@ $( document ).ready(function() {
     });
     $('#select-range-span').on('DOMSubtreeModified', function () {
       if ($(this).html() !== '') {
-          console.log($('#select-range-span').html());
           distance = $('#select-range-span').html();
           removeGraphs();
           loadAllShots(userID, distance, size, dateRange);
