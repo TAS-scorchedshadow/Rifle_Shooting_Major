@@ -290,7 +290,7 @@ def testdelshoot():
     """
     Code that deletes all shoots put under the sbhs.admin user.
     """
-    user = User.query.filter_by(username="sbhs.admin").first()
+    user = User.query.filter_by(username="dylan.h1").first()
     stageList = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
     for stage in stageList:
         print(stage)
@@ -400,7 +400,7 @@ def upload():
                 print(user)
                 print(stageClassList)
                 if os.environ["MAIL_SETTING"] == 2:
-                    send_upload_email(user, stageList)
+                    send_upload_email(user, stageClassList)
             stageList = []
             alert[0] = "Success"
             alert[2] = count["success"]
