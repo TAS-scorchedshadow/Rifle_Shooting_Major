@@ -21,7 +21,6 @@ from app.decompress import read_archive
 from app.stagesCalc import plotsheet_calc, stats_of_period
 import numpy
 import json
-import pandas as pd
 from sklearn.cluster import DBSCAN
 
 
