@@ -402,6 +402,22 @@ def table():
     return render_template('table.html', userID=userID, tableInfo=tableInfo)
 
 
+@app.route('/testdelshoot', methods=['GET', 'POST'])
+@login_required
+def testdelshoot():
+    """
+    Code that deletes all shoots put under the sbhs.admin user.
+    """
+    user = User.query.filter_by(username="sbhs.admin").first()
+    stageList = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
+    for stage in stageList:
+        print(stage)
+        db.session.delete(stage)
+    db.session.commit()
+    template = "index.html"
+    return render_template(template)
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
