@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% set active_page = "home" %}
-{% block page_title %} Admin Home {% endblock %}
+{% block page_title %} Home {% endblock %}
 {% block page_content %}
 <!--Username Autofill-->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -16,7 +16,48 @@
         </svg>
     </div>
 </div>
-
+ {% if current_user.access == 1 %}
+<h2 class="text-center">Coach Features</h2>
+<hr>
+<div class = "row text-center justify-content-center">
+    <div class="col-10 col-md-6">
+        <a href="/upload" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                  <img class="card-img-top" src="../static/images/home-01.png" alt="Upload">
+              </div>
+              <div class="card-title">
+                  <h4>Upload</h4>
+              </div>
+              <p>Upload archive files from <b>Silverback Mountain Targets</b>.</p>
+          </div>
+        </a>
+    </div>
+    <div class="col-10 col-md-6">
+        <a href="/profileList" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                <img class="card-img-top" src="../static/images/home-02.png" alt="Find A Student">
+              </div>
+              <div class="card-title">
+                  <h4>Shooter Profile</h4>
+              </div>
+               <p>A comprehensive overview of a shooter's performance.</p>
+              <a>
+                <div class="ui-widget pl-2">
+                    <form method="post">
+                        <label for="username"><i class="fas fa-search"></i></label>
+                         <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
+                        <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Go</button>
+                    </form>
+                </div>
+              </a>
+          </div>
+        </a>
+    </div>
+</div>
+{% endif %}
+ {% if current_user.access >=2 %}
 <h2 class="text-center">Admin Features</h2>
 <hr>
 <div class = "row text-center justify-content-center">
@@ -34,7 +75,7 @@
         </a>
     </div>
     <div class="col-10 col-md-4">
-        <a class="custom-card">
+        <a href="/profileList" class="custom-card">
           <div class="card linked-card h-100">
               <div class="inner">
                 <img class="card-img-top" src="../static/images/home-02.png" alt="Find A Student">
@@ -43,18 +84,20 @@
                   <h4>Shooter Profile</h4>
               </div>
                <p>A comprehensive overview of a shooter's performance.</p>
-              <div class="ui-widget pl-2">
+              <a>
+                <div class="ui-widget pl-2">
                     <form method="post">
                         <label for="username"><i class="fas fa-search"></i></label>
                          <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
                         <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Go</button>
                     </form>
                 </div>
+              </a>
           </div>
         </a>
     </div>
     <div class="col-10 col-md-4">
-         <a href="/" class="custom-card">
+         <a href="/userList" class="custom-card">
           <div class="card linked-card h-100">
               <div class="inner">
                 <img class="card-img-top" src="../static/images/home-03.png" alt="Comparisons">
@@ -67,6 +110,7 @@
         </a>
     </div>
 </div>
+{% endif %}
 {% if error == true %}
     <br>
     <div class="alert alert-info" role="alert">

@@ -29,12 +29,6 @@
                     </svg>
                     <span class=fnt-play style="display: inline; vertical-align: middle">Riflelytics</span>
                 </li>
-                <li>
-                    <a href="/">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
-                </li>
                 {% if current_user.is_authenticated %}
                     {% if current_user.access == 0 %}
                         <li>
@@ -45,6 +39,12 @@
                     </li>
                     {% endif %}
                     {% if current_user.access >= 1 %}
+                    <li>
+                        <a href="/">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
                     <li>
                         <a href="/profileList">
                             <i class="fas fa-address-card"></i>
