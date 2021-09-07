@@ -70,10 +70,10 @@ $( document ).ready(function() {
                         const myBar = new Chart(ctx, {
                           type: 'boxplot',
                           data: {
-                                labels: ['A'],
+                                labels: [''],
                                 datasets: [
                                     {
-                                        label: 'Scores',
+                                        label: 'Score out of 50',
                                         backgroundColor: 'rgba(255, 0, 0, 0.1)',
                                         borderColor: 'rgba(255,0,0,1)',
                                         borderWidth: 1,

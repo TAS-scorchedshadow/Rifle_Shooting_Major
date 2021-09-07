@@ -40,22 +40,33 @@ $(document).ready(function() {
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        title: {
-                            display: true,
-                            text: 'Averages Line'
-                        },
                         plugins: {
                         },
                         scales: {
                             'score': {
                                 position: 'left',
                                 max: 50,
-                                min: 40
+                                min: 40,
+                                title: {
+                                    display: true,
+                                    text: 'Score out of 50'
+                                },
+
                             },
                             'standard-deviation': {
                                 position: 'right',
                                 max: 3,
-                                min: 0
+                                min: 0,
+                                title: {
+                                    display: true,
+                                    text: 'Standard Deviation'
+                                },
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Dates'
+                                },
                             }
                         }
                     }
