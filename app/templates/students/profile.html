@@ -167,6 +167,11 @@ a.show-sheet:hover {
                 </button>
             </div>
         </div>
+        {% if error == true %}
+            <div class="alert alert-info mt-3" role="alert">
+              We couldn't find a user that matched your search. Please try again.
+            </div>
+        {% endif %}
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">

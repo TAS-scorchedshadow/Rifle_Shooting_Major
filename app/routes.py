@@ -143,12 +143,16 @@ def profile():
     """
     # userID = request.args.get('userID')
     # user = User.query.filter_by(id=userID).first()
+    searchError = False
     if request.method == "POST":
         username = request.form['user']
         if username:
             user = User.query.filter_by(username=username).first()
-            flask_session['profileID'] = user.id
-            return redirect('/profile')
+            if user:
+                flask_session['profileID'] = user.id
+                return redirect('/profile')
+            else:
+                searchError = True
     if not current_user.access >= 1:
         user = current_user
     else:
@@ -170,7 +174,7 @@ def profile():
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
     print(user)
-    return render_template('students/profile.html', user=user, tableInfo=tableInfo)
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo,error=searchError)
 
 
 # by Henry Guo
@@ -661,14 +665,18 @@ def createAccount():
 @login_required
 def profileList():
     # with assistance from Henry and using Dylan's existing code
+    searchError = False
     if request.method == "POST":
         print(request.form)
         textInput = request.form['user-search']
         cardInput = request.form['user']
         if textInput:
             user = User.query.filter_by(username=textInput).first()
-            flask_session['profileID'] = user.id
-            return redirect('/profile')
+            if user:
+                flask_session['profileID'] = user.id
+                return redirect('/profile')
+            else:
+                searchError = True
         if cardInput:
             flask_session['profileID'] = int(cardInput)
             return redirect('/profile')
@@ -695,7 +703,7 @@ def profileList():
             year12 = year12 + 1
 
     return render_template('students/profileList.html', users=users, year7=year7, year8=year8, year9=year9,
-                           year10=year10, year11=year11, year12=year12)
+                           year10=year10, year11=year11, year12=year12,error=searchError)
 
 
 # By Dylan Huynh

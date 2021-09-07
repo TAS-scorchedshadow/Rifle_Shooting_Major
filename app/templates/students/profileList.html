@@ -29,6 +29,11 @@
                 <label for="username"><i class="fas fa-search"></i></label>
                 <input id="username" placeholder="Find Shooter" class="user-searchbar w-50" autocomplete="off" name="user-search">
                 <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
+                {% if error == true %}
+                    <div class="alert alert-info mt-3" role="alert">
+                      We couldn't find a user that matched your search. Please try again.
+                    </div>
+                {% endif %}
             </div>
             <div class="col-12">
                 <h3><u> Year 12 </u></h3>
