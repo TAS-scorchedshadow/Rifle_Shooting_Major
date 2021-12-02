@@ -18,12 +18,8 @@ def stage_by_date(userID, start, end):
     :param end: The end date specified by the user
     :return: The stages list to conversion function to obtain data required
     """
-    query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp).all()
-    stages = []
-    for j in query:
-        if end > (j.timestamp) > start:
-            stages.append(j)
-    return conversion(stages)
+    query = Stage.query.filter_by(userID=userID).order_by(Stage.timestamp, Stage.timestamp.between(start, end)).all()
+    return conversion(query)
 
 
 # Rishi Wig
@@ -234,9 +230,6 @@ def stats_year(stages):
     return stats
 
 
-day_start = datetime.strptime("1/1/2018", "%d/%m/%Y")
-day_end = datetime.strptime("12/12/2018", "%d/%m/%Y")
-stats_of_period(65, "day", day_start, day_end)
 
 
 # By Andrew Tam
