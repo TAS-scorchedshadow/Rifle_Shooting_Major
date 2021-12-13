@@ -167,13 +167,12 @@ def profile():
     tableInfo["DOB"] = user.dob
     tableInfo["Rifle Serial"] = user.rifle_serial
     tableInfo["StudentID"] = user.schoolID
-    tableInfo["Grade"] = user.schoolYr
+    tableInfo["Grade"] = user.get_school_year()
     tableInfo["Email"] = user.email
     tableInfo["Permit"] = user.permitNumber
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
-    print(user)
     return render_template('students/profile.html', user=user, tableInfo=tableInfo,error=searchError)
 
 
@@ -734,8 +733,7 @@ def getUsers():
     :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
     users = User.query.all()
-    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username,
-             'group': user.group} for user in users]
+    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in users]
     return jsonify(list)
 
 
