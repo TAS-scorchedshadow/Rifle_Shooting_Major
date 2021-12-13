@@ -24,7 +24,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120))
     school = db.Column(db.String(5))
     schoolID = db.Column(db.String(20))
-    schoolYr = db.Column(db.String(2))
+    gradYr = db.Column(db.String(4))
     shooterID = db.Column(db.String(20))
     permitNumber = db.Column(db.String(20))
     permitType = db.Column(db.String(20))
@@ -33,9 +33,7 @@ class User(UserMixin, db.Model):
     mobile = db.Column(db.String(20))
     permitExpiry = db.Column(db.Date)
     access = db.Column(db.Integer, default=0)
-    isActive = db.Column(db.Boolean, default=False)
-    lastActive = db.Column(db.Date)
-    group = db.Column(db.Integer, default=0)
+    labels = db.Column(db.JSON)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
 
     # Gear Settings
@@ -82,6 +80,19 @@ class User(UserMixin, db.Model):
             num += 1
             temp = self.fName.lower() + "." + self.sName[0].lower() + str(num)
         self.username = temp
+
+    def get_school_year(self):
+        """
+        Determines the user's school year based on their graduation year & the current time
+
+        :return: school_year as integer ie. 7,8,9,10,11,12
+        """
+        try:
+            cur_year = datetime.today().year
+            school_year = cur_year - int(self.gradYr) + 12
+            return school_year
+        except:
+            print("Students graduation year is not defined")
 
     # The following password and token verification functions are adapted from Miguel Grinberg's Flask Megatutorial
     def set_password(self, password):
