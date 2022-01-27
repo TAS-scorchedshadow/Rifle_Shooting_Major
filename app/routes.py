@@ -18,7 +18,7 @@ from app.email import send_password_reset_email, send_activation_email, send_rep
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc
 from app.decompress import read_archive
-from app.stagesCalc import plotsheet_calc, stats_of_period
+from app.stagesCalc import plotsheet_calc, stats_of_period, getFiftyScore, HighestStage, LowestStage
 import numpy
 import json
 from sklearn.cluster import DBSCAN
@@ -679,30 +679,38 @@ def profileList():
         if cardInput:
             flask_session['profileID'] = int(cardInput)
             return redirect('/profile')
-    # Andrew stuff
+    # # Andrew stuff
     users = User.query.order_by(User.username).all()
-    year7 = 0
-    year8 = 0
-    year9 = 0
-    year10 = 0
-    year11 = 0
-    year12 = 0
+    # # TODO comment this later
+    # year7 = 0
+    # year8 = 0
+    # year9 = 0
+    # year10 = 0
+    # year11 = 0
+    # year12 = 0
+    # for user in users:
+    #     if user.schoolYr == '7':
+    #         year7 = year7 + 1
+    #     if user.schoolYr == '8':
+    #         year8 = year8 + 1
+    #     if user.schoolYr == '9':
+    #         year9 = year9 + 1
+    #     if user.schoolYr == '10':
+    #         year10 = year10 + 1
+    #     if user.schoolYr == '11':
+    #         year11 = year11 + 1
+    #     if user.schoolYr == '12':
+    #         year12 = year12 + 1
+    yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'], '7': ['Year 7'], 'other': ['Graduated']}
     for user in users:
-        if user.schoolYr == '7':
-            year7 = year7 + 1
-        if user.schoolYr == '8':
-            year8 = year8 + 1
-        if user.schoolYr == '9':
-            year9 = year9 + 1
-        if user.schoolYr == '10':
-            year10 = year10 + 1
-        if user.schoolYr == '11':
-            year11 = year11 + 1
-        if user.schoolYr == '12':
-            year12 = year12 + 1
+        schoolYr = str(user.get_school_year())
+        if schoolYr in yearGroups:
+            yearGroups[schoolYr].append([user.sName, user.fName, user.id])
+        else:
+            yearGroups['other'].append([user.sName, user.fName, user.id])
 
-    return render_template('students/profileList.html', users=users, year7=year7, year8=year8, year9=year9,
-                           year10=year10, year11=year11, year12=year12,error=searchError)
+    yearGroups = json.dumps(yearGroups)
+    return render_template('students/profileList.html', users=users, yearGroups=yearGroups, error=searchError)
 
 
 # By Dylan Huynh
@@ -847,13 +855,14 @@ def getAllShotsSeason():
         "365m": 520,
         "457m": 915,
         "548m": 915,
-    };
+    }
     ratio = size / target_widths[dist]
     print(size, dist)
     print(ratio)
     data = {'heatmap': [], 'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
+    sortStages = []
     for stage in stages:
         totalScore = 0
         shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
@@ -866,16 +875,20 @@ def getAllShotsSeason():
         data['boxPlot'].append(fiftyScore)
     # Sort the scores for boxPlot so the lowest value can be taken. The lowest value is used to determine the lower bound of the box plot
     data['boxPlot'].sort()
-    # Stub for collecting best and worst stages (Andrew's code has errors)
+    print('boxplot', data['boxPlot'])
+    print('boxplot', stages)
+    # Get highest and lowest scoring stages
+    highestStage = HighestStage(userID, startDate, endDate, dist)
     data['bestStage'] = {
-        'id': 1618015180199,
-        'score': 50,
-        'time': '31 August'
+        'id': highestStage.id,
+        'score': round(getFiftyScore(highestStage)),
+        'time': str(utc_to_nsw(highestStage.timestamp))
     }
+    lowestStage = LowestStage(userID, startDate, endDate, dist)
     data['worstStage'] = {
-        'id': 1618015180199,
-        'score': 10,
-        'time': '22 June'
+        'id': lowestStage.id,
+        'score': round(getFiftyScore(lowestStage)),
+        'time': str(utc_to_nsw(lowestStage.timestamp))
     }
     dataDump = json.dumps(data)
     data = jsonify(data)

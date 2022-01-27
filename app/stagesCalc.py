@@ -230,6 +230,14 @@ def stats_year(stages):
     return stats
 
 
+# By Henry Guo
+# note, shots is a list
+def getFiftyScore(stage):
+    totalScore = 0
+    shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
+    for shot in shots:
+        totalScore += shot.score
+    return (totalScore / len(shots)) * 10
 
 
 # By Andrew Tam
@@ -248,25 +256,31 @@ def groupAvg(userID):
 
 
 # By Andrew Tam
-def HighestStage(userID):
-    HighestStage = 0
-    stages = Stage.query.filter_by(userID=userID).all()
+def HighestStage(userID, startDate, endDate, dist):
+    highestIndex = 0
+    stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
+                                Stage.userID == userID).all()
+    print('highestStages', stages)
     length = len(stages)
     for i in range(length):
-        if stages[i] > stages[HighestStage]:
-            HighestStage = stages[i]
-    return HighestStage
+        if getFiftyScore(stages[i]) > getFiftyScore(stages[highestIndex]):
+            highestIndex = i
+    print('highest', highestIndex)
+    return stages[highestIndex]
 
 
 # By Andrew Tam
-def LowestStage(userID):
-    LowestStage = 0
-    stages = Stage.query.filter_by(userID=userID).all()
+def LowestStage(userID, startDate, endDate, dist):
+    lowestIndex = 0
+    stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
+                                Stage.userID == userID).all()
     length = len(stages)
     for i in range(length):
-        if stages[i] < stages[LowestStage]:
-            LowestStage = stages[i]
-    return LowestStage
+        if getFiftyScore(stages[i]) < getFiftyScore(stages[lowestIndex]):
+            lowestIndex = i
+
+    print('lowest', lowestIndex)
+    return stages[lowestIndex]
 
 
 # Dylan Huynh & Henry Guo
