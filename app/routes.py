@@ -551,41 +551,8 @@ def userList():
     if not current_user.access >= 2:
         return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
-    # <-- Code for creating new accounts from Mr Dowdell's file system. Abandoned after administration change -->
-    # if request.method == 'POST':
-    #     file = request.files['file']
-    #     read_file = file.read().decode('utf-8')
-    #     newUsers = []
-    #     roll = []
-    #     for line in read_file.splitlines():
-    #         if not line == "<end>":
-    #             student = line.split('\t')
-    #             names = student[1].split()
-    #             fNames = []
-    #             sNames = []
-    #             for name in names:
-    #                 if name.isupper():
-    #                     if name.isalpha():
-    #                         sNames.append(name.lower())
-    #                 else:
-    #                     fNames.append(name.lower())
-    #             fName = " ".join(fNames).title()
-    #             sName = " ".join(sNames).title()
-    #             print(f"#{fName}# #{sName}#")
-    #             user = User.query.filter_by(fName=fName, sName=sName).first()
-    #             if user:
-    #                 roll.append(user)
-    #             else:
-    #                 # Create User object from SBHS data
-    #                 newUser = User(fName=fName, sName=sName, schoolID=student[0], schoolYr=student[2][:-2],
-    #                                email=student[0] + "@student.sbhs.nsw.edu.au")
-    #                 newUser.generate_username()
-    #                 newUser.set_password("password")
-    #                 newUsers.append(newUser)
-    #     missingUsers = [user for user in users if user not in roll]
-    #     print(f"New Users {newUsers}")
-    #     print(f"Missing Users {missingUsers}")
-    #     return render_template('userAuth/userList.html', users=users, newUsers=newUsers, missingUsers=missingUsers)
+    for user in users:
+        user.schoolYr = user.get_school_year()
     return render_template('userAuth/userList.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
 
 
