@@ -1,8 +1,8 @@
-"""restructure
+"""create table
 
-Revision ID: 6f8897ac6e8b
-Revises: e2791d1e2077
-Create Date: 2020-12-05 22:22:59.473694
+Revision ID: 8e2971077330
+Revises: 
+Create Date: 2022-02-11 00:49:31.915259
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6f8897ac6e8b'
-down_revision = 'e2791d1e2077'
+revision = '8e2971077330'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -25,36 +25,62 @@ def upgrade():
     sa.Column('fName', sa.String(length=70), nullable=True),
     sa.Column('sName', sa.String(length=70), nullable=True),
     sa.Column('email', sa.String(length=120), nullable=True),
+    sa.Column('school', sa.String(length=5), nullable=True),
     sa.Column('schoolID', sa.String(length=20), nullable=True),
-    sa.Column('schoolYr', sa.String(length=2), nullable=True),
+    sa.Column('gradYr', sa.String(length=4), nullable=True),
     sa.Column('shooterID', sa.String(length=20), nullable=True),
     sa.Column('permitNumber', sa.String(length=20), nullable=True),
+    sa.Column('permitType', sa.String(length=20), nullable=True),
+    sa.Column('sharing', sa.String(length=20), nullable=True),
+    sa.Column('dob', sa.String(length=20), nullable=True),
+    sa.Column('mobile', sa.String(length=20), nullable=True),
     sa.Column('permitExpiry', sa.Date(), nullable=True),
+    sa.Column('access', sa.Integer(), nullable=True),
+    sa.Column('labels', sa.JSON(), nullable=True),
+    sa.Column('rifle_serial', sa.String(length=20), nullable=True),
+    sa.Column('rifle_slingPointLength', sa.String(length=20), nullable=True),
+    sa.Column('rifle_buttLength', sa.String(length=20), nullable=True),
+    sa.Column('rifle_buttHeight', sa.String(length=20), nullable=True),
+    sa.Column('rifle_sightHole', sa.String(length=20), nullable=True),
+    sa.Column('elevation_300m', sa.String(length=20), nullable=True),
+    sa.Column('ringSize_300m', sa.String(length=20), nullable=True),
+    sa.Column('elevation_400m', sa.String(length=20), nullable=True),
+    sa.Column('ringSize_400m', sa.String(length=20), nullable=True),
+    sa.Column('elevation_500m', sa.String(length=20), nullable=True),
+    sa.Column('ringSize_500m', sa.String(length=20), nullable=True),
+    sa.Column('elevation_600m', sa.String(length=20), nullable=True),
+    sa.Column('ringSize_600m', sa.String(length=20), nullable=True),
+    sa.Column('elevation_700m', sa.String(length=20), nullable=True),
+    sa.Column('ringSize_700m', sa.String(length=20), nullable=True),
+    sa.Column('elevation_800m', sa.String(length=20), nullable=True),
+    sa.Column('ringSize_800m', sa.String(length=20), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)
     op.create_index(op.f('ix_user_username'), 'user', ['username'], unique=True)
     op.create_table('stage',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('jsonFilename', sa.String(length=128), nullable=True),
+    sa.Column('id', sa.BigInteger(), nullable=False),
     sa.Column('userID', sa.Integer(), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
-    sa.Column('duration', sa.DateTime(), nullable=True),
     sa.Column('groupSize', sa.Float(), nullable=True),
-    sa.Column('rangeType', sa.String(length=10), nullable=True),
+    sa.Column('groupX', sa.Float(), nullable=True),
+    sa.Column('groupY', sa.Float(), nullable=True),
+    sa.Column('distance', sa.String(length=10), nullable=True),
     sa.Column('location', sa.String(length=50), nullable=True),
+    sa.Column('settings', sa.JSON(), nullable=True),
     sa.Column('notes', sa.String(length=255), nullable=True),
     sa.ForeignKeyConstraint(['userID'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_stage_duration'), 'stage', ['duration'], unique=False)
     op.create_index(op.f('ix_stage_timestamp'), 'stage', ['timestamp'], unique=False)
     op.create_table('shot',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('stageID', sa.Integer(), nullable=True),
+    sa.Column('stageID', sa.BigInteger(), nullable=True),
     sa.Column('timestamp', sa.DateTime(), nullable=True),
     sa.Column('xPos', sa.Float(), nullable=True),
     sa.Column('yPos', sa.Float(), nullable=True),
+    sa.Column('score', sa.Integer(), nullable=True),
+    sa.Column('vScore', sa.Integer(), nullable=True),
+    sa.Column('sighter', sa.Boolean(), nullable=True),
     sa.ForeignKeyConstraint(['stageID'], ['stage.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -67,9 +93,7 @@ def downgrade():
     op.drop_index(op.f('ix_shot_timestamp'), table_name='shot')
     op.drop_table('shot')
     op.drop_index(op.f('ix_stage_timestamp'), table_name='stage')
-    op.drop_index(op.f('ix_stage_duration'), table_name='stage')
     op.drop_table('stage')
     op.drop_index(op.f('ix_user_username'), table_name='user')
-    op.drop_index(op.f('ix_user_email'), table_name='user')
     op.drop_table('user')
     # ### end Alembic commands ###
