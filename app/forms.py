@@ -43,6 +43,15 @@ class signUpForm(FlaskForm):
 
     submit = SubmitField("Sign Up")
 
+class independentSignUpForm(FlaskForm):
+    fName = StringField("Enter First Name:",validators=[InputRequired()])
+    sName = StringField("Enter Last Name:",validators=[InputRequired()])
+    shooterID = StringField("School ID:", validators=[InputRequired()])
+    email = EmailField("Email",validators=[InputRequired()])
+    password = PasswordField("Password:")
+    confirmPassword = PasswordField("Password:")
+
+    submit = SubmitField("Sign Up")
 
 # -- Dylan Huynh --
 class signInForm(FlaskForm):

@@ -1,12 +1,16 @@
 {% extends "userAuth/noNavbarBase.html" %}
-{% set active_page = "Student Register" %}
+{% set active_page = "Register" %}
 {% block page_title %}Register{% endblock %}
 {% block login_content %}
-<h2 class="text-center mt-5">Student Register</h2>
+<h2 class="text-center mt-5"><i>Alternative Registration</i></h2>
 <p class="text-center">
-    Not a current student?
-    <a href="/coachRegister">Sign Up Here</a>
+    For users <b>not</b> currently enrolled at SBHS
 </p>
+<hr>
+<p class="text-center">
+    If you are a current student <a href="/register">sign up here</a>
+</p>
+<hr>
 <h4 class="text-center">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -32,15 +36,9 @@
         </div>
       </div>
     <br>
-    <div class="form-row px-4">
-          <div class="col-3">
-               {{ form.school(class_="field form-control form-control-lg",placeholder="First Name")}}
-          </div>
-        <div class="col-9">
-             {{ form.schoolID(class_="field form-control form-control-lg",placeholder="School ID")}}
-        </div>
-      </div>
-    <br>
+    <div class="form-group px-4">
+        {{ form.email(class_="field form-control form-control-lg",placeholder="Email Address")}}
+    </div>
      <div class="form-group px-4">
          {{ form.shooterID(class_="field form-control form-control-lg",placeholder="Shooter ID")}}
          <br>
@@ -56,8 +54,7 @@
     {{ form.errors }}
 {% endif %}
 <br>
-<p class="text-center">
-    Already have an account?
+<p class="text-center">Already have an account?
     <a href="/login">Sign In</a>
 </p>
 {% endblock %}

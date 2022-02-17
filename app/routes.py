@@ -469,6 +469,22 @@ def register():
     return render_template('userAuth/register.html', title='Register', form=form)
 
 
+@app.route('/coachRegister', methods=['GET', 'POST'])
+def coachRegister():
+    form = independentSignUpForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(), email=email, school="OTHER")
+        user.generate_username()
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        send_activation_email(user)
+        flash('Congratulations, you are now a registered user!', 'success')
+        return render_template('userAuth/registerSuccess.html', user=user)
+    return render_template('userAuth/coachRegister.html', title='Register', form=form)
+
+
 @app.route('/logout')
 def logout():
     """

@@ -8,7 +8,11 @@
 
         <p><b>{{ user.username }}</b> can now be used to save your shot performance as well as your login for this site</p>
 
-        <p>An email has been sent to your <b>{{ user.school }}</b> email for verification</p>
+        {% if not user.school == "OTHER" %}
+            <p>An email has been sent to your <b>{{ user.school }}</b> email for verification</p>
+        {% else %}
+            <p>An email has been sent to your email for verification</p>
+        {% endif %}
     </div>
 
 <p class="text-center">Already have an account?
