@@ -458,7 +458,7 @@ def register():
         email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
                     school=form.school.data,
-                    schoolID=form.schoolID.data, email=email)
+                    schoolID=form.schoolID.data, email=email,gradYr=str(form.gradYr.data))
         user.generate_username()
         user.set_password(form.password.data)
         db.session.add(user)

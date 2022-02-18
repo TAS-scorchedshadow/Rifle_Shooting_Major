@@ -3,7 +3,7 @@ from wtforms import StringField, SubmitField, HiddenField, MultipleFileField, In
     RadioField, BooleanField
 from wtforms.fields.html5 import DateField, TimeField, EmailField
 from flask_wtf.file import FileAllowed, FileRequired
-from wtforms.validators import DataRequired, InputRequired, EqualTo
+from wtforms.validators import DataRequired, InputRequired, EqualTo, Length, NumberRange
 
 
 # This file contains all the required forms from various parts of this project
@@ -36,8 +36,9 @@ class signUpForm(FlaskForm):
     fName = StringField("Enter First Name:",validators=[InputRequired()])
     sName = StringField("Enter Last Name:",validators=[InputRequired()])
     school = SelectField("Select a school", choices=[('SBHS','SBHS')])
+    gradYr = IntegerField("Graduation Year:", validators=[InputRequired(), NumberRange(min=2000,max=9999)])
     schoolID = StringField("School ID:",validators=[InputRequired()])
-    shooterID = StringField("School ID:", validators=[InputRequired()])
+    shooterID = StringField("Shooter ID:", validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")
 
