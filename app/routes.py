@@ -921,16 +921,15 @@ def submitTable():
     if user:
         for field in tableDict:
             # Convert school year into graduation year
-            print(tableDict)
             if field == 'gradYr' and tableDict[field] is not None:
-                print(tableDict[field])
                 try:
                     value = str(get_grad_year(tableDict[field]))
                 except:
                     value = "None"
             else:
                 value = tableDict[field]
-            if value != "None":
+            # email cannot be changed in order to prevent coaches from changing the emails on other accounts
+            if value != "None" and field != 'email':
                 setattr(user, field, value)
         db.session.commit()
 
