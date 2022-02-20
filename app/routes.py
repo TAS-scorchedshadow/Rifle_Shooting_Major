@@ -16,7 +16,7 @@ from app.forms import *
 from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_report_email, send_upload_email
 from app.uploadProcessing import validateShots
-from app.timeConvert import utc_to_nsw, nsw_to_utc
+from app.timeConvert import utc_to_nsw, nsw_to_utc, get_grad_year, get_school_year
 from app.decompress import read_archive
 from app.stagesCalc import plotsheet_calc, stats_of_period, getFiftyScore, HighestStage, LowestStage
 import numpy
@@ -173,7 +173,7 @@ def profile():
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
-    return render_template('students/profile.html', user=user, tableInfo=tableInfo,error=searchError)
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo, error=searchError)
 
 
 # by Henry Guo
@@ -458,7 +458,7 @@ def register():
         email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
                     school=form.school.data,
-                    schoolID=form.schoolID.data, email=email,gradYr=str(form.gradYr.data))
+                    schoolID=form.schoolID.data, email=email, gradYr=str(form.gradYr.data))
         user.generate_username()
         user.set_password(form.password.data)
         db.session.add(user)
@@ -474,7 +474,8 @@ def coachRegister():
     form = independentSignUpForm()
     if form.validate_on_submit():
         email = form.email.data
-        user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(), email=email, school="OTHER")
+        user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
+                    email=email, school="OTHER")
         user.generate_username()
         user.set_password(form.password.data)
         db.session.add(user)
@@ -684,13 +685,15 @@ def profileList():
     #         year11 = year11 + 1
     #     if user.schoolYr == '12':
     #         year12 = year12 + 1
-    yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'], '7': ['Year 7'], 'other': ['Graduated']}
+    yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'],
+                  '7': ['Year 7'], 'other': ['Graduated']}
     for user in users:
         schoolYr = str(user.get_school_year())
         if schoolYr in yearGroups:
             yearGroups[schoolYr].append([user.sName, user.fName, user.id])
         else:
             yearGroups['other'].append([user.sName, user.fName, user.id])
+        print(yearGroups)
 
     yearGroups = json.dumps(yearGroups)
     return render_template('students/profileList.html', users=users, yearGroups=yearGroups, error=searchError)
@@ -724,7 +727,8 @@ def getUsers():
     :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
     users = User.query.all()
-    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in users]
+    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
+            users]
     return jsonify(list)
 
 
@@ -916,9 +920,18 @@ def submitTable():
     # e.g. user.sightHole = "5"
     if user:
         for field in tableDict:
-            value = tableDict[field]
+            # Convert school year into graduation year
+            print(tableDict)
+            if field == 'gradYr' and tableDict[field] is not None:
+                print(tableDict[field])
+                try:
+                    value = str(get_grad_year(tableDict[field]))
+                except:
+                    value = "None"
+            else:
+                value = tableDict[field]
             if value != "None":
-                setattr(user, field, tableDict[field])
+                setattr(user, field, value)
         db.session.commit()
 
     return jsonify({'success': 'success'})

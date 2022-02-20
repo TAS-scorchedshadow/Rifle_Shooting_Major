@@ -2,8 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/.all" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/_build/html/Rifle_Shooting_Major" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/shooter-a-p" vcs="Git" />
   </component>
 </project>

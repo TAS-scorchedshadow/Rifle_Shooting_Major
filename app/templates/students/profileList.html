@@ -187,11 +187,11 @@
 <meta id="profile-list" data-users="{{ yearGroups }}">
 
     <!--New Cards by Henry Guo-->
-<div class="container">
+<div class="container-fluid">
     <script src="../static/js/profileList.js"></script>
     <form method="post">
         <div class="row">
-            <div class="col-12" align="center" style="justify-self: center">
+            <div class="col-12" align="center">
                 <label for="username"><i class="fas fa-search"></i></label>
                 <input id="username" placeholder="Find Shooter" class="user-searchbar w-50" autocomplete="off" name="user-search">
                 <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
@@ -203,8 +203,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="yearGroups" id="yearGroups" style=" flex-direction: row; align-items: center;">
-                <!--List of shooters go in here-->
+            <div class="col-12">
+                <div class="yearGroups" id="yearGroups" align="center" style="justify-self: center">
+                    <!--List of shooters go in here-->
+                </div>
             </div>
         </div>
 
