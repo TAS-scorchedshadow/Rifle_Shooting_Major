@@ -864,20 +864,20 @@ def getAllShotsSeason():
     data['boxPlot'].sort()
     print('boxplot', data['boxPlot'])
     print('boxplot', stages)
-    # Get highest and lowest scoring stages
-    highestStage = HighestStage(userID, startDate, endDate, dist)
-    data['bestStage'] = {
-        'id': highestStage.id,
-        'score': round(getFiftyScore(highestStage)),
-        'time': str(utc_to_nsw(highestStage.timestamp))
-    }
-    lowestStage = LowestStage(userID, startDate, endDate, dist)
-    data['worstStage'] = {
-        'id': lowestStage.id,
-        'score': round(getFiftyScore(lowestStage)),
-        'time': str(utc_to_nsw(lowestStage.timestamp))
-    }
-    dataDump = json.dumps(data)
+    if len(stages) > 0:
+        # Get highest and lowest scoring stages
+        highestStage = HighestStage(userID, startDate, endDate, dist)
+        data['bestStage'] = {
+            'id': highestStage.id,
+            'score': round(getFiftyScore(highestStage)),
+            'time': str(utc_to_nsw(highestStage.timestamp))
+        }
+        lowestStage = LowestStage(userID, startDate, endDate, dist)
+        data['worstStage'] = {
+            'id': lowestStage.id,
+            'score': round(getFiftyScore(lowestStage)),
+            'time': str(utc_to_nsw(lowestStage.timestamp))
+        }
     data = jsonify(data)
     return data
 

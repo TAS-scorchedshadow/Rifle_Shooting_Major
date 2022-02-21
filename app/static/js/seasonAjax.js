@@ -101,23 +101,24 @@ $( document ).ready(function() {
                         });
                     }
                     $('.season-spinner').hide()
-
-                    //Show best and worst stages
-                    let bestHtml = `
+                    if (shotData['bestStage'].score != undefined) {
+                        //Show best and worst stages
+                        let bestHtml = `
                     <div style="display: flex; flex-direction: column; justify-content: space-between">
                     <h4>Best Stage: ${shotData['bestStage'].score} / 50</h4>
                     <a href="/target?stageID=${shotData['bestStage'].id}" class="btn btn-primary" target="_blank">View Plotsheet <i class="fas fa-external-link-alt" style="color:black;"></i></a>
                     </div>
                  
                     `;
-                    $('#bestWorstDiv').append(bestHtml);
-                    let worstHtml = `
+                        $('#bestWorstDiv').append(bestHtml);
+                        let worstHtml = `
                     <div style="display: flex; flex-direction: column; justify-content: space-between">
                     <h4>Worst Stage: ${shotData['worstStage'].score} / 50</h4>
                     <a href="/target?stageID=${shotData['worstStage'].id}" class="btn btn-primary" target="_blank">View Plotsheet <i class="fas fa-external-link-alt" style="color:black;"></i></a>
                     </div>
                     `;
-                    $('#bestWorstDiv').append(worstHtml);
+                        $('#bestWorstDiv').append(worstHtml);
+                    }
 
                 })
             })
