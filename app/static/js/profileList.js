@@ -6,7 +6,7 @@ $(document).ready(function() {
     for (let i = 12; i > 6; i--) {
         yearGroupsHtml = yearGroupsHtml +
         `
-        <div id="${users[i][0]}">
+        <div id="${users[i][0]}" class="mt-3">
             <h4>${users[i][0]}</h4>
         </div>
         `
@@ -31,6 +31,7 @@ $(document).ready(function() {
                 No shooters
                 `
         }
+        yearGroupsHtml = yearGroupsHtml + "<hr>"
     }
     console.log(yearGroupsHtml)
     $('#yearGroups').append(yearGroupsHtml)

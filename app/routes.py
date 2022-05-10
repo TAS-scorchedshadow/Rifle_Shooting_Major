@@ -663,28 +663,7 @@ def profileList():
         if cardInput:
             flask_session['profileID'] = int(cardInput)
             return redirect('/profile')
-    # # Andrew stuff
     users = User.query.order_by(User.username).all()
-    # # TODO comment this later
-    # year7 = 0
-    # year8 = 0
-    # year9 = 0
-    # year10 = 0
-    # year11 = 0
-    # year12 = 0
-    # for user in users:
-    #     if user.schoolYr == '7':
-    #         year7 = year7 + 1
-    #     if user.schoolYr == '8':
-    #         year8 = year8 + 1
-    #     if user.schoolYr == '9':
-    #         year9 = year9 + 1
-    #     if user.schoolYr == '10':
-    #         year10 = year10 + 1
-    #     if user.schoolYr == '11':
-    #         year11 = year11 + 1
-    #     if user.schoolYr == '12':
-    #         year12 = year12 + 1
     yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'],
                   '7': ['Year 7'], 'other': ['Graduated']}
     for user in users:
@@ -693,7 +672,6 @@ def profileList():
             yearGroups[schoolYr].append([user.sName, user.fName, user.id])
         else:
             yearGroups['other'].append([user.sName, user.fName, user.id])
-        print(yearGroups)
 
     yearGroups = json.dumps(yearGroups)
     return render_template('students/profileList.html', users=users, yearGroups=yearGroups, error=searchError)
