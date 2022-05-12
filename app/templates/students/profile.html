@@ -106,57 +106,74 @@ a.show-sheet:hover {
 }
 </style>
 
-    <div class="container-fluid" style="padding-bottom: 50px">
-        <div class="row align-items-center">
-            <!--EVERYTHING IN THIS ROW IS BY RISHI-->
-            <div class="col-12 col-lg-2">
-                <div class="card text-center bg-primary mt-0 pt-0">
+    <div class="container-fluid">
+        <div class="row align-items-center mb-3">
+            <div class="col">
+                <div class="card text-center bg-primary d-flex">
                     <div class="card-body">
-                        <i class="fas fa-user-graduate fa-5x"></i>
-                        <h4 class="card-text text-center">{{ user.fName }} {{ user.sName }}</h4>
+                        {% if user.access == 0 %}
+                            <i class="fas fa-user-graduate fa-4x"></i>
+                            <h4 class="card-text text-center">{{ user.fName }} {{ user.sName }}</h4>
+                            <span class="card-text text-center">{{ user.school }} {{ user.schoolID }}</span>
+                        {% else %}
+                            <i class="fas fa-user fa-4x"></i>
+                            <h4 class="card-text text-center">{{ user.fName }} {{ user.sName }}</h4>
+                            <span class="card-text text-center">Coach</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-8" style="height: 15rem">
-                <table class="table table-responsive editableTable">
+        </div>
+        <div class="row align-items-center">
+            <!--EVERYTHING IN THIS ROW IS BY RISHI-->
+            <div class="col">
+                <table class="table table-responsive-sm table-bordered editableTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Grade</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <tr>
-                            <th scope="col">SID</th>
-                            <th scope="col">DOB</th>
-                            <th scope="col">Rifle Serial</th>
-                            <th scope="col">Student ID</th>
-                            <th scope="col">Grade</th>
-                            <th scope="col">Email</th>
-                        </tr>
-                        <tr>
-                            <td id="shooterID">{{ tableInfo["SID"] }}</td>
-                            <td id="dob">{{ tableInfo["DOB"] }}</td>
-                            <td id="rifleSerial">{{ tableInfo["Rifle Serial"] }}</td>
                             <td id="schoolID">{{ tableInfo["StudentID"] }}</td>
                             <td id="gradYr">{{ tableInfo["Grade"] }}</td>
                             <td id="email">{{ tableInfo["Email"] }}</td>
-                        </tr>
-                    </tbody>
-                    <tbody>
-                        <tr>
-                            <th scope="col">Permit</th>
-                            <th scope="col">Expiry</th>
-                            <th scope="col">Sharing</th>
-                            <th scope="col">Mobile</th>
-                        </tr>
-                        <tr>
-                            <td id="permitNumber">{{ tableInfo["Permit"] }}</td>
-                            <td id="permitExpiry">{{ tableInfo["Expiry"] }}</td>
-                            <td id="sharing">{{ tableInfo["Sharing"] }}</td>
                             <td id="mobile">{{ tableInfo["Mobile"] }}</td>
                         </tr>
                     </tbody>
                 </table>
+                 <table class="table table-responsive-sm table-bordered editableTable">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>SID</th>
+                            <th>DOB</th>
+                            <th>Rifle Serial</th>
+                            <th>Permit</th>
+                            <th>Expiry</th>
+                            <th>Sharing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="shooterID">{{ tableInfo["SID"] }}</td>
+                            <td id="dob">{{ tableInfo["DOB"] }}</td>
+                            <td id="rifleSerial">{{ tableInfo["Rifle Serial"] }}</td>
+                            <td id="permitNumber">{{ tableInfo["Permit"] }}</td>
+                            <td id="permitExpiry">{{ tableInfo["Expiry"] }}</td>
+                            <td id="sharing">{{ tableInfo["Sharing"] }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="col-12 col-md-2">
+        </div>
+        <div class="row align-items-center mt-2 mb-3">
+            <div class="col">
                 <button class="btn btn-primary btn-block edit">
                     <i class="fas fa-edit"></i>
-                    Edit
+                    Edit Details
                 </button>
                 <button class="btn btn-warning btn-block submit" style="display: none;">
                     <i class="far fa-save"></i>
