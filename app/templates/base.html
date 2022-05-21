@@ -87,17 +87,19 @@
 
     {% endblock %}
         <div id="content">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    <div class="alert alert-success text-center" role='alert'>
-                        <ul class="flashes" style="list-style-type: none">
-                        {% for message in messages %}
-                            <li><b>{{ message }}</b></li>
-                        {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
-            {% endwith %}
+            <div>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-dark text-center mb-0" role='alert'>
+                            <ul class="flashes" style="list-style-type: none">
+                            {% for message in messages %}
+                                <li><b>{{ message }}</b></li>
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            </div>
 
             {% block page_content %}
             {% endblock %}
