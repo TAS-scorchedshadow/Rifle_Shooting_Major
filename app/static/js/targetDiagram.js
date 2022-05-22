@@ -59,7 +59,6 @@ function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWid
         c.lineWidth = this.lineWidth;
         if (this.lineWidth > 0){
             c.strokeStyle = strokeColor;
-            console.log(c.strokeStyle);
             c.stroke();
         }
         c.closePath();
@@ -144,7 +143,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         The following code makes the canvas obj draw at double the size
         Then we scale the obj down with css so that its shown at the original size
          */
-        console.log(parentWidth)
         if (width === 'flex'){
             this.canvasObj.width = parentWidth*this.dpr;
             this.canvasObj.height = parentWidth*this.dpr;
@@ -173,7 +171,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         //it is modified to be in pixels
         this.PX_PER_MOA_PER_1M = (((1.047 * 25.4) / 100) * (39.37 / 36)) * target_details[this.dist][0] * this.ratio;
 
-        console.log(this.canvasObj.width)
         // Create the object which draws each the circles of each score
         this.target = new Target(this.c, this.x, this.y, this.canvasObj.width, this.dist);
 
@@ -181,7 +178,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         if (groupCircle) {
             this.grouping = []
             for (let i=0; i<groupCircle.length; i++){
-                console.log(groupCircle)
                 this.grouping.push({'x': this.x + groupCircle[i][0]*this.ratio, 'y': this.y - groupCircle[i][1]*this.ratio, 'r': groupCircle[i][2]*this.ratio/2})
             }
         }
@@ -209,7 +205,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         if (groupCircle) {
             this.grouping = []
             for (let i=0; i<groupCircle.length; i++){
-                console.log(groupCircle)
                 this.grouping.push({'x': this.x + groupCircle[i][0]*this.ratio, 'y': this.y - groupCircle[i][1]*this.ratio, 'r': groupCircle[i][2]*this.ratio/2})
             }
         }
@@ -303,7 +298,6 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         //Draw grouping circle if needed
         if (groupCircle) {
             for (let j=0; j<this.grouping.length; j++){
-                console.log('drawing group')
                 this.c.beginPath();
                 this.c.arc(this.grouping[j].x, this.grouping[j].y, this.grouping[j].r, 0, Math.PI * 2, false);
                 this.c.lineWidth = this.dpr;

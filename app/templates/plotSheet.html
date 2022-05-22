@@ -9,6 +9,9 @@
     <script src="../static/js/noteSubmit.js"></script>
     <script src="../static/js/table.js"></script>
     <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submitTable">
+    <meta id="target-data" data-shotList="{{ data['jsonList'] }}" data-range={{ data['range']|safe }}
+          data-groupX="{{ stage.groupX|safe }}" data-groupY="{{ stage.groupY|safe }}" data-groupSize="{{ stage.groupSize|safe }}">
+    <script src="../static/js/plotSheet.js"></script>
     <style>
         /*
         @media (min-width: 1200px){
@@ -72,22 +75,27 @@
                 <br>
                 <div class="justify-content-center">
                     <canvas id="title" style="border: 1px solid black"></canvas>
-                    <script>
-                        let shotList = {{ data['jsonList']|safe }}; //TODO This is vulnerable to injections fix when we have time
-                        //let newGroup = {{ data['newGroup']|safe }};
-                        let range = {{ data['range']|safe }};
-                        let groupX = {{ stage.groupX|safe }};
-                        let groupY = {{ stage.groupY|safe }};
-                        let groupSize = {{ stage.groupSize|safe }};
-                        let myTarget = new DrawTarget('title',range,shotList,[[groupX, groupY, groupSize]]);
-                    </script>
                     <div class="card shadow border-0 mt-0 pt-0">
                         <div class="row">
                             <div class="col-12">
                                 <h4>{{ user.fName }} {{ user.sName }}</h4>
                                 <p>
                                     <div>{{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y %I:%M %p %Z") }}</div>
+                                {% if stage.distance == '1000y' %}
+                                    <!-- Handles the dropdown for long range targets -->
+                                    <div>{{ stage.location }}</div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                            <span id="select-range-span">700m</span><i class="fa fa-caret-down pl-1" style="color: white;"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
+                                            <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
+                                        </div>
+                                    </div>
+                                {% else %}
                                     <div>{{ stage.location }} - {{ stage.distance }}</div>
+                                {% endif %}
                                 </p>
                             </div>
                         </div>
