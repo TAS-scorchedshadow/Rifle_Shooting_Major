@@ -207,84 +207,6 @@ def getAvgShotData():
     return graphData
 
 
-# Rishi
-@app.route('/overview')
-def profile_overview():
-    # stub for shooter ID passed to the overview
-    shooterID = 56
-
-    stages_query = Stage.query.filter_by(userID=shooterID).all()
-    print(stages_query)
-    info = {}
-    times = []
-    scores = []
-    for i in range(len(stages_query)):
-        info[stages_query[i].id] = 0
-    for j in info:
-        shots_query = Shot.query.filter_by(stageID=j).all()
-        total = 0
-        score = 0
-        for k in range(len(shots_query)):
-            total += 1
-            score += (shots_query[k].score)
-        info[j] = (score / total)
-        timestamp_query = Stage.query.filter_by(id=j).all()
-        for m in range(len(timestamp_query)):
-            times.append(timestamp_query[m].timestamp)
-        scores.append(info[j])
-
-    # strftime turn datetime object into string format, and json.dumps helps format for passing the list to ChartJS
-    for n in range(len(times)):
-        times[n] = (times[n].strftime("%d-%b-%Y (%H:%M:%S.%f)"))[0:11]
-    times = json.dumps(times)
-    return render_template('students/profile_overview.html', dates=times, scores=scores)
-
-
-# Rishi
-@app.route('/settings')
-def profile_settings():
-    stubID = 31
-
-    eqiupmentInfo = {}
-    equipment_query = User.query.filter_by(id=stubID).all()
-    for i in range(len(equipment_query)):
-        eqiupmentInfo["Glove"] = equipment_query[i].glove
-        eqiupmentInfo["Hat"] = equipment_query[i].hat
-        eqiupmentInfo["Jacket"] = equipment_query[i].jacket
-        eqiupmentInfo["Sight Hole"] = equipment_query[i].sightHole
-        eqiupmentInfo["Sling Hole"] = equipment_query[i].slingHole
-        eqiupmentInfo["Sling Point"] = equipment_query[i].slingPoint
-
-    elevationInfo = {}
-    elevation_query = User.query.filter_by(id=stubID).all()
-    for i in range(len(equipment_query)):
-        elevationInfo["ADI300m"] = elevation_query[i].ADI300m
-        elevationInfo["Fore300m"] = elevation_query[i].Fore300m
-        elevationInfo["PPU300m"] = elevation_query[i].PPU300m
-        elevationInfo["ADI400m"] = elevation_query[i].ADI400m
-        elevationInfo["Fore400m"] = elevation_query[i].Fore400m
-        elevationInfo["PPU400m"] = elevation_query[i].PPU400m
-        elevationInfo["ADI500m"] = elevation_query[i].ADI500m
-        elevationInfo["Fore500m"] = elevation_query[i].Fore500m
-        elevationInfo["PPU500m"] = elevation_query[i].PPU500m
-        elevationInfo["ADI600m"] = elevation_query[i].ADI600m
-        elevationInfo["Fore600m"] = elevation_query[i].Fore600m
-        elevationInfo["PPU600m"] = elevation_query[i].PPU600m
-        elevationInfo["ADI700m"] = elevation_query[i].ADI700m
-        elevationInfo["Fore700m"] = elevation_query[i].Fore700m
-        elevationInfo["PPU700m"] = elevation_query[i].PPU700m
-        elevationInfo["ADI800m"] = elevation_query[i].ADI800m
-        elevationInfo["Fore800m"] = elevation_query[i].Fore800m
-        elevationInfo["PPU800m"] = elevation_query[i].PPU800m
-        elevationInfo["ADI500y"] = elevation_query[i].ADI500y
-        elevationInfo["Fore500y"] = elevation_query[i].Fore500y
-        elevationInfo["PPU500y"] = elevation_query[i].PPU500y
-        elevationInfo["ADI600y"] = elevation_query[i].ADI600y
-        elevationInfo["Fore600y"] = elevation_query[i].Fore600y
-        elevationInfo["PPU600y"] = elevation_query[i].PPU600y
-
-    return render_template('students/profile_settings.html', equipmentInfo=eqiupmentInfo, elevationInfo=elevationInfo)
-
 
 @app.route('/testdelshoot', methods=['GET', 'POST'])
 @login_required
@@ -723,11 +645,16 @@ def getShots():
     """
     Collect shots for use in the recent shots card
     """
+
     data = request.get_data()
     loadedData = json.loads(data)
     userID = loadedData[0]
     # numLoaded are the number of tables already loaded
     numLoaded = loadedData[1]
+
+    # Add up to 10 more tables
+    totaltoLoad = numLoaded + 10
+
     # convert dateRange string into datetime objects
     dateRange = loadedData[2]
     if dateRange:
@@ -737,9 +664,9 @@ def getShots():
         endDate = datetime.datetime.strptime(dates[1], '%B %d, %Y')
         #print(startDate, endDate)
         stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.userID == userID).order_by(
-            desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
+            desc(Stage.timestamp)).all()[numLoaded: totaltoLoad]
     else:
-        stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
+        stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: totaltoLoad]
     stagesList = []
     for stage in stages:
         data = stage.formatShots()
@@ -750,7 +677,7 @@ def getShots():
                            'groupSize': round(stage.groupSize, 1),
                            'distance': stage.distance,
                            'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
-                           'std': round(stage.std, 3),
+                           'std': round(stage.std, 2),
                            'duration': formatDuration(stage.duration),
                            'stageID': stage.id,
                            'sighters': data['sighters']

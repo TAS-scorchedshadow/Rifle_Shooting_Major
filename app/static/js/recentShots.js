@@ -25,7 +25,6 @@ $(document).ready(function(){
                     $('#shotSpinner').hide()
                     if (Array.isArray(data) && data.length){
                         for (let stage in data) {
-                            let shots = data[stage]['scores']
                             let htmlScoresBody = ``
                             let htmlSighters = ``
                             for (let shot in data[stage]['scores']) {

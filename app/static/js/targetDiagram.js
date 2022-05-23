@@ -262,15 +262,16 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         }
 
         //Draw all the individual shots
+        console.log(shots);
         let shotsLength = shots.length;
         let shot_x = 0;
         let shot_y = 0;
         let shot_num = '';
         let font_size = '';
         for (let i=0; i<shotsLength; i++){
-            shot_num = shots[i][0];
-            shot_x = shots[i][1]*this.ratio;
-            shot_y = shots[i][2]*this.ratio;
+            shot_num = shots[i]["displayChar"];
+            shot_x = shots[i]["xPos"]*this.ratio;
+            shot_y = shots[i]["yPos"]*this.ratio;
             //Draw Circle
             this.c.beginPath();
             this.c.arc(this.x + (shot_x), this.y - (shot_y), this.shotRadius, 0, Math.PI * 2, false);
@@ -356,8 +357,8 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
         let hit = false;
         for (let i=0; i<shots.length; i++){
             //dx and dy are the difference between the position of a shot and the position of the mouse
-            let dx =  mouseX - shots[i][1]*ThisTarget.ratio;
-            let dy = mouseY + shots[i][2]*ThisTarget.ratio;
+            let dx =  mouseX - shots[i]["xPos"]*ThisTarget.ratio;
+            let dy = mouseY + shots[i]["yPos"]*ThisTarget.ratio;
             //check if the mouse is within a certain distance of the shot position using the circle formula (x^2 + y^2 < r^2)
             if (dx*dx + dy*dy < ThisTarget.shotRadius*ThisTarget.shotRadius) {
                 //Move the tooltip to near the mouse
@@ -367,7 +368,7 @@ function DrawTarget(canvasId, dist, shots=[], groupCircle=null, width='flex'){
                 tipCtx.clearRect(0, 0, tipCanvas.width, tipCanvas.height);
                 tipCtx.font = 12*ThisTarget.dpr + 'px Arial';
                 tipCtx.fillStyle = "white";
-                tipCtx.fillText('Score: ' + shots[i][3], 5*ThisTarget.dpr, 15*ThisTarget.dpr);
+                tipCtx.fillText('Score: ' + shots[i]["scoreVal"], 5*ThisTarget.dpr, 15*ThisTarget.dpr);
                 //set hit to true so that the x position of the tooltip doesn't get set to -200px
                 hit = true;
             }

@@ -11,6 +11,7 @@ $(document).ready(function(){
     let groupX = data.groupx;
     let groupY = data.groupy;
     let groupSize = data.groupsize;
+    console.log(shotList);
     var myTarget = new DrawTarget('title',range,shotList,[[groupX, groupY, groupSize]]);
 
 
