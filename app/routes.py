@@ -746,15 +746,22 @@ def getShots():
         sighters = {}
         scores = {}
         totalScore = 0
+        totalVScore = 0
         num = 1
         letter = ord("A")
         shot_list = []
+        scoreVal = '0'
         for shot in shots:
+            if shot.vScore != 0:
+                scoreVal = 'V'
+                totalVScore += 1
+            else:
+                scoreVal = str(shot.score)
             if shot.sighter:
-                sighters[chr(letter)] = shot.score
+                sighters[chr(letter)] = scoreVal
                 letter += 1
             else:
-                scores[str(num)] = shot.score
+                scores[str(num)] = scoreVal
                 num += 1
                 totalScore += shot.score
                 shot_list.append(shot.score)
@@ -763,6 +770,7 @@ def getShots():
         duration = duration.split(':')
         # str(int()) is used to remove the extra zero in front of single digit numbers
         duration = '{}m {}s'.format(str(int(duration[1])), str(int(duration[2])))
+        totalScore = str(totalScore) + '.' + str(totalVScore) + ' / ' + str((num - 1) * 5)
         stagesList.append({'scores': scores,
                            'totalScore': totalScore,
                            'groupSize': round(stage.groupSize, 1),

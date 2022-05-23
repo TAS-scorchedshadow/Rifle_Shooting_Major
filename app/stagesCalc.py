@@ -298,15 +298,20 @@ def plotsheet_calc(stage, user):
     data = {}
 
     formattedList = []
-    scoreList = []
     num = 1
     letter = ord("A")
     shotTotal = 0
+    shotVTotal = 0
     shotsList = [stat for stat in enumerate(shots)]
     shotDuration = 'N/A'
+    scoreData = '0'
     # Shot duration is calculated by the time between registered shots on the target --> 1st shot has no duration.
     for idx, shot in shotsList:
-        scoreList.append(shot.score)
+        if shot.vScore != 0:
+            scoreData = 'V'
+            shotVTotal += 1
+        else:
+            scoreData = str(shot.score)
         if idx != 0:
             start = shotsList[idx - 1][1].timestamp
             diff = (shot.timestamp - start).total_seconds()
@@ -315,10 +320,10 @@ def plotsheet_calc(stage, user):
             else:
                 shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
         if shot.sighter:
-            formattedList.append([chr(letter), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
+            formattedList.append([chr(letter), shot.xPos, shot.yPos, scoreData, shotDuration, 0])
             letter += 1
         else:
-            formattedList.append([str(num), shot.xPos, shot.yPos, str(shot.score), shotDuration, 0])
+            formattedList.append([str(num), shot.xPos, shot.yPos, scoreData, shotDuration, 0])
             num += 1
             shotTotal += shot.score
     jsonList = json.dumps(formattedList)
@@ -330,9 +335,10 @@ def plotsheet_calc(stage, user):
     stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
     stageStats[4] = stageDuration
     data['stageStats'] = stageStats
+    shotTotal = str(shotTotal) + '.' + str(shotVTotal) + ' / ' + str((num - 1) * 5)
 
     # Total appended to list to match the format of existing plot sheet
-    formattedList.append(["Total", 0, 0, str(shotTotal), stageDuration])
+    formattedList.append(["Total", 0, 0, shotTotal, stageDuration])
     data['formattedList'] = formattedList
 
     # Henry
