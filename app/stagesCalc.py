@@ -3,7 +3,7 @@ import datetime as datetime
 import json
 
 from app.models import User, Stage, Shot
-from app.timeConvert import utc_to_nsw, nsw_to_utc
+from app.timeConvert import utc_to_nsw, nsw_to_utc, formatDuration
 from datetime import datetime
 import statistics
 
@@ -294,53 +294,22 @@ def plotsheet_calc(stage, user):
         :return: Landing html page
     """
     # Dylan
-    shots = Shot.query.filter_by(stageID=stage.id).all()
     data = {}
 
-    formattedList = []
-    num = 1
-    letter = ord("A")
-    shotTotal = 0
-    shotVTotal = 0
-    shotsList = [stat for stat in enumerate(shots)]
-    shotDuration = 'N/A'
-    scoreData = '0'
-    # Shot duration is calculated by the time between registered shots on the target --> 1st shot has no duration.
-    for idx, shot in shotsList:
-        if shot.vScore != 0:
-            scoreData = 'V'
-            shotVTotal += 1
-        else:
-            scoreData = str(shot.score)
-        if idx != 0:
-            start = shotsList[idx - 1][1].timestamp
-            diff = (shot.timestamp - start).total_seconds()
-            if int(diff / 60) == 0:
-                shotDuration = "{}s".format(int(diff % 60))
-            else:
-                shotDuration = "{}m {}s".format(int(diff / 60), int(diff % 60))
-        if shot.sighter:
-            formattedList.append([chr(letter), shot.xPos, shot.yPos, scoreData, shotDuration, 0])
-            letter += 1
-        else:
-            formattedList.append([str(num), shot.xPos, shot.yPos, scoreData, shotDuration, 0])
-            num += 1
-            shotTotal += shot.score
-    jsonList = json.dumps(formattedList)
-    data["jsonList"] = jsonList
+    stage.initShots()
+    rtnData = stage.formatShots()
+    allShots = rtnData["sighters"] + rtnData["scores"]
+    data["jsonList"] = json.dumps(allShots)
 
-    # Formatting calculated data for the particular stage.
-    stageResponse = stage.stageStats()
-    stageStats = [round(stat, 2) for stat in stageResponse]
-    stageDuration = "{}m {}s".format(int(stageResponse[4] / 60), stageResponse[4] % 60)
-    stageStats[4] = stageDuration
-    data['stageStats'] = stageStats
-    shotTotal = str(shotTotal) + '.' + str(shotVTotal) + ' / ' + str((num - 1) * 5)
+    stage.initStageStats()
+    # print(stage.total, stage.totalPossible)
+    # print(rtnData["totalScore"], rtnData["totalPossibleScore"])
+    data["formattedList"] = allShots + [{"displayChar": "Total",
+                                         "scoreVal": f"{stage.total}.{stage.totalVScore}/{stage.totalPossible}",
+                                         "shotDuration": formatDuration(stage.duration)}]
 
-    # Total appended to list to match the format of existing plot sheet
-    formattedList.append(["Total", 0, 0, shotTotal, stageDuration])
-    data['formattedList'] = formattedList
-
+    data['stageStats'] = {"mean": round(stage.mean, 2), "median": round(stage.median, 2), "std": round(stage.std, 2),
+                          "groupSize": round(stage.groupSize, 2), "duration": formatDuration(stage.duration)}
     # Henry
 
     # Calculating statistics for stages shot on the same day
@@ -353,37 +322,38 @@ def plotsheet_calc(stage, user):
     otherStages = []
     # stages of the selected user's shoots on the same day and stores their grouping info
     myStages = []
-
-    dayStats = [0, 0, 0, 0, 0]
+    dayStats ={"mean": 0, "median": 0, "std": 0, "groupSize": 0, "duration": 0}
     for shoot in dayStages:
         if shoot.userID == stage.userID:
             count += 1
-            dayResponse = shoot.stageStats()
-            for i, stat in enumerate(dayResponse):
-                dayStats[i] = dayStats[i] + stat
+            stage.initStageStats()
+            dayStats["mean"] += stage.mean
+            dayStats["median"] += stage.median
+            dayStats["std"] += stage.std
+            dayStats["groupSize"] += stage.groupSize
+            dayStats["duration"] += stage.duration
+
             dayX += shoot.groupX
             dayY += shoot.groupY
             myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
         elif shoot.distance == stage.distance:
             otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-    dayAvg = [dayX / count, dayY / count]
+    #dayAvg = [dayX / count, dayY / count]
     myStages = json.dumps(myStages)
     otherStages = json.dumps(otherStages)
-    for i, stat in enumerate(dayStats):
-        dayStats[i] = round(stat / count, 2)
-    dayDuration = "{}m {}s".format(int(dayStats[4] / 60), int(dayStats[4] % 60))
-    dayStats[4] = dayDuration
+    for key in dayStats:
+        dayStats[key] = round(dayStats[key] / count, 2)
+    dayStats["duration"] = formatDuration(dayStats["duration"])
     data['dayStats'] = dayStats
-    data['dayAvg'] = dayAvg
+    #data['dayAvg'] = dayAvg
     data['myStages'] = myStages
     data['otherStages'] = otherStages
 
     # Get Season Stats
-    seasonResponse = user.seasonStats()
-    seasonStats = [round(stat, 2) for stat in seasonResponse]
-    seasonDuration = "{}m {}s".format(int(seasonResponse[4] / 60), seasonResponse[4] % 60)
-    seasonStats[4] = seasonDuration
-    data['seasonStats'] = seasonStats
+    seasonResp = user.seasonStats()
+    data['seasonStats'] = {"mean": round(seasonResp["mean"], 2), "median": round(seasonResp["median"], 2),
+                           "std": round(seasonResp["std"], 2), "groupSize": round(seasonResp["groupSize"], 2),
+                           "duration": formatDuration(seasonResp["duration"])}
 
     data['range'] = json.dumps(stage.distance)
 

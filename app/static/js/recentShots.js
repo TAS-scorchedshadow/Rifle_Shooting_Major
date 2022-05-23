@@ -29,10 +29,10 @@ $(document).ready(function(){
                             let htmlScoresBody = ``
                             let htmlSighters = ``
                             for (let shot in data[stage]['scores']) {
-                                htmlScoresBody = htmlScoresBody + `${data[stage]['scores'][shot]} `;
+                                htmlScoresBody = htmlScoresBody + `${data[stage]['scores'][shot]['scoreVal']} `;
                             }
                             for (let shot in data[stage]['sighters']){
-                                htmlSighters = htmlSighters + `${data[stage]['sighters'][shot]} `;
+                                htmlSighters = htmlSighters + `${data[stage]['sighters'][shot]['scoreVal']} `;
                             }
                             let htmlstring = `
                         <div class="stage-overview">
