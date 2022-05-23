@@ -736,18 +736,19 @@ def getAllShotsSeason():
     data = {'heatmap': [], 'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
-    sortStages = []
+    print(stages)
     for stage in stages:
-        totalScore = 0
-        shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
-        for shot in shots:
+        stage.initStageStats()
+        for shot in stage.shotList:
             data['heatmap'].append(
                 {'x': round(shot.xPos * ratio + (size / 2)), 'y': round(size / 2 - shot.yPos * ratio), 'value': 1})
-            data['target'].append(['', shot.xPos, shot.yPos, shot.score])
-            totalScore += shot.score
-        fiftyScore = (totalScore / len(shots)) * 10
+        totalScore = stage.total
+        fiftyScore = (totalScore / len(stage.shotList)) * 10
         data['boxPlot'].append(fiftyScore)
-    # Sort the scores for boxPlot so the lowest value can be taken. The lowest value is used to determine the lower bound of the box plot
+        data['target'] = data['target'] + stage.formatShots()["scores"] + stage.formatShots()["sighters"]
+
+    # Sort the scores for boxPlot so the lowest value can be taken.
+    # The lowest value is used to determine the lower bound of the box plot
     data['boxPlot'].sort()
     print('boxplot', data['boxPlot'])
     print('boxplot', stages)
