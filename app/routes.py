@@ -16,7 +16,7 @@ from app.forms import *
 from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_report_email, send_upload_email
 from app.uploadProcessing import validateShots
-from app.timeConvert import utc_to_nsw, nsw_to_utc, get_grad_year, get_school_year
+from app.timeConvert import utc_to_nsw, nsw_to_utc, get_grad_year, get_school_year, formatDuration
 from app.decompress import read_archive
 from app.stagesCalc import plotsheet_calc, stats_of_period, getFiftyScore, HighestStage, LowestStage
 import numpy
@@ -732,54 +732,28 @@ def getShots():
     dateRange = loadedData[2]
     if dateRange:
         dates = dateRange.split(' - ')
-        print(dates)
+        #print(dates)
         startDate = datetime.datetime.strptime(dates[0], '%B %d, %Y')
         endDate = datetime.datetime.strptime(dates[1], '%B %d, %Y')
-        print(startDate, endDate)
+        #print(startDate, endDate)
         stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.userID == userID).order_by(
             desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
     else:
         stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: numLoaded + 3]
     stagesList = []
     for stage in stages:
-        shots = Shot.query.filter_by(stageID=stage.id).all()
-        sighters = {}
-        scores = {}
-        totalScore = 0
-        totalVScore = 0
-        num = 1
-        letter = ord("A")
-        shot_list = []
-        scoreVal = '0'
-        for shot in shots:
-            if shot.vScore != 0:
-                scoreVal = 'V'
-                totalVScore += 1
-            else:
-                scoreVal = str(shot.score)
-            if shot.sighter:
-                sighters[chr(letter)] = scoreVal
-                letter += 1
-            else:
-                scores[str(num)] = scoreVal
-                num += 1
-                totalScore += shot.score
-                shot_list.append(shot.score)
-        std = round(numpy.std(shot_list), 1)
-        duration = str(shots[-1].timestamp - shots[1].timestamp)
-        duration = duration.split(':')
-        # str(int()) is used to remove the extra zero in front of single digit numbers
-        duration = '{}m {}s'.format(str(int(duration[1])), str(int(duration[2])))
-        totalScore = str(totalScore) + '.' + str(totalVScore) + ' / ' + str((num - 1) * 5)
-        stagesList.append({'scores': scores,
-                           'totalScore': totalScore,
+        data = stage.formatShots()
+        stage.initStageStats()
+        displayScore = f"{data['total']}/{data['totalPossible']}"
+        stagesList.append({'scores': data["scores"],
+                           'totalScore': displayScore,
                            'groupSize': round(stage.groupSize, 1),
                            'distance': stage.distance,
                            'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
-                           'std': std,
-                           'duration': duration,
+                           'std': round(stage.std, 3),
+                           'duration': formatDuration(stage.duration),
                            'stageID': stage.id,
-                           'sighters': sighters
+                           'sighters': data['sighters']
                            })
     return jsonify(stagesList)
     # stage = Stage.query.filter_by(userID=userID).all()

@@ -126,9 +126,9 @@
                                     <tbody>
                                         {% for shot in data['formattedList'] %}
                                             <tr>
-                                                <th scope="row">{{ shot[0] }}</th>
-                                                <td>{{ shot[3] }}</td>
-                                                <td>{{ shot[4] }}</td>
+                                                <th scope="row">{{ shot["displayChar"] }}</th>
+                                                <td>{{ shot["scoreVal"] }}</td>
+                                                <td>{{ shot["shotDuration"] }}</td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -151,33 +151,33 @@
                                      <tbody>
                                         <tr>
                                           <th scope="row">Avr. Score</th>
-                                          <td>{{ data['stageStats'][0] }}</td>
-                                          <td>{{ data['dayStats'][0] }}</td>
-                                          <td>{{ data['seasonStats'][0] }}</td>
+                                          <td>{{ data['stageStats']["mean"] }}</td>
+                                          <td>{{ data['dayStats']["mean"] }}</td>
+                                          <td>{{ data['seasonStats']["mean"] }}</td>
                                         </tr>
                                         <tr>
                                           <th scope="row">Median Score</th>
-                                          <td>{{ data['stageStats'][1] }}</td>
-                                          <td>{{ data['dayStats'][1] }}</td>
-                                          <td>{{ data['seasonStats'][1] }}</td>
+                                          <td>{{ data['stageStats']["median"] }}</td>
+                                          <td>{{ data['dayStats']["median"] }}</td>
+                                          <td>{{ data['seasonStats']["median"] }}</td>
                                         </tr>
                                         <tr>
                                           <th scope="row">S.T.D Score</th>
-                                          <td>{{ data['stageStats'][2] }}</td>
-                                          <td>{{ data['dayStats'][2] }}</td>
-                                          <td>{{ data['seasonStats'][2] }}</td>
+                                          <td>{{ data['stageStats']["std"] }}</td>
+                                          <td>{{ data['dayStats']["std"] }}</td>
+                                          <td>{{ data['seasonStats']["std"] }}</td>
                                         </tr>
                                      <tr>
                                           <th scope="row">Group Size</th>
-                                          <td>{{ data['stageStats'][3] }}</td>
-                                          <td>{{ data['dayStats'][3] }}</td>
-                                          <td>{{ data['seasonStats'][3] }}</td>
+                                          <td>{{ data['stageStats']["groupSize"] }}</td>
+                                          <td>{{ data['dayStats']["groupSize"] }}</td>
+                                          <td>{{ data['seasonStats']["groupSize"] }}</td>
                                         </tr>
                                      <tr>
                                           <th scope="row">Duration</th>
-                                          <td>{{ data['stageStats'][4] }}</td>
-                                          <td>{{ data['dayStats'][4] }}</td>
-                                          <td>{{ data['seasonStats'][4] }}</td>
+                                          <td>{{ data['stageStats']["duration"] }}</td>
+                                          <td>{{ data['dayStats']["duration"] }}</td>
+                                          <td>{{ data['seasonStats']["duration"] }}</td>
                                         </tr>
                                       </tbody>
                                 </table>

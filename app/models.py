@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from time import time
 import jwt
 import statistics
-from app.timeConvert import nsw_to_utc, utc_to_nsw
+from app.timeConvert import nsw_to_utc, utc_to_nsw, formatDuration
 
 
 class User(UserMixin, db.Model):
@@ -144,20 +144,20 @@ class User(UserMixin, db.Model):
         totalDuration = 0
         totalGroup = 0
         stages = Stage.query.filter_by(userID=self.id).all()
+        length = len(stages)
         for stage in stages:
-            stats = stage.stageStats()
-            if stats:
-                totalMean += stats[0]
-                totalMedian += stats[1]
-                totalStd += stats[2]
-                totalGroup += stats[3]
-                totalDuration += stats[4]
-        mean = totalMean / len(stages)
-        median = totalMedian / len(stages)
-        std = totalStd / len(stages)
-        group = totalGroup / len(stages)
-        duration = int(totalDuration / len(stages))
-        return mean, median, std, group, duration
+            stage.initStageStats()
+            totalMean += stage.mean
+            totalMedian += stage.median
+            totalStd += stage.total
+            totalGroup += stage.groupSize
+            totalDuration += stage.duration
+        mean = totalMean / length
+        median = totalMedian / length
+        std = totalStd / length
+        group = totalGroup / length
+        duration = int(totalDuration / length)
+        return {"mean": mean, "median": median, "std": std, "groupSize": group, "duration": duration}
 
 
 class Stage(db.Model):
@@ -176,6 +176,15 @@ class Stage(db.Model):
     notes = db.Column(db.String(255))
     shots = db.relationship('Shot', backref='stage', lazy='dynamic')
 
+    shotList = None
+    mean = None
+    median = None
+    std = None
+    duration = None
+    total = None
+    totalVScore = None
+    totalPossible = None
+
     def __repr__(self):
         return '<Stage {}>'.format(self.id)
 
@@ -190,19 +199,85 @@ class Stage(db.Model):
         dayStages = Stage.query.filter(Stage.timestamp.between(dayStart, dayEnd))
         return dayStages
 
-    def stageStats(self):
+    def initShots(self):
+        shots = Shot.query.filter_by(stageID=self.id).all()
+        self.shotList = shots
+        return shots
+
+    def initStageStats(self):
         """
         :returns: Mean, median, std, group size and duration if successful
         """
-        shots = Shot.query.filter_by(stageID=self.id).all()
-        scores = [shot.score for shot in shots if not shot.sighter]
+        if self.shotList is None:
+            self.initShots()
+        scores = [shot.score for shot in self.shotList if not shot.sighter]
         if scores:
-            mean = statistics.mean(scores)
-            median = statistics.median(scores)
-            std = statistics.stdev(scores)
-            duration = int((shots[-1].timestamp - shots[1].timestamp).total_seconds())
-            return mean, median, std, self.groupSize, duration
-        return
+            self.mean = statistics.mean(scores)
+            self.median = statistics.median(scores)
+            self.std = statistics.stdev(scores)
+            self.duration = abs((self.shotList[-1].timestamp - self.shotList[1].timestamp)).total_seconds()
+            self.initTotal()
+
+
+    def initTotal(self):
+        """
+
+        :return:
+        """
+        if self.shotList is None:
+            self.initShots()
+        shots = self.shotList
+        totalScore = 0
+        totalVScore = 0
+        num = 0
+
+        for shot in shots:
+            if shot.vScore != 0:
+                totalVScore += 1
+            if not shot.sighter:
+                totalScore += shot.score
+                num += 1
+        self.total = totalScore
+        self.totalVScore = totalVScore
+        self.totalPossible = num * 5
+
+    def formatShots(self):
+        """
+
+        :return:
+        """
+        if self.shotList is None:
+            self.initShots()
+        shots = self.shotList
+        sighters = []
+        scores = []
+        totalScore = 0
+        totalVScore = 0
+        shotDuration = 'N/A'
+        num = 1
+        letter = ord("A")
+
+        for idx, shot in enumerate(shots):
+            if shot.vScore != 0:
+                scoreVal = 'V'
+                totalVScore += 1
+            else:
+                scoreVal = str(shot.score)
+            if idx != 0:
+                # Shot duration is calculated by the time between registered shots on the target
+                # 1st shot has no duration.
+                shotDuration = shot.durationBetween(shots[idx - 1].timestamp)
+            if shot.sighter:
+                sighters.append({"displayChar": chr(letter), "xPos": shot.xPos, "yPos": shot.yPos,
+                                "scoreVal": scoreVal, "shotDuration": shotDuration})
+                letter += 1
+            else:
+                scores.append({"displayChar": str(num), "xPos": shot.xPos, "yPos": shot.yPos, "scoreVal": scoreVal,
+                               "shotDuration": shotDuration})
+                num += 1
+                totalScore += shot.score
+        displayScore = f"{totalScore}.{totalVScore}"
+        return {"sighters": sighters, "scores": scores, "total": displayScore, "totalPossible": str((num - 1) * 5)}
 
 
 class Shot(db.Model):
@@ -234,6 +309,17 @@ class Shot(db.Model):
             # print(xChangeMoa, yChangeMoa, shortestDistance)
             return xChangeMoa, yChangeMoa, shortestDistance
         return "Invalid Distance"
+
+    def durationBetween(self, shotTimestamp):
+        """
+        Duration between this shot and a given datetime
+
+        :param shotTimestamp: datetime to compare
+        :return: string 0m 0s
+        """
+        diff = abs((shotTimestamp - self.timestamp)).total_seconds()
+        duration = formatDuration(diff)
+        return duration
 
 
 @login.user_loader

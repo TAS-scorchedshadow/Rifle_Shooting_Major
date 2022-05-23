@@ -46,3 +46,11 @@ def get_grad_year(schoolYr):
     curYear = datetime.today().year
     gradYr = curYear - int(schoolYr) + 12
     return gradYr
+
+
+def formatDuration(diff):
+    if int(diff / 60) == 0:
+        duration = "{}s".format(int(diff % 60))
+    else:
+        duration = "{}m {}s".format(int(diff / 60), int(diff % 60))
+    return duration
