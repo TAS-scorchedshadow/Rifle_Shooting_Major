@@ -233,6 +233,8 @@ def upload():
     :return: Upload html page
     """
     # Initialise Variables
+    if not current_user.access >= 1 or current_user.username == "preview":
+        return redirect(url_for('index'))
     form = uploadForm()
     stageList = []
     invalidList = []

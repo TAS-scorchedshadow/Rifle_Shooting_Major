@@ -51,12 +51,14 @@
                             <span>Shooter Profiles</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="/upload">
-                            <i class="fas fa-upload"></i>
-                            <span>Upload</span>
-                        </a>
-                    </li>
+                        {% if current_user.username != "preview" %}
+                        <li>
+                            <a href="/upload">
+                                <i class="fas fa-upload"></i>
+                                <span>Upload</span>
+                            </a>
+                        </li>
+                        {% endif %}
                     {% endif %}
                     {% if current_user.access >=2 %}
                         <li>
