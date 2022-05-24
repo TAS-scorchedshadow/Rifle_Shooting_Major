@@ -79,21 +79,26 @@
                                             <td>{{ user.username }}</td>
                                             <td>{{ user.email }}</td>
                                             <td>
-                                                 {% if user.access == 0 %}
+                                                {% if user.access == 0 %}
                                                     <a type="button" class="btn btn-secondary mybtn" id="access{{ user.id }}"
                                                        href="javascript:setAdmin('#access{{ user.id }}','{{user.id}}')">
                                                         <i class="fas fa-lock"></i>
                                                         Student
                                                     </a>
-                                                 {% endif %}
-                                                 {% if user.access == 1%}
-                                                    <a type="button" class="btn btn-dark mybtn" id="access{{ user.id }}"
-                                                       href="javascript:setAdmin('#access{{ user.id }}','{{user.id}}')">
-                                                        <i class="fas fa-unlock"></i>
-                                                        Coach
+                                                {% elif user.access == 1%}
+                                                    {% if user.username == 'preview' %}
+                                                        <a type="button" class="btn btn-info mybtn disabled" id="access{{ user.id }}">
+                                                        <i class="fas fa-eye"></i>
+                                                        Preview
                                                     </a>
-                                                 {% endif %}
-                                                {% if user.access == 2 %}
+                                                    {% else %}
+                                                        <a type="button" class="btn btn-dark mybtn" id="access{{ user.id }}"
+                                                           href="javascript:setAdmin('#access{{ user.id }}','{{user.id}}')">
+                                                            <i class="fas fa-unlock"></i>
+                                                            Coach
+                                                        </a>
+                                                    {% endif %}
+                                                {% elif user.access == 2 %}
                                                     <a type="button" class="btn btn-dark mybtn disabled" id="access{{ user.id }}">
                                                         <i class="fas fa-user-shield"></i>
                                                        Admin
