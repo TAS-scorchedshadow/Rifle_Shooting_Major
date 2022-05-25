@@ -206,7 +206,9 @@ class Stage(db.Model):
 
     def initStageStats(self):
         """
-        :returns: Mean, median, std, group size and duration if successful
+        Initialise statistics to this object. None of the fields have been rounded
+
+        :returns: None [Update this object's fields with the stats]
         """
         if self.shotList is None:
             self.initShots()
@@ -218,11 +220,11 @@ class Stage(db.Model):
             self.duration = abs((self.shotList[-1].timestamp - self.shotList[1].timestamp)).total_seconds()
             self.initTotal()
 
-
     def initTotal(self):
         """
+        Finds the total score and v-score of a stage
 
-        :return:
+        :return: None [self.total, self.VScore, self.totalPossible]
         """
         if self.shotList is None:
             self.initShots()
@@ -243,8 +245,10 @@ class Stage(db.Model):
 
     def formatShots(self):
         """
+        Get shot information for a stage and reformat for display in html. Total and totalPossible are returned
+        to maintain functionality with recentshots.js.
 
-        :return:
+        :return: Dictionary {sighters: [{}], scores: [{}], total: string, totalPossible: int
         """
         if self.shotList is None:
             self.initShots()
@@ -269,7 +273,7 @@ class Stage(db.Model):
                 shotDuration = shot.durationBetween(shots[idx - 1].timestamp)
             if shot.sighter:
                 sighters.append({"displayChar": chr(letter), "xPos": shot.xPos, "yPos": shot.yPos,
-                                "scoreVal": scoreVal, "shotDuration": shotDuration})
+                                 "scoreVal": scoreVal, "shotDuration": shotDuration})
                 letter += 1
             else:
                 scores.append({"displayChar": str(num), "xPos": shot.xPos, "yPos": shot.yPos, "scoreVal": scoreVal,
