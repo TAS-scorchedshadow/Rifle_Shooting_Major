@@ -391,9 +391,9 @@ function GroupDiagram(myStages, otherStages, stage, canvasId) {
     this.x = this.canvasObj.width / 2;
     this.y = this.canvasObj.height / 2;
     this.c = this.canvasObj.getContext('2d');
-    this.circleRadius = this.canvasObj.width / pointScale;
+    this.circleRadius = this.canvasObj.width;
     this.ratio = this.canvasObj.width/target_details[this.dist][5];
-    this.targetBackground = new Circle(this.c, this.x, this.y, this.canvasObj.width/2, targetFill);
+    this.targetBackground = new Circle(this.c, this.x, this.y, this.canvasObj.width, targetFill);
     this.points = [];
     let canvasParent = this.canvasObj.parentNode;
     for (let i=0; i<myStages.length; i++){
