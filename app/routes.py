@@ -712,37 +712,19 @@ def getAllShotsSeason():
     print(loadedInput)
     dist = loadedInput['distance']
     userID = loadedInput['userID']
-    size = int(loadedInput['size'])
     dateRange = loadedInput['dateRange']
     dates = dateRange.split(' - ')
     print(dates)
     startDate = nsw_to_utc(datetime.datetime.strptime(dates[0], '%B %d, %Y'))
     endDate = nsw_to_utc(datetime.datetime.strptime(dates[1], '%B %d, %Y'))
     print(startDate, endDate)
-    target_widths = {
-        "300m": 600,
-        "400m": 800,
-        "500m": 1320,
-        "600m": 1320,
-        "700m": 1830,
-        "800m": 1830,
-        "274m": 390,
-        "365m": 520,
-        "457m": 915,
-        "548m": 915,
-    }
-    ratio = size / target_widths[dist]
-    print(size, dist)
-    print(ratio)
-    data = {'heatmap': [], 'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
+
+    data = {'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
     print(stages)
     for stage in stages:
         stage.initStageStats()
-        for shot in stage.shotList:
-            data['heatmap'].append(
-                {'x': round(shot.xPos * ratio + (size / 2)), 'y': round(size / 2 - shot.yPos * ratio), 'value': 1})
         totalScore = stage.total
         fiftyScore = (totalScore / len(stage.shotList)) * 10
         data['boxPlot'].append(fiftyScore)

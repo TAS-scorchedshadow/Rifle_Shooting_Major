@@ -73,7 +73,7 @@ $(function() {
 
 <!--Box Plot Modules-->
 <script src="../static/node_modules/@sgratzl/chartjs-chart-boxplot/build/index.umd.js"></script>
-<script src="../static/js/seasonAjax.js"></script>
+<script src="../static/js/seasonAjax.js" defer></script>
 
 <style>
 body {
@@ -375,13 +375,13 @@ a.show-sheet:hover {
                         </div>
                     </div>
                     <div class="row" id="seasonRow1">
-                        <div class="col-12 col-xl-5" id="heatMapDiv" style="min-width: 600px;">
+                        <div class="col-12 col-xl-5" id="heatMapDiv">
                               <div style="display:flex; flex-direction: column; justify-content: space-around;">
                                   <h4 style="margin: auto; padding: 10px;">Heatmap</h4>
                                   <div class="spinner-border text-primary season-spinner" role="status" style="margin: auto; padding: 10px;">
                                   </div>
                               </div>
-                              <div class="pt-2" id='heatMap' style="width:600px; height:600px; margin: auto; padding: 10px;">
+                              <div class="pt-2" id='heatMap' style="margin: auto; padding: 10px;">
                                   <!--Heatmap goes in here-->
                               </div>
                         </div>

@@ -1,11 +1,24 @@
 $( document ).ready(function() {
+    const target_widths = {
+        "300m": 600,
+        "400m": 800,
+        "500m": 1320,
+        "600m": 1320,
+        "700m": 1830,
+        "800m": 1830,
+        "274m": 390,
+        "365m": 520,
+        "457m": 915,
+        "548m": 915,
+    }
     const userID = $('#my-data').data("userid");
+
     //Initialise variables
     $('.season-spinner').show()
     var distance = '300m'
-    var size = '600'
-    var dateRange = $('#date-selector-season').html();
-    loadAllShots(userID, distance, size, dateRange)
+    let size = 0
+    let dateRange = $('#date-selector-season').html();
+    loadAllShots(userID, distance, size, dateRange);
     function loadAllShots(userID, distance, size, dateRange){
         //generate the needed html if they are missing
         if ($('#heatMap').length <= 0) {
@@ -36,10 +49,27 @@ $( document ).ready(function() {
                 data: JSON.stringify({
                         'userID': userID,
                         'distance': distance,
-                        'size': size,
                         'dateRange': dateRange,
                         }),
                 success:(function (shotData) {
+                    // Set size. Done here because heatMapDiv has a size of -30 before the ajax
+                    if (size <= 0) {
+                        size = $('#heatMapDiv').outerWidth();
+                    }
+                    console.log("size is " + size);
+                    $('#heatMap').css('width', size + 'px');
+                    $('#heatMap').css('height', size + 'px');
+
+                    // Generate heatmap data from shot data
+                    const ratio = size / target_widths[distance]
+                    let heatMapData = []
+                    let heatShotData = {}
+                    for (let i=0; i<shotData['target'].length; i++) {
+                        heatShotData = {'x': 0, 'y': 0, 'value': 2}
+                        heatShotData['x'] = Math.round(shotData['target'][i]['xPos'] * ratio + (size / 2));
+                        heatShotData['y'] = Math.round(size / 2 - shotData['target'][i]['yPos'] * ratio);
+                        heatMapData.push(heatShotData);
+                    }
                     //Add canvas for target (if missing)
                     if ($('#title').length <= 0) {
                         $('#heatMap').append(`<canvas class='canvas' id="title" style="border: 1px solid black; position: absolute; top: 0px; left: 0px;"></canvas>`)
@@ -50,7 +80,7 @@ $( document ).ready(function() {
                     var testData = {
                           max: 10,
                           min: 0,
-                          data: shotData['heatmap'],
+                          data: heatMapData,
 
                     };
                     heatmapInstance.setData(testData);
