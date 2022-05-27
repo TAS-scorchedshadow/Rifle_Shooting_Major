@@ -65,14 +65,7 @@
     <div class="container-fluid cover-container text-center">
         <br>
         <div class="row flex-fill">
-            <div class="col-md-6">
-                <div class="justify-content-start">
-                    <a href="/profile" class="btn btn-primary btn-block" role="button">
-                        <i class="fas fa-backward"></i>
-                        Return to {{ user.fName }} {{ user.sName }}'s Profile
-                    </a>
-                </div>
-                <br>
+            <div class="col-12 col-lg-6">
                 <div class="justify-content-center">
                     <canvas id="title" style="border: 1px solid black"></canvas>
                     <div class="card shadow border-0 mt-0 pt-0">
@@ -124,7 +117,14 @@
                     <br>
                 </div>
             </div>
-            <div class="col-lg col-md-6 h-100">
+            <div class="col-12 col-lg-6 h-100">
+                <div class="justify-content-start">
+                    <a href="/profile" class="btn btn-primary btn-block" role="button">
+                        <i class="fas fa-backward"></i>
+                        Return to {{ user.fName }} {{ user.sName }}'s Profile
+                    </a>
+                </div>
+                <br>
                 <div class="row h-60">
                     <div class="pl-3 pr-1 d-none d-sm-flex">
                         <div class="card shadow border-0">
