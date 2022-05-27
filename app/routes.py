@@ -468,8 +468,8 @@ def reset_password(token):
     """
     user = User.verify_reset_token(token)
     if not user:
-        flash('Invalid reset token please try again')
-        return redirect(url_for('index'))
+        flash('Invalid password reset token. Please try again.')
+        return redirect(url_for('requestResetPassword'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
