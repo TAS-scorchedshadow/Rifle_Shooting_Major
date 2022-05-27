@@ -466,10 +466,9 @@ def reset_password(token):
 
     :return: Reset password html page
     """
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
     user = User.verify_reset_token(token)
     if not user:
+        flash('Invalid reset token please try again')
         return redirect(url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
