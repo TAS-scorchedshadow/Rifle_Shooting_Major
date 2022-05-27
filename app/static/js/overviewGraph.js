@@ -46,7 +46,7 @@ $(document).ready(function() {
                             'score': {
                                 position: 'left',
                                 max: 50,
-                                min: 40,
+                                min: 0,
                                 title: {
                                     display: true,
                                     text: 'Score out of 50'

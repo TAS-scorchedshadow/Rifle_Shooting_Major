@@ -208,7 +208,7 @@
                         <div class="card shadow border-0">
                             <div class="row">
                                 <div class="col-6">
-                                    <canvas class="pl-2" id="groupDiagram" style="border: 5px solid black"></canvas>
+                                    <canvas id="groupDiagram" style="border: 5px solid black"></canvas>
                                     <script>
                                         let groupDiagram = new GroupDiagram({{data['myStages']|safe}}, {{data['otherStages']|safe}}, {{[stage.groupX, stage.groupY, stage.distance]|safe}}, "groupDiagram");
                                         //TODO This is vulnerable to injections fix when we have time
@@ -219,7 +219,7 @@
                                     <i class="fas fa-circle" style="color:green"></i>
                                     <i class="fas fa-circle" style="color:red"></i>
                                 </div>
-                                <div class="col-3" style="display:flex; flex-direction:column; justify-content: space-around;">
+                                <div class="col-5" style="display:flex; flex-direction:column; justify-content: space-around;">
                                     <span style="text-align:left">This Stage</span>
                                     <span style="text-align:left">Shot by this shooter</span>
                                     <span style="text-align:left">Shot by others</span>
