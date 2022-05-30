@@ -14,7 +14,8 @@ from werkzeug.urls import url_parse
 from app import app, db, mail
 from app.forms import *
 from app.models import User, Stage, Shot
-from app.email import send_password_reset_email, send_activation_email, send_report_email, send_upload_email
+from app.email import send_password_reset_email, send_activation_email, send_report_email, send_upload_email, \
+    send_feedback_email
 from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc, get_grad_year, get_school_year, formatDuration
 from app.decompress import read_archive
@@ -114,6 +115,20 @@ def target():
     return render_template('index.html')
 
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == "POST":
+        feedback = request.form['feedback']
+        name = request.form['name']
+        if name == '':
+            name = "anonymous"
+        print(feedback,name)
+        send_feedback_email(feedback, name)
+        print(feedback, name)
+        return redirect(url_for('index'))
+    return render_template('contact.html')
+
+
 # By Dylan Huynh
 @app.route('/submitNotes', methods=['POST'])
 def submitNotes():
@@ -205,7 +220,6 @@ def getAvgShotData():
                          'sd': stDev,
                          })
     return graphData
-
 
 
 @app.route('/testdelshoot', methods=['GET', 'POST'])
@@ -660,10 +674,10 @@ def getShots():
     dateRange = loadedData[2]
     if dateRange:
         dates = dateRange.split(' - ')
-        #print(dates)
+        # print(dates)
         startDate = datetime.datetime.strptime(dates[0], '%B %d, %Y')
         endDate = datetime.datetime.strptime(dates[1], '%B %d, %Y')
-        #print(startDate, endDate)
+        # print(startDate, endDate)
         stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.userID == userID).order_by(
             desc(Stage.timestamp)).all()[numLoaded: totaltoLoad]
     else:

@@ -12,10 +12,15 @@
                 </svg>
                 <span><h1>Contact Us</h1></span>
             </div>
+            <p>Experiencing issues or have other feedback for us? Feel free to reach out by filling out the box below!</p>
         </div>
-        <p>Experiencing issues or have other feedback for us? Feel free to reach out by filling out the box below</p>
-        <div>
-             <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
-        </div>
+        <form id="notes form" method="post" enctype="multipart/form-data">
+            <textarea class="form-control" id="feedback" name="feedback" rows="3" required></textarea>
+            <br>
+            <label for="name" class="sr-only">Name</label>
+            <input class="form-control col-3" id="name" name="name" placeholder="Name (Optional)">
+            <br>
+            <button type="submit" class="btn btn-primary">Send <i class="fas fa-paper-plane"></i> </button>
+        </form>
     </div>
-{% end block %}
+{% endblock %}
