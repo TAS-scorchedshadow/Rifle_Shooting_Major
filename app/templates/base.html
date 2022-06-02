@@ -96,15 +96,41 @@
     {% endblock %}
         <div id="content">
             <div>
-                {% with messages = get_flashed_messages() %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
-                        <div class="alert alert-dark text-center mb-0" role='alert'>
-                            <ul class="flashes" style="list-style-type: none">
-                            {% for message in messages %}
-                                <li><b>{{ message }}</b></li>
-                            {% endfor %}
-                            </ul>
-                        </div>
+                        {% for category, message in messages %}
+                            <div class = "mx-5">
+                            {% if category == "error" %}
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                  <strong>{{ message }}</strong>
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                            {% elif category == "warning" %}
+                                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                  <strong>{{ message }}</strong>
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                            {% elif category == "success" %}
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                  <strong>{{ message }}</strong>
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-dark alert-dismissible fade show" role="alert">
+                                  <strong>{{ message }}</strong>
+                                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                            {% endif %}
+                            </div>
+                        {% endfor %}
                     {% endif %}
                 {% endwith %}
             </div>

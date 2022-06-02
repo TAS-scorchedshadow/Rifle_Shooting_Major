@@ -117,14 +117,15 @@ def target():
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
+
     if request.method == "POST":
         feedback = request.form['feedback']
         name = request.form['name']
         if name == '':
             name = "anonymous"
-        print(feedback,name)
         send_feedback_email(feedback, name)
-        print(feedback, name)
+        flash("Message Sent", "success")
+
         return redirect(url_for('index'))
     return render_template('contact.html')
 
@@ -467,7 +468,7 @@ def requestResetPassword():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-        flash('Check your email')
+        flash('Password reset email sent successfully', "success")
         return redirect(url_for('login'))
     return render_template('userAuth/requestResetPassword.html', form=form)
 
@@ -482,13 +483,13 @@ def reset_password(token):
     """
     user = User.verify_reset_token(token)
     if not user:
-        flash('Invalid password reset token. Please try again.')
+        flash('Invalid password reset token. Please try again.', 'error')
         return redirect(url_for('requestResetPassword'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Your password has been reset')
+        flash('Your password was successfully reset', 'error')
         return redirect(url_for('login'))
     return render_template('userAuth/resetPassword.html', form=form)
 
