@@ -34,8 +34,8 @@ def send_password_reset_email(user):
     token = user.get_reset_password_token()
     send_email('[Riflelytics] Reset Your Password',
                recipients=[user.email],
-               text_body=render_template('email/resetPassword.txt', user=user, token=token),
-               html_body=render_template('email/resetPassword.html', user=user, token=token))
+               text_body=render_template('email/reset_password.txt', user=user, token=token),
+               html_body=render_template('email/reset_password.html', user=user, token=token))
 
 
 def send_activation_email(user):
@@ -80,8 +80,8 @@ def send_upload_email(user, stages):
     """
     send_email('[Riflelytics] New Stages have been uploaded',
                recipients=[user.email],
-               text_body=render_template('email/newStages.txt', user=user, stages=stages),
-               html_body=render_template('email/newStages.html', user=user, stages=stages))
+               text_body=render_template('email/new_stages.txt', user=user, stages=stages),
+               html_body=render_template('email/new_stages.html', user=user, stages=stages))
 
 
 def send_feedback_email(text, sender):

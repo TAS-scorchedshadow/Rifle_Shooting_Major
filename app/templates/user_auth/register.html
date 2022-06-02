@@ -1,16 +1,12 @@
-{% extends "userAuth/noNavbarBase.html" %}
-{% set active_page = "Register" %}
+{% extends "user_auth/base_no_navbar.html" %}
+{% set active_page = "Student Register" %}
 {% block page_title %}Register{% endblock %}
 {% block login_content %}
-<h2 class="text-center mt-5"><i>Alternative Registration</i></h2>
+<h2 class="text-center mt-5">Student Register</h2>
 <p class="text-center">
-    For users <b>not</b> currently enrolled at SBHS
+    Not a current student?
+    <a href="/coachRegister">Sign Up Here</a>
 </p>
-<hr>
-<p class="text-center">
-    If you are a current student <a href="/register">sign up here</a>
-</p>
-<hr>
 <h4 class="text-center">
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -36,9 +32,18 @@
         </div>
       </div>
     <br>
-    <div class="form-group px-4">
-        {{ form.email(class_="field form-control form-control-lg",placeholder="Email Address")}}
-    </div>
+    <div class="form-row px-4">
+          <div class="col-2">
+               {{ form.school(class_="field form-control form-control-lg",placeholder="First Name")}}
+          </div>
+        <div class="col-4">
+             {{ form.gradYr(class_="field form-control form-control-lg",placeholder="Graduation Year")}}
+        </div>
+        <div class="col-6">
+             {{ form.schoolID(class_="field form-control form-control-lg",placeholder="School ID")}}
+        </div>
+      </div>
+    <br>
      <div class="form-group px-4">
          {{ form.shooterID(class_="field form-control form-control-lg",placeholder="Shooter ID")}}
          <br>
@@ -50,11 +55,21 @@
         {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
     </div>
 </form>
+
 {% if form.errors %}
-    {{ form.errors }}
+    <div class="alert alert-danger mx-4 mt-4" role="alert">
+        {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                <h4>Error</h4>
+                {% for error in field_errors %}
+                    {{ form[field_name].label }} {{ error }}
+                    <br>
+                {% endfor %}
+        {% endfor %}
+    </div>
 {% endif %}
 <br>
-<p class="text-center">Already have an account?
+<p class="text-center">
+    Already have an account?
     <a href="/login">Sign In</a>
 </p>
 {% endblock %}

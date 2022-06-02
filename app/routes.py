@@ -20,9 +20,7 @@ from app.uploadProcessing import validateShots
 from app.timeConvert import utc_to_nsw, nsw_to_utc, get_grad_year, get_school_year, formatDuration
 from app.decompress import read_archive
 from app.stagesCalc import plotsheet_calc, stats_of_period, getFiftyScore, HighestStage, LowestStage
-import numpy
 import json
-from sklearn.cluster import DBSCAN
 
 
 @app.errorhandler(404)
@@ -46,7 +44,7 @@ def index():
         return redirect(url_for('landing'))
     if current_user.access == 0:
         return redirect(url_for('profile'))
-    searchError = False
+    search_error = False
     if request.method == "POST":
         username = request.form['user']
         if username:
@@ -55,8 +53,8 @@ def index():
                 flask_session['profileID'] = user.id
                 return redirect('/profile')
             else:
-                searchError = True
-    return render_template('index.html', error=searchError)
+                search_error = True
+    return render_template('index.html', error=search_error)
 
 
 @app.route('/landing')
@@ -66,7 +64,7 @@ def landing():
 
     :return: Landing html page
     """
-    return render_template('landingPage.html')
+    return render_template('landing_page.html')
 
 
 # By Dylan Huynh
@@ -74,7 +72,7 @@ def landing():
 @app.route('/target')
 def target():
     """
-    Displays target & mapping of shits from the shoot
+    Displays target & mapping of shots from the shoot
 
     :return:
     """
@@ -86,9 +84,9 @@ def target():
         user = User.query.filter_by(id=stage.userID).first()
         data = plotsheet_calc(stage, user)
         if current_user.access >= 1:
-            return render_template('plotSheet.html', data=data, user=user, stage=stage)
+            return render_template('plotsheet.html', data=data, user=user, stage=stage)
         else:
-            return render_template('students/studentPlotSheet.html', data=data, user=user, stage=stage)
+            return render_template('students/student_plot_sheet.html', data=data, user=user, stage=stage)
     return render_template('index.html')
 
     # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
@@ -117,7 +115,6 @@ def target():
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
-
     if request.method == "POST":
         feedback = request.form['feedback']
         name = request.form['name']
@@ -140,9 +137,9 @@ def submitNotes():
     """
     # Function submits changes in notes
     data = request.get_data()
-    loadedData = json.loads(data)
-    stage = Stage.query.filter_by(id=loadedData[0]).first()
-    stage.notes = loadedData[1]
+    loaded_data = json.loads(data)
+    stage = Stage.query.filter_by(id=loaded_data[0]).first()
+    stage.notes = loaded_data[1]
     db.session.commit()
     return jsonify({'success': 'success'})
 
@@ -159,7 +156,7 @@ def profile():
     """
     # userID = request.args.get('userID')
     # user = User.query.filter_by(id=userID).first()
-    searchError = False
+    search_error = False
     if request.method == "POST":
         username = request.form['user']
         if username:
@@ -168,7 +165,7 @@ def profile():
                 flask_session['profileID'] = user.id
                 return redirect('/profile')
             else:
-                searchError = True
+                search_error = True
     if not current_user.access >= 1:
         user = current_user
     else:
@@ -189,7 +186,7 @@ def profile():
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
-    return render_template('students/profile.html', user=user, tableInfo=tableInfo, error=searchError)
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo, error=search_error)
 
 
 # by Henry Guo
@@ -198,29 +195,29 @@ def getAvgShotData():
     """
     Collect shots for use in the averages line graph
     """
-    endDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
+    end_date = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
 
-    startDate = datetime.datetime.strptime('2010-01-01', '%Y-%m-%d')
-    startDate = datetime.datetime.combine(startDate, datetime.datetime.min.time())
+    start_date = datetime.datetime.strptime('2010-01-01', '%Y-%m-%d')
+    start_date = datetime.datetime.combine(start_date, datetime.datetime.min.time())
 
-    userID = request.get_data().decode("utf-8")
-    stats = stats_of_period(userID, 'week', startDate, endDate)
-    avgScores = []
-    stDev = []
+    user_id = request.get_data().decode("utf-8")
+    stats = stats_of_period(user_id, 'week', start_date, end_date)
+    avg_scores = []
+    st_dev = []
     timestamps = []
     for stage in stats:
-        avgScores.append(stage['avg'])
-        stDev.append(stage['stDev'])
+        avg_scores.append(stage['avg'])
+        st_dev.append(stage['stDev'])
         timestamps.append(stage['date'])
-    formattedTime = []
+    formatted_time = []
     for date in timestamps:
         print(date)
-        formattedTime.append(utc_to_nsw(date).strftime("%d/%m/%y"))
-    graphData = jsonify({'scores': avgScores,
-                         'times': formattedTime,
-                         'sd': stDev,
-                         })
-    return graphData
+        formatted_time.append(utc_to_nsw(date).strftime("%d/%m/%y"))
+    graph_data = jsonify({'scores': avg_scores,
+                          'times': formatted_time,
+                          'sd': st_dev,
+                          })
+    return graph_data
 
 
 @app.route('/testdelshoot', methods=['GET', 'POST'])
@@ -230,8 +227,8 @@ def testdelshoot():
     Code that deletes all shoots put under the sbhs.admin user.
     """
     user = User.query.filter_by(username="sbhs.admin").first()
-    stageList = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
-    for stage in stageList:
+    stage_list = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
+    for stage in stage_list:
         print(stage)
         db.session.delete(stage)
     db.session.commit()
@@ -251,15 +248,15 @@ def upload():
     if not current_user.access >= 1 or current_user.username == "preview":
         return redirect(url_for('index'))
     form = uploadForm()
-    stageList = []
-    invalidList = []
+    stage_list = []
+    invalid_list = []
     alert = [None, 0, 0]  # Alert type, Failures, Successes
     count = {"total": 0, "failure": 0, "success": 0}
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
         # Uploading
         if request.method == "POST":
-            template = 'upload/uploadVerify.html'
+            template = 'upload/upload_verify.html'
             files = form.file.data
             upload_time = int(form.weeks.data)
             for file in files:
@@ -268,9 +265,9 @@ def upload():
                     if 2 not in issue_code:  # i.e. at least more than 1 counting shot
                         stage = validateShots(stage_dict)  # Reformat shoot stage to obtain usable data
                         stage['listID'] = count["total"]
-                        stageList.append(stage)
+                        stage_list.append(stage)
                         if 1 in issue_code:  # i.e. missing username
-                            invalidList.append(stage)
+                            invalid_list.append(stage)
                         else:
                             count["success"] += 1
                         count["total"] += 1
@@ -288,32 +285,32 @@ def upload():
                     alert[0] = "Failure"
     else:
         # Verifying Upload
-        stageList = json.loads(request.form["stageDump"])
-        stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
-        invalidListID = []
-        userList = [user for user in User.query.all()]
-        userDict = {}
-        for user in userList:
-            userDict[user.username] = user.id
+        stage_list = json.loads(request.form["stageDump"])
+        stage_define = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
+        invalid_list_id = []
+        user_list = [user for user in User.query.all()]
+        user_dict = {}
+        for user in user_list:
+            user_dict[user.username] = user.id
         for key in request.form:
             if "username." in key:
                 username = request.form[key]
-                stageList[int(key[9:])]['username'] = username
-                if username not in userDict:
-                    invalidList.append(stageList[int(key[9:])])
-                    invalidListID.append(int(key[9:]))
+                stage_list[int(key[9:])]['username'] = username
+                if username not in user_dict:
+                    invalid_list.append(stage_list[int(key[9:])])
+                    invalid_list_id.append(int(key[9:]))
                     count["failure"] += 1
         print('started')
-        print(invalidListID)
-        for item in stageList:
-            if item['listID'] not in invalidListID:
+        print(invalid_list_id)
+        for item in stage_list:
+            if item['listID'] not in invalid_list_id:
                 # Uploads a stage
                 # todo: Need to add an ammoType column to the stage database
                 print(item['username'])
-                stage = Stage(id=item['id'], userID=userDict[item['username']],
+                stage = Stage(id=item['id'], userID=user_dict[item['username']],
                               timestamp=item['time'],
                               groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
-                              distance=item['distance'], location=stageDefine['location'],
+                              distance=item['distance'], location=stage_define['location'],
                               notes="")
                 db.session.add(stage)
                 # Uploads all shots in the stage
@@ -330,34 +327,34 @@ def upload():
         print("DEBUG: Completed Upload")
         if count["success"] == count["total"]:  # successfully uploaded
             stageClassList = []
-            for item in stageList:
-                stage = Stage(id=item['id'], userID=userDict[item['username']],
+            for item in stage_list:
+                stage = Stage(id=item['id'], userID=user_dict[item['username']],
                               timestamp=item['time'],
                               groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
-                              distance=item['distance'], location=stageDefine['location'],
+                              distance=item['distance'], location=stage_define['location'],
                               notes="")
                 stageClassList.append(stage)
-            for user in userList:
+            for user in user_list:
                 print(user)
                 print(stageClassList)
                 if os.environ["MAIL_SETTING"] == 2:
                     send_upload_email(user, stageClassList)
-            stageList = []
+            stage_list = []
             alert[0] = "Success"
             alert[2] = count["success"]
         else:  # Failed to upload
-            stageList = invalidList
+            stage_list = invalid_list
             count["total"] = 0
-            for item in stageList:
+            for item in stage_list:
                 item["listID"] = count["total"]
                 count["total"] += 1
-            template = 'upload/uploadVerify.html'
+            template = 'upload/upload_verify.html'
             alert[0] = "Incomplete"
             alert[1] = count["failure"]
             alert[2] = count["success"]
             print("DEBUG: Not all usernames correct")
-    stageDump = json.dumps(stageList)
-    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
+    stageDump = json.dumps(stage_list)
+    return render_template(template, form=form, stageDump=stageDump, invalidList=invalid_list, alert=alert)
 
 
 # Adapted from Flask Megatutorial by Dylan Huynh
@@ -381,7 +378,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != ':':
             next_page = url_for('index')
         return redirect(next_page)
-    return render_template('userAuth/login.html', form=form)
+    return render_template('user_auth/login.html', form=form)
 
 
 # Dylan Huynh
@@ -404,12 +401,12 @@ def register():
         db.session.commit()
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
-        return render_template('userAuth/registerSuccess.html', user=user)
-    return render_template('userAuth/register.html', title='Register', form=form)
+        return render_template('user_auth/register_success.html', user=user)
+    return render_template('user_auth/register.html', title='Register', form=form)
 
 
 @app.route('/coachRegister', methods=['GET', 'POST'])
-def coachRegister():
+def coach_register():
     form = independentSignUpForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -421,8 +418,8 @@ def coachRegister():
         db.session.commit()
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
-        return render_template('userAuth/registerSuccess.html', user=user)
-    return render_template('userAuth/coachRegister.html', title='Register', form=form)
+        return render_template('user_auth/register_success.html', user=user)
+    return render_template('user_auth/coach_register.html', title='Register', form=form)
 
 
 @app.route('/logout')
@@ -450,12 +447,12 @@ def emailActivation(token):
         return redirect(url_for('index'))
     user.isActive = True
     db.session.commit()
-    return render_template('userAuth/resetPassword.html')
+    return render_template('user_auth/reset_password.html')
 
 
 # By Dylan Huynh
 @app.route('/requestResetPassword', methods=['GET', 'POST'])
-def requestResetPassword():
+def request_reset_password():
     """
     Requesting a password reset if account details forgotten
 
@@ -470,7 +467,7 @@ def requestResetPassword():
             send_password_reset_email(user)
         flash('Password reset email sent successfully', "success")
         return redirect(url_for('login'))
-    return render_template('userAuth/requestResetPassword.html', form=form)
+    return render_template('user_auth/request_reset_password.html', form=form)
 
 
 # By Dylan Huynh
@@ -484,14 +481,14 @@ def reset_password(token):
     user = User.verify_reset_token(token)
     if not user:
         flash('Invalid password reset token. Please try again.', 'error')
-        return redirect(url_for('requestResetPassword'))
+        return redirect(url_for('request_reset_password'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
         flash('Your password was successfully reset', 'error')
         return redirect(url_for('login'))
-    return render_template('userAuth/resetPassword.html', form=form)
+    return render_template('user_auth/reset_password.html', form=form)
 
 
 # By Dylan Huynh
@@ -501,14 +498,14 @@ def userList():
     """
     List of all current users on the system.
 
-    :return: userList.html
+    :return: user_list.html
     """
     if not current_user.access >= 2:
         return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()
-    return render_template('userAuth/userList.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
+    return render_template('user_auth/user_list.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
 
 
 # By Dylan Huynh
@@ -612,7 +609,7 @@ def profileList():
             yearGroups['other'].append([user.sName, user.fName, user.id])
 
     yearGroups = json.dumps(yearGroups)
-    return render_template('students/profileList.html', users=users, yearGroups=yearGroups, error=searchError)
+    return render_template('students/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
 
 
 # By Dylan Huynh
@@ -833,4 +830,4 @@ def change():
             user.group = int(group)
             db.session.commit()
             print("group changed")
-    return render_template('groupEditor.html')
+    return render_template('group_editor.html')
