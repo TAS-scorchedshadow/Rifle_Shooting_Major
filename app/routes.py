@@ -555,25 +555,6 @@ def profile_list():
 
 
 # By Dylan Huynh
-@app.route('/get_gear', methods=['POST'])
-def get_gear():
-    """
-     AJAX request to obtain gear data before display. Route accessible from plotsheet.html and profile.html
-
-    :return: JSON containing gear information
-    """
-    # Function provides databse information for ajax request in gear_settings.js
-    userID = request.get_data().decode("utf-8")
-    user = User.query.filter_by(id=userID).first()
-    if user:  # Handles if userID parameter is given but is not found in database
-        return jsonify({'jacket': user.jacket, 'glove': user.glove,
-                        'hat': user.hat, 'slingHole': user.slingHole, 'slingLength': user.slingPoint,
-                        'butOut': user.butOut, 'butUp': user.butUp, 'ringSize': user.ringSize,
-                        'sightHole': user.sightHole})
-    return jsonify({'error': 'userID'})
-
-
-# By Dylan Huynh
 @app.route('/get_users', methods=['POST'])
 def get_users():
     """
