@@ -2,7 +2,7 @@ import numpy
 from datetime import datetime
 
 
-def validateShots(data):
+def validate_shots(data):
     """
     :param data: TO BE FILLED
     :return: Information of the shoot session
@@ -16,11 +16,11 @@ def validateShots(data):
     for individualShot in data['shots']:
         x = individualShot['valid']
         if x:
-            score = getScore(individualShot)
-            individualShot['ts'] = msToDatetime(individualShot['ts'])
+            score = get_score(individualShot)
+            individualShot['ts'] = ms_to_datetime(individualShot['ts'])
             individualShot['score'] = score['score']
             individualShot['Vscore'] = score['Vscore']
-            sighter = checkSighter(individualShot)
+            sighter = check_sighter(individualShot)
 
             individualShot['sighter'] = sighter
             validShotList.append(individualShot)
@@ -31,7 +31,7 @@ def validateShots(data):
                 runningScore['Vscore'] += score['Vscore']
     # Check to see if number of validated shots met expected value
     if totalShots != data["n_shots"]:
-        print("validateShots validated: ", str(totalShots), "shots. Which differed from the original JSON",
+        print("validate_shots validated: ", str(totalShots), "shots. Which differed from the original JSON",
               str(data["n_shots"]))
     # Send all the relevant data to a new dictionary, newShoot
     newShoot['id'] = data['_id']
@@ -48,13 +48,13 @@ def validateShots(data):
     newShoot['validShots'] = validShotList
     newShoot['totalShots'] = countingShots
     newShoot['totalScore'] = str(runningScore['score']) + "." + str(runningScore['Vscore'])
-    newShoot['stats'] = shotStats(validShotList)
-    newShoot['shotList'] = shootList(validShotList)
+    newShoot['stats'] = shot_stats(validShotList)
+    newShoot['shotList'] = shoot_list(validShotList)
     return newShoot
 
 
 # Gets shot statistics
-def shotStats(shoot):
+def shot_stats(shoot):
     """
     :param shoot: Data of the shoot session
     :return: Calculation of median, mean and standard deviation
@@ -70,7 +70,7 @@ def shotStats(shoot):
     return stats
 
 
-def msToDatetime(ms):
+def ms_to_datetime(ms):
     """
     :param ms: Time in millisecond format?
     :return: Time in format of YYYY/MM/DD HH:MM:SS
@@ -79,21 +79,8 @@ def msToDatetime(ms):
     return date
 
 
-def strTimeDifference(str1,str2):
-    """
-    :param str1: Former time
-    :param str2: Latter time
-    :return: Time gap between former and latter times
-    :rtype: string
-    """
-    time1 = datetime.strptime(str1,'%Y-%m-%d %H:%M:%S')
-    time2 = datetime.strptime(str2, '%Y-%m-%d %H:%M:%S')
-    difference = time2 -time1
-    return str(difference)
-
-
 # Gets shot statistics
-def shootList(shoot):
+def shoot_list(shoot):
     """
     :param shoot: Dictionary of shot number and its value from a shoot session
     :return: List of individual shot scores
@@ -105,7 +92,7 @@ def shootList(shoot):
 
 
 # Reformats score into a dictionary of score and Vscore
-def getScore(shot):
+def get_score(shot):
     """
     :param shot: Individual shot info
     :return: Score of the shot
@@ -121,7 +108,7 @@ def getScore(shot):
 
 
 # Checks if the shot is a sighter
-def checkSighter(shot):
+def check_sighter(shot):
     """
     :param shot: Individual shot
     :return: Whether the sighter was used?
@@ -130,23 +117,3 @@ def checkSighter(shot):
         return shot['sighter']
     except KeyError:
         return False
-
-
-def getGroupSize(shots):
-    """
-    :param shots: TO BE FILLED
-    :return groupX: x-coordinate of group
-    :return groupY: y-coordinate of group
-    """
-    totalX = 0
-    totalY = 0
-    sighterNum = 0
-    for shot in shots:
-        if not shot.sighter:
-            totalX += shot.xPos
-            totalY += shot.yPos
-        else:
-            sighterNum += 1
-    groupX = totalX / (len(shots) - sighterNum)
-    groupY = totalY / (len(shots) - sighterNum)
-    return groupX, groupY

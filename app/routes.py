@@ -1,23 +1,20 @@
 import os
-import tarfile
-from distutils.util import strtobool
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
-import time
 import datetime
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app import app, db, mail
+from app import app, db
 from app.forms import *
 from app.models import User, Stage, Shot
-from app.email import send_password_reset_email, send_activation_email, send_report_email, send_upload_email, \
+from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
     send_feedback_email
-from app.upload_processing import validateShots
-from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, get_school_year, formatDuration
+from app.upload_processing import validate_shots
+from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, formatDuration
 from app.decompress import read_archive
 from app.stages_calc import plotsheet_calc, stats_of_period, getFiftyScore, HighestStage, LowestStage
 import json
@@ -240,7 +237,7 @@ def upload():
                 stages = read_archive(file, upload_time)
                 for stage_dict, issue_code in stages:
                     if 2 not in issue_code:  # i.e. at least more than 1 counting shot
-                        stage = validateShots(stage_dict)  # Reformat shoot stage to obtain usable data
+                        stage = validate_shots(stage_dict)  # Reformat shoot stage to obtain usable data
                         stage['listID'] = count["total"]
                         stage_list.append(stage)
                         if 1 in issue_code:  # i.e. missing username

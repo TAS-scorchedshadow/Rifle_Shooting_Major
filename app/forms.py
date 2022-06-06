@@ -101,22 +101,3 @@ class profileSelect(FlaskForm):
                                                ("mobile", "Mobile"), ("class", "Class"), ("Mobile2", "Mobile")])
     data = StringField('Enter new data:')
     submit = SubmitField('ENTER')
-
-# # Forms for comparisons
-# # -- Rishi Wig --
-# class comparativeSelect(FlaskForm):
-#     graphType = RadioField('Graph', choices=['Line', 'Bar'])
-#     shooter_username_one = SelectField('Username', choices=get_all_usernames())
-#     shooter_username_two = SelectField('Username', choices=get_all_usernames())
-#
-#     shooting_range_one = SelectField('Range')
-#     shooting_range_two = SelectField('Range')
-#
-#     dates_one = SelectField('Dates')
-#     dates_two = SelectField('Dates')
-#
-#     submit = SubmitField('ENTER')
-#
-#
-# class comparativeSpecify(FlaskForm):
-#     shooter_username_one = SelectField('Username', choices=get_all_shooter_names())
