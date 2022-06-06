@@ -24,7 +24,8 @@ class uploadForm(FlaskForm):
     identifier = HiddenField("Upload/Verify", default="upload")
     stageDump = HiddenField("Data")
     success = HiddenField("Success")
-    weeks = SelectField(u'Uploading Shot Data From', choices=[(1, 'Last Week'), (4, 'Last Month'), (12, 'Last 3 Months'), (56, 'Last Year')])
+    weeks = SelectField(u'Uploading Shot Data From',
+                        choices=[(1, 'Last Week'), (4, 'Last Month'), (12, 'Last 3 Months'), (56, 'Last Year')])
     total = HiddenField("Total")
 
 
@@ -33,26 +34,28 @@ class signUpForm(FlaskForm):
     """
     Form for registering a user on the application
     """
-    fName = StringField("Enter First Name:",validators=[InputRequired()])
-    sName = StringField("Enter Last Name:",validators=[InputRequired()])
-    school = SelectField("Select a school", choices=[('SBHS','SBHS')])
-    gradYr = IntegerField("Graduation Year:", validators=[InputRequired(), NumberRange(min=2000,max=9999)])
-    schoolID = StringField("School ID:",validators=[InputRequired()])
+    fName = StringField("Enter First Name:", validators=[InputRequired()])
+    sName = StringField("Enter Last Name:", validators=[InputRequired()])
+    school = SelectField("Select a school", choices=[('SBHS', 'SBHS')])
+    gradYr = IntegerField("Graduation Year:", validators=[InputRequired(), NumberRange(min=2000, max=9999)])
+    schoolID = StringField("School ID:", validators=[InputRequired()])
     shooterID = StringField("Shooter ID:", validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")
 
     submit = SubmitField("Sign Up")
 
+
 class independentSignUpForm(FlaskForm):
-    fName = StringField("Enter First Name:",validators=[InputRequired()])
-    sName = StringField("Enter Last Name:",validators=[InputRequired()])
+    fName = StringField("Enter First Name:", validators=[InputRequired()])
+    sName = StringField("Enter Last Name:", validators=[InputRequired()])
     shooterID = StringField("School ID:", validators=[InputRequired()])
-    email = EmailField("Email",validators=[InputRequired()])
+    email = EmailField("Email", validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")
 
     submit = SubmitField("Sign Up")
+
 
 # -- Dylan Huynh --
 class signInForm(FlaskForm):
@@ -66,7 +69,7 @@ class signInForm(FlaskForm):
 
 
 class ResetPasswordRequestForm(FlaskForm):
-    email = EmailField('Email',validators=[DataRequired()])
+    email = EmailField('Email', validators=[DataRequired()])
     submit = SubmitField('Request password reset')
 
 
@@ -76,20 +79,23 @@ class ResetPasswordForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
 
+
 # -- Henry Guo --
 class reportForm(FlaskForm):
     """
     Forms for the report page
     """
-    date = SelectField('Date',)
+    date = SelectField('Date', )
     submit = SubmitField("Select")
+
 
 # -- Rishi Wig --
 class profileSelect(FlaskForm):
     """
     Forms to select and change cells in info table on the profile page
     """
-    cell = SelectField('Change cell', choices=[('sid','SID'),('dob', 'DOB'), ('rifleSerial', 'Rifle Serial'), ('schoolID', 'Student ID'),
+    cell = SelectField('Change cell', choices=[('sid', 'SID'), ('dob', 'DOB'), ('rifleSerial', 'Rifle Serial'),
+                                               ('schoolID', 'Student ID'),
                                                ("schoolYr", "Grade"), ("email", "Email"), ("permitNumber", "Permit"),
                                                ("permitExpiry", "Expiry"), ("sharing", "Sharing"),
                                                ("mobile", "Mobile"), ("class", "Class"), ("Mobile2", "Mobile")])
