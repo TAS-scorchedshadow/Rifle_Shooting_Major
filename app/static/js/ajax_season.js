@@ -27,7 +27,7 @@ $( document ).ready(function() {
             console.log("running ajax");
             $.ajax({
                 type: 'POST',
-                url: "/getAllShotsSeason",
+                url: "/get_all_shots_season",
                 data: JSON.stringify({
                         'userID': userID,
                         'distance': distance,

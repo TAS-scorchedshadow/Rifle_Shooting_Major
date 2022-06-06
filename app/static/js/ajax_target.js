@@ -7,7 +7,7 @@ $( document ).ready(function() {
         if (stageID != null){
             $.ajax({
                 type: 'POST',
-                url: "/getTargetStats",
+                url: "/get_target_stats",
                 data: stage,
                 success:(function (data) {
                 })

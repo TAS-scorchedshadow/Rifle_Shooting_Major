@@ -7,7 +7,7 @@ import datetime
 
 from app import app
 from app.models import Stage, User
-from app.uploadProcessing import checkSighter
+from app.upload_processing import checkSighter
 
 
 # Dylan Huynh

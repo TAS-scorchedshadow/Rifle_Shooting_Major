@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from time import time
 import jwt
 import statistics
-from app.timeConvert import nsw_to_utc, utc_to_nsw, formatDuration
+from app.time_convert import nsw_to_utc, utc_to_nsw, formatDuration
 
 
 class User(UserMixin, db.Model):

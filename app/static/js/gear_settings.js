@@ -18,7 +18,7 @@ $( document ).ready(function() {
             console.log(user)
             $.ajax({
                 type: 'POST',
-                url: "/getGear",
+                url: "/get_gear",
                 data: user,
                 success:(function (data) {
                     console.log(data)

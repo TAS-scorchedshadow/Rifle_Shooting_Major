@@ -6,7 +6,7 @@ $(document).ready(function() {
         $('#graphSpinner').toggleClass('d-flex');
         $.ajax({
             type: 'POST',
-            url: "/getAvgShotGraphData",
+            url: "/get_avg_shot_graph_data",
             data: JSON.stringify(user),
             success: (function (data) {
                 let ctx = document.getElementById('lineSTDEV').getContext('2d');

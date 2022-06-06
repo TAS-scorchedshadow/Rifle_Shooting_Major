@@ -4,7 +4,7 @@ function deleteAccount(user){
     $.ajax({
         data: JSON.stringify(user),
         type: 'POST',
-        url: '/deleteAccount',
+        url: '/delete_account',
         dataType: "JSON",
         success: (function (data) {
             rowID = '#row' + user
@@ -51,7 +51,7 @@ function createAccount(sourceElement,user_obj){
      $.ajax({
         data: JSON.stringify(djangoData),
         type: 'POST',
-        url: '/createAccount',
+        url: '/create_account',
         dataType: "JSON",
         success: (function (data) {
             console.log("hello")
@@ -69,7 +69,7 @@ $(document).ready(function () {
          $.ajax({
         data: JSON.stringify($( this ).val()),
         type: 'POST',
-        url: '/emailSettings',
+        url: '/email_settings',
         dataType: "JSON",
         success: (function () {
             $("#spinner").hide()

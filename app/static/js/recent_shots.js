@@ -17,7 +17,7 @@ $(document).ready(function(){
             $('#shotSpinner').show();
             $.ajax({
                 type: 'POST',
-                url: "/getShots",
+                url: "/get_shots",
                 data: JSON.stringify([user, numLoaded, dateRange]),
                 success:(function (data) {
                     console.log(data)

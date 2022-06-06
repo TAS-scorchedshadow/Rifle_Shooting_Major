@@ -11,7 +11,7 @@ $( document ).ready(function() {
         console.log(fieldVal)
         $.ajax({
             type:"POST",
-            url: "/submitNotes",
+            url: "/submit_notes",
             data: JSON.stringify([stageID, fieldVal]),
             success:(function () {
                 $("#spinner").hide();
