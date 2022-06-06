@@ -617,8 +617,8 @@ def get_shots():
         stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: totaltoLoad]
     stagesList = []
     for stage in stages:
-        data = stage.formatShots()
-        stage.initStageStats()
+        data = stage.format_shots()
+        stage.init_stage_stats()
         displayScore = f"{data['total']}/{data['totalPossible']}"
         stagesList.append({'scores': data["scores"],
                            'totalScore': displayScore,
@@ -671,11 +671,11 @@ def get_all_shots_season():
                                 Stage.userID == userID).all()
     print(stages)
     for stage in stages:
-        stage.initStageStats()
+        stage.init_stage_stats()
         totalScore = stage.total
         fiftyScore = (totalScore / len(stage.shotList)) * 10
         data['boxPlot'].append(fiftyScore)
-        data['target'] = data['target'] + stage.formatShots()["scores"] + stage.formatShots()["sighters"]
+        data['target'] = data['target'] + stage.format_shots()["scores"] + stage.format_shots()["sighters"]
 
     # Sort the scores for boxPlot so the lowest value can be taken.
     # The lowest value is used to determine the lower bound of the box plot

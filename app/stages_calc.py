@@ -296,12 +296,12 @@ def plotsheet_calc(stage, user):
     # Dylan
     data = {}
 
-    stage.initShots()
-    rtnData = stage.formatShots()
+    stage.init_shots()
+    rtnData = stage.format_shots()
     allShots = rtnData["sighters"] + rtnData["scores"]
     data["jsonList"] = json.dumps(allShots)
 
-    stage.initStageStats()
+    stage.init_stage_stats()
     # print(stage.total, stage.totalPossible)
     # print(rtnData["totalScore"], rtnData["totalPossibleScore"])
     data["formattedList"] = allShots + [{"displayChar": "Total",
@@ -326,7 +326,7 @@ def plotsheet_calc(stage, user):
     for shoot in dayStages:
         if shoot.userID == stage.userID:
             count += 1
-            stage.initStageStats()
+            stage.init_stage_stats()
             dayStats["mean"] += stage.mean
             dayStats["median"] += stage.median
             dayStats["std"] += stage.std
@@ -350,8 +350,8 @@ def plotsheet_calc(stage, user):
     data['otherStages'] = otherStages
 
     # Get Season Stats
-    seasonResp = user.seasonStats()
-    data['seasonStats'] = {"mean": round(seasonResp["mean"], 2), "median": round(seasonResp["median"], 2),
+    seasonResp = user.season_stats()
+    data['season_stats'] = {"mean": round(seasonResp["mean"], 2), "median": round(seasonResp["median"], 2),
                            "std": round(seasonResp["std"], 2), "groupSize": round(seasonResp["groupSize"], 2),
                            "duration": formatDuration(seasonResp["duration"])}
 

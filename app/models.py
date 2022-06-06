@@ -132,7 +132,7 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
 
     # By Dylan Huynh
-    def seasonStats(self):
+    def season_stats(self):
         """
         Statistics on the season
 
@@ -146,7 +146,7 @@ class User(UserMixin, db.Model):
         stages = Stage.query.filter_by(userID=self.id).all()
         length = len(stages)
         for stage in stages:
-            stage.initStageStats()
+            stage.init_stage_stats()
             totalMean += stage.mean
             totalMedian += stage.median
             totalStd += stage.total
@@ -199,35 +199,35 @@ class Stage(db.Model):
         dayStages = Stage.query.filter(Stage.timestamp.between(dayStart, dayEnd))
         return dayStages
 
-    def initShots(self):
+    def init_shots(self):
         shots = Shot.query.filter_by(stageID=self.id).all()
         self.shotList = shots
         return shots
 
-    def initStageStats(self):
+    def init_stage_stats(self):
         """
         Initialise statistics to this object. None of the fields have been rounded
 
         :returns: None [Update this object's fields with the stats]
         """
         if self.shotList is None:
-            self.initShots()
+            self.init_shots()
         scores = [shot.score for shot in self.shotList if not shot.sighter]
         if scores:
             self.mean = statistics.mean(scores)
             self.median = statistics.median(scores)
             self.std = statistics.stdev(scores)
             self.duration = abs((self.shotList[-1].timestamp - self.shotList[1].timestamp)).total_seconds()
-            self.initTotal()
+            self.init_total()
 
-    def initTotal(self):
+    def init_total(self):
         """
         Finds the total score and v-score of a stage
 
         :return: None [self.total, self.VScore, self.totalPossible]
         """
         if self.shotList is None:
-            self.initShots()
+            self.init_shots()
         shots = self.shotList
         totalScore = 0
         totalVScore = 0
@@ -243,7 +243,7 @@ class Stage(db.Model):
         self.totalVScore = totalVScore
         self.totalPossible = num * 5
 
-    def formatShots(self):
+    def format_shots(self):
         """
         Get shot information for a stage and reformat for display in html. Total and totalPossible are returned
         to maintain functionality with recentshots.js.
@@ -251,7 +251,7 @@ class Stage(db.Model):
         :return: Dictionary {sighters: [{}], scores: [{}], total: string, totalPossible: int
         """
         if self.shotList is None:
-            self.initShots()
+            self.init_shots()
         shots = self.shotList
         sighters = []
         scores = []
@@ -270,7 +270,7 @@ class Stage(db.Model):
             if idx != 0:
                 # Shot duration is calculated by the time between registered shots on the target
                 # 1st shot has no duration.
-                shotDuration = shot.durationBetween(shots[idx - 1].timestamp)
+                shotDuration = shot.duration_between(shots[idx - 1].timestamp)
             if shot.sighter:
                 sighters.append({"displayChar": chr(letter), "xPos": shot.xPos, "yPos": shot.yPos,
                                  "scoreVal": scoreVal, "shotDuration": shotDuration})
@@ -303,7 +303,7 @@ class Shot(db.Model):
         return '<Shot {}>'.format(self.id)
 
     # By Dylan Huynh
-    def positionfromCenterMOA(self, distance):
+    def pos_from_center_MOA(self, distance):
         if distance[-1:] == "m":  # If in meters
             # Finding MOA(Square) in Millimetres
             moa = ((1.047 * 25.4) / 100) * (39.37 / 36) * int(distance[:-1])
@@ -314,14 +314,14 @@ class Shot(db.Model):
             return xChangeMoa, yChangeMoa, shortestDistance
         return "Invalid Distance"
 
-    def durationBetween(self, shotTimestamp):
+    def duration_between(self, shot_timestamp):
         """
         Duration between this shot and a given datetime
 
-        :param shotTimestamp: datetime to compare
+        :param shot_timestamp: datetime to compare
         :return: string 0m 0s
         """
-        diff = abs((shotTimestamp - self.timestamp)).total_seconds()
+        diff = abs((shot_timestamp - self.timestamp)).total_seconds()
         duration = formatDuration(diff)
         return duration
 
