@@ -16,7 +16,7 @@ from app.email import send_password_reset_email, send_activation_email, send_upl
 from app.upload_processing import validate_shots
 from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, formatDuration
 from app.decompress import read_archive
-from app.stages_calc import plotsheet_calc, stats_of_period, getFiftyScore, HighestStage, LowestStage
+from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowest_stage
 import json
 
 
@@ -441,7 +441,7 @@ def reset_password(token):
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Your password was successfully reset', 'error')
+        flash('Your password was successfully reset', 'success')
         return redirect(url_for('login'))
     return render_template('user_auth/reset_password.html', form=form)
 
@@ -609,7 +609,6 @@ def get_shots():
                            'sighters': data['sighters']
                            })
     return jsonify(stagesList)
-    # stage = Stage.query.filter_by(userID=userID).all()
 
 
 # By Henry Guo
@@ -621,7 +620,6 @@ def get_target_stats():
     stageID = request.get_data().decode("utf-8")
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:  # Handles if stageID parameter is given but is not found in database
-
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
 
@@ -634,15 +632,15 @@ def get_all_shots_season():
     """
     input_ = request.get_data().decode('utf-8')
     loadedInput = json.loads(input_)
-    print(loadedInput)
+
     dist = loadedInput['distance']
     userID = loadedInput['userID']
     dateRange = loadedInput['dateRange']
     dates = dateRange.split(' - ')
-    print(dates)
+
     startDate = nsw_to_utc(datetime.datetime.strptime(dates[0], '%B %d, %Y'))
     endDate = nsw_to_utc(datetime.datetime.strptime(dates[1], '%B %d, %Y'))
-    print(startDate, endDate)
+
 
     data = {'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
@@ -651,7 +649,7 @@ def get_all_shots_season():
     for stage in stages:
         stage.init_stage_stats()
         totalScore = stage.total
-        fiftyScore = (totalScore / len(stage.shotList)) * 10
+        fiftyScore = stage.score_as_percent()
         data['boxPlot'].append(fiftyScore)
         data['target'] = data['target'] + stage.format_shots()["scores"] + stage.format_shots()["sighters"]
 
@@ -662,16 +660,16 @@ def get_all_shots_season():
     print('boxplot', stages)
     if len(stages) > 0:
         # Get highest and lowest scoring stages
-        highestStage = HighestStage(userID, startDate, endDate, dist)
+        highestStage = highest_stage(userID, startDate, endDate, dist)
         data['bestStage'] = {
             'id': highestStage.id,
-            'score': round(getFiftyScore(highestStage)),
+            'score': round(highestStage.score_as_percent()),
             'time': str(utc_to_nsw(highestStage.timestamp))
         }
-        lowestStage = LowestStage(userID, startDate, endDate, dist)
+        lowestStage = lowest_stage(userID, startDate, endDate, dist)
         data['worstStage'] = {
             'id': lowestStage.id,
-            'score': round(getFiftyScore(lowestStage)),
+            'score': round(lowestStage.score_as_percent()),
             'time': str(utc_to_nsw(lowestStage.timestamp))
         }
     data = jsonify(data)

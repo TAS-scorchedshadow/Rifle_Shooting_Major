@@ -140,7 +140,6 @@ def stats_day(stages):
         avg_stdv["avg"] = avgScore
         avg_stdv["stDev"] = avgStdev
         avg_stdv["date"] = date
-        print(avg_stdv)
         stats.append(avg_stdv)
 
     return stats
@@ -172,7 +171,6 @@ def stats_week(stages):
         avg_stdv["date"] = data[0][0]
         stats.append(avg_stdv)
 
-    print(stats)
     return stats
 
 
@@ -230,16 +228,6 @@ def stats_year(stages):
     return stats
 
 
-# By Henry Guo
-# note, shots is a list
-def getFiftyScore(stage):
-    totalScore = 0
-    shots = Shot.query.filter_by(stageID=stage.id, sighter=False).all()
-    for shot in shots:
-        totalScore += shot.score
-    return (totalScore / len(shots)) * 10
-
-
 # By Andrew Tam
 def groupAvg(userID):
     XTotal = 0
@@ -256,31 +244,25 @@ def groupAvg(userID):
 
 
 # By Andrew Tam
-def HighestStage(userID, startDate, endDate, dist):
-    highestIndex = 0
+def highest_stage(userID, startDate, endDate, dist):
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
-    print('highestStages', stages)
-    length = len(stages)
-    for i in range(length):
-        if getFiftyScore(stages[i]) > getFiftyScore(stages[highestIndex]):
-            highestIndex = i
-    print('highest', highestIndex)
-    return stages[highestIndex]
+    highest = stages[0]
+    for stage in stages:
+        if stage.score_as_percent() > highest.score_as_percent():
+            highest = stage
+    return highest
 
 
 # By Andrew Tam
-def LowestStage(userID, startDate, endDate, dist):
-    lowestIndex = 0
+def lowest_stage(userID, startDate, endDate, dist):
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
-    length = len(stages)
-    for i in range(length):
-        if getFiftyScore(stages[i]) < getFiftyScore(stages[lowestIndex]):
-            lowestIndex = i
-
-    print('lowest', lowestIndex)
-    return stages[lowestIndex]
+    lowest = stages[0]
+    for stage in stages:
+        if stage.score_as_percent() < lowest.score_as_percent():
+            lowest = stage
+    return lowest
 
 
 # Dylan Huynh & Henry Guo
@@ -302,8 +284,6 @@ def plotsheet_calc(stage, user):
     data["jsonList"] = json.dumps(allShots)
 
     stage.init_stage_stats()
-    # print(stage.total, stage.totalPossible)
-    # print(rtnData["totalScore"], rtnData["totalPossibleScore"])
     data["formattedList"] = allShots + [{"displayChar": "Total",
                                          "scoreVal": f"{stage.total}.{stage.totalVScore}/{stage.totalPossible}",
                                          "shotDuration": formatDuration(stage.duration)}]
@@ -338,14 +318,12 @@ def plotsheet_calc(stage, user):
             myStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
         elif shoot.distance == stage.distance:
             otherStages.append({'groupX': shoot.groupX, 'groupY': shoot.groupY})
-    #dayAvg = [dayX / count, dayY / count]
     myStages = json.dumps(myStages)
     otherStages = json.dumps(otherStages)
     for key in dayStats:
         dayStats[key] = round(dayStats[key] / count, 2)
     dayStats["duration"] = formatDuration(dayStats["duration"])
     data['dayStats'] = dayStats
-    #data['dayAvg'] = dayAvg
     data['myStages'] = myStages
     data['otherStages'] = otherStages
 
