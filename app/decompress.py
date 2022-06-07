@@ -1,13 +1,11 @@
 import json
 import os
 import tarfile
-import time
 import zlib
 import datetime
 
-from app import app
 from app.models import Stage, User
-from app.uploadProcessing import checkSighter
+from app.upload_processing import check_sighter
 
 
 # Dylan Huynh
@@ -126,7 +124,7 @@ def num_shots(data):
     for individualShot in data['shots']:
         x = individualShot['valid']
         if x:
-            if not checkSighter(individualShot):
+            if not check_sighter(individualShot):
                 num += 1
     return num
 

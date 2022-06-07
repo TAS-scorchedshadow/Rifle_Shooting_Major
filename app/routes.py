@@ -1,28 +1,23 @@
 import os
-import tarfile
-from distutils.util import strtobool
 
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
-import time
 import datetime
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app import app, db, mail
+from app import app, db
 from app.forms import *
 from app.models import User, Stage, Shot
-from app.email import send_password_reset_email, send_activation_email, send_report_email, send_upload_email, \
+from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
     send_feedback_email
-from app.uploadProcessing import validateShots
-from app.timeConvert import utc_to_nsw, nsw_to_utc, get_grad_year, get_school_year, formatDuration
+from app.upload_processing import validate_shots
+from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, formatDuration
 from app.decompress import read_archive
-from app.stagesCalc import plotsheet_calc, stats_of_period, getFiftyScore, HighestStage, LowestStage
-import numpy
+from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowest_stage
 import json
-from sklearn.cluster import DBSCAN
 
 
 @app.errorhandler(404)
@@ -46,7 +41,7 @@ def index():
         return redirect(url_for('landing'))
     if current_user.access == 0:
         return redirect(url_for('profile'))
-    searchError = False
+    search_error = False
     if request.method == "POST":
         username = request.form['user']
         if username:
@@ -55,8 +50,8 @@ def index():
                 flask_session['profileID'] = user.id
                 return redirect('/profile')
             else:
-                searchError = True
-    return render_template('index.html', error=searchError)
+                search_error = True
+    return render_template('index.html', error=search_error)
 
 
 @app.route('/landing')
@@ -66,7 +61,7 @@ def landing():
 
     :return: Landing html page
     """
-    return render_template('landingPage.html')
+    return render_template('landing_page.html')
 
 
 # By Dylan Huynh
@@ -74,7 +69,7 @@ def landing():
 @app.route('/target')
 def target():
     """
-    Displays target & mapping of shits from the shoot
+    Displays target & mapping of shots from the shoot
 
     :return:
     """
@@ -86,38 +81,14 @@ def target():
         user = User.query.filter_by(id=stage.userID).first()
         data = plotsheet_calc(stage, user)
         if current_user.access >= 1:
-            return render_template('plotSheet.html', data=data, user=user, stage=stage)
+            return render_template('plotsheet.html', data=data, user=user, stage=stage)
         else:
-            return render_template('students/studentPlotSheet.html', data=data, user=user, stage=stage)
-    return render_template('index.html')
-
-    # Following calculates the group center position for each stage. Also updates the database accordingly (not in use)
-    # @app.route('/groupTest')
-    # def getGroupStats():
-    #     stages = Stage.query.all()
-    #     for stage in stages:
-    #         stageID = stage.id
-    #         shots = Shot.query.filter_by(stageID=stageID).all()
-    #         totalX = 0
-    #         totalY = 0
-    #         sighterNum = 0
-    #         for shot in shots:
-    #             if not shot.sighter:
-    #                 totalX += shot.xPos
-    #                 totalY += shot.yPos
-    #             else:
-    #                 sighterNum += 1
-    #         stage.groupX = totalX / (len(shots) - sighterNum)
-    #         stage.groupY = totalY / (len(shots) - sighterNum)
-    #     db.session.commit()
-
-    print('database commit successful')
+            return render_template('students/student_plot_sheet.html', data=data, user=user, stage=stage)
     return render_template('index.html')
 
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
-
     if request.method == "POST":
         feedback = request.form['feedback']
         name = request.form['name']
@@ -131,8 +102,8 @@ def contact():
 
 
 # By Dylan Huynh
-@app.route('/submitNotes', methods=['POST'])
-def submitNotes():
+@app.route('/submit_notes', methods=['POST'])
+def submit_notes():
     """
     AJAX route for updating the notes of a stage from the plotsheet.
 
@@ -140,9 +111,9 @@ def submitNotes():
     """
     # Function submits changes in notes
     data = request.get_data()
-    loadedData = json.loads(data)
-    stage = Stage.query.filter_by(id=loadedData[0]).first()
-    stage.notes = loadedData[1]
+    loaded_data = json.loads(data)
+    stage = Stage.query.filter_by(id=loaded_data[0]).first()
+    stage.notes = loaded_data[1]
     db.session.commit()
     return jsonify({'success': 'success'})
 
@@ -159,7 +130,7 @@ def profile():
     """
     # userID = request.args.get('userID')
     # user = User.query.filter_by(id=userID).first()
-    searchError = False
+    search_error = False
     if request.method == "POST":
         username = request.form['user']
         if username:
@@ -168,7 +139,7 @@ def profile():
                 flask_session['profileID'] = user.id
                 return redirect('/profile')
             else:
-                searchError = True
+                search_error = True
     if not current_user.access >= 1:
         user = current_user
     else:
@@ -189,38 +160,38 @@ def profile():
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
-    return render_template('students/profile.html', user=user, tableInfo=tableInfo, error=searchError)
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo, error=search_error)
 
 
 # by Henry Guo
-@app.route('/getAvgShotGraphData', methods=['POST'])
-def getAvgShotData():
+@app.route('/get_avg_shot_graph_data', methods=['POST'])
+def get_avg_shot_data():
     """
     Collect shots for use in the averages line graph
     """
-    endDate = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
+    end_date = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
 
-    startDate = datetime.datetime.strptime('2010-01-01', '%Y-%m-%d')
-    startDate = datetime.datetime.combine(startDate, datetime.datetime.min.time())
+    start_date = datetime.datetime.strptime('2010-01-01', '%Y-%m-%d')
+    start_date = datetime.datetime.combine(start_date, datetime.datetime.min.time())
 
-    userID = request.get_data().decode("utf-8")
-    stats = stats_of_period(userID, 'week', startDate, endDate)
-    avgScores = []
-    stDev = []
+    user_id = request.get_data().decode("utf-8")
+    stats = stats_of_period(user_id, 'week', start_date, end_date)
+    avg_scores = []
+    st_dev = []
     timestamps = []
     for stage in stats:
-        avgScores.append(stage['avg'])
-        stDev.append(stage['stDev'])
+        avg_scores.append(stage['avg'])
+        st_dev.append(stage['stDev'])
         timestamps.append(stage['date'])
-    formattedTime = []
+    formatted_time = []
     for date in timestamps:
         print(date)
-        formattedTime.append(utc_to_nsw(date).strftime("%d/%m/%y"))
-    graphData = jsonify({'scores': avgScores,
-                         'times': formattedTime,
-                         'sd': stDev,
-                         })
-    return graphData
+        formatted_time.append(utc_to_nsw(date).strftime("%d/%m/%y"))
+    graph_data = jsonify({'scores': avg_scores,
+                          'times': formatted_time,
+                          'sd': st_dev,
+                          })
+    return graph_data
 
 
 @app.route('/testdelshoot', methods=['GET', 'POST'])
@@ -230,8 +201,8 @@ def testdelshoot():
     Code that deletes all shoots put under the sbhs.admin user.
     """
     user = User.query.filter_by(username="sbhs.admin").first()
-    stageList = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
-    for stage in stageList:
+    stage_list = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
+    for stage in stage_list:
         print(stage)
         db.session.delete(stage)
     db.session.commit()
@@ -251,26 +222,26 @@ def upload():
     if not current_user.access >= 1 or current_user.username == "preview":
         return redirect(url_for('index'))
     form = uploadForm()
-    stageList = []
-    invalidList = []
+    stage_list = []
+    invalid_list = []
     alert = [None, 0, 0]  # Alert type, Failures, Successes
     count = {"total": 0, "failure": 0, "success": 0}
     template = 'upload/upload.html'
     if form.identifier.data == "upload":
         # Uploading
         if request.method == "POST":
-            template = 'upload/uploadVerify.html'
+            template = 'upload/upload_verify.html'
             files = form.file.data
             upload_time = int(form.weeks.data)
             for file in files:
                 stages = read_archive(file, upload_time)
                 for stage_dict, issue_code in stages:
                     if 2 not in issue_code:  # i.e. at least more than 1 counting shot
-                        stage = validateShots(stage_dict)  # Reformat shoot stage to obtain usable data
+                        stage = validate_shots(stage_dict)  # Reformat shoot stage to obtain usable data
                         stage['listID'] = count["total"]
-                        stageList.append(stage)
+                        stage_list.append(stage)
                         if 1 in issue_code:  # i.e. missing username
-                            invalidList.append(stage)
+                            invalid_list.append(stage)
                         else:
                             count["success"] += 1
                         count["total"] += 1
@@ -288,32 +259,32 @@ def upload():
                     alert[0] = "Failure"
     else:
         # Verifying Upload
-        stageList = json.loads(request.form["stageDump"])
-        stageDefine = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
-        invalidListID = []
-        userList = [user for user in User.query.all()]
-        userDict = {}
-        for user in userList:
-            userDict[user.username] = user.id
+        stage_list = json.loads(request.form["stageDump"])
+        stage_define = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
+        invalid_list_id = []
+        user_list = [user for user in User.query.all()]
+        user_dict = {}
+        for user in user_list:
+            user_dict[user.username] = user.id
         for key in request.form:
             if "username." in key:
                 username = request.form[key]
-                stageList[int(key[9:])]['username'] = username
-                if username not in userDict:
-                    invalidList.append(stageList[int(key[9:])])
-                    invalidListID.append(int(key[9:]))
+                stage_list[int(key[9:])]['username'] = username
+                if username not in user_dict:
+                    invalid_list.append(stage_list[int(key[9:])])
+                    invalid_list_id.append(int(key[9:]))
                     count["failure"] += 1
         print('started')
-        print(invalidListID)
-        for item in stageList:
-            if item['listID'] not in invalidListID:
+        print(invalid_list_id)
+        for item in stage_list:
+            if item['listID'] not in invalid_list_id:
                 # Uploads a stage
                 # todo: Need to add an ammoType column to the stage database
                 print(item['username'])
-                stage = Stage(id=item['id'], userID=userDict[item['username']],
+                stage = Stage(id=item['id'], userID=user_dict[item['username']],
                               timestamp=item['time'],
                               groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
-                              distance=item['distance'], location=stageDefine['location'],
+                              distance=item['distance'], location=stage_define['location'],
                               notes="")
                 db.session.add(stage)
                 # Uploads all shots in the stage
@@ -330,34 +301,34 @@ def upload():
         print("DEBUG: Completed Upload")
         if count["success"] == count["total"]:  # successfully uploaded
             stageClassList = []
-            for item in stageList:
-                stage = Stage(id=item['id'], userID=userDict[item['username']],
+            for item in stage_list:
+                stage = Stage(id=item['id'], userID=user_dict[item['username']],
                               timestamp=item['time'],
                               groupSize=item['groupSize'], groupX=item['groupX'], groupY=item['groupY'],
-                              distance=item['distance'], location=stageDefine['location'],
+                              distance=item['distance'], location=stage_define['location'],
                               notes="")
                 stageClassList.append(stage)
-            for user in userList:
+            for user in user_list:
                 print(user)
                 print(stageClassList)
                 if os.environ["MAIL_SETTING"] == 2:
                     send_upload_email(user, stageClassList)
-            stageList = []
+            stage_list = []
             alert[0] = "Success"
             alert[2] = count["success"]
         else:  # Failed to upload
-            stageList = invalidList
+            stage_list = invalid_list
             count["total"] = 0
-            for item in stageList:
+            for item in stage_list:
                 item["listID"] = count["total"]
                 count["total"] += 1
-            template = 'upload/uploadVerify.html'
+            template = 'upload/upload_verify.html'
             alert[0] = "Incomplete"
             alert[1] = count["failure"]
             alert[2] = count["success"]
             print("DEBUG: Not all usernames correct")
-    stageDump = json.dumps(stageList)
-    return render_template(template, form=form, stageDump=stageDump, invalidList=invalidList, alert=alert)
+    stageDump = json.dumps(stage_list)
+    return render_template(template, form=form, stageDump=stageDump, invalidList=invalid_list, alert=alert)
 
 
 # Adapted from Flask Megatutorial by Dylan Huynh
@@ -381,7 +352,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != ':':
             next_page = url_for('index')
         return redirect(next_page)
-    return render_template('userAuth/login.html', form=form)
+    return render_template('user_auth/login.html', form=form)
 
 
 # Dylan Huynh
@@ -404,12 +375,12 @@ def register():
         db.session.commit()
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
-        return render_template('userAuth/registerSuccess.html', user=user)
-    return render_template('userAuth/register.html', title='Register', form=form)
+        return render_template('user_auth/register_success.html', user=user)
+    return render_template('user_auth/register.html', title='Register', form=form)
 
 
 @app.route('/coachRegister', methods=['GET', 'POST'])
-def coachRegister():
+def coach_register():
     form = independentSignUpForm()
     if form.validate_on_submit():
         email = form.email.data
@@ -421,8 +392,8 @@ def coachRegister():
         db.session.commit()
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
-        return render_template('userAuth/registerSuccess.html', user=user)
-    return render_template('userAuth/coachRegister.html', title='Register', form=form)
+        return render_template('user_auth/register_success.html', user=user)
+    return render_template('user_auth/coach_register.html', title='Register', form=form)
 
 
 @app.route('/logout')
@@ -435,27 +406,8 @@ def logout():
 
 
 # By Dylan Huynh
-@app.route('/emailActivation/<token>', methods=['GET', 'POST'])
-def emailActivation(token):
-    """
-    Deprecated
-
-    :param token: Time sensitive token sent by email.
-    :return: TO BE FILLED
-    """
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    user = User.verify_activation_token(token)
-    if not user:
-        return redirect(url_for('index'))
-    user.isActive = True
-    db.session.commit()
-    return render_template('userAuth/resetPassword.html')
-
-
-# By Dylan Huynh
-@app.route('/requestResetPassword', methods=['GET', 'POST'])
-def requestResetPassword():
+@app.route('/request_reset_password', methods=['GET', 'POST'])
+def request_reset_password():
     """
     Requesting a password reset if account details forgotten
 
@@ -470,7 +422,7 @@ def requestResetPassword():
             send_password_reset_email(user)
         flash('Password reset email sent successfully', "success")
         return redirect(url_for('login'))
-    return render_template('userAuth/requestResetPassword.html', form=form)
+    return render_template('user_auth/request_reset_password.html', form=form)
 
 
 # By Dylan Huynh
@@ -484,36 +436,36 @@ def reset_password(token):
     user = User.verify_reset_token(token)
     if not user:
         flash('Invalid password reset token. Please try again.', 'error')
-        return redirect(url_for('requestResetPassword'))
+        return redirect(url_for('request_reset_password'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
-        flash('Your password was successfully reset', 'error')
+        flash('Your password was successfully reset', 'success')
         return redirect(url_for('login'))
-    return render_template('userAuth/resetPassword.html', form=form)
+    return render_template('user_auth/reset_password.html', form=form)
 
 
 # By Dylan Huynh
-@app.route('/userList', methods=['GET', 'POST'])
+@app.route('/user_list', methods=['GET', 'POST'])
 @login_required
-def userList():
+def user_list():
     """
     List of all current users on the system.
 
-    :return: userList.html
+    :return: user_list.html
     """
     if not current_user.access >= 2:
         return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()
-    return render_template('userAuth/userList.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
+    return render_template('user_auth/user_list.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
 
 
 # By Dylan Huynh
-@app.route('/emailSettings', methods=['POST'])
-def emailSettings():
+@app.route('/email_settings', methods=['POST'])
+def email_settings():
     """
     AJAX route used to update the enviroment variable MAIL_SETTING
 
@@ -524,10 +476,10 @@ def emailSettings():
 
 
 # By Dylan Huynh
-@app.route('/deleteAccount', methods=['POST'])
-def deleteAccount():
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
     """
-    AJAX route for deleting user accounts. Route is accessible by admins through the buttons on the userList page
+    AJAX route for deleting user accounts. Route is accessible by admins through the buttons on the user_list page
 
     """
     data = request.get_data()
@@ -549,7 +501,7 @@ def deleteAccount():
 def admin():
     """
      AJAX route for changing the account level of specific users.
-     Route is accessible by admins through the buttons on the userList page
+     Route is accessible by admins through the buttons on the user_list page
 
     """
     data = request.get_data()
@@ -567,25 +519,9 @@ def admin():
         return jsonify({'access_lvl': state})
 
 
-# By Dylan Huynh
-@app.route('/createAccount', methods=['POST'])
-def createAccount():
-    """
-    @deprecated
-
-    """
-    data = request.get_data()
-    loadedData = json.loads(data)
-    user = loadedData['test']
-    print(user)
-    print(user.sName)
-
-
-# By Andrew Tam
-@app.route('/profileList', methods=['GET', 'POST'])
+@app.route('/profile_list', methods=['GET', 'POST'])
 @login_required
-def profileList():
-    # with assistance from Henry and using Dylan's existing code
+def profile_list():
     searchError = False
     if request.method == "POST":
         print(request.form)
@@ -612,31 +548,12 @@ def profileList():
             yearGroups['other'].append([user.sName, user.fName, user.id])
 
     yearGroups = json.dumps(yearGroups)
-    return render_template('students/profileList.html', users=users, yearGroups=yearGroups, error=searchError)
+    return render_template('students/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
 
 
 # By Dylan Huynh
-@app.route('/getGear', methods=['POST'])
-def getGear():
-    """
-     AJAX request to obtain gear data before display. Route accessible from plotsheet.html and profile.html
-
-    :return: JSON containing gear information
-    """
-    # Function provides databse information for ajax request in gearSettings.js
-    userID = request.get_data().decode("utf-8")
-    user = User.query.filter_by(id=userID).first()
-    if user:  # Handles if userID parameter is given but is not found in database
-        return jsonify({'jacket': user.jacket, 'glove': user.glove,
-                        'hat': user.hat, 'slingHole': user.slingHole, 'slingLength': user.slingPoint,
-                        'butOut': user.butOut, 'butUp': user.butUp, 'ringSize': user.ringSize,
-                        'sightHole': user.sightHole})
-    return jsonify({'error': 'userID'})
-
-
-# By Dylan Huynh
-@app.route('/getUsers', methods=['POST'])
-def getUsers():
+@app.route('/get_users', methods=['POST'])
+def get_users():
     """
     Generates a list of names used to complete the autofill fields. Used in autofill.js
 
@@ -648,16 +565,9 @@ def getUsers():
     return jsonify(list)
 
 
-# By Dylan Huynh
-@app.route('/sendWeeklyReport', methods=['POST'])
-def sendWeeklyReport(banned_IDs):
-    send_report_email(banned_userIDs=banned_IDs)
-    return
-
-
 # By Henry Guo
-@app.route('/getShots', methods=['POST'])
-def getShots():
+@app.route('/get_shots', methods=['POST'])
+def get_shots():
     """
     Collect shots for use in the recent shots card
     """
@@ -685,8 +595,8 @@ def getShots():
         stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()[numLoaded: totaltoLoad]
     stagesList = []
     for stage in stages:
-        data = stage.formatShots()
-        stage.initStageStats()
+        data = stage.format_shots()
+        stage.init_stage_stats()
         displayScore = f"{data['total']}/{data['totalPossible']}"
         stagesList.append({'scores': data["scores"],
                            'totalScore': displayScore,
@@ -699,51 +609,49 @@ def getShots():
                            'sighters': data['sighters']
                            })
     return jsonify(stagesList)
-    # stage = Stage.query.filter_by(userID=userID).all()
 
 
 # By Henry Guo
-@app.route('/getTargetStats', methods=['POST'])
-def getTargetStats():
+@app.route('/get_target_stats', methods=['POST'])
+def get_target_stats():
     """
-    Function provides databse information for ajax request in targetAjax.js
+    Function provides databse information for ajax request in ajax_target.js
     """
     stageID = request.get_data().decode("utf-8")
     stage = Stage.query.filter_by(id=stageID).first()
     if stage:  # Handles if stageID parameter is given but is not found in database
-
         return jsonify({'success': 'success'})
     return jsonify({'error': 'userID'})
 
 
 # By Henry Guo
-@app.route('/getAllShotsSeason', methods=['POST'])
-def getAllShotsSeason():
+@app.route('/get_all_shots_season', methods=['POST'])
+def get_all_shots_season():
     """
     Function collects every shot in the time-frame selected by the user
     """
     input_ = request.get_data().decode('utf-8')
     loadedInput = json.loads(input_)
-    print(loadedInput)
+
     dist = loadedInput['distance']
     userID = loadedInput['userID']
     dateRange = loadedInput['dateRange']
     dates = dateRange.split(' - ')
-    print(dates)
+
     startDate = nsw_to_utc(datetime.datetime.strptime(dates[0], '%B %d, %Y'))
     endDate = nsw_to_utc(datetime.datetime.strptime(dates[1], '%B %d, %Y'))
-    print(startDate, endDate)
+
 
     data = {'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
     print(stages)
     for stage in stages:
-        stage.initStageStats()
+        stage.init_stage_stats()
         totalScore = stage.total
-        fiftyScore = (totalScore / len(stage.shotList)) * 10
+        fiftyScore = stage.score_as_percent()
         data['boxPlot'].append(fiftyScore)
-        data['target'] = data['target'] + stage.formatShots()["scores"] + stage.formatShots()["sighters"]
+        data['target'] = data['target'] + stage.format_shots()["scores"] + stage.format_shots()["sighters"]
 
     # Sort the scores for boxPlot so the lowest value can be taken.
     # The lowest value is used to determine the lower bound of the box plot
@@ -752,48 +660,25 @@ def getAllShotsSeason():
     print('boxplot', stages)
     if len(stages) > 0:
         # Get highest and lowest scoring stages
-        highestStage = HighestStage(userID, startDate, endDate, dist)
+        highestStage = highest_stage(userID, startDate, endDate, dist)
         data['bestStage'] = {
             'id': highestStage.id,
-            'score': round(getFiftyScore(highestStage)),
+            'score': round(highestStage.score_as_percent()),
             'time': str(utc_to_nsw(highestStage.timestamp))
         }
-        lowestStage = LowestStage(userID, startDate, endDate, dist)
+        lowestStage = lowest_stage(userID, startDate, endDate, dist)
         data['worstStage'] = {
             'id': lowestStage.id,
-            'score': round(getFiftyScore(lowestStage)),
+            'score': round(lowestStage.score_as_percent()),
             'time': str(utc_to_nsw(lowestStage.timestamp))
         }
     data = jsonify(data)
     return data
 
 
-# Dylan Huynh
-@app.route('/setGear', methods=['POST'])
-def setGear():
-    """
-        @ Deprecated
-         AJAX request to update the database with changes to the gear. Route accessible from plotsheet.html and profile.html
-    """
-    # Function takes input information from gearSettings.js and makes appropiate changes to the database
-    data = request.get_data()
-    loadedData = json.loads(data)
-    userID = loadedData[0]
-    user = User.query.filter_by(id=userID).first()
-    if user:  # Handles if userID parameter is given but is not found in database
-        field = loadedData[1]
-        value = loadedData[2]
-        # In this case setattr changes the value of a certain field in the database to the given value.
-        # e.g. user.sightHole = "5"
-        setattr(user, field, value)
-        db.session.commit()
-        return jsonify('success')
-    return jsonify({'error': 'userID'})
-
-
 # Rishi Wig & Dylan Huynh
-@app.route('/submitTable', methods=['POST'])
-def submitTable():
+@app.route('/submit_table', methods=['POST'])
+def submit_table():
     """
        AJAX request updates a user object(given by ID) with the new information provided in the table. Used in
     """
@@ -820,17 +705,3 @@ def submitTable():
         db.session.commit()
 
     return jsonify({'success': 'success'})
-
-
-# Dylan Huynh
-@app.route('/changeGroups', methods=['GET', 'POST'])
-def change():
-    if request.method == "POST":
-        username = request.form['user']
-        group = request.form['group']
-        if username:
-            user = User.query.filter_by(username=username).first()
-            user.group = int(group)
-            db.session.commit()
-            print("group changed")
-    return render_template('groupEditor.html')

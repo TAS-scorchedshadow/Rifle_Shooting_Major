@@ -19,7 +19,7 @@
 <script type="text/javascript" src="../static/js/autofill.js" defer></script>
 
 <!--Import user id-->
-<meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submitTable">
+<meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submit_table">
 
 
 <!--Date range picker (see https://www.daterangepicker.com)-->
@@ -69,11 +69,11 @@ $(function() {
 <!--Scripts for season stats page-->
 <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
 <script src=../static/heatmap.js-master/build/heatmap.min.js></script>
-<script src="../static/js/targetDiagram.js"></script>
+<script src="../static/js/target_diagram.js"></script>
 
 <!--Box Plot Modules-->
 <script src="../static/node_modules/@sgratzl/chartjs-chart-boxplot/build/index.umd.js"></script>
-<script src="../static/js/seasonAjax.js"></script>
+<script src="../static/js/ajax_season.js"></script>
 
 <style>
 body {
@@ -231,7 +231,7 @@ a.show-sheet:hover {
                                         <!--Show shots-->
                                         <div id="recentShots" class="container-fluid">
                                             <!--Cards showing the stages will be added here-->
-                                            <script type="text/javascript" src="../static/js/recentShots.js"></script>
+                                            <script type="text/javascript" src="../static/js/profile/recent_shots.js"></script>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 pb-2">
@@ -248,7 +248,7 @@ a.show-sheet:hover {
                         <div class="col-xl-6 col-lg-6">
                             <h4 style="text-align: center;">Performance Over Time</h4>
                             <!--line graph is shown here-->
-                            <script type="text/javascript" src="../static/js/overviewGraph.js"></script>
+                            <script type="text/javascript" src="../static/js/profile/overview_graph.js"></script>
                             <div class="spinner-border text-primary justify-content-center" id="graphSpinner" role="status" style="margin: auto; padding: 10px;">
                             </div>
                             <canvas style="background-color:white; max-height:400px;" id="lineSTDEV"></canvas>

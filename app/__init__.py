@@ -13,4 +13,4 @@ login = LoginManager(app)
 login.login_view = 'login'
 mail = Mail(app)
 
-from app import routes, models, timeConvert, decompress, uploadProcessing
+from app import routes, models, time_convert, decompress, upload_processing
