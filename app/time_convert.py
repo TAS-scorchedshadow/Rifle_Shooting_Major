@@ -1,3 +1,5 @@
+import os
+
 import pytz
 from datetime import datetime
 
@@ -16,6 +18,12 @@ def utc_to_nsw(utc_dt):
     """
     nsw = pytz.timezone('Australia/NSW')
     return utc_dt.astimezone(tz=nsw)
+
+
+def get_season_times():
+    begin = datetime.strptime(os.environ["SEASON_START"], '%d/%m/%Y')
+    end = datetime.strptime(os.environ["SEASON_END"], '%d/%m/%Y')
+    return begin, end
 
 
 def nsw_to_utc(nsw_dt):

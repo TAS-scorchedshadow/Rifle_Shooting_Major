@@ -459,7 +459,6 @@ def user_list():
     """
     if not current_user.access >= 2:
         return redirect(url_for('index'))
-    print(os.environ["MAIL_SETTING"]);
     users = User.query.order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()
@@ -477,7 +476,6 @@ def email_settings():
     os.environ["MAIL_SETTING"] = setting
 
     dotenv_path = join(dirname(__file__), '..', '.env')
-    print(setting)
     dotenv.set_key(dotenv_path, "MAIL_SETTING", setting)
 
     return jsonify("complete")

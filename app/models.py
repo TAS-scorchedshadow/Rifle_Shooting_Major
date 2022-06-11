@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from time import time
 import jwt
 import statistics
-from app.time_convert import nsw_to_utc, utc_to_nsw, formatDuration
+from app.time_convert import nsw_to_utc, utc_to_nsw, formatDuration, get_season_times
 
 
 class User(UserMixin, db.Model):
@@ -132,7 +132,7 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
 
     # By Dylan Huynh
-    def season_stats(self):
+    def season_stats(self, range):
         """
         Statistics on the season
 
@@ -143,7 +143,9 @@ class User(UserMixin, db.Model):
         totalStd = 0
         totalDuration = 0
         totalGroup = 0
-        stages = Stage.query.filter_by(userID=self.id).all()
+        season_start, season_end = get_season_times()
+        stages = Stage.query.filter(Stage.timestamp.between(season_start, season_end), Stage.distance == range,
+                                    Stage.userID == self.id).all()
         length = len(stages)
         for stage in stages:
             stage.init_stage_stats()

@@ -328,7 +328,7 @@ def plotsheet_calc(stage, user):
     data['otherStages'] = otherStages
 
     # Get Season Stats
-    seasonResp = user.season_stats()
+    seasonResp = user.season_stats(stage.distance)
     data['season_stats'] = {"mean": round(seasonResp["mean"], 2), "median": round(seasonResp["median"], 2),
                            "std": round(seasonResp["std"], 2), "groupSize": round(seasonResp["groupSize"], 2),
                            "duration": formatDuration(seasonResp["duration"])}
