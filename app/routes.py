@@ -1,5 +1,7 @@
 import os
+from os.path import join, dirname
 
+import dotenv
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
@@ -472,6 +474,10 @@ def email_settings():
     """
     setting = json.loads(request.get_data())
     os.environ["MAIL_SETTING"] = setting
+
+    dotenv_path = join(dirname(__file__), '..', '.env')
+    dotenv.set_key(dotenv_path, "MAIL_SETTING", setting)
+
     return jsonify("complete")
 
 
@@ -640,7 +646,6 @@ def get_all_shots_season():
 
     startDate = nsw_to_utc(datetime.datetime.strptime(dates[0], '%B %d, %Y'))
     endDate = nsw_to_utc(datetime.datetime.strptime(dates[1], '%B %d, %Y'))
-
 
     data = {'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
