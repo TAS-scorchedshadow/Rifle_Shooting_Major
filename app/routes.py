@@ -1,5 +1,7 @@
 import os
+from os.path import join, dirname
 
+import dotenv
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
@@ -457,6 +459,7 @@ def user_list():
     """
     if not current_user.access >= 2:
         return redirect(url_for('index'))
+    print(os.environ["MAIL_SETTING"]);
     users = User.query.order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()
@@ -472,6 +475,11 @@ def email_settings():
     """
     setting = json.loads(request.get_data())
     os.environ["MAIL_SETTING"] = setting
+
+    dotenv_path = join(dirname(__file__), '..', '.env')
+    print(setting)
+    dotenv.set_key(dotenv_path, "MAIL_SETTING", setting)
+
     return jsonify("complete")
 
 
@@ -640,7 +648,6 @@ def get_all_shots_season():
 
     startDate = nsw_to_utc(datetime.datetime.strptime(dates[0], '%B %d, %Y'))
     endDate = nsw_to_utc(datetime.datetime.strptime(dates[1], '%B %d, %Y'))
-
 
     data = {'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
