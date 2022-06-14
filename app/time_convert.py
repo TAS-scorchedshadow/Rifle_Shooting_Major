@@ -20,12 +20,6 @@ def utc_to_nsw(utc_dt):
     return utc_dt.astimezone(tz=nsw)
 
 
-def get_season_times():
-    begin = datetime.strptime(os.environ["SEASON_START"], '%d/%m/%Y')
-    end = datetime.strptime(os.environ["SEASON_END"], '%d/%m/%Y')
-    return begin, end
-
-
 def nsw_to_utc(nsw_dt):
     """
     Converts NSW time to database time(naive utc)
@@ -36,29 +30,30 @@ def nsw_to_utc(nsw_dt):
     return nsw_dt.astimezone(pytz.utc)
 
 
-def get_school_year(gradYr):
-    """
-    Determines the user's school year based on their graduation year & the current time
-
-    :return: school_year as integer ie. 7,8,9,10,11,12
-    """
+def get_season_times():
     try:
-        curYear = datetime.today().year
-        schoolYear = curYear - int(gradYr) + 12
-        return schoolYear
-    except:
-        print("Students graduation year is not defined")
+        begin = datetime.strptime(os.environ["SEASON_START"], '%d/%m/%Y')
+        end = datetime.strptime(os.environ["SEASON_END"], '%d/%m/%Y')
+    except ValueError:
+        # Setting defaults to the beginning and end of the year
+        currYr = datetime.today().year
+        begin = datetime(currYr, 1, 1)
+        end = datetime(currYr, 12, 31)
+    return begin, end
 
 
 def get_grad_year(schoolYr):
-    curYear = datetime.today().year
-    gradYr = curYear - int(schoolYr) + 12
+    currYr = datetime.today().year
+    try:
+        gradYr = currYr - int(schoolYr) + 12
+    except ValueError:
+        gradYr = "None"
     return gradYr
 
 
-def format_duration(diff):
-    if int(diff / 60) == 0:
-        duration = "{}s".format(int(diff % 60))
+def format_duration(secs_diff):
+    if int(secs_diff / 60) == 0:
+        duration = "{}s".format(int(secs_diff % 60))
     else:
-        duration = "{}m {}s".format(int(diff / 60), int(diff % 60))
+        duration = "{}m {}s".format(int(secs_diff / 60), int(secs_diff % 60))
     return duration
