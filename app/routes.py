@@ -16,7 +16,7 @@ from app.models import User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
     send_feedback_email
 from app.upload_processing import validate_shots
-from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, formatDuration
+from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, format_duration
 from app.decompress import read_archive
 from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowest_stage
 import json
@@ -610,7 +610,7 @@ def get_shots():
                            'distance': stage.distance,
                            'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
                            'std': round(stage.std, 2),
-                           'duration': formatDuration(stage.duration),
+                           'duration': format_duration(stage.duration),
                            'stageID': stage.id,
                            'sighters': data['sighters']
                            })

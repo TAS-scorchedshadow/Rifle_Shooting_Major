@@ -3,7 +3,7 @@ import datetime as datetime
 import json
 
 from app.models import User, Stage, Shot
-from app.time_convert import utc_to_nsw, nsw_to_utc, formatDuration
+from app.time_convert import utc_to_nsw, nsw_to_utc, format_duration
 from datetime import datetime
 import statistics
 
@@ -286,10 +286,10 @@ def plotsheet_calc(stage, user):
     stage.init_stage_stats()
     data["formattedList"] = allShots + [{"displayChar": "Total",
                                          "scoreVal": f"{stage.total}.{stage.totalVScore}/{stage.totalPossible}",
-                                         "shotDuration": formatDuration(stage.duration)}]
+                                         "shotDuration": format_duration(stage.duration)}]
 
     data['stageStats'] = {"mean": round(stage.mean, 2), "median": round(stage.median, 2), "std": round(stage.std, 2),
-                          "groupSize": round(stage.groupSize, 2), "duration": formatDuration(stage.duration)}
+                          "groupSize": round(stage.groupSize, 2), "duration": format_duration(stage.duration)}
     # Henry
 
     # Calculating statistics for stages shot on the same day
@@ -322,7 +322,7 @@ def plotsheet_calc(stage, user):
     otherStages = json.dumps(otherStages)
     for key in dayStats:
         dayStats[key] = round(dayStats[key] / count, 2)
-    dayStats["duration"] = formatDuration(dayStats["duration"])
+    dayStats["duration"] = format_duration(dayStats["duration"])
     data['dayStats'] = dayStats
     data['myStages'] = myStages
     data['otherStages'] = otherStages
@@ -331,7 +331,7 @@ def plotsheet_calc(stage, user):
     seasonResp = user.season_stats(stage.distance)
     data['season_stats'] = {"mean": round(seasonResp["mean"], 2), "median": round(seasonResp["median"], 2),
                            "std": round(seasonResp["std"], 2), "groupSize": round(seasonResp["groupSize"], 2),
-                           "duration": formatDuration(seasonResp["duration"])}
+                           "duration": format_duration(seasonResp["duration"])}
 
     data['range'] = json.dumps(stage.distance)
 

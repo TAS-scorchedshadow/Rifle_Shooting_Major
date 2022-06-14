@@ -56,7 +56,7 @@ def get_grad_year(schoolYr):
     return gradYr
 
 
-def formatDuration(diff):
+def format_duration(diff):
     if int(diff / 60) == 0:
         duration = "{}s".format(int(diff % 60))
     else:

@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from time import time
 import jwt
 import statistics
-from app.time_convert import nsw_to_utc, utc_to_nsw, formatDuration, get_season_times
+from app.time_convert import nsw_to_utc, utc_to_nsw, format_duration, get_season_times
 
 
 class User(UserMixin, db.Model):
@@ -335,7 +335,7 @@ class Shot(db.Model):
         :return: string 0m 0s
         """
         diff = abs((shot_timestamp - self.timestamp)).total_seconds()
-        duration = formatDuration(diff)
+        duration = format_duration(diff)
         return duration
 
 
