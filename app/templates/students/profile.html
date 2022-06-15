@@ -37,30 +37,35 @@ $(function() {
         $('.selectSeason span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
     }
 
+    // Predefined ranges for recent stages
     $('.selectStages').daterangepicker({
-        startDate: moment().startOf('year'),
-        endDate: moment().endOf('year'),
+        startDate: moment('{{ season_time["start"] }}', 'DD:MM:YYYY'),
+        endDate: moment('{{ season_time["end"] }}', 'DD:MM:YYYY'),
         "showDropdowns": true,
         ranges: {
+           'This Season': [moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY')],
            'This Year': [moment().startOf('year'), moment().endOf('year')],
            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
            'This Month': [moment().startOf('month'), moment().endOf('month')],
         }
     }, cbStages);
 
+    // Predefined ranges for stats page
     $('.selectSeason').daterangepicker({
-        startDate: moment().startOf('year'),
-        endDate: moment().endOf('year'),
+        startDate: moment('{{ season_time["start"] }}', 'DD:MM:YYYY'),
+        endDate: moment('{{ season_time["end"] }}', 'DD:MM:YYYY'),
         "showDropdowns": true,
         ranges: {
+           'This Season': [moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY')],
            'This Year': [moment().startOf('year'), moment().endOf('year')],
            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
            'This Month': [moment().startOf('month'), moment().endOf('month')],
         }
     }, cbSeason);
 
-    cbStages(moment().startOf('year'), moment().endOf('year'));
-    cbSeason(moment().startOf('year'), moment().endOf('year'));
+    // Display the initial dates on the input box
+    cbStages(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
+    cbSeason(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
 
 
 });
