@@ -466,19 +466,35 @@ def user_list():
     print(s.email_setting)
     for user in users:
         user.schoolYr = user.get_school_year()
-    return render_template('user_auth/user_list.html', users=users, mail_setting=s.email_setting)
+    s = Settings.query.filter_by(id=0).first()
+    times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
+    return render_template('user_auth/user_list.html', users=users, mail_setting=s.email_setting, season_times=times)
 
 
-# By Dylan Huynh
 @app.route('/email_settings', methods=['POST'])
 def email_settings():
     """
-    AJAX route used to update the enviroment variable MAIL_SETTING
+    AJAX route used to update the email_setting in the database
 
     """
     setting = json.loads(request.get_data())
     s = Settings.query.filter_by(id=0).first()
     s.email_setting = setting
+    db.session.commit()
+
+    return jsonify("complete")
+
+
+@app.route('/update_season_date', methods=['POST'])
+def update_season_date():
+    """
+    AJAX route used to update the start & end times of a season in the database
+
+    """
+    rtn = json.loads(request.get_data())
+    s = Settings.query.filter_by(id=0).first()
+    s.season_start = datetime.datetime.strptime(rtn["start"],"%d:%m:%Y")
+    s.season_end = datetime.datetime.strptime(rtn["end"],"%d:%m:%Y")
     db.session.commit()
 
     return jsonify("complete")
