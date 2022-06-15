@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import jwt
 import statistics
-from app.time_convert import nsw_to_utc, utc_to_nsw, format_duration, get_season_times
+from app.time_convert import nsw_to_utc, utc_to_nsw, format_duration
 
 
 class Settings(db.Model):

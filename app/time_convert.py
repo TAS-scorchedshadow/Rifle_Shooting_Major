@@ -30,18 +30,6 @@ def nsw_to_utc(nsw_dt):
     return nsw_dt.astimezone(pytz.utc)
 
 
-def get_season_times():
-    try:
-        begin = datetime.strptime(os.environ["SEASON_START"], '%d/%m/%Y')
-        end = datetime.strptime(os.environ["SEASON_END"], '%d/%m/%Y')
-    except ValueError:
-        # Setting defaults to the beginning and end of the year
-        currYr = datetime.today().year
-        begin = datetime(currYr, 1, 1)
-        end = datetime(currYr, 12, 31)
-    return begin, end
-
-
 def get_grad_year(schoolYr):
     currYr = datetime.today().year
     try:

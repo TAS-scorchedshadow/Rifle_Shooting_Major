@@ -13,23 +13,6 @@ class UserModelCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_get_season_times(self):
-        os.environ["SEASON_START"] = '01/01/2022'
-        os.environ["SEASON_END"] = '22/12/2023'
-
-        begin, end = get_season_times()
-
-        assert (begin == datetime(2022, 1, 1))
-        assert (end == datetime(2023, 12, 22))
-
-        os.environ["SEASON_START"] = "I'm a happy sentence"
-        os.environ["SEASON_END"] = '32/12/2023'
-
-        begin, end = get_season_times()
-
-        assert (begin == datetime(2022, 1, 1))
-        assert (end == datetime(2022, 12, 31))
-
     def test_get_grad_year(self):
         # Test written in 2022, expected values may need to be updated
         assert (get_grad_year("2023") == 11)
