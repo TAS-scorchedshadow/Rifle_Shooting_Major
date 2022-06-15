@@ -44,9 +44,9 @@
                                 <h4>Options</h4>
                                 Send Notification Email to Students
                                 <select class="form-select" aria-label="Default select example" id="select">
-                                  <option value="0">Never</option>
-                                  <option value="1" disabled><s>Prompt Coaches</s></option>
-                                  <option value="2">Always</option>
+                                  <option value="0" {{'selected' if mail_setting == 0}}>Never</option>
+                                  <!--<option value="1" disabled><s>Prompt Coaches</s></option>-->
+                                  <option value="2" {{'selected' if mail_setting == 2}}>Always</option>
                                 </select>
                         </div>
                         <div class="table-responsive table mt-3 mx-3">

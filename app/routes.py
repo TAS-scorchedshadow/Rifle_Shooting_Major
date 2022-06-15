@@ -12,7 +12,7 @@ from werkzeug.urls import url_parse
 
 from app import app, db
 from app.forms import *
-from app.models import User, Stage, Shot
+from app.models import Settings, User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
     send_feedback_email
 from app.upload_processing import validate_shots
@@ -130,8 +130,6 @@ def profile():
     :parameter [UserID]: Database Shooter ID. Not passed to function, but read from URL
     :return: profile.html with info dictionary for the table, form for forms and variables/lists for ChartJS
     """
-    # userID = request.args.get('userID')
-    # user = User.query.filter_by(id=userID).first()
     search_error = False
     if request.method == "POST":
         username = request.form['user']
@@ -162,7 +160,11 @@ def profile():
     tableInfo["Expiry"] = user.permitExpiry
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
-    return render_template('students/profile.html', user=user, tableInfo=tableInfo, error=search_error)
+
+    s = Settings.query.filter_by(id=0).first()
+    times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
+    return render_template('students/profile.html', user=user, tableInfo=tableInfo, error=search_error,
+                           season_time=times)
 
 
 # by Henry Guo
@@ -460,9 +462,11 @@ def user_list():
     if not current_user.access >= 2:
         return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
+    s = Settings.query.filter_by(id=0).first()
+    print(s.email_setting)
     for user in users:
         user.schoolYr = user.get_school_year()
-    return render_template('user_auth/user_list.html', users=users, mail_setting=os.environ["MAIL_SETTING"])
+    return render_template('user_auth/user_list.html', users=users, mail_setting=s.email_setting)
 
 
 # By Dylan Huynh
@@ -473,10 +477,9 @@ def email_settings():
 
     """
     setting = json.loads(request.get_data())
-    os.environ["MAIL_SETTING"] = setting
-
-    dotenv_path = join(dirname(__file__), '..', '.env')
-    dotenv.set_key(dotenv_path, "MAIL_SETTING", setting)
+    s = Settings.query.filter_by(id=0).first()
+    s.email_setting = setting
+    db.session.commit()
 
     return jsonify("complete")
 
