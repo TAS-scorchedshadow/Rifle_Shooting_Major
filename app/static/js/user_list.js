@@ -78,6 +78,26 @@ $(document).ready(function () {
         })
     })
     });
+
+
+    // Season Date Picker
+    function changeSeasonDate(date_range) {
+        console.log("running ajax");
+        $.ajax({
+            type: 'POST',
+            url: "/update_season_date",
+            data: JSON.stringify({
+                    'date_range': date_range,
+                    }),
+            success:(function (ajax_status) {
+            })
+        })
+    }
+    $('#date-selector').on('DOMSubtreeModified', function () {
+      if ($(this).html() !== '') {
+          changeSeasonDate($(this).html());
+      }
+    });
 }
 )
 

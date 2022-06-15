@@ -468,7 +468,7 @@ def user_list():
         user.schoolYr = user.get_school_year()
     s = Settings.query.filter_by(id=0).first()
     times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
-    return render_template('user_auth/user_list.html', users=users, mail_setting=s.email_setting, season_times=times)
+    return render_template('user_auth/user_list.html', users=users, mail_setting=s.email_setting, season_time=times)
 
 
 @app.route('/email_settings', methods=['POST'])
@@ -492,9 +492,13 @@ def update_season_date():
 
     """
     rtn = json.loads(request.get_data())
+
+    date_range = rtn["date_range"]
+    dates = date_range.split(' - ')
+
     s = Settings.query.filter_by(id=0).first()
-    s.season_start = datetime.datetime.strptime(rtn["start"],"%d:%m:%Y")
-    s.season_end = datetime.datetime.strptime(rtn["end"],"%d:%m:%Y")
+    s.season_start = datetime.datetime.strptime(dates[0], '%B %d, %Y')
+    s.season_end = datetime.datetime.strptime(dates[1], '%B %d, %Y')
     db.session.commit()
 
     return jsonify("complete")
