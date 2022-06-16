@@ -1,11 +1,24 @@
+import os
+import time
+
 from app import db, login, app
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from time import time
 import jwt
 import statistics
-from app.time_convert import nsw_to_utc, utc_to_nsw, format_duration, get_season_times
+from app.time_convert import nsw_to_utc, utc_to_nsw, format_duration
+
+
+class Settings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email_setting = db.Column(db.Integer) # 0 - Never, 1-Prompt, 2-Always
+    season_start = db.Column(db.DateTime)
+    season_end = db.Column(db.DateTime)
+
+    def __repr__(self):
+        return '<Setting {}>'.format(self.id)
+
 
 
 class User(UserMixin, db.Model):
@@ -131,7 +144,6 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
-    # By Dylan Huynh
     def season_stats(self, range):
         """
         Statistics on the season
@@ -143,8 +155,9 @@ class User(UserMixin, db.Model):
         totalStd = 0
         totalDuration = 0
         totalGroup = 0
-        season_start, season_end = get_season_times()
-        stages = Stage.query.filter(Stage.timestamp.between(season_start, season_end), Stage.distance == range,
+        settings = Settings.query.filter_by(id=0).first()
+        stages = Stage.query.filter(Stage.timestamp.between(settings.season_start, settings.season_end),
+                                    Stage.distance == range,
                                     Stage.userID == self.id).all()
         length = len(stages)
         for stage in stages:

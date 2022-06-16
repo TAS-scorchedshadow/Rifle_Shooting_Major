@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import User, Stage, Shot
+from app.models import Settings, User, Stage, Shot
 
 
 @app.shell_context_processor

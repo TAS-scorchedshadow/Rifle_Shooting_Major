@@ -2,13 +2,44 @@
 {% set active_page = "User List" %}
 {% block page_title %} User List {% endblock %}
 {% block page_content %}
+
+    <!--Date range picker (see https://www.daterangepicker.com)-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script type="text/javascript">
+    $(function() {
+
+
+        function cbDates(start, end) {
+            $('.selectSeasonDate span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+
+
+        $('.selectSeasonDate').daterangepicker({
+            startDate: moment('{{ season_time["start"] }}', 'DD:MM:YYYY'),
+            endDate: moment('{{ season_time["end"] }}', 'DD:MM:YYYY'),
+            "showDropdowns": true,
+            ranges: {
+               'This Year': [moment().startOf('year'), moment().endOf('year')],
+            }
+        }, cbDates);
+
+        // Display the initial dates on the input box
+        cbDates(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
+
+
+    });
+    </script>
+
     <style>
         .mybtn{
             width: 7rem;
         }
     </style>
+
     <script type="text/javascript" src="../static/js/user_list.js"></script>
-    <div id="testing" data-test="{{ newUsers }}"></div>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
@@ -17,7 +48,7 @@
                         <h1>Accounts List</h1>
                     </div>
                     <div class="card-body">
-                        <div class = row>
+                        <div class="row">
                             <div class="col-12">
                                 <h3>
                                     Emailing System
@@ -41,13 +72,42 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <h4>Options</h4>
-                                Send Notification Email to Students
-                                <select class="form-select" aria-label="Default select example" id="select">
-                                  <option value="0">Never</option>
-                                  <option value="1" disabled><s>Prompt Coaches</s></option>
-                                  <option value="2">Always</option>
-                                </select>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h4>Options</h4>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <label>Send Notification Email to Students:</label>
+                                            </div>
+                                            <div class="col-5">
+                                                <select class="form-control" aria-label="Default select example">
+                                                  <option value="0" {{'selected' if mail_setting == 0}}>Never</option>
+                                                  <!--<option value="1" disabled><s>Prompt Coaches</s></option>-->
+                                                  <option value="2" {{'selected' if mail_setting == 2}}>Always</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                    </div>
+                                    <div class="col-5">
+                                        <div class="row">
+                                            <div class="col-4 pr-0">
+                                                Change Season Date:
+                                            </div>
+                                            <div class="col-8 pl-0">
+                                                <!--Input Dates-->
+                                                <div class="selectSeasonDate mx-4" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                                    <i class="fa fa-calendar"></i>&nbsp;
+                                                    <span id="date-selector"></span> <i class="fa fa-caret-down"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="table-responsive table mt-3 mx-3">
                             <table class="text-center justify-content-center table table-bordered">

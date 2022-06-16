@@ -40,24 +40,6 @@ function setAdmin(sourceElement,user){
 
 }
 
-// Function deprecated
-function createAccount(sourceElement,user_obj){
-    var djangoData = $('#testing').data();
-    console.log(djangoData[0])
-     $(sourceElement).html(`<div class="spinner-border spinner-border-sm text-primary ml-2"
-                                 id="spinner" role="status">
-                            </div>`)
-    console.log(user_obj)
-     $.ajax({
-        data: JSON.stringify(djangoData),
-        type: 'POST',
-        url: '/create_account',
-        dataType: "JSON",
-        success: (function (data) {
-            console.log("hello")
-        })
-    })
-}
 
 $(document).ready(function () {
     var x = $("#emailContext").data()['mail']
@@ -77,6 +59,30 @@ $(document).ready(function () {
             $("#tick").fadeOut(10000)
         })
     })
+    });
+
+
+    // Season Date Picker
+    function changeSeasonDate(date_range) {
+        console.log("running ajax");
+        $("#spinner").show()
+        $.ajax({
+            type: 'POST',
+            url: "/update_season_date",
+            data: JSON.stringify({
+                    'date_range': date_range,
+                    }),
+            success:(function (ajax_status) {
+                $("#spinner").hide()
+                $("#tick").fadeIn("slow")
+                $("#tick").fadeOut(10000)
+            })
+        })
+    }
+    $('#date-selector').on('DOMSubtreeModified', function () {
+      if ($(this).html() !== '') {
+          changeSeasonDate($(this).html());
+      }
     });
 }
 )
