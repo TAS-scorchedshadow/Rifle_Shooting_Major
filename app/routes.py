@@ -315,7 +315,8 @@ def upload():
             for user in user_list:
                 print(user)
                 print(stageClassList)
-                if os.environ["MAIL_SETTING"] == 2:
+                s = Settings.query.filter_by(id=0).first()
+                if s.email_setting == 2:
                     send_upload_email(user, stageClassList)
             stage_list = []
             alert[0] = "Success"
