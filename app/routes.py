@@ -462,8 +462,6 @@ def user_list():
     if not current_user.access >= 2:
         return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
-    s = Settings.query.filter_by(id=0).first()
-    print(s.email_setting)
     for user in users:
         user.schoolYr = user.get_school_year()
     s = Settings.query.filter_by(id=0).first()
