@@ -12,6 +12,7 @@ from werkzeug.urls import url_parse
 
 from app import app, db
 from app.forms import *
+from app.generate_data import generate_rand_stages
 from app.models import Settings, User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
     send_feedback_email
@@ -88,6 +89,19 @@ def target():
             return render_template('students/student_plot_sheet.html', data=data, user=user, stage=stage)
     return render_template('index.html')
 
+
+@app.route('/random_target')
+def rand_target():
+    """
+    Displays target & mapping of shots from the shoot
+
+    :return:
+    """
+    stage = generate_rand_stages(20,"300m")
+    user = User.query.filter_by(username="cameron.y1").first()
+    data = plotsheet_calc(stage, user)
+
+    return render_template('plotsheet.html', data=data, user=user, stage=stage)
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():

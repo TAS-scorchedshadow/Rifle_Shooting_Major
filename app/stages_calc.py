@@ -290,6 +290,7 @@ def plotsheet_calc(stage, user):
 
     data['stageStats'] = {"mean": round(stage.mean, 2), "median": round(stage.median, 2), "std": round(stage.std, 2),
                           "groupSize": round(stage.groupSize, 2), "duration": format_duration(stage.duration)}
+
     # Henry
 
     # Calculating statistics for stages shot on the same day
@@ -336,3 +337,21 @@ def plotsheet_calc(stage, user):
     data['range'] = json.dumps(stage.distance)
 
     return data
+
+
+def total_shots_taken(stages):
+    total = 0
+    for stage in stages:
+        stage.init_shots()
+        total += len(stage.shotList)
+    return total
+
+
+def days_present(stages):
+    """
+    Retains a list of times that needs 
+
+    :param stages:
+    :return: List of datetime objects
+    """
+    return
