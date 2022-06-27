@@ -12,7 +12,7 @@ class UserModelCase(unittest.TestCase):
         db.drop_all()
 
     def test_greeting(self):
-        self.app.get('/')
+        app.get('/')
         self.assert_template_used('index.html')
         self.assert_context("greeting", "hello")
 

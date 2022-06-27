@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import unittest
 from app import app, db
-from app.time_convert import *
+from app.time_convert import get_grad_year, format_duration
 
 
 class UserModelCase(unittest.TestCase):
