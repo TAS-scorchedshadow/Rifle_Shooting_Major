@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 
 from flask import render_template
+from flask import current_app as app
 from flask_mail import Message
-from app import app, mail
+from app import mail
 from app.models import User, Stage
 
 

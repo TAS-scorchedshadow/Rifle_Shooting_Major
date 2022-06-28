@@ -3,8 +3,8 @@ import os
 import pytz
 from datetime import datetime
 
-from app import app
-from datetime import timezone
+
+from flask import current_app as app
 
 
 @app.template_filter('utc_to_nsw')

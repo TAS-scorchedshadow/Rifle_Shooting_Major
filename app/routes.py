@@ -10,7 +10,8 @@ import datetime
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from app import app, db
+from flask import current_app as app
+
 from app.forms import *
 from app.models import Settings, User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
