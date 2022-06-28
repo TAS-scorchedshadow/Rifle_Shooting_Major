@@ -13,6 +13,7 @@ from werkzeug.urls import url_parse
 from flask import current_app as app
 
 from app import db
+from app.decorators import authRequired
 from app.forms import *
 from app.models import Settings, User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
@@ -92,6 +93,7 @@ def target():
 
 
 @app.route('/contact', methods=['GET', 'POST'])
+@authRequired
 def contact():
     if request.method == "POST":
         feedback = request.form['feedback']
