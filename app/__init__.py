@@ -20,9 +20,10 @@ def create_app(config_class=Config):
     migrate.init_app(app)
     login.init_app(app)
     mail.init_app(app)
-
-    with app.app_context():
-        from . import routes
+    ctx = app.app_context()
+    ctx.push()
+    from app.routes import route_blueprint
+    app.register_blueprint(route_blueprint)
 
     return app
 

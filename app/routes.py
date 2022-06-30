@@ -2,7 +2,7 @@ import os
 from os.path import join, dirname
 
 import dotenv
-from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask import render_template, redirect, url_for, flash, request, jsonify, Blueprint
 from flask import session as flask_session
 from sqlalchemy import desc
 import datetime
@@ -22,7 +22,7 @@ from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, format_durat
 from app.decompress import read_archive
 from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowest_stage
 import json
-
+route_blueprint = Blueprint('route_blueprint', __name__)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -34,7 +34,7 @@ def server_error(e):
     return render_template('error/500.html'), 500
 
 
-@app.route('/', methods=['GET', 'POST'])
+@route_blueprint.route('/', methods=['GET', 'POST'])
 def index():
     """
     Homepage for the website. Identifies whether person is signed in.
@@ -58,7 +58,7 @@ def index():
     return render_template('index.html', error=search_error)
 
 
-@app.route('/landing')
+@route_blueprint.route('/landing')
 def landing():
     """
     First page opened when address entered
@@ -642,7 +642,7 @@ def get_shots():
 
 
 # By Henry Guo
-@app.route('/get_target_stats', methods=['POST'])
+@route_blueprint.route('/get_target_stats', methods=['POST'])
 def get_target_stats():
     """
     Function provides databse information for ajax request in ajax_target.js
@@ -734,3 +734,8 @@ def submit_table():
         db.session.commit()
 
     return jsonify({'success': 'success'})
+
+
+@route_blueprint.route('/testPost', methods=['POST'])
+def testPost():
+    return 'hello'
