@@ -24,12 +24,12 @@ from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowe
 import json
 route_blueprint = Blueprint('route_blueprint', __name__)
 
-@app.errorhandler(404)
+@route_blueprint.errorhandler(404)
 def page_not_found(e):
     return render_template('error/404.html'), 404
 
 
-@app.errorhandler(500)
+@route_blueprint.errorhandler(500)
 def server_error(e):
     return render_template('error/500.html'), 500
 
@@ -70,7 +70,7 @@ def landing():
 
 # By Dylan Huynh
 @login_required
-@app.route('/target')
+@route_blueprint.route('/target')
 def target():
     """
     Displays target & mapping of shots from the shoot
@@ -91,7 +91,7 @@ def target():
     return render_template('index.html')
 
 
-@app.route('/contact', methods=['GET', 'POST'])
+@route_blueprint.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == "POST":
         feedback = request.form['feedback']
@@ -106,7 +106,7 @@ def contact():
 
 
 # By Dylan Huynh
-@app.route('/submit_notes', methods=['POST'])
+@route_blueprint.route('/submit_notes', methods=['POST'])
 def submit_notes():
     """
     AJAX route for updating the notes of a stage from the plotsheet.
@@ -123,7 +123,7 @@ def submit_notes():
 
 
 # By Dylan Huynh
-@app.route('/profile', methods=['GET', 'POST'])
+@route_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     """
@@ -170,7 +170,7 @@ def profile():
 
 
 # by Henry Guo
-@app.route('/get_avg_shot_graph_data', methods=['POST'])
+@route_blueprint.route('/get_avg_shot_graph_data', methods=['POST'])
 def get_avg_shot_data():
     """
     Collect shots for use in the averages line graph
@@ -200,7 +200,7 @@ def get_avg_shot_data():
     return graph_data
 
 
-@app.route('/testdelshoot', methods=['GET', 'POST'])
+@route_blueprint.route('/testdelshoot', methods=['GET', 'POST'])
 @login_required
 def testdelshoot():
     """
@@ -216,7 +216,7 @@ def testdelshoot():
 
 
 # By Ryan Tan
-@app.route('/upload', methods=['GET', 'POST'])
+@route_blueprint.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
     """
@@ -339,7 +339,7 @@ def upload():
 
 
 # Adapted from Flask Megatutorial by Dylan Huynh
-@app.route('/login', methods=['GET', 'POST'])
+@route_blueprint.route('/login', methods=['GET', 'POST'])
 def login():
     """
     Allows the user to log on to the system
@@ -363,7 +363,7 @@ def login():
 
 
 # Dylan Huynh
-@app.route('/register', methods=['GET', 'POST'])
+@route_blueprint.route('/register', methods=['GET', 'POST'])
 def register():
     """
     GET route displays registration form, POST route generates a new user object and uploads it to the database
@@ -386,7 +386,7 @@ def register():
     return render_template('user_auth/register.html', title='Register', form=form)
 
 
-@app.route('/coachRegister', methods=['GET', 'POST'])
+@route_blueprint.route('/coachRegister', methods=['GET', 'POST'])
 def coach_register():
     form = independentSignUpForm()
     if form.validate_on_submit():
@@ -403,7 +403,7 @@ def coach_register():
     return render_template('user_auth/coach_register.html', title='Register', form=form)
 
 
-@app.route('/logout')
+@route_blueprint.route('/logout')
 def logout():
     """
     Allows users to exit from the system
@@ -413,7 +413,7 @@ def logout():
 
 
 # By Dylan Huynh
-@app.route('/request_reset_password', methods=['GET', 'POST'])
+@route_blueprint.route('/request_reset_password', methods=['GET', 'POST'])
 def request_reset_password():
     """
     Requesting a password reset if account details forgotten
@@ -433,7 +433,7 @@ def request_reset_password():
 
 
 # By Dylan Huynh
-@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+@route_blueprint.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     """
     Requesting a password reset if account details forgotten
@@ -454,7 +454,7 @@ def reset_password(token):
 
 
 # By Dylan Huynh
-@app.route('/user_list', methods=['GET', 'POST'])
+@route_blueprint.route('/user_list', methods=['GET', 'POST'])
 @login_required
 def user_list():
     """
@@ -472,7 +472,7 @@ def user_list():
     return render_template('user_auth/user_list.html', users=users, mail_setting=s.email_setting, season_time=times)
 
 
-@app.route('/email_settings', methods=['POST'])
+@route_blueprint.route('/email_settings', methods=['POST'])
 def email_settings():
     """
     AJAX route used to update the email_setting in the database
@@ -486,7 +486,7 @@ def email_settings():
     return jsonify("complete")
 
 
-@app.route('/update_season_date', methods=['POST'])
+@route_blueprint.route('/update_season_date', methods=['POST'])
 def update_season_date():
     """
     AJAX route used to update the start & end times of a season in the database
@@ -506,7 +506,7 @@ def update_season_date():
 
 
 # By Dylan Huynh
-@app.route('/delete_account', methods=['POST'])
+@route_blueprint.route('/delete_account', methods=['POST'])
 def delete_account():
     """
     AJAX route for deleting user accounts. Route is accessible by admins through the buttons on the user_list page
@@ -527,7 +527,7 @@ def delete_account():
 
 
 # By Dylan Huynh
-@app.route('/admin', methods=['POST'])
+@route_blueprint.route('/admin', methods=['POST'])
 def admin():
     """
      AJAX route for changing the account level of specific users.
@@ -549,7 +549,7 @@ def admin():
         return jsonify({'access_lvl': state})
 
 
-@app.route('/profile_list', methods=['GET', 'POST'])
+@route_blueprint.route('/profile_list', methods=['GET', 'POST'])
 @login_required
 def profile_list():
     searchError = False
@@ -582,7 +582,7 @@ def profile_list():
 
 
 # By Dylan Huynh
-@app.route('/get_users', methods=['POST'])
+@route_blueprint.route('/get_users', methods=['POST'])
 def get_users():
     """
     Generates a list of names used to complete the autofill fields. Used in autofill.js
@@ -596,7 +596,7 @@ def get_users():
 
 
 # By Henry Guo
-@app.route('/get_shots', methods=['POST'])
+@route_blueprint.route('/get_shots', methods=['POST'])
 def get_shots():
     """
     Collect shots for use in the recent shots card
@@ -655,7 +655,7 @@ def get_target_stats():
 
 
 # By Henry Guo
-@app.route('/get_all_shots_season', methods=['POST'])
+@route_blueprint.route('/get_all_shots_season', methods=['POST'])
 def get_all_shots_season():
     """
     Function collects every shot in the time-frame selected by the user
@@ -706,7 +706,7 @@ def get_all_shots_season():
 
 
 # Rishi Wig & Dylan Huynh
-@app.route('/submit_table', methods=['POST'])
+@route_blueprint.route('/submit_table', methods=['POST'])
 def submit_table():
     """
        AJAX request updates a user object(given by ID) with the new information provided in the table. Used in
