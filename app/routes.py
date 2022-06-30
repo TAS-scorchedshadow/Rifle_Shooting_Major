@@ -12,14 +12,13 @@ from werkzeug.urls import url_parse
 
 from app import app, db
 from app.forms import *
-from app.generate_data import generate_rand_stages
 from app.models import Settings, User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
     send_feedback_email
 from app.upload_processing import validate_shots
 from app.time_convert import utc_to_nsw, nsw_to_utc, get_grad_year, format_duration
 from app.decompress import read_archive
-from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowest_stage
+from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowest_stage, target_calc
 import json
 
 
@@ -97,11 +96,10 @@ def rand_target():
 
     :return:
     """
-    stage = generate_rand_stages(20,"300m")
-    user = User.query.filter_by(username="cameron.y1").first()
-    data = plotsheet_calc(stage, user)
+    stage = generate_rand_stage(20,0,0,0.05,0.05,"300m")
+    data = target_calc(stage)
 
-    return render_template('plotsheet.html', data=data, user=user, stage=stage)
+    return render_template('tests/just_target.html', data=data, stage=stage)
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():

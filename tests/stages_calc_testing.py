@@ -5,7 +5,7 @@ import random
 from app import app, db
 from app.models import Shot, Stage
 from app.time_convert import *
-from app.generate_data import generate_rand_shot, generate_rand_stages
+from app.generate_data import generate_rand_stage
 
 
 class UserModelCase(unittest.TestCase):
@@ -17,11 +17,12 @@ class UserModelCase(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def test_generate_shots(self):
-        stage = generate_rand_stages(5, "300m")
+    def test_generate_stage(self):
+        stage = generate_rand_stage(20,0,0,0.1,0.1,"300m")
         stage.init_shots()
-        print(stage.shotList)
-        assert(True == True)
+        assert(len(stage.shotList) == 20)
+        generate_rand_stage(20, 0, 0, 0.1, 0.1, "300m")
+        generate_rand_stage(20, 0, 0, 0.1, 0.1, "300m")
 
 
 

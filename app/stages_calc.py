@@ -339,6 +339,25 @@ def plotsheet_calc(stage, user):
     return data
 
 
+def target_calc(stage):
+    data = {}
+
+    stage.init_shots()
+    rtnData = stage.format_shots()
+    allShots = rtnData["sighters"] + rtnData["scores"]
+    data["jsonList"] = json.dumps(allShots)
+
+    stage.init_stage_stats()
+    data["formattedList"] = allShots + [{"displayChar": "Total",
+                                         "scoreVal": f"{stage.total}.{stage.totalVScore}/{stage.totalPossible}",
+                                         "shotDuration": format_duration(stage.duration)}]
+
+    data['stageStats'] = {"mean": round(stage.mean, 2), "median": round(stage.median, 2), "std": round(stage.std, 2),
+                          "groupSize": round(stage.groupSize, 2), "duration": format_duration(stage.duration)}
+    data['range'] = json.dumps(stage.distance)
+    return data
+
+
 def total_shots_taken(stages):
     total = 0
     for stage in stages:

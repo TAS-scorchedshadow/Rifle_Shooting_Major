@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% set active_page = "profile" %}
+{% block page_title %} Plot Sheet {% endblock %}
+{% block sidebar %}{% endblock %}
+{% block page_content %}
+    <!--Script to detect changes in div dimensions-->
+    <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
+    <script src="../static/css-element-queries/src/ElementQueries.js"></script>
+    <script src="../static/js/note_submit.js"></script>
+    <script src="../static/js/table.js"></script>
+    <meta id="target-data" data-shotList="{{ data['jsonList'] }}" data-range={{ data['range']|safe }}
+          data-groupX="{{ stage.groupX|safe }}" data-groupY="{{ stage.groupY|safe }}" data-groupSize="{{ stage.groupSize|safe }}">
+    <script src="../static/js/plotsheet.js"></script>
+    <style>
+        /*
+        @media (min-width: 1200px){
+            body {
+                overflow: hidden;
+            }
+        }
+        */
+
+        .table{
+            overflow: scroll;
+        }
+
+        .cover-container {
+            height: 100vh;
+        }
+        .card-header{
+            color: #fff
+        }
+        .table-wrapper{
+            overflow-x: hidden;
+            overflow-y: scroll;
+            max-height: 75vh;
+        }
+        .table-wrapper thead th{
+            position: sticky;
+            top: 0;
+        }
+        .col-pixel-width-100 {
+            flex: 0 0 75px;
+        }
+        #content{
+            padding: 0;
+            width: 100%;
+        }
+        @page {
+          size: A4 landscape;
+        }
+        /*Styling from https://www.w3schools.com/css/tryit.asp?filename=trycss_tooltip*/
+        #tip {
+            position: absolute;
+            left: -200px;
+            top: 100px;
+            background-color: black;
+            border-radius: 6px;
+        }
+
+    </style>
+    <script type="text/javascript" src="../static/js/target_diagram.js"></script>
+    <script type="text/javascript" src="../static/js/ajax_target.js"></script>
+    <div class="container-fluid cover-container text-center">
+        <br>
+        <div class="row flex-fill">
+            <div class="col-12 col-xl-6">
+                <div class="justify-content-center">
+                    <canvas id="title" style="border: 1px solid black"></canvas>
+                    <div class="card shadow border-0 mt-0 pt-0">
+                        <div class="row">
+                            <div class="col-12">
+                                <p>
+                                    <div>{{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y %I:%M %p %Z") }}</div>
+                                {% if stage.distance == '1000y' %}
+                                    <!-- Handles the dropdown for long range targets -->
+                                    <div>{{ stage.location }}</div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+                                            <span id="select-range-span">700m</span><i class="fa fa-caret-down pl-1"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
+                                            <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div>{{ stage.location }} - {{ stage.distance }}</div>
+                                {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}
