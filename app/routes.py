@@ -44,7 +44,7 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('route_blueprint.landing'))
     if current_user.access == 0:
-        return redirect(url_for('profile'))
+        return redirect(url_for('.profile'))
     search_error = False
     if request.method == "POST":
         username = request.form['user']
@@ -88,7 +88,7 @@ def target():
             return render_template('plotsheet.html', data=data, user=user, stage=stage)
         else:
             return render_template('students/student_plot_sheet.html', data=data, user=user, stage=stage)
-    return render_template('index.html')
+    return redirect(url_for('.index'))
 
 
 @route_blueprint.route('/contact', methods=['GET', 'POST'])
@@ -347,17 +347,17 @@ def login():
     :return: Login page
     """
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('.index'))
     form = signInForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password', 'error')
-            return redirect(url_for('login'))
+            return redirect(url_for('.login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != ':':
-            next_page = url_for('index')
+            next_page = url_for('.index')
         return redirect(next_page)
     return render_template('user_auth/login.html', form=form)
 
@@ -409,7 +409,7 @@ def logout():
     Allows users to exit from the system
     """
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('.index'))
 
 
 # By Dylan Huynh
