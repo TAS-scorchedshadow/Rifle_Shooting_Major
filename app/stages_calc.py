@@ -3,7 +3,7 @@ import datetime as datetime
 import json
 
 from app.models import User, Stage, Shot
-from app.time_convert import utc_to_nsw, nsw_to_utc, format_duration
+from app.time_convert import nsw_to_utc, format_duration
 from datetime import datetime
 import statistics
 

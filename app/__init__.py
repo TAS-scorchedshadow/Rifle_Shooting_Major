@@ -23,7 +23,9 @@ def create_app(config_class=Config):
     ctx = app.app_context()
     ctx.push()
     from app.routes import route_blueprint
+    from app.time_convert import time_convert_blueprint
     app.register_blueprint(route_blueprint)
+    app.register_blueprint(time_convert_blueprint)
 
     return app
 

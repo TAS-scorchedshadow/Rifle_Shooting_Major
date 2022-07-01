@@ -42,7 +42,7 @@ def index():
     :return: Index html page
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('landing'))
+        return redirect(url_for('route_blueprint.landing'))
     if current_user.access == 0:
         return redirect(url_for('profile'))
     search_error = False
