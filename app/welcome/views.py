@@ -16,9 +16,9 @@ def index():
     :return: Index html page
     """
     if not current_user.is_authenticated:
-        return redirect(url_for('route_blueprint.landing'))
+        return redirect(url_for('welcome_bp.landing'))
     if current_user.access == 0:
-        return redirect(url_for('.profile'))
+        return redirect(url_for('profile_bp.profile'))
     search_error = False
     if request.method == "POST":
         username = request.form['user']
