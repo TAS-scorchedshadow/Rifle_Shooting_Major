@@ -5,7 +5,7 @@ import zlib
 import datetime
 
 from app.models import Stage, User
-from app.upload_processing import check_sighter
+from app.upload.upload_processing import check_sighter
 
 
 # Dylan Huynh
