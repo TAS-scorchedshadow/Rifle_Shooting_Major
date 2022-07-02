@@ -26,73 +26,23 @@ def send_email(subject, recipients, text_body, html_body):
     mail.send(msg)
 
 
-def send_password_reset_email(user):
-    """
-    Sends an email for users to reset their passwords
 
-    :param user: User requesting for a change in password
-    """
-    token = user.get_reset_password_token()
-    send_email('[Riflelytics] Reset Your Password',
-               recipients=[user.email],
-               text_body=render_template('email/reset_password.txt', user=user, token=token),
-               html_body=render_template('email/reset_password.html', user=user, token=token))
+# # Dylan Huynh
+# def send_report_email(banned_userIDs):
+#     """
+#     Sends all users an email with the data from the last week. Does not send email to banned users
+#
+#     :param banned_userIDs: list of user ID to NOT send an email to
+#     """
+#     users = User.query.all()
+#     tsNow = datetime.now()
+#     tsBegin = datetime.now() - timedelta(weeks=1)
+#     stages = Stage.query.filter(Stage.timestamp.between(tsBegin, tsNow)).all()
+#     for user in users:
+#         if user.id not in banned_userIDs:
+#             userStages = [stage for stage in stages if stage.userID == user.id]
+#             if userStages and user.email:
+#                 send_email("Weekly Report", [user.email],
+#                            render_template('email/weeklyReport.txt', tsBegin=tsBegin, tsNow=tsNow, user=user)
+#                            , render_template('email/weeklyReport.html', stages=stages))
 
-
-def send_activation_email(user):
-    """
-    Sends a confirmation email to the newly registered user
-
-    :param user: Newly registered user
-    """
-    token = user.get_activation_token()
-    send_email('Welcome to Riflelytics! Confirm Your Email',
-               recipients=[user.email],
-               text_body=render_template('email/activate.txt', user=user, token=token),
-               html_body=render_template('email/activate.html', user=user, token=token))
-
-
-# Dylan Huynh
-def send_report_email(banned_userIDs):
-    """
-    Sends all users an email with the data from the last week. Does not send email to banned users
-
-    :param banned_userIDs: list of user ID to NOT send an email to
-    """
-    users = User.query.all()
-    tsNow = datetime.now()
-    tsBegin = datetime.now() - timedelta(weeks=1)
-    stages = Stage.query.filter(Stage.timestamp.between(tsBegin, tsNow)).all()
-    for user in users:
-        if user.id not in banned_userIDs:
-            userStages = [stage for stage in stages if stage.userID == user.id]
-            if userStages and user.email:
-                send_email("Weekly Report", [user.email],
-                           render_template('email/weeklyReport.txt', tsBegin=tsBegin, tsNow=tsNow, user=user)
-                           , render_template('email/weeklyReport.html', stages=stages))
-
-
-def send_upload_email(user, stages):
-    """
-        Sends user an email notifying that the given stages has been uploaded
-
-        :param user: user object
-        :param stages: list of stage objects
-    """
-    send_email('[Riflelytics] New Stages have been uploaded',
-               recipients=[user.email],
-               text_body=render_template('email/new_stages.txt', user=user, stages=stages),
-               html_body=render_template('email/new_stages.html', user=user, stages=stages))
-
-
-def send_feedback_email(text, sender):
-    """
-        Sends feedback to riflelytics@gmail.com
-
-        :param text: feedback text
-        :param sender: string of sender name
-    """
-    send_email('[Riflelytics] Feedback has been sent',
-               recipients=["riflelytics@gmail.com"],
-               text_body=render_template('email/feedback.txt', text=text, sender=sender),
-               html_body=render_template('email/feedback.html', text=text, sender=sender))

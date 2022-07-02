@@ -4,14 +4,14 @@
 {% block sidebar %}{% endblock %}
 {% block page_content %}
     <!--Script to detect changes in div dimensions-->
-    <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
-    <script src="../static/css-element-queries/src/ElementQueries.js"></script>
-    <script src="../static/js/note_submit.js"></script>
-    <script src="../static/js/table.js"></script>
+    <script src="../../static/css-element-queries/src/ResizeSensor.js"></script>
+    <script src="../../static/css-element-queries/src/ElementQueries.js"></script>
+    <script src="../../static/js/note_submit.js"></script>
+    <script src="../../static/js/table.js"></script>
     <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submit_table">
     <meta id="target-data" data-shotList="{{ data['jsonList'] }}" data-range={{ data['range']|safe }}
           data-groupX="{{ stage.groupX|safe }}" data-groupY="{{ stage.groupY|safe }}" data-groupSize="{{ stage.groupSize|safe }}">
-    <script src="../static/js/plotsheet.js"></script>
+    <script src="../../static/js/plotsheet.js"></script>
     <style>
         /*
         @media (min-width: 1200px){
@@ -60,8 +60,8 @@
         }
 
     </style>
-    <script type="text/javascript" src="../static/js/target_diagram.js"></script>
-    <script type="text/javascript" src="../static/js/ajax_target.js"></script>
+    <script type="text/javascript" src="../../static/js/target_diagram.js"></script>
+    <script type="text/javascript" src="../../static/js/ajax_target.js"></script>
     <div class="container-fluid cover-container text-center">
         <br>
         <div class="row flex-fill">
