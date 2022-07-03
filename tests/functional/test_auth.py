@@ -1,4 +1,5 @@
 import pytest
+from flask import url_for
 
 
 @pytest.mark.usefixtures("create_users")
@@ -21,8 +22,7 @@ class TestLogin:
 
         assert len(captured_templates) == 1
         template, context = captured_templates[0]
-        assert template.name == 'students/profile.html'
-
+        assert template.name == 'profile/profile.html'
 
     def test_login_regular(self, test_client, captured_templates):
         """
@@ -42,4 +42,4 @@ class TestLogin:
 
         assert len(captured_templates) == 1
         template, context = captured_templates[0]
-        assert template.name == 'index.html'
+        assert template.name == 'welcome/index.html'
