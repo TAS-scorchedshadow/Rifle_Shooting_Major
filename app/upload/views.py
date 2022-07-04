@@ -24,7 +24,7 @@ def upload():
     """
     # Initialise Variables
     if not current_user.access >= 1 or current_user.username == "preview":
-        return redirect(url_for('index'))
+        return redirect(url_for('welcome_bp.index'))
     form = uploadForm()
     stage_list = []
     invalid_list = []

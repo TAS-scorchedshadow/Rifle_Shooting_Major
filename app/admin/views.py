@@ -19,7 +19,7 @@ def user_list():
     :return: user_list.html
     """
     if not current_user.access >= 2:
-        return redirect(url_for('index'))
+        return redirect(url_for('welcome_bp.index'))
     users = User.query.order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()

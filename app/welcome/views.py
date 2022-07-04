@@ -52,5 +52,5 @@ def contact():
         send_feedback_email(feedback, name)
         flash("Message Sent", "success")
 
-        return redirect(url_for('index'))
+        return redirect(url_for('welcome_bp.index'))
     return render_template('welcome/contact.html')
