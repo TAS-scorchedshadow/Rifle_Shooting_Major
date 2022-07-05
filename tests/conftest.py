@@ -53,18 +53,24 @@ def create_users(request, test_client):
     student = User(username="student")
     student.set_password("studentPass")
     student.access = 0
+    student.fName = "Henry"
+    student.sName = "Guo"
     db.session.add(student)
     request.cls.student = student
 
     coach = User(username="coach")
     coach.set_password("coachPass")
     coach.access = 1
+    coach.fName = "John"
+    coach.sName = "Jeff"
     db.session.add(coach)
     request.cls.coach = coach
 
     admin = User(username="admin")
     admin.set_password("adminPass")
     admin.access = 2
+    admin.fName = "Richard"
+    admin.sName = "Smith"
     db.session.add(admin)
     request.cls.admin = admin
 

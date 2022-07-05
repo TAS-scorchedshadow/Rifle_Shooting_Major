@@ -26,4 +26,4 @@ def target():
             return render_template('plotsheet/plotsheet.html', data=data, user=user, stage=stage)
         else:
             return render_template('plotsheet/student_plot_sheet.html', data=data, user=user, stage=stage)
-    return redirect(url_for('welcome.index'))
+    return redirect(url_for('welcome_bp.index'))
