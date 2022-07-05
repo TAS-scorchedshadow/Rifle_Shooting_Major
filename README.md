@@ -1,7 +1,41 @@
-# Rifle_Shooting_Major
+# Riflelytics
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Functions](#functions)
+   1. [Api](#functions_api)
+   2. [Auth](#functions_auth)
+   3. [Plotsheet](#functions_plotsheet)
+   4. [Profile](#functions_profile)
 
-SBHS Rifle Shooting project. 
-
-
+<a name="introduction"></a>
+## Introduction
+SBHS Rifle Shooting project.
 
 -- Created by Andrew Tam, Ryan Tan, Henry Guo, Dylan Huynh and Rishi WIg
+
+<a name="functions"></a>
+## Functions
+
+<a name="functions_api"></a>
+### Api
+| Function Name            | Description                                                                                                                            | Parameters                                                    | Output                                                                                                                                                                                                                                      |
+|--------------------------|----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| /submit_notes            | POST<br/>Adds the given notes to the databse                                                                                           | [stageId: integer, <br/>fieldVal: string]                     | {success: 'success'}                                                                                                                                                                                                                        |
+| /get_avg_shot_graph_data | POST<br/>Collect shots for use in the averages/standard dev line graph                                                                 | userId: integer                                               | {scores: int[], times: int[], sd: int}                                                                                                                                                                                                      |
+| /get_users               | POST<br/>Generates a list of names used to complete the autofill fields. Used in autofill.js <br/><br/> Returns a list of dictionaries |                                                               | List of {label: string, value: string}                                                                                                                                                                                                      |
+| /get_shots               | POST<br/>Collect shots for use in the recent shots cards                                                                               | [userId: int,<br/>numLoaded: int,<br/>dateRange: string]      | {scores: stage.format_shots()['scores'],<br/> totalScore: string, <br/> groupSize: int, <br/> distance: string, <br/> timestamp: '%d %b %Y %I:%M %p', <br/> std: int, <br/> duration: UNKNOWN, <br/> stageId: int, <br/> sighters: UNKNOWN} |
+| /get_target_stats        | POST<br/>Provides database information for ajax request in ajax_target.js<br/>MAY BE REDUNDANT                                         | stageId: integer                                              | {success: 'success'} &#124; {error: 'userID'}                                                                                                                                                                                               |
+| /get_all_shots_season    | POST<br/>Collects every shot in the time-frame selected by the user                                                                    | {distance: string,<br/> userID: int, <br/> dateRange: string} | {target, <br/> boxPlot: int[], <br/> bestStage: {id: int, score: int, time: string}, <br/> worstStage: {id: int, score: int, time: string}}                                                                                                 |
+| /submit_table            | POST<br/>Updates a user object(given by ID) with the new information provided in the user profile table                                | [userId: int, dictionary of table fields]                     | {success: 'success'}                                                                                                                                                                                                                        |
+
+<a name="functions_auth"></a>
+### Auth
+auth
+
+<a name="functions_plotsheet"></a>
+### PlotSheet
+PlotSheet
+<a name="functions_profile"></a>
+
+### Profile
+Profile
