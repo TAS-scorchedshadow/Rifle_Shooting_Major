@@ -12,6 +12,7 @@ from werkzeug.urls import url_parse
 
 from app import app, db
 from app.forms import *
+from app.generate_data import generate_rand_stage
 from app.models import Settings, User, Stage, Shot
 from app.email import send_password_reset_email, send_activation_email, send_upload_email, \
     send_feedback_email
@@ -96,7 +97,7 @@ def rand_target():
 
     :return:
     """
-    stage = generate_rand_stage(20,0,0,0.05,0.05,"300m")
+    stage = generate_rand_stage(10,0,0,0.05,0.05,"300m")
     data = target_calc(stage)
 
     return render_template('tests/just_target.html', data=data, stage=stage)

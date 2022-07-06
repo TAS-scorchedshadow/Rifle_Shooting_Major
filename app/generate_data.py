@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 import numpy as np
 
 from app import db
-from app.models import Shot, Stage
+from app.models import Shot, Stage, User
 
 def generate_rand_stage(num_shots, x_center, y_center, x_spread, y_spread, distance):
+    u = User.query.filter_by(username="studenttest.a1").first()
     target_details = {
         # ['1', '2', '3', '4', '5', 'V', 'Range],
         "300m": [1200, 600, 420, 280, 140, 70, 300],
@@ -33,7 +34,7 @@ def generate_rand_stage(num_shots, x_center, y_center, x_spread, y_spread, dista
     while Stage.query.filter_by(id=stage_id).all():
         stage_id = random.randint(0, 1000)
 
-    new_stage = Stage(id=stage_id, distance=distance, timestamp=time, userID=2)
+    new_stage = Stage(id=stage_id, distance=distance, timestamp=time, userID=u.id)
     db.session.add(new_stage)
     db.session.commit()
 
