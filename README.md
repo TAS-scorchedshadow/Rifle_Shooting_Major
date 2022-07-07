@@ -10,7 +10,7 @@
 <a name="introduction"></a>
 ## Introduction
 Riflelytics provides Australian rifle shooters with access to a digital record of their shooting history at 
-[riflelytics.com](https://www.riflelytics.com/). It is based of the Flask framework.
+[riflelytics.com](https://www.riflelytics.com/). It is based off the Flask framework.
 
 
 -- Created by Ryan Tan, Henry Guo, Dylan Huynh and Rishi Wig
