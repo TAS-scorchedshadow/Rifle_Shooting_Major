@@ -6,6 +6,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask import session as flask_session
 from sqlalchemy import desc
 import datetime
+from flask_talisman import Talisman
 
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
@@ -21,6 +22,7 @@ from app.decompress import read_archive
 from app.stages_calc import plotsheet_calc, stats_of_period, highest_stage, lowest_stage
 import json
 
+Talisman(app, content_security_policy=None)
 
 @app.errorhandler(404)
 def page_not_found(e):
