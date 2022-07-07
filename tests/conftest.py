@@ -8,7 +8,6 @@ from app import create_app, db
 from app.models import User, Settings
 from config import Config
 
-
 # Is subclass of Config by Flask
 class TestingConfig(Config):
     TESTING = True
@@ -74,6 +73,4 @@ def create_users(request, test_client):
     db.session.add(settings)
     request.cls.settings = settings
 
-
     db.session.commit()
-
