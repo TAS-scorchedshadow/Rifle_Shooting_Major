@@ -9,9 +9,11 @@
 
 <a name="introduction"></a>
 ## Introduction
-SBHS Rifle Shooting project.
+Riflelytics provides Australian rifle shooters with access to a digital record of their shooting history at 
+[riflelytics.com](https://www.riflelytics.com/). It is based of the Flask framework.
 
--- Created by Andrew Tam, Ryan Tan, Henry Guo, Dylan Huynh and Rishi WIg
+
+-- Created by Ryan Tan, Henry Guo, Dylan Huynh and Rishi Wig
 
 <a name="functions"></a>
 ## Functions
