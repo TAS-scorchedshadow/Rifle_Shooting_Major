@@ -1,0 +1,21 @@
+{% extends "auth/base_no_navbar.html" %}
+{% set active_page = "Register" %}
+{% block page_title %}Register{% endblock %}
+{% block login_content %}
+<h2 class="text-center my-5">Registration Success!</h2>
+    <div class="text-center px-4">
+        <p>Thank you {{ user.fName }} {{ user.sName }}</p>
+
+        <p><b>{{ user.username }}</b> can now be used to save your shot performance as well as your login for this site</p>
+
+        {% if not user.school == "OTHER" %}
+            <p>An email has been sent to your <b>{{ user.school }}</b> email for verification</p>
+        {% else %}
+            <p>An email has been sent to your email for verification</p>
+        {% endif %}
+    </div>
+
+<p class="text-center">Already have an account?
+    <a href="/login">Sign In</a>
+</p>
+{% endblock %}

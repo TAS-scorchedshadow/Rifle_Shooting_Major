@@ -1,0 +1,60 @@
+{% extends "auth/base_no_navbar.html" %}
+{% set active_page = "Register" %}
+{% block page_title %}Register{% endblock %}
+{% block login_content %}
+<h2 class="text-center mt-5"><i>Alternative Registration</i></h2>
+<p class="text-center">
+    For users <b>not</b> currently enrolled at SBHS
+</p>
+<hr>
+<p class="text-center">
+    If you are a current student <a href="/register">sign up here</a>
+</p>
+<hr>
+<h4 class="text-center">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes" style="list-style-type: none">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</h4>
+
+<!-- oninput checks if passwords are matching -->
+<form name="signup_form" role = "form" method="post" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
+
+    {{ form.csrf_token }}
+      <div class="form-row px-4">
+          <div class="col">
+               {{ form.fName(class_="field form-control form-control-lg",placeholder="First Name")}}
+          </div>
+        <div class="col">
+             {{ form.sName(class_="field form-control form-control-lg",placeholder="Surname")}}
+        </div>
+      </div>
+    <br>
+    <div class="form-group px-4">
+        {{ form.email(class_="field form-control form-control-lg",placeholder="Email Address")}}
+    </div>
+     <div class="form-group px-4">
+         {{ form.shooterID(class_="field form-control form-control-lg",placeholder="Shooter ID")}}
+         <br>
+         {{ form.password(class_="field form-control form-control-lg",placeholder="Password", id ="pass1")}}
+         <br>
+         {{ form.confirmPassword(class_="field form-control form-control-lg",placeholder="Confirm Password", id ="pass2")}}
+     </div>
+    <div class="form-row px-4">
+        {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
+    </div>
+</form>
+{% if form.errors %}
+    {{ form.errors }}
+{% endif %}
+<br>
+<p class="text-center">Already have an account?
+    <a href="/login">Sign In</a>
+</p>
+{% endblock %}
