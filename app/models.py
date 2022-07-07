@@ -1,7 +1,8 @@
 import os
 import time
 
-from app import db, login, app
+from app import db, login
+from flask import current_app as app
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin

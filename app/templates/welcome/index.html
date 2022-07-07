@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% set active_page = "home" %}
+{% block page_title %} Home {% endblock %}
+{% block page_content %}
+<!--Username Autofill-->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+<script type="text/javascript" src="../../static/js/autofill.js" defer></script>
+
+<div class = "text-center justify-content-center">
+    <div>
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2">
+           <polygon class="logoCol1" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
+           <polygon class="logoCol2" points="69.4 13.1 108.6 79 32.6 175 0 138.9 69.4 13.1"/>
+           <polygon class="logoCol3" points="158.8 11.6 120.2 79.1 198.6 175.2 231.1 138.1 158.8 11.6"/>
+        </svg>
+    </div>
+</div>
+ {% if current_user.access == 1 %}
+<h2 class="text-center">Coach Features</h2>
+<hr>
+<div class = "row text-center justify-content-center">
+    <div class="col-10 col-md-6">
+        <a href="/upload" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                  <img class="card-img-top" src="../../static/images/Home-01.png" alt="Upload">
+              </div>
+              <div class="card-title">
+                  <h4>Upload</h4>
+              </div>
+              <p>Upload archive files from <b>Silverback Mountain Targets</b>.</p>
+          </div>
+        </a>
+    </div>
+    <div class="col-10 col-md-6">
+        <a href="/profile_list" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                <img class="card-img-top" src="../../static/images/Home-02.png" alt="Find A Student">
+              </div>
+              <div class="card-title">
+                  <h4>Shooter Profile</h4>
+              </div>
+               <p>A comprehensive overview of a shooter's performance.</p>
+              <a>
+                <div class="ui-widget pl-2">
+                    <form method="post">
+                        <label for="username"><i class="fas fa-search"></i></label>
+                         <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
+                        <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Go</button>
+                    </form>
+                </div>
+              </a>
+          </div>
+        </a>
+    </div>
+</div>
+{% endif %}
+ {% if current_user.access >=2 %}
+<h2 class="text-center">Admin Features</h2>
+<hr>
+<div class = "row text-center justify-content-center">
+    <div class="col-10 col-md-4">
+        <a href="/upload" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                  <img class="card-img-top" src="../../static/images/Home-01.png" alt="Upload">
+              </div>
+              <div class="card-title">
+                  <h4>Upload</h4>
+              </div>
+              <p>Upload archive files from <b>Silverback Mountain Targets</b>.</p>
+          </div>
+        </a>
+    </div>
+    <div class="col-10 col-md-4">
+        <a href="/profile_list" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                <img class="card-img-top" src="../../static/images/Home-02.png" alt="Find A Student">
+              </div>
+              <div class="card-title">
+                  <h4>Shooter Profile</h4>
+              </div>
+               <p>A comprehensive overview of a shooter's performance.</p>
+              <a>
+                <div class="ui-widget pl-2">
+                    <form method="post">
+                        <label for="username"><i class="fas fa-search"></i></label>
+                         <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
+                        <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Go</button>
+                    </form>
+                </div>
+              </a>
+          </div>
+        </a>
+    </div>
+    <div class="col-10 col-md-4">
+         <a href="/user_list" class="custom-card">
+          <div class="card linked-card h-100">
+              <div class="inner">
+                <img class="card-img-top" src="../../static/images/Home-03.png" alt="Comparisons">
+              </div>
+              <div class="card-title">
+                  <h4>User Management</h4>
+              </div>
+              <p>Manage emails, delete accounts and designate admins.</p>
+          </div>
+        </a>
+    </div>
+</div>
+{% endif %}
+{% if error == true %}
+    <br>
+    <div class="alert alert-info" role="alert">
+      We couldn't find a user that matched your search. Please try again.
+    </div>
+{% endif %}
+<div class="text-center">
+<hr>
+    <p style="font-size: 11px">Icons from Font Awesome 5: Available <a href="https://fontawesome.com/license">here</a></p>
+<hr>
+</div>
+{% endblock %}
