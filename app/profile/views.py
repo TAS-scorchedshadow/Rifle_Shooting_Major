@@ -5,12 +5,14 @@ from flask import session as flask_session
 from flask_login import login_required, current_user
 
 from app.models import User, Settings
+from app.decorators import roles_required
 
 profile_bp = Blueprint('profile_bp', __name__)
 
 
 @profile_bp.route('/profile_list', methods=['GET', 'POST'])
 @login_required
+@roles_required(["COACH", "ADMIN"])
 def profile_list():
     searchError = False
     if request.method == "POST":
@@ -39,7 +41,6 @@ def profile_list():
 
     yearGroups = json.dumps(yearGroups)
     return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
-
 
 
 @profile_bp.route('/profile', methods=['GET', 'POST'])
@@ -86,4 +87,3 @@ def profile():
     times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
     return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error,
                            season_time=times)
-
