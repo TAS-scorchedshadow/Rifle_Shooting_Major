@@ -5,8 +5,8 @@ import numpy as np
 from app import db
 from app.models import Shot, Stage, User
 
-def generate_rand_stage(num_shots, x_center, y_center, x_spread, y_spread, distance):
-    u = User.query.filter_by(username="studenttest.a1").first()
+
+def generate_rand_stage(userID, num_shots, x_center, y_center, x_spread, y_spread, distance, location="Malabar"):
     target_details = {
         # ['1', '2', '3', '4', '5', 'V', 'Range],
         "300m": [1200, 600, 420, 280, 140, 70, 300],
@@ -25,40 +25,48 @@ def generate_rand_stage(num_shots, x_center, y_center, x_spread, y_spread, dista
         "1000y": [2400, 1120, 815, 510, 255, 914.4]
     }
     d = target_details[distance]
-    x_poses = np.random.normal(size=num_shots, loc=x_center, scale=d[0]*x_spread)
-    y_poses = np.random.normal(size=num_shots, loc=y_center, scale=d[0]*y_spread)
+    x_poses = np.random.normal(size=num_shots, loc=x_center, scale=d[0] * x_spread)
+    y_poses = np.random.normal(size=num_shots, loc=y_center, scale=d[0] * y_spread)
+    start_time = datetime.now()
     time = datetime.now()
-    times = np.random.normal(size=num_shots, loc=20, scale=5)
+    times = np.random.normal(size=num_shots, loc=60, scale=10)
 
     stage_id = random.randint(0, 1000)
     while Stage.query.filter_by(id=stage_id).all():
         stage_id = random.randint(0, 1000)
 
-    new_stage = Stage(id=stage_id, distance=distance, timestamp=time, userID=u.id)
+    new_stage = Stage(id=stage_id, distance=distance, timestamp=time, userID=userID, location=location)
     db.session.add(new_stage)
     db.session.commit()
+
+    biggest_dist = 0
 
     for i in range(0, num_shots):
         v_score = 0
         dist = (x_poses[i] ** 2 + y_poses[i] ** 2) ** 0.5
+        if dist > biggest_dist:
+            biggest_dist = dist
         idx = 0
-        while dist < d[idx]/2 and idx < len(d) - 1:
+        while dist < d[idx] / 2 and idx < len(d) - 1:
             idx += 1
         score = idx
         if score == 6:
             score = 5
             v_score = 1
 
-        new_shot = Shot(score=score,xPos=x_poses[i],yPos=y_poses[i],vScore=v_score,stageID=stage_id)
+        new_shot = Shot(score=score, xPos=x_poses[i], yPos=y_poses[i], vScore=v_score, stageID=stage_id)
 
         time += timedelta(seconds=int(times[i]))
         new_shot.timestamp = time
         db.session.add(new_shot)
+
+    new_stage.duration = time - start_time
+    new_stage.groupSize = dist
     db.session.commit()
 
     return new_stage
 
 
-def in_circle(x,y,radius):
-    dist = (x**2+y**2)**0.5
+def in_circle(x, y, radius):
+    dist = (x ** 2 + y ** 2) ** 0.5
     return dist < radius
