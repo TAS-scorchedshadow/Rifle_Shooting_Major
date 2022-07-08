@@ -11,9 +11,9 @@ load_dotenv(dotenv_path)
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOGIN_DISABLED = False  # Enable this to avoid having to login
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
