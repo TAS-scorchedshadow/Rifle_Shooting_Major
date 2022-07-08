@@ -73,6 +73,61 @@ class TestProfileList:
         template, context = captured_templates[0]
         assert template.name == 'profile/profile_list.html'
 
+    def test_profile_post_text(self, test_client, captured_templates):
+        """
+        GIVEN a Flask application configured for testing
+        WHEN the '/' page is requested (GET)
+        THEN check that the response is valid
+        """
+
+        test_client.post('/login', data={
+            "username": self.admin.username,
+            "password": "adminPass"
+        })
+
+        response = test_client.post('/profile_list', data={"user-search": self.student.username, "user": ""}, follow_redirects=True)
+
+        assert response.status_code == 200
+        template, context = captured_templates[0]
+        assert context["user"] == self.student
+        assert template.name == 'profile/profile.html'
+
+    def test_profile_post_text_error(self, test_client, captured_templates):
+        """
+        GIVEN a Flask application configured for testing
+        WHEN the '/' page is requested (GET)
+        THEN check that the response is valid
+        """
+
+        test_client.post('/login', data={
+            "username": self.admin.username,
+            "password": "adminPass"
+        })
+
+        response = test_client.post('/profile_list', data={"user-search": "Not a name", "user": ""}, follow_redirects=True)
+
+        assert response.status_code == 200
+        template, context = captured_templates[0]
+        assert context["error"] is True
+        assert template.name == 'profile/profile_list.html'
+
+    def test_profile_post_card(self, test_client, captured_templates):
+        """
+        GIVEN a Flask application configured for testing
+        WHEN the '/' page is requested (GET)
+        THEN check that the response is valid
+        """
+
+        test_client.post('/login', data={
+            "username": self.admin.username,
+            "password": "adminPass"
+        })
+
+        response = test_client.post('/profile_list', data={"user-search": "", "user": self.student.id}, follow_redirects=True)
+
+        assert response.status_code == 200
+        template, context = captured_templates[0]
+        assert template.name == 'profile/profile.html'
 
 @pytest.mark.usefixtures("create_users")
 class TestProfile:
@@ -355,6 +410,22 @@ class TestProfile:
 
         assert isinstance(context["season_time"]["end"], str)
         datetime.strptime(context["season_time"]["end"], "%d:%m:%Y")
+
+        assert template.name == "profile/profile.html"
+
+
+    def test_profile_search_error(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.admin.username,
+            "password": "adminPass"
+        })
+
+        response = test_client.post('/profile', data={"user": "Not a name"}, follow_redirects=True)
+
+        assert response.status_code == 200
+        template, context = captured_templates[0]
+
+        assert context["error"] is True
 
         assert template.name == "profile/profile.html"
 

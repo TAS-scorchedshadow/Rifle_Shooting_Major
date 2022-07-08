@@ -14,7 +14,7 @@ def roles_required(roles):
             if not all(i in levels for i in roles):
                 raise ValueError("Unknown Role")
             if current_user.access > len(levels) - 1:
-                current_user.access = 0
+                current_user.access = len(levels) - 1
             role = levels[current_user.access]
             if not (role in roles):
                 flash("You don't have permission to access that page", "error")

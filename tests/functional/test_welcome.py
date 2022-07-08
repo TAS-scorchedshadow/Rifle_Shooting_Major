@@ -62,6 +62,33 @@ class TestIndex:
         template, context = captured_templates[0]
         assert template.name == 'welcome/index.html'
 
+    def test_index_post(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.coach.username,
+            "password": "coachPass"
+        })
+
+        response = test_client.post('/', data={"user": self.student.username}, follow_redirects=True)
+
+        assert response.status_code == 200
+        assert len(captured_templates) == 1
+        template, context = captured_templates[0]
+        assert template.name == 'profile/profile.html'
+
+    def test_index_post_error(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.coach.username,
+            "password": "coachPass"
+        })
+
+        response = test_client.post('/', data={"user": "Not a Username"}, follow_redirects=True)
+
+        assert response.status_code == 200
+        assert len(captured_templates) == 1
+        template, context = captured_templates[0]
+        assert context["error"] is True
+        assert template.name == 'welcome/index.html'
+
 
 def test_landing(test_client, captured_templates):
     """
@@ -98,6 +125,18 @@ class TestContactUs:
         with mail.record_messages() as outbox:
             response = test_client.post('/contact', data={
                 'name': self.student.fName,
+                'feedback': "Hello"
+            })
+
+            assert response.status_code == 302
+
+            assert len(outbox) == 1
+            assert outbox[0].subject == "[Riflelytics] Feedback has been sent"
+
+    def test_contact_email_anonymous(self, test_client, captured_templates):
+        with mail.record_messages() as outbox:
+            response = test_client.post('/contact', data={
+                'name': "",
                 'feedback': "Hello"
             })
 
