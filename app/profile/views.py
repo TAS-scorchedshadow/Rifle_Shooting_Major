@@ -5,12 +5,14 @@ from flask import session as flask_session
 from flask_login import login_required, current_user
 
 from app.models import User, Settings
+from app.decorators import roles_required
 
 profile_bp = Blueprint('profile_bp', __name__)
 
 
 @profile_bp.route('/profile_list', methods=['GET', 'POST'])
 @login_required
+@roles_required(["COACH"])
 def profile_list():
     searchError = False
     if request.method == "POST":
