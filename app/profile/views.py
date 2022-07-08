@@ -12,7 +12,7 @@ profile_bp = Blueprint('profile_bp', __name__)
 
 @profile_bp.route('/profile_list', methods=['GET', 'POST'])
 @login_required
-@roles_required(["COACH"])
+@roles_required(["COACH","ADMIN"])
 def profile_list():
     searchError = False
     if request.method == "POST":
