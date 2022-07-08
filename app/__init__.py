@@ -8,7 +8,7 @@ from flask_mail import Mail
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
-login.login_view = 'login'
+login.login_view = "auth_bp.login"
 mail = Mail()
 
 
