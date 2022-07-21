@@ -17,15 +17,20 @@ def upload():
 
     :return: Upload html page
     """
-    # Initialise Variables
+    # Reroute if invalid user
     if not current_user.access >= 1 or current_user.username == "preview":
         return redirect(url_for('index'))
+    # Initialise Variables
     form = uploadForm()
+    template = 'upload/upload.html'
+    stage_list = []
+    invalid_list = []
+    alert = [None, 0, 0]  # Alert type, Failures, Successes
     if form.identifier.data == "upload":
         # Upload
-        template = 'upload/upload_verify.html'
-        stage_list, invalid_list, count = get_shoot_data(form)
-        template, alert = get_alert_message("upload", count)
+        if request.method == "POST":
+            stage_list, invalid_list, count = get_shoot_data(form)
+            template, alert = get_alert_message("upload", count)
     else:
         # Verify
         stage_list = json.loads(request.form["stageDump"])
@@ -37,5 +42,6 @@ def upload():
         template, alert = get_alert_message("verify", count)
         if alert[0] == "Incomplete":
             stage_list = flatten_ids(invalid_list)
+    # Dump stage_list and render
     stageDump = json.dumps(stage_list)
     return render_template(template, form=form, stageDump=stageDump, invalidList=invalid_list, alert=alert)
