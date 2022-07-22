@@ -117,12 +117,12 @@ class User(UserMixin, db.Model):
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
-            {'reset_password': self.id, 'exp': time() + expires_in},
+            {'reset_password': self.id, 'exp': time.time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
     def get_activation_token(self, expires_in=600):
         return jwt.encode(
-            {'activate': self.id, 'exp': time() + expires_in},
+            {'activate': self.id, 'exp': time.time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256')
 
     @staticmethod
