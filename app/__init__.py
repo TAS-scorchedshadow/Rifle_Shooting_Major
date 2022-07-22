@@ -11,12 +11,12 @@ login = LoginManager()
 login.login_view = "auth_bp.login"
 mail = Mail()
 
-def create_app(config_class=Config):
 
+def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    migrate.init_app(app,db)
+    migrate.init_app(app, db)
     db.init_app(app)
     login.init_app(app)
     mail.init_app(app)
@@ -63,4 +63,3 @@ def configure_error_handlers(app):
     @app.errorhandler(500)
     def server_error(e):
         return render_template('error/500.html'), 500
-
