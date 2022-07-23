@@ -25,5 +25,5 @@ def send_activation_email(user):
     token = user.get_activation_token()
     send_email('Welcome to Riflelytics! Confirm Your Email',
                recipients=[user.email],
-               text_body=render_template('email/activate.txt', user=user, token=token),
-               html_body=render_template('email/activate.html', user=user, token=token))
+               text_body=render_template('email/welcome.txt', user=user, token=token),
+               html_body=render_template('email/welcome.html', user=user, token=token))

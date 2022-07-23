@@ -8,3 +8,4 @@
 /app/__pycache__
 /.gitignore
 /env
+/latest.dump
