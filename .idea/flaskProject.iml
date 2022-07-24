@@ -8,6 +8,9 @@
       <excludeFolder url="file://$MODULE_DIR$/myvenv" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
       <excludeFolder url="file://$MODULE_DIR$/venv38" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+      <excludeFolder url="file://$MODULE_DIR$/.pytest_cache/v" />
+      <excludeFolder url="file://$MODULE_DIR$/tests/.pytest_cache/v" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (Rifle_Shooting_Major)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

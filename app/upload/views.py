@@ -19,7 +19,7 @@ def upload():
     """
     # Reroute if invalid user
     if not current_user.access >= 1 or current_user.username == "preview":
-        return redirect(url_for('index'))
+        return redirect(url_for('welcome_bp.index'))
     # Initialise Variables
     form = uploadForm()
     template = 'upload/upload.html'

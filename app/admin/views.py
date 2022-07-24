@@ -5,6 +5,7 @@ from flask import Blueprint, request, jsonify, redirect, url_for, render_templat
 from flask_login import login_required, current_user
 
 from app import db
+from app.decorators import roles_required
 from app.models import User, Settings
 
 admin_bp = Blueprint('admin_bp', __name__)
@@ -12,14 +13,13 @@ admin_bp = Blueprint('admin_bp', __name__)
 
 @admin_bp.route('/user_list', methods=['GET', 'POST'])
 @login_required
+@roles_required(["ADMIN"])
 def user_list():
     """
     List of all current users on the system.
 
     :return: user_list.html
     """
-    if not current_user.access >= 2:
-        return redirect(url_for('index'))
     users = User.query.order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()
