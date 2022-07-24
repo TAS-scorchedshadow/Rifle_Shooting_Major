@@ -1,6 +1,7 @@
 import datetime as datetime
 
 import pytest as pytest
+from dateutil.relativedelta import relativedelta
 from flask import template_rendered
 from flask_login import login_user
 
@@ -53,18 +54,37 @@ def create_users(request, test_client):
     student = User(username="student")
     student.set_password("studentPass")
     student.access = 0
+
+    # Set example data for the user
+    student.fName = "Henry"
+    student.sName = "Guo"
+
+    student.shooterID = 1012
+    student.dob = datetime.datetime.now() - relativedelta(years=18)
+    student.rifle_serial = "ASC2x1"
+    student.schoolID = "435921302"
+    student.gradYr = "2027"
+    student.email = "henry.guo@gmail.com"
+    student.permitNumber = "323131"
+    student.permitExpiry = datetime.datetime.now() + relativedelta(years=1)
+    student.mobile = "1111 111 111"
+
     db.session.add(student)
     request.cls.student = student
 
     coach = User(username="coach")
     coach.set_password("coachPass")
     coach.access = 1
+    coach.fName = "John"
+    coach.sName = "Jeff"
     db.session.add(coach)
     request.cls.coach = coach
 
     admin = User(username="admin")
     admin.set_password("adminPass")
     admin.access = 2
+    admin.fName = "Richard"
+    admin.sName = "Smith"
     db.session.add(admin)
     request.cls.admin = admin
 

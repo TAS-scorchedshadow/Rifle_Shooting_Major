@@ -93,14 +93,14 @@ def request_reset_password():
     :return: Reset password html page
     """
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('welcome_bp.index'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
         flash('Password reset email sent successfully', "success")
-        return redirect(url_for('login'))
+        return redirect(url_for('auth_bp.login'))
     return render_template('auth/request_reset_password.html', form=form)
 
 
@@ -115,11 +115,11 @@ def reset_password(token):
     user = User.verify_reset_token(token)
     if not user:
         flash('Invalid password reset token. Please try again.', 'error')
-        return redirect(url_for('request_reset_password'))
+        return redirect(url_for('auth_bp.request_reset_password'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         user.set_password(form.password.data)
         db.session.commit()
         flash('Your password was successfully reset', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth_bp.login'))
     return render_template('auth/reset_password.html', form=form)
