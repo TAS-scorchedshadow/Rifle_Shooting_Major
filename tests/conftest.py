@@ -5,6 +5,7 @@ from flask import template_rendered
 from flask_login import login_user
 
 from app import create_app, db
+from tests.helper_functions.generate_data import generate_rand_stage
 from app.models import User, Settings
 from config import Config
 
@@ -74,3 +75,40 @@ def create_users(request, test_client):
     request.cls.settings = settings
 
     db.session.commit()
+
+@pytest.fixture
+def api_setup(request, test_client):
+    db.drop_all()
+    db.create_all()
+    student = User(username="student")
+    student.set_password("studentPass")
+    student.access = 0
+    db.session.add(student)
+    request.cls.student = student
+
+    coach = User(username="coach")
+    coach.set_password("coachPass")
+    coach.access = 1
+    db.session.add(coach)
+    request.cls.coach = coach
+
+    admin = User(username="admin")
+    admin.set_password("adminPass")
+    admin.access = 2
+    db.session.add(admin)
+    request.cls.admin = admin
+
+    start = datetime.datetime.now()
+    end = datetime.datetime.now()
+    settings = Settings(id=0,email_setting=0,season_start=start,season_end=end)
+    db.session.add(settings)
+    request.cls.settings = settings
+    db.session.commit()
+
+    request.cls.stage_ids = []
+    for i in list(range(5)):
+        new_stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, '300m')
+        new_stage.userID = student.id
+        request.cls.stage_ids.append(new_stage.id)
+    db.session.commit()
+

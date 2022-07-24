@@ -81,7 +81,7 @@ def logout():
     Allows users to exit from the system
     """
     logout_user()
-    return redirect(url_for('welcome.index'))
+    return redirect(url_for('welcome_bp.index'))
 
 
 # By Dylan Huynh

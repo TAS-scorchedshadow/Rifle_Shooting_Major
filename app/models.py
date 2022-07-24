@@ -299,7 +299,12 @@ class Stage(db.Model):
         displayScore = f"{totalScore}.{totalVScore}"
         return {"sighters": sighters, "scores": scores, "total": displayScore, "totalPossible": str((num - 1) * 5)}
 
-    def score_as_percent(self):
+    def score_as_percent(self) -> float:
+        """
+        Find the score as a percentage. Will return 100 for 100%.
+        Calculates the score using only non-sighters. If there are no non-sighter scores, the function will return 0.
+        :return: A float representing the percentage.
+        """
         if self.shots is None:
             self.init_shots()
         if self.total is None:
@@ -308,6 +313,8 @@ class Stage(db.Model):
         for score in self.shotList:
             if score.sighter is False:
                 num_scores += 1
+        if num_scores == 0:
+            return 0
         return (self.total / num_scores) * 10
 
 

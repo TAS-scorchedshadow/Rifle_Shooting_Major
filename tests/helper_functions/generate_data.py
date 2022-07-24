@@ -6,7 +6,21 @@ from app import db
 from app.models import Shot, Stage
 
 
-def generate_rand_stage(num_shots, x_center, y_center, x_spread, y_spread, distance):
+def generate_rand_stage(num_shots: int, x_center: float, y_center: float, x_spread: float, y_spread: float,
+                        distance: str) -> Stage:
+    """
+    Creates a stage with shots placed at a given spread and center
+    (Spread should be around 0.1 for more realistic results)
+    All shots created will NOT be sighters
+
+    :param num_shots: number
+    :param x_center: number
+    :param y_center: number
+    :param x_spread: number
+    :param y_spread: number
+    :param distance: string
+    :return: Stage
+    """
     target_details = {
         # ['1', '2', '3', '4', '5', 'V', 'Range],
         "300m": [1200, 600, 420, 280, 140, 70, 300],
@@ -50,15 +64,15 @@ def generate_rand_stage(num_shots, x_center, y_center, x_spread, y_spread, dista
             v_score = 1
 
         new_shot = Shot(score=score,xPos=x_poses[i],yPos=y_poses[i],vScore=v_score,stageID=stage_id)
-
         time += timedelta(seconds=int(times[i]))
         new_shot.timestamp = time
+        new_shot.sighter = False
         db.session.add(new_shot)
     db.session.commit()
 
     return new_stage
 
 
-def in_circle(x,y,radius):
+def in_circle(x: float, y: float, radius: float) -> bool:
     dist = (x**2+y**2)**0.5
     return dist < radius
