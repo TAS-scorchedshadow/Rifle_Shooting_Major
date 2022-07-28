@@ -10,6 +10,14 @@ from .email import send_upload_email
 
 def get_shoot_data(form):
     """
+    Reads all uploaded files and outputs a list of all stages, a list of invalid stages, and a dictionary
+    recording the number of stages read
+
+    | Returns the following variables:
+    | stage_list: A list of stage dictionaries
+    | invalid_list: A list of stage dictionaries which are missing a valid username
+    | count: A dictionary containing total and successful uploads
+
     :param form: form class for the upload page
     :return: stage_list, invalid_list, count
     """
@@ -34,6 +42,13 @@ def get_shoot_data(form):
 
 
 def flatten_ids(stage_list):
+    """
+    Flattens a stage list, removing all number gaps between list IDs.
+
+    :param stage_list: Stage list to be flattened
+    :type stage_list: list[dict]
+    :return: Flattened stage list
+    """
     count = 0
     for item in stage_list:
         item["listID"] = count
@@ -43,7 +58,9 @@ def flatten_ids(stage_list):
 
 def get_user_dict():
     """
-    :return: dictionary of all users
+    Gets all users within the database and places them into a dictionary
+
+    :return: Dictionary of users
     """
     user_list = [user for user in User.query.all()]
     user_dict = {}
@@ -54,8 +71,19 @@ def get_user_dict():
 
 def check_usernames(stage_list, user_dict):
     """
-    :param stage_list: list of all stages
-    :param user_dict: dictionary of all users
+    Updates the usernames associated with stages on the verify page.
+    If a valid username was not input, it is returned in the invalid list.
+
+    | Returns the following variables:
+    | stage_list: A list of stage dictionaries
+    | invalid_list: A list of stage dictionaries which are missing a valid username
+    | invalid_list_id: A list of ids of stages in the invalid list
+    | fail_count: An integer counting the number of still invalid usernames
+
+    :param stage_list: list of stage dictionaries
+    :type stage_list: list[dict]
+    :param user_dict: dictionary of users
+    :type user_dict: dict[str, str]
     :return: stage_list, invalid_list, invalid_list_id, fail_count
     """
     invalid_list = []
@@ -74,12 +102,17 @@ def check_usernames(stage_list, user_dict):
 
 def upload_stages(stage_list, invalid_list_id, stage_define, user_dict):
     """
+    Uploads valid stages, then sends an email to users if the option is set
+
     :param stage_list: list of all stages
+    :type stage_list: list[dict]
     :param invalid_list_id: list of invalid ids of all stages
+    :type invalid_list_id: list[int]
     :param stage_define: dictionary for fields that must be user-defined
+    :type stage_define: dict
     :param user_dict: dictionary of all users
-    :return: Count of successful uploads and total stages checked
-    Uploads stages, then sends an email to all users
+    :type user_dict: dict[str, str]
+    :return: count: dictionary counting successfully uploaded stages, and total stages in stage_list
     """
     count = {"total": 0, "failure": 0, "success": 0}
     stageClassList = []
@@ -117,9 +150,17 @@ def upload_stages(stage_list, invalid_list_id, stage_define, user_dict):
 
 def get_alert_message(page, count):
     """
-    :param page: Whether the alert message is for upload or verify
-    :param count: Dict of success, total and fail counts
-    :return: stage_list, invalid_list, count
+    Gets the relevant page template and alert message given relevant parameters
+
+    | Returns the following variables:
+    | template: A html template for what page to display
+    | alert: A list containing a string for what message to send, and two integers for counts relevant to the message.
+
+    :param page: String to determine whether the current page is the upload page or the verify page
+    :type page: str
+    :param count: Dictionary of success, total and fail counts
+    :type count: dict
+    :return: template, alert
     """
     alert = [None, 0, 0]  # Alert type, Failures, Successes
     template = 'upload/upload.html'

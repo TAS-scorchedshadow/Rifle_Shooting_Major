@@ -15,7 +15,7 @@ def upload():
     """
     Page to receive file entries for upload of shoot info
 
-    :return: Upload html page
+    :return: Upload page html
     """
     # Reroute if invalid user
     if not current_user.access >= 1 or current_user.username == "preview":
@@ -29,13 +29,16 @@ def upload():
     if form.identifier.data == "upload":
         # Upload
         if request.method == "POST":
+            # Process files, then make front end information
             stage_list, invalid_list, count = get_shoot_data(form)
             template, alert = get_alert_message("upload", count)
     else:
         # Verify
+        # Get data from forms
         stage_list = json.loads(request.form["stageDump"])
         stage_define = {'location': form.location.data, 'weather': form.weather.data, 'ammoType': form.ammoType.data}
         user_dict = get_user_dict()
+        # Upload stages, then make front end information
         stage_list, invalid_list, invalid_list_id, fail_count = check_usernames(stage_list, user_dict)
         count = upload_stages(stage_list, invalid_list_id, stage_define, user_dict)
         count["failure"] = fail_count
