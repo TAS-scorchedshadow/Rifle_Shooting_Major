@@ -145,7 +145,7 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
-    def season_stats(self, range):
+    def season_stats(self, dist):
         """
         Statistics on the season
 
@@ -158,22 +158,25 @@ class User(UserMixin, db.Model):
         totalGroup = 0
         settings = Settings.query.filter_by(id=0).first()
         stages = Stage.query.filter(Stage.timestamp.between(settings.season_start, settings.season_end),
-                                    Stage.distance == range,
+                                    Stage.distance == dist,
                                     Stage.userID == self.id).all()
         length = len(stages)
-        for stage in stages:
-            stage.init_stage_stats()
-            totalMean += stage.mean
-            totalMedian += stage.median
-            totalStd += stage.total
-            totalGroup += stage.groupSize
-            totalDuration += stage.duration
-        mean = totalMean / length
-        median = totalMedian / length
-        std = totalStd / length
-        group = totalGroup / length
-        duration = int(totalDuration / length)
-        return {"mean": mean, "median": median, "std": std, "groupSize": group, "duration": duration}
+        if length > 0:
+            for stage in stages:
+                stage.init_stage_stats()
+                totalMean += stage.mean
+                totalMedian += stage.median
+                totalStd += stage.total
+                totalGroup += stage.groupSize
+                totalDuration += stage.duration
+            mean = totalMean / length
+            median = totalMedian / length
+            std = totalStd / length
+            group = totalGroup / length
+            duration = int(totalDuration / length)
+            return {"mean": mean, "median": median, "std": std, "groupSize": group, "duration": duration}
+        else:
+            return {"mean": 0, "median": 0, "std": 0, "groupSize": 0, "duration": 0}
 
 
 class Stage(db.Model):
