@@ -4,13 +4,52 @@ from datetime import datetime
 
 def validate_shots(data):
     """
-    :param data: TO BE FILLED
-    :return: Information of the shoot session
+    Takes in data from a shoot string, extracts the relevant info, changing data type if necessary.
+    Returns a dictionary of the new shoot data.
+
+    newShoot is stored in the following format:
+
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | Variable Name    | Type       | Description                                                                      |
+    +==================+============+==================================================================================+
+    | ``id``           | int        | The unique identifier for the stage.                                             |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``username``     | str        | The username of the user who performed the shoot.                                |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``time``         | datetime   | The time the stage began.                                                        |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``distance``     | str        | The range the stage was performed at. Units are stored within the string.        |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``groupSize``    | float      | Size of the system calculated group ring.                                        |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``groupCentreX`` | float      | Centre of the group in the x (horizontal) plane.                                 |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``groupCentreY`` | float      | Centre of the group in the y (vertical) plane.                                   |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``validShots``   | list[dict] | List of all shots that the system deemed valid in the stage.                     |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``totalShots``   | int        | Total number of counting shots.                                                  |
+    |                  |            | *Currently depreciated.*                                                         |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``totalScore``   | str        | Total score in "[score].[centres]" format.                                       |
+    |                  |            | *Currently depreciated.*                                                         |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``stats``        | dict       | Stores a dictionary of median, mean, and standard deviation.                     |
+    |                  |            | *Currently depreciated.*                                                         |
+    +------------------+------------+----------------------------------------------------------------------------------+
+    | ``shotList``     | list[str]  | Stores a list of shot string values (i.e. stored as HIT 2 3 4 5 V X)             |
+    |                  |            | *Only used in upload_verify.html*                                                |
+    +------------------+------------+----------------------------------------------------------------------------------+
+
+    :param data: Dictionary of a shoot string
+    :type data: dict
+    :return: newShoot
     """
     totalShots = 0      # Total number of shots
     countingShots = 0   # Total, excluding sighters
-    newShoot = {'id': 0, 'username': "", 'time': 0, 'duration': 0, 'validShots': [],
-                'groupSize': 0.0, 'groupCentreX': 0.0, 'groupCentreY': 0.0}
+    newShoot = {'id': 0, 'username': "", 'time': 0, 'distance': "",
+                'groupSize': 0.0, 'groupCentreX': 0.0, 'groupCentreY': 0.0,
+                'validShots': [], 'totalShots': 0}
     validShotList = []
     runningScore = {'score': 0, 'Vscore': 0}
     for individualShot in data['shots']:
@@ -53,11 +92,13 @@ def validate_shots(data):
     return newShoot
 
 
-# Gets shot statistics
 def shot_stats(shoot):
     """
-    :param shoot: Data of the shoot session
-    :return: Calculation of median, mean and standard deviation
+    Takes a list of valid shots and returns the median, mean, and STD of the shots.
+
+    :param shoot: List of valid shots
+    :type shoot: list
+    :return: Dictionary of median, mean and standard deviation
     """
     stats = {}
     shots = []
@@ -72,18 +113,22 @@ def shot_stats(shoot):
 
 def ms_to_datetime(ms):
     """
-    :param ms: Time in millisecond format?
+    Takes in a time in millisecond format, and converts it into datetime form.
+
+    :param ms: Time in millisecond format
     :return: Time in format of YYYY/MM/DD HH:MM:SS
     """
     date = datetime.utcfromtimestamp(ms / 1000).strftime('%Y-%m-%d %H:%M:%S')
     return date
 
 
-# Gets shot statistics
 def shoot_list(shoot):
     """
-    :param shoot: Dictionary of shot number and its value from a shoot session
-    :return: List of individual shot scores
+    Returns a list of the raw shot values in a stage
+
+    :param shoot: List of valid shots
+    :type shoot: list
+    :return: List of shot scores as a string
     """
     shots = []
     for i in shoot:
@@ -94,8 +139,11 @@ def shoot_list(shoot):
 # Reformats score into a dictionary of score and Vscore
 def get_score(shot):
     """
+    Reformats a score into a dictionary of score and Vscore
+
     :param shot: Individual shot info
-    :return: Score of the shot
+    :type shot: dict
+    :return: int containing score of the shot
     """
     # Note that for a HIT, shot[score] is 1, but shot[value] is HIT.
     score = {'score': 0, 'Vscore': 0}  # Vscore = 0 if none was given
@@ -110,8 +158,11 @@ def get_score(shot):
 # Checks if the shot is a sighter
 def check_sighter(shot):
     """
+    Check whether the current shot was a sighter by returning the value if it exists
+
     :param shot: Individual shot
-    :return: Whether the sighter was used?
+    :type shot: dict
+    :return: bool containing if current shot was a sighter.
     """
     try:
         return shot['sighter']

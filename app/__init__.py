@@ -1,4 +1,6 @@
 from flask import Flask, render_template
+
+from app.shell_helper import clear_table
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -25,12 +27,14 @@ def create_app(config_class=Config):
 
     register_blueprints(app)
     configure_error_handlers(app)
+    configure_shell_processor(app)
 
     return app
 
 
 def register_blueprints(app):
     from app.time_convert import time_convert_blueprint
+    from app.shell_helper import shell_bp
 
     from app.admin.views import admin_bp
     from app.api.api import api_bp
@@ -42,6 +46,7 @@ def register_blueprints(app):
 
     from app.welcome.views import welcome_bp
 
+    app.register_blueprint(shell_bp)
     app.register_blueprint(time_convert_blueprint)
 
     app.register_blueprint(admin_bp)
@@ -63,3 +68,11 @@ def configure_error_handlers(app):
     @app.errorhandler(500)
     def server_error(e):
         return render_template('error/500.html'), 500
+
+
+def configure_shell_processor(app):
+    from app.models import User, Stage, Shot
+
+    @app.shell_context_processor
+    def make_shell_context():
+        return {'db': db, 'User': User, 'Stage': Stage, 'Shot': Shot}
