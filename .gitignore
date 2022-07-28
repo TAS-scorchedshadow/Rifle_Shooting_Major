@@ -8,5 +8,7 @@
 /app/__pycache__
 /.gitignore
 /env
+/latest.dump
+*.pyc
 __pycache__/
 /latest.dump
