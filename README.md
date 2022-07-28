@@ -41,3 +41,14 @@ PlotSheet
 
 ### Profile
 Profile
+
+### User
+
+| Function          | Description                                                                                                                                     | Parameters                                                    | Output                                                                         |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------------------------|
+| generate_username | Generates unique username and appends it to user.username                                                                                       | user: User(self) <br/> user.fName, user.sName must be defined | N/A                                                                            |
+| get_school_year   | Determines the user's school year based on their graduation year and current year                                                               | user: User(self) <br/> user.gradYr must be defined            | On Success <br/>     int: gradYr <br/>Excepts Error if<br/>GradYr is undefined |
+| season_stats      | Returns {mean, median, std, groupSize, duration} of a shooter at a specific distance. If no stages are found all the about fields will equal 0. | user: User(self) <br/> distance: string                       | On Success <br/> {mean, median, std, groupSize, duration}                      |
+|                   |                                                                                                                                                 |                                                               |                                                                                |
+|                   |                                                                                                                                                 |                                                               |                                                                                |
+

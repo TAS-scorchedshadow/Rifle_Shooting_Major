@@ -8,7 +8,7 @@ def send_upload_email(user, all_stages):
         Sends user an email notifying that the given stages has been uploaded
 
         :param user: user object
-        :param stages: list of stage objects
+        :param all_stages: list of stage objects
     """
     stages = []
     for stage in all_stages:

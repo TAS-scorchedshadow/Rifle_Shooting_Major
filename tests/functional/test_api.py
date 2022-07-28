@@ -1,15 +1,15 @@
 import pytest
 import json
-
-@pytest.mark.usefixtures("create_users")
-class TestIndex:
+@pytest.mark.usefixtures("api_setup")
+class TestApi:
     def test_submit_notes(self, test_client, captured_templates):
         """
         GIVEN a Flask application configured for testing
         WHEN the '/submit_notes' page is requested (GET)
         THEN check that the response is valid
         """
-        response = test_client.post('/submit_notes', json=[1, 'You suck at shooting. Just give up already'])
+        response = test_client.post('/submit_notes', json=[self.stage_ids[0], 'You suck at shooting. Just give up already'])
+
         assert json.loads(response.data.decode("utf-8")) == {'success': 'success'}
 
     def test_get_avg_shot_graph_data(self, test_client, captured_templates):
@@ -41,11 +41,10 @@ class TestIndex:
         WHEN the '/get_shots' page is requested (GET)
         THEN check that the response is valid
         """
-        expected = {'scores': [], 'totalScore': '0', 'groupSize': 330, 'distance': '300m', 'timestamp': '', 'std': 0,
-                    'duration': 399, 'stageId': 0, 'sighters': []}
-        response = test_client.post('/get_shots', json=[0, 0, "30th January 2003 - 21st March 2020"])
-
-        assert json.loads(response.data.decode("utf-8")) == expected
+        response = test_client.post('/get_shots', json=[self.student.id, 0, "January 30, 2003 - March 21, 2023"])
+        response_list = json.loads(response.data.decode("utf-8"))
+        for stage in response_list:
+            assert len(stage['scores']) == 10
 
     def test_get_target_stats(self, test_client, captured_templates):
         """
@@ -65,13 +64,11 @@ class TestIndex:
         WHEN the '/get_all_shots_season' page is requested (GET)
         THEN check that the response is valid
         """
-        expected = {'target': [], 'boxPlot': [], 'bestStage': {'id': 0, 'score': 50, 'time': '30th January 2003'},
-                    'worstStage': {'id': 0, 'score': 0, 'time': '30th January 2003'}
-                    }
+        response = test_client.post('/get_all_shots_season', json={'distance': '300m', 'userID': self.student.id,
+                                                                   'dateRange': 'January 30, 2003 - March 21, 2023'})
+        decoded_res = json.loads(response.data.decode("utf-8"))
 
-        response = test_client.post('/get_all_shots_season', data={'distance': '300m', 'userID': 0,
-                                                                   'dateRange': '30th January 2003'})
-        assert json.loads(response.data.decode("utf-8")) == expected
+        assert len(decoded_res['target']) == 50
 
     def test_submit_table(self, test_client, captured_templates):
         """

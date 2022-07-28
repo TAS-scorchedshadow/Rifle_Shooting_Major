@@ -145,7 +145,7 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
-    def season_stats(self, range):
+    def season_stats(self, dist):
         """
         Statistics on the season
 
@@ -158,22 +158,25 @@ class User(UserMixin, db.Model):
         totalGroup = 0
         settings = Settings.query.filter_by(id=0).first()
         stages = Stage.query.filter(Stage.timestamp.between(settings.season_start, settings.season_end),
-                                    Stage.distance == range,
+                                    Stage.distance == dist,
                                     Stage.userID == self.id).all()
         length = len(stages)
-        for stage in stages:
-            stage.init_stage_stats()
-            totalMean += stage.mean
-            totalMedian += stage.median
-            totalStd += stage.total
-            totalGroup += stage.groupSize
-            totalDuration += stage.duration
-        mean = totalMean / length
-        median = totalMedian / length
-        std = totalStd / length
-        group = totalGroup / length
-        duration = int(totalDuration / length)
-        return {"mean": mean, "median": median, "std": std, "groupSize": group, "duration": duration}
+        if length > 0:
+            for stage in stages:
+                stage.init_stage_stats()
+                totalMean += stage.mean
+                totalMedian += stage.median
+                totalStd += stage.total
+                totalGroup += stage.groupSize
+                totalDuration += stage.duration
+            mean = totalMean / length
+            median = totalMedian / length
+            std = totalStd / length
+            group = totalGroup / length
+            duration = int(totalDuration / length)
+            return {"mean": mean, "median": median, "std": std, "groupSize": group, "duration": duration}
+        else:
+            return {"mean": 0, "median": 0, "std": 0, "groupSize": 0, "duration": 0}
 
 
 class Stage(db.Model):
@@ -299,7 +302,12 @@ class Stage(db.Model):
         displayScore = f"{totalScore}.{totalVScore}"
         return {"sighters": sighters, "scores": scores, "total": displayScore, "totalPossible": str((num - 1) * 5)}
 
-    def score_as_percent(self):
+    def score_as_percent(self) -> float:
+        """
+        Find the score as a percentage. Will return 100 for 100%.
+        Calculates the score using only non-sighters. If there are no non-sighter scores, the function will return 0.
+        :return: A float representing the percentage.
+        """
         if self.shots is None:
             self.init_shots()
         if self.total is None:
@@ -308,6 +316,8 @@ class Stage(db.Model):
         for score in self.shotList:
             if score.sighter is False:
                 num_scores += 1
+        if num_scores == 0:
+            return 0
         return (self.total / num_scores) * 10
 
 
