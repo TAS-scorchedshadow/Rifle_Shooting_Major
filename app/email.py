@@ -1,13 +1,16 @@
-from datetime import datetime, timedelta
+from threading import Thread
 
-from flask import render_template
-from flask import current_app as app
+from flask import current_app
 from flask_mail import Message
 from app import mail
-from app.models import User, Stage
 
 
 # Email functions adapted from examples from Flask-Mail's documentation by Dylan Huynh
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
 
 def send_email(subject, recipients, text_body, html_body):
     """
@@ -20,10 +23,11 @@ def send_email(subject, recipients, text_body, html_body):
     :param html_body: HTML representation of the email
     :return:
     """
+    app = current_app._get_current_object()
     msg = Message(subject, recipients=recipients)
     msg.body = text_body
     msg.html = html_body
-    mail.send(msg)
+    Thread(target=send_async_email, args=(app, msg)).start()
 
 
 
