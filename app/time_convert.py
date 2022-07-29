@@ -3,11 +3,12 @@ import os
 import pytz
 from datetime import datetime
 
-from app import app
-from datetime import timezone
 
+from flask import current_app as app, Blueprint
 
-@app.template_filter('utc_to_nsw')
+time_convert_blueprint = Blueprint('time_convert_blueprint', __name__)
+
+@time_convert_blueprint.app_template_filter('utc_to_nsw')
 def utc_to_nsw(utc_dt):
     """
     Converts database time(naive utc) to NSW time

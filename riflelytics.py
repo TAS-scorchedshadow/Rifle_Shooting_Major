@@ -1,7 +1,3 @@
-from app import app, db
-from app.models import Settings, User, Stage, Shot
+from app import create_app
 
-
-@app.shell_context_processor
-def make_shell_context():
-    return {'db': db, 'User': User, 'Stage': Stage, 'Shot': Shot}
+application = create_app()
