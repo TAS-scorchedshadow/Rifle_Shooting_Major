@@ -7,8 +7,9 @@ from app.stages_calc import plotsheet_calc
 
 plotsheet_bp = Blueprint('plotsheet_bp', __name__)
 
-@login_required
+
 @plotsheet_bp.route('/target')
+@login_required
 def target():
     """
     Displays target & mapping of shots from the shoot
