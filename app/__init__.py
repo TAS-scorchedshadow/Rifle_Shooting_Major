@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_talisman import Talisman
-from flask_wtf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -19,7 +19,7 @@ csrf = CSRFProtect()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    app.secret_key = app.config['SECRET_KEY']
+    app.secret_key = app.config['SECRET_KEY'
     csrf.init_app(app)
     migrate.init_app(app, db)
     db.init_app(app)
