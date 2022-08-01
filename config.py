@@ -14,6 +14,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOGIN_DISABLED = False  # Enable this to avoid having to login
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SESSION_COOKIE_SECURE = True
 
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
