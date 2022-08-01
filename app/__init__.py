@@ -14,13 +14,13 @@ migrate = Migrate()
 login = LoginManager()
 login.login_view = "auth_bp.login"
 mail = Mail()
-csrf = CSRFProtect()
+# csrf = CSRFProtect()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     app.secret_key = app.config['SECRET_KEY']
-    csrf.init_app(app)
+    #csrf.init_app(app)
     migrate.init_app(app, db)
     db.init_app(app)
     login.init_app(app)
@@ -29,7 +29,7 @@ def create_app(config_class=Config):
     ctx.push()
 
     register_blueprints(app)
-    Talisman(app, content_security_policy=None)
+    #Talisman(app, content_security_policy=None)
     configure_error_handlers(app)
     configure_shell_processor(app)
 
