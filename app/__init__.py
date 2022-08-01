@@ -50,18 +50,18 @@ def register_blueprints(app):
 
     from app.welcome.views import welcome_bp
 
-    app.register_blueprint(shell_bp)
-    app.register_blueprint(time_convert_blueprint)
+    app.register_blueprint(csrf.exempt(shell_bp))
+    app.register_blueprint(csrf.exempt(time_convert_blueprint))
 
-    app.register_blueprint(admin_bp)
-    app.register_blueprint(api_bp)
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(csrf.exempt(admin_bp))
+    app.register_blueprint(csrf.exempt(api_bp))
+    app.register_blueprint(csrf.exempt(auth_bp))
 
-    app.register_blueprint(plotsheet_bp)
-    app.register_blueprint(profile_bp)
-    app.register_blueprint(upload_bp)
+    app.register_blueprint(csrf.exempt(plotsheet_bp))
+    app.register_blueprint(csrf.exempt(profile_bp))
+    app.register_blueprint(csrf.exempt(upload_bp))
 
-    app.register_blueprint(welcome_bp)
+    app.register_blueprint(csrf.exempt(welcome_bp))
 
 
 def configure_error_handlers(app):
