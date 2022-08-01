@@ -22,7 +22,7 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('SENDGRID_API_KEY')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
-    # WTF_CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = False
     # WTF_CSRF_SECRET_KEY = 'fjfoidjXVICOJEF)(EREUxijf'
 
     SEASON_START = os.environ.get('SEASON_START')
