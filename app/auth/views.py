@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, url_for, flash, request, render_template
 from flask_login import current_user, login_user, logout_user
 from flask import session as flask_session
+from flask import g
 from flask_wtf.csrf import generate_csrf
 from werkzeug.urls import url_parse
 
@@ -24,7 +25,9 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('welcome_bp.index'))
     form = signInForm()
+    print(g.get('csrf_token'))
     generate_csrf()
+    print(g.get('csrf_token'))
     print(flask_session)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
