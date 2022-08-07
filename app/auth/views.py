@@ -1,5 +1,7 @@
 from flask import Blueprint, redirect, url_for, flash, request, render_template
 from flask_login import current_user, login_user, logout_user
+from flask import session as flask_session
+from flask_wtf.csrf import generate_csrf
 from werkzeug.urls import url_parse
 
 from app import db
