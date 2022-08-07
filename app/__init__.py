@@ -14,12 +14,13 @@ migrate = Migrate()
 login = LoginManager()
 login.login_view = "auth_bp.login"
 mail = Mail()
-csrf = CSRFProtect()
+# csrf = CSRFProtect()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     csrf.init_app(app)
+    app.secret_key = app.config['SECRET_KEY']
     migrate.init_app(app, db)
     db.init_app(app)
     login.init_app(app)
