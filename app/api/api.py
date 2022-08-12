@@ -6,7 +6,7 @@ from flask_login import login_required
 from sqlalchemy import desc
 
 from app import db
-from app.models import User, Stage
+from app.models import User, Stage, Settings
 from app.stages_calc import stats_of_period, highest_stage, lowest_stage
 from app.time_convert import get_grad_year, utc_to_nsw, format_duration, nsw_to_utc
 
@@ -222,3 +222,43 @@ def submit_table():
         db.session.commit()
 
     return jsonify({'success': 'success'})
+
+
+@api_bp.route('/api/num_shots_season_all', methods=["GET"])
+def api_num_shots_season_all():
+    users = User.query.all()
+    user_list = []
+    settings = Settings.query.filter_by(id=0).first()
+    for user in users:
+        data = num_shots(user.id, settings.season_start, settings.season_end)
+        user_list.append({"userID": user.id, "name": f"{user.fName} {user.sName}", "data": data})
+    return {"users": user_list}
+
+
+@api_bp.route('/api/num_shots_season', methods=["GET"])
+def api_num_shots_season():
+    userID = request.args.get('userID')
+    settings = Settings.query.filter_by(id=0).first()
+
+    return num_shots(userID, settings.season_start, settings.season_end)
+
+
+def num_shots(userID, start, end):
+    num = 0
+    num_sessions = 0
+    stages = Stage.query.filter(Stage.timestamp.between(start, end),
+                                Stage.userID == userID).all()
+    stages.sort(key=lambda x: x.timestamp)
+    length = len(stages)
+    if length != 0:
+        num_sessions = 1
+    for i, stage in enumerate(stages):
+        if i < length - 1:
+            if stages[i+1].timestamp - stages[i].timestamp > datetime.timedelta(hours=12):
+                num_sessions += 1
+        # Initialise all shots
+        stage.init_shots()
+        num += len(stage.shotList)
+    return {"start_time": start.strftime("%d/%m/%Y"),
+            "end_time": end.strftime("%d/%m/%Y"),
+            "num_sessions": num_sessions, "num_stages": len(stages), "num_shots": num}
