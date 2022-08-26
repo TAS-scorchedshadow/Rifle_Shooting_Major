@@ -2,117 +2,123 @@
 {% set active_page = "profile" %}
 {% block page_title %} Profile {% endblock %}
 {% block page_content %}
-<!-- Profile page to view shooter's performance -->
-<!--By Henry (user info table by Rishi (lines 108-152)  and gear settings by Dylan lines (233-319))-->
-<script
-  src="https://code.jquery.com/jquery-3.5.1.min.js"
-  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-  crossorigin="anonymous">
-</script>
-<!-- ChartJS modules -->
-<script src="https://unpkg.com/chart.js@3.3.2/dist/chart.js"></script>
-<!-- Editable Table-->
-<script type="text/javascript" src="../static/js/table.js"></script>
-<!--Username Autofill-->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
-<script type="text/javascript" src="../static/js/autofill.js" defer></script>
+    <!-- Profile page to view shooter's performance -->
+    <!--By Henry (user info table by Rishi (lines 108-152)  and gear settings by Dylan lines (233-319))-->
+    <script
+            src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+            crossorigin="anonymous">
+    </script>
+    <!-- ChartJS modules -->
+    <script src="https://unpkg.com/chart.js@3.3.2/dist/chart.js"></script>
+    <!-- Editable Table-->
+    <script type="text/javascript" src="../static/js/table.js"></script>
+    <!--Username Autofill-->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
+    <script type="text/javascript" src="../static/js/autofill.js" defer></script>
 
-<!--Import user id-->
-<meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submit_table">
-
-
-<!--Date range picker (see https://www.daterangepicker.com)-->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-<script type="text/javascript">
-$(function() {
+    <!--Import user id-->
+    <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submit_table">
 
 
-    function cbStages(start, end) {
-        $('.selectStages span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    }
-    function cbSeason(start, end) {
-        $('.selectSeason span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    }
+    <!--Date range picker (see https://www.daterangepicker.com)-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <script type="text/javascript">
+        $(function () {
 
-    // Predefined ranges for recent stages
-    $('.selectStages').daterangepicker({
-        startDate: moment('{{ season_time["start"] }}', 'DD:MM:YYYY'),
-        endDate: moment('{{ season_time["end"] }}', 'DD:MM:YYYY'),
-        "showDropdowns": true,
-        ranges: {
-           'This Season': [moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY')],
-           'This Year': [moment().startOf('year'), moment().endOf('year')],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
+
+            function cbStages(start, end) {
+                $('.selectStages span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+
+            function cbSeason(start, end) {
+                $('.selectSeason span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+
+            // Predefined ranges for recent stages
+            $('.selectStages').daterangepicker({
+                startDate: moment('{{ season_time["start"] }}', 'DD:MM:YYYY'),
+                endDate: moment('{{ season_time["end"] }}', 'DD:MM:YYYY'),
+                "showDropdowns": true,
+                ranges: {
+                    'This Season': [moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY')],
+                    'This Year': [moment().startOf('year'), moment().endOf('year')],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                }
+            }, cbStages);
+
+            // Predefined ranges for stats page
+            $('.selectSeason').daterangepicker({
+                startDate: moment('{{ season_time["start"] }}', 'DD:MM:YYYY'),
+                endDate: moment('{{ season_time["end"] }}', 'DD:MM:YYYY'),
+                "showDropdowns": true,
+                ranges: {
+                    'This Season': [moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY')],
+                    'This Year': [moment().startOf('year'), moment().endOf('year')],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                }
+            }, cbSeason);
+
+            // Display the initial dates on the input box
+            cbStages(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
+            cbSeason(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
+
+
+        });
+    </script>
+
+    <!--Scripts for season stats page-->
+    <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
+    <script src=../static/heatmap.js-master/build/heatmap.min.js></script>
+    <script src="../static/js/target_diagram.js"></script>
+
+    <!--Box Plot Modules-->
+    <script src="../static/node_modules/@sgratzl/chartjs-chart-boxplot/build/index.umd.js"></script>
+    <script src="../static/js/ajax_season.js"></script>
+
+    <style>
+        body {
+            overflow-y: scroll
         }
-    }, cbStages);
 
-    // Predefined ranges for stats page
-    $('.selectSeason').daterangepicker({
-        startDate: moment('{{ season_time["start"] }}', 'DD:MM:YYYY'),
-        endDate: moment('{{ season_time["end"] }}', 'DD:MM:YYYY'),
-        "showDropdowns": true,
-        ranges: {
-           'This Season': [moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY')],
-           'This Year': [moment().startOf('year'), moment().endOf('year')],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
+        table.recentShotsTable {
+            font-size: 12px;
+            table-layout: fixed;
+            margin-bottom: 0px;
+            overflow: hidden;
         }
-    }, cbSeason);
 
-    // Display the initial dates on the input box
-    cbStages(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
-    cbSeason(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
+        #recentShots {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
 
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
 
-});
-</script>
+        .heatmap-canvas {
+            pointer-events: none;
+        }
 
-<!--Scripts for season stats page-->
-<script src="../static/css-element-queries/src/ResizeSensor.js"></script>
-<script src=../static/heatmap.js-master/build/heatmap.min.js></script>
-<script src="../static/js/target_diagram.js"></script>
+        a.show-sheet {
+            color: black;
+        }
 
-<!--Box Plot Modules-->
-<script src="../static/node_modules/@sgratzl/chartjs-chart-boxplot/build/index.umd.js"></script>
-<script src="../static/js/ajax_season.js"></script>
+        a.show-sheet:hover {
+            color: #3b5fbf;
+        }
+    </style>
+    </style>
 
-<style>
-body {
-    overflow-y: scroll
-}
-
-table.recentShotsTable{
-    font-size:12px;
-    table-layout:fixed;
-    margin-bottom:0px;
-    overflow:hidden;
-}
-#recentShots{
-    padding-left:0px;
-    padding-right:0px;
-}
-canvas {
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-    }
-.heatmap-canvas{
-    pointer-events: none;
-}
-a.show-sheet {
-    color: black;
-}
-a.show-sheet:hover {
-    color: #3b5fbf;
-}
-</style>
-</style>
-
-        <div class="container-fluid" style="padding-bottom: 50px">
+    <div class="container-fluid" style="padding-bottom: 50px">
         <div class="row align-items-center pb-3">
             <!--EVERYTHING IN THIS ROW IS BY RISHI-->
             <div class="col-12 col-lg-3">
@@ -125,7 +131,7 @@ a.show-sheet:hover {
                 <br>
                 <div>
                     {% if current_user.username != "preview" %}
-                        <button class="btn btn-primary btn-block edit">
+                        <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
@@ -135,82 +141,172 @@ a.show-sheet:hover {
                             Editing Unavailable
                         </button>
                     {% endif %}
-                    <button class="btn btn-warning btn-block submit" style="display: none;">
-                        <i class="far fa-save"></i>
-                        Submit
-                        <div class="spinner-border spinner-border-sm text-primary"
-                            id="spinner" role="status" style="display: none; position: absolute">
-                        </div>
-                    </button>
                 </div>
             </div>
-            <div class="col-12 col-lg-9">
+            <div class="col-12 col-lg-9 pt-3">
                 {% if current_user.username != "preview" %}
-                <table class="table table-responsive editableTable">
-                    <tbody>
-                        <tr>
-                            <th scope="col">SID</th>
-                            <th scope="col">DOB</th>
-                            <th scope="col">Rifle Serial</th>
-                            <th scope="col">Student ID</th>
-                            <th scope="col">Grade</th>
-                            <th scope="col">Email</th>
-                        </tr>
-                        <tr>
-                            <td id="shooterID">{{ tableInfo["SID"] }}</td>
-                            <td id="dob">{{ tableInfo["DOB"] }}</td>
-                            <td id="rifleSerial">{{ tableInfo["Rifle Serial"] }}</td>
-                            <td id="schoolID">{{ tableInfo["StudentID"] }}</td>
-                            <td id="gradYr">{{ tableInfo["Grade"] }}</td>
-                            <td id="email">{{ tableInfo["Email"] }}</td>
-                        </tr>
-                    </tbody>
-                    <tbody>
-                        <tr>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr class = "bg-primary" >
+                            <th scope="col">Username</th>
+                            <th scope="col">Shooter ID</th>
                             <th scope="col">Permit</th>
-                            <th scope="col">Expiry</th>
-                            <th scope="col">Sharing</th>
-                            <th scope="col">Mobile</th>
+                            <th scope="col">Permit Expiry</th>
+                            <th scope="col">Rifle Serial</th>
                         </tr>
                         <tr>
-                            <td id="permitNumber">{{ tableInfo["Permit"] }}</td>
-                            <td id="permitExpiry">{{ tableInfo["Expiry"] }}</td>
-                            <td id="sharing">{{ tableInfo["Sharing"] }}</td>
-                            <td id="mobile">{{ tableInfo["Mobile"] }}</td>
+                            <td id="shooterID">{{ user.username }}</td>
+                            <td id="shooterID">{{ user.shooterID }}</td>
+                            <td id="dob"><b>{{ user.permitType }}:</b> {{ user.permitNumber }}</td>
+                            <td id="rifleSerial">{{ user.permitExpiry }}</td>
+                            <td id="rifleSerial">{{ user.rifle_serial }}</td>
                         </tr>
-                    </tbody>
-                </table>
-            {% else %}
-                <div class="card bg-secondary" style="min-height: 13rem">
-                    <div class="card-body text-center">
-                        <h4>Student Info Unavaliable in Preview</h4>
-                        <i class="fas fa-eye-slash fa-6x"></i>
+                        </tbody>
+                    </table>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr class = "bg-primary">
+                                <th scope="col">Student ID</th>
+                                <th scope="col">Grade</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Mobile</th>
+                            </tr>
+                            <tr>
+                                <td id="schoolID">{{ user.schoolID }}</td>
+                                <td id="gradYr">{{ tableInfo["Grade"] }}</td>
+                                <td id="email">{{ tableInfo["Email"] }}</td>
+                                <td id="email">{{ user.mobile }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="card bg-secondary" style="min-height: 13rem">
+                        <div class="card-body text-center">
+                            <h4>Student Info Unavaliable in Preview</h4>
+                            <i class="fas fa-eye-slash fa-6x"></i>
+                        </div>
                     </div>
-                </div>
-            {% endif %}
+                {% endif %}
             </div>
         </div>
         {% if error == true %}
             <div class="alert alert-info mt-3" role="alert">
-              We couldn't find a user that matched your search. Please try again.
+                We couldn't find a user that matched your search. Please try again.
             </div>
         {% endif %}
+            <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Shooter Info </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/update_user_info" method="post" role="form">
+                    <div class="modal-body">
+                        {{ form.csrf_token }}
+                        {{ form.userID(value = user.id)}}
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class = "col">
+                                    {{ form.fName.label }}
+                                    {{ form.fName(class_="field form-control",
+                                           placeholder="First Name",value = user.fName)}}
+                                </div>
+                                <div class = "col">
+                                    {{ form.sName.label }}
+                                    {{ form.sName(class_="field form-control",
+                                           placeholder="Last Name",value = user.sName)}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class = "col-8">
+                                    {{ form.schoolID.label }}
+                                    {{ form.schoolID(class_="field form-control",
+                                           placeholder="School ID",value = user.schoolID)}}
+                                </div>
+                                <div class = "col">
+                                    {{ form.gradYr.label }}
+                                    <input class = "field form-control" type="number" min="2000" max="9999" id="gradYr" name="gradYr", value = {{ user.gradYr }}>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class = "col">
+                                    {{ form.email.label }}
+                                    {{ form.email(class_="field form-control",
+                                   placeholder="Email",value = user.email)}}
+                                </div>
+                                <div class = "col">
+                                    {{ form.mobile.label }}
+                                    {{ form.mobile(class_="field form-control",
+                                   placeholder="Mobile",value = user.mobile)}}
+                                </div>
+                            </div>
+                        </div>
+                        {{ form.shooterID.label }}
+                        {{ form.shooterID(class_="field form-control",
+                               placeholder="ShooterID",value = user.shooterID)}}
+                        <br>
+                        {{ form.rifleSerial.label }}
+                        {{ form.rifleSerial(class_="field form-control",
+                               placeholder="Rifle Serial",value = user.rifle_serial)}}
+                        <br>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class = "col">
+                                    {{ form.permitType.label }}
+                                    {{ form.permitType(class_="field form-control",
+                                           placeholder="Permit Type",value = user.permitType)}}
+                                </div>
+                                <div class = "col">
+                                    {{ form.permitNumber.label }}
+                                    {{ form.permitNumber(class_="field form-control",
+                                           placeholder="Permit Number",value = user.permitNumber)}}
+                                </div>
+                                <div class = "col">
+                                    {{ form.permitExpiry.label }}
+                                    {{ form.permitExpiry(class_="field form-control",
+                                           placeholder="Permit Expiry",value = user.permitExpiry)}}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab"
+                   aria-controls="overview" aria-selected="true">Overview</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="rifle-settings-tab" data-toggle="tab" href="#rifle-settings" role="tab" aria-controls="rifle-settings" aria-selected="false">Rifle Settings</a>
+                <a class="nav-link" id="rifle-settings-tab" data-toggle="tab" href="#rifle-settings" role="tab"
+                   aria-controls="rifle-settings" aria-selected="false">Rifle Settings</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="season-tab" data-toggle="tab" href="#season" role="tab" aria-controls="season" aria-selected="false">Season Stats</a>
+                <a class="nav-link" id="season-tab" data-toggle="tab" href="#season" role="tab" aria-controls="season"
+                   aria-selected="false">Season Stats</a>
             </li>
             {% if current_user.access >= 1 %}
                 <div class="ui-widget pl-2">
                     <form method="post">
                         <label for="username"><i class="fas fa-search"></i></label>
-                         <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user">
+                        <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off"
+                               name="user">
                         <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
@@ -222,39 +318,45 @@ a.show-sheet:hover {
                 <div class="container-fluid pt-2" style="padding-left: 0px; padding-right: 0px;">
                     <div class="row">
                         <div class="col-xl-6 col-md-6">
-                                <div class="card" style="min-width:300px">
-                                    <div class="card-body" id="recentShotsContainer">
-                                        <div class="row justify-content-center">
-                                                <h4>Stages</h4>
-                                                <!--Input Dates-->
-                                                <div class="selectStages mx-4" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-                                                    <i class="fa fa-calendar"></i>&nbsp;
-                                                    <span id="date-selector"></span> <i class="fa fa-caret-down"></i>
-                                                </div>
+                            <div class="card" style="min-width:300px">
+                                <div class="card-body" id="recentShotsContainer">
+                                    <div class="row justify-content-center">
+                                        <h4>Stages</h4>
+                                        <!--Input Dates-->
+                                        <div class="selectStages mx-4"
+                                             style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                            <i class="fa fa-calendar"></i>&nbsp;
+                                            <span id="date-selector"></span> <i class="fa fa-caret-down"></i>
                                         </div>
-                                        <br>
-                                        <!--Show shots-->
-                                        <div id="recentShots" class="container-fluid">
-                                            <!--Cards showing the stages will be added here-->
-                                            <script type="text/javascript" src="../static/js/profile/recent_shots.js"></script>
+                                    </div>
+                                    <br>
+                                    <!--Show shots-->
+                                    <div id="recentShots" class="container-fluid">
+                                        <!--Cards showing the stages will be added here-->
+                                        <script type="text/javascript"
+                                                src="../static/js/profile/recent_shots.js"></script>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 pb-2">
+                                            <div class="spinner-border text-primary justify-content-center"
+                                                 id="shotSpinner" role="status" style="margin: auto; padding: 10px;">
+                                            </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-12 pb-2">
-                                                <div class="spinner-border text-primary justify-content-center" id="shotSpinner" role="status" style="margin: auto; padding: 10px;">
-                                                </div>
-                                            </div>
-                                            <div class="col text-center">
-                                                <button id="moreShoots" class="btn btn-primary" style="display: none;">Show More</button>
-                                            </div>
+                                        <div class="col text-center">
+                                            <button id="moreShoots" class="btn btn-primary" style="display: none;">Show
+                                                More
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
                         </div>
                         <div class="col-xl-6 col-lg-6">
                             <h4 style="text-align: center;">Performance Over Time</h4>
                             <!--line graph is shown here-->
                             <script type="text/javascript" src="../static/js/profile/overview_graph.js"></script>
-                            <div class="spinner-border text-primary justify-content-center" id="graphSpinner" role="status" style="margin: auto; padding: 10px;">
+                            <div class="spinner-border text-primary justify-content-center" id="graphSpinner"
+                                 role="status" style="margin: auto; padding: 10px;">
                             </div>
                             <canvas style="background-color:white; max-height:400px;" id="lineSTDEV"></canvas>
                         </div>
@@ -272,20 +374,20 @@ a.show-sheet:hover {
                             <div>
                                 <table class="table table-bordered editableTable">
                                     <thead class="thead-dark">
-                                        <tr>
-                                            <th>Butt Length</th>
-                                            <th>Butt Height</th>
-                                            <th>Sight Hole</th>
-                                            <th>Sling Point</th>
-                                        </tr>
+                                    <tr>
+                                        <th>Butt Length</th>
+                                        <th>Butt Height</th>
+                                        <th>Sight Hole</th>
+                                        <th>Sling Point</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td id="rifle_buttLength">{{ user.rifle_buttLength }}</td>
-                                            <td id="rifle_buttHeight">{{ user.rifle_buttHeight }}</td>
-                                            <td id="rifle_sightHole">{{ user.rifle_sightHole }}</td>
-                                            <td id="rifle_slingPointLength">{{ user.rifle_slingPointLength }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td id="rifle_buttLength">{{ user.rifle_buttLength }}</td>
+                                        <td id="rifle_buttHeight">{{ user.rifle_buttHeight }}</td>
+                                        <td id="rifle_sightHole">{{ user.rifle_sightHole }}</td>
+                                        <td id="rifle_slingPointLength">{{ user.rifle_slingPointLength }}</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -302,51 +404,52 @@ a.show-sheet:hover {
                                             Editing Unavailable
                                         </button>
                                     {% endif %}
-                                    <button type="button" class="btn btn-warning btn-lg btn-block submit h-100" id="submit" style="display: none">
+                                    <button type="button" class="btn btn-warning btn-lg btn-block submit h-100"
+                                            id="submit" style="display: none">
                                         <i class="fas fa-save"></i>
                                         <h5>Save</h5>
                                     </button>
                                 </div>
                                 <div class="col-12 col-lg-10" style="height: inherit; overflow-y: scroll;">
-                                     <table class="table table-bordered editableTable" id="stage-table">
+                                    <table class="table table-bordered editableTable" id="stage-table">
                                         <thead class="thead-dark" style="position: sticky; top: 0;">
-                                            <tr>
-                                                <th>Distance</th>
-                                                <th>Elevation</th>
-                                                <th>Ring Size</th>
-                                            </tr>
+                                        <tr>
+                                            <th>Distance</th>
+                                            <th>Elevation</th>
+                                            <th>Ring Size</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th>300m</th>
-                                                <td id="elevation_300m">{{ user.elevation_300m }}</td>
-                                                <td id="ringSize_300m">{{ user.ringSize_300m }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>400m</th>
-                                                <td id="elevation_400m">{{ user.elevation_400m }}</td>
-                                                <td id="ringSize_400m">{{ user.ringSize_400m }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>500m</th>
-                                                <td id="elevation_500m">{{ user.elevation_500m }}</td>
-                                                <td id="ringSize_500m">{{ user.ringSize_500m }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>600m</th>
-                                                <td id="elevation_600m">{{ user.elevation_600m }}</td>
-                                                <td id="ringSize_600m">{{ user.ringSize_600m }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>700m</th>
-                                                <td id="elevation_700m">{{ user.elevation_700m }}</td>
-                                                <td id="ringSize_700m">{{ user.ringSize_700m }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>800m</th>
-                                                <td id="elevation_800m">{{ user.elevation_800m }}</td>
-                                                <td id="ringSize_800m">{{ user.ringSize_800m }}</td>
-                                            </tr>
+                                        <tr>
+                                            <th>300m</th>
+                                            <td id="elevation_300m">{{ user.elevation_300m }}</td>
+                                            <td id="ringSize_300m">{{ user.ringSize_300m }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>400m</th>
+                                            <td id="elevation_400m">{{ user.elevation_400m }}</td>
+                                            <td id="ringSize_400m">{{ user.ringSize_400m }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>500m</th>
+                                            <td id="elevation_500m">{{ user.elevation_500m }}</td>
+                                            <td id="ringSize_500m">{{ user.ringSize_500m }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>600m</th>
+                                            <td id="elevation_600m">{{ user.elevation_600m }}</td>
+                                            <td id="ringSize_600m">{{ user.ringSize_600m }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>700m</th>
+                                            <td id="elevation_700m">{{ user.elevation_700m }}</td>
+                                            <td id="ringSize_700m">{{ user.ringSize_700m }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>800m</th>
+                                            <td id="elevation_800m">{{ user.elevation_800m }}</td>
+                                            <td id="ringSize_800m">{{ user.ringSize_800m }}</td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -360,47 +463,62 @@ a.show-sheet:hover {
                 <div class="container-fluid pt-2 pl-0 pr-0">
                     <div class="row">
                         <div class="col-5" style="display: flex; justify-content: space-between">
-                            <div class="selectSeason pb-2" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; display:inline;">
+                            <div class="selectSeason pb-2"
+                                 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; display:inline;">
                                 <i class="fa fa-calendar"></i>&nbsp;
                                 <span id="date-selector-season"></span> <i class="fa fa-caret-down"></i>
                             </div>
                             <div class="dropdown pl-2">
-                              <button class="btn btn-secondary" style="width: 100px" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                  <span id="select-range-span">300m</span><i class="fa fa-caret-down pl-1" style="color: white;"></i>
-                              </button>
-                              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '300m'">300m</a>
-                                <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '400m'">400m</a>
-                                <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '500m'">500m</a>
-                                <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '600m'">600m</a>
-                                <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
-                                <a class="dropdown-item" onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
-                              </div>
+                                <button class="btn btn-secondary" style="width: 100px" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                    <span id="select-range-span">300m</span><i class="fa fa-caret-down pl-1"
+                                                                               style="color: white;"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item"
+                                       onclick="document.getElementById('select-range-span').innerHTML = '300m'">300m</a>
+                                    <a class="dropdown-item"
+                                       onclick="document.getElementById('select-range-span').innerHTML = '400m'">400m</a>
+                                    <a class="dropdown-item"
+                                       onclick="document.getElementById('select-range-span').innerHTML = '500m'">500m</a>
+                                    <a class="dropdown-item"
+                                       onclick="document.getElementById('select-range-span').innerHTML = '600m'">600m</a>
+                                    <a class="dropdown-item"
+                                       onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
+                                    <a class="dropdown-item"
+                                       onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row" id="seasonRow1">
                         <div class="col-12 col-xl-5" id="heatMapDiv">
-                              <div style="display:flex; flex-direction: column; justify-content: space-around;">
-                                  <h4 style="margin: auto; padding: 10px;">Heatmap</h4>
-                                  <div class="spinner-border text-primary season-spinner" role="status" style="margin: auto; padding: 10px;">
-                                  </div>
-                              </div>
-                              <div class="pt-2" id='heatMap' style="margin: auto; padding: 10px;">
-                                  <!--Heatmap goes in here-->
-                              </div>
+                            <div style="display:flex; flex-direction: column; justify-content: space-around;">
+                                <h4 style="margin: auto; padding: 10px;">Heatmap</h4>
+                                <div class="spinner-border text-primary season-spinner" role="status"
+                                     style="margin: auto; padding: 10px;">
+                                </div>
+                            </div>
+                            <div class="pt-2" id='heatMap' style="margin: auto; padding: 10px;">
+                                <!--Heatmap goes in here-->
+                            </div>
                         </div>
                         <div class="col-12 col-xl-7">
-                            <div id="boxPlotDiv" style="display: flex; flex-direction: column; justify-content: space-around">
+                            <div id="boxPlotDiv"
+                                 style="display: flex; flex-direction: column; justify-content: space-around">
                                 <h4 style="margin: auto; padding: 10px;">Box Plot</h4>
-                                <div class="spinner-border text-primary season-spinner" role="status" style="margin: auto; padding: 10px;">
+                                <div class="spinner-border text-primary season-spinner" role="status"
+                                     style="margin: auto; padding: 10px;">
                                 </div>
                                 <div class="alert alert-secondary" id="boxAlert" role="alert" style="display: none;">
-                                    There aren't enough stages to show a box plot. Please add more stages at the <a href="/upload"><b><u>upload page</u></b></a> or select a different timeframe.
+                                    There aren't enough stages to show a box plot. Please add more stages at the <a
+                                        href="/upload"><b><u>upload page</u></b></a> or select a different timeframe.
                                 </div>
                                 <canvas id="boxPlot"></canvas>
                             </div>
-                            <div class="col-12 pt-2" id="bestWorstCol" style="display: flex; flex-direction: column; justify-content: space-around">
+                            <div class="col-12 pt-2" id="bestWorstCol"
+                                 style="display: flex; flex-direction: column; justify-content: space-around">
                             </div>
                         </div>
                     </div>
