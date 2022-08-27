@@ -1,11 +1,13 @@
 import json
 
-from flask import Blueprint, request, redirect, render_template
+from flask import Blueprint, request, redirect, render_template, flash
 from flask import session as flask_session
 from flask_login import login_required, current_user
 
+from app import db
 from app.models import User, Settings
 from app.decorators import roles_required
+from app.profile.forms import updateInfoForm
 
 profile_bp = Blueprint('profile_bp', __name__)
 
@@ -43,6 +45,7 @@ def profile_list():
     return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
 
 
+
 @profile_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
@@ -62,7 +65,7 @@ def profile():
                 return redirect('/profile')
             else:
                 search_error = True
-    if not current_user.access >= 1:
+    if current_user.access < 1:
         user = current_user
     else:
         try:
@@ -85,5 +88,28 @@ def profile():
 
     s = Settings.query.filter_by(id=0).first()
     times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
+
+    form = updateInfoForm(request.form)
     return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error,
-                           season_time=times)
+                           season_time=times, form=form)
+
+
+@profile_bp.route('/update_user_info', methods=['POST'])
+def update_user_info():
+    form = updateInfoForm(request.form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(id=int(form.userID.data)).first()
+        if current_user.access > user.access or current_user.id == user.id:
+            for field in form:
+                if field.id != 'email' and field.id != 'userID':
+                    if field.data != "None":
+                        setattr(user, field.id, field.data)
+            if form.email.data != "None":
+                    user.email = form.email.data
+            db.session.commit()
+            flash("Details Updated Successfully", "success")
+        else:
+            flash("You don't have the permissions to edit this user", "error")
+        return redirect('/profile')
+    flash(form.errors)
+    return redirect('/profile')

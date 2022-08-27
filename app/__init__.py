@@ -14,7 +14,7 @@ migrate = Migrate()
 login = LoginManager()
 login.login_view = "auth_bp.login"
 mail = Mail()
-# csrf = CSRFProtect()
+csrf = CSRFProtect()
 
 def create_app(config_class=Config):
     app = Flask(__name__)

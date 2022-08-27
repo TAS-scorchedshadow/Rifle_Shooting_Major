@@ -26,7 +26,7 @@ $(document).ready(function() {
                             pointHitRadius: 20,
                         },
                         {
-                            label: 'Standard Deviation',
+                            label: 'Standard Deviation of Scores',
                             yAxisID: 'standard-deviation',
                             backgroundColor: 'rgba(0, 0, 255, 0.1)',
                             borderColor: 'rgba(0,0,255,1)',
