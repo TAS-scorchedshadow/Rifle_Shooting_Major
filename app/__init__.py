@@ -19,8 +19,8 @@ mail = Mail()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    csrf.init_app(app)
     app.secret_key = app.config['SECRET_KEY']
-    #csrf.init_app(app)
     migrate.init_app(app, db)
     db.init_app(app)
     login.init_app(app)
@@ -29,7 +29,7 @@ def create_app(config_class=Config):
     ctx.push()
 
     register_blueprints(app)
-    #Talisman(app, content_security_policy=None)
+    Talisman(app, content_security_policy=None)
     configure_error_handlers(app)
     configure_shell_processor(app)
 
@@ -50,18 +50,18 @@ def register_blueprints(app):
 
     from app.welcome.views import welcome_bp
 
-    app.register_blueprint(shell_bp)
-    app.register_blueprint(time_convert_blueprint)
+    app.register_blueprint(csrf.exempt(shell_bp))
+    app.register_blueprint(csrf.exempt(time_convert_blueprint))
 
-    app.register_blueprint(admin_bp)
-    app.register_blueprint(api_bp)
-    app.register_blueprint(auth_bp)
+    app.register_blueprint(csrf.exempt(admin_bp))
+    app.register_blueprint(csrf.exempt(api_bp))
+    app.register_blueprint(csrf.exempt(auth_bp))
 
-    app.register_blueprint(plotsheet_bp)
-    app.register_blueprint(profile_bp)
-    app.register_blueprint(upload_bp)
+    app.register_blueprint(csrf.exempt(plotsheet_bp))
+    app.register_blueprint(csrf.exempt(profile_bp))
+    app.register_blueprint(csrf.exempt(upload_bp))
 
-    app.register_blueprint(welcome_bp)
+    app.register_blueprint(csrf.exempt(welcome_bp))
 
 
 def configure_error_handlers(app):
