@@ -107,9 +107,9 @@ def update_user_info():
             if form.email.data != "None":
                     user.email = form.email.data
             db.session.commit()
-            flash("Data Updated", "success")
+            flash("Details Updated Successfully", "success")
         else:
-            flash("Invalid permissions", "error")
+            flash("You don't have the permissions to edit this user", "error")
         return redirect('/profile')
     flash(form.errors)
     return redirect('/profile')

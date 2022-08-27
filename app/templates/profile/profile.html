@@ -145,15 +145,17 @@
             </div>
             <div class="col-12 col-lg-9 pt-3">
                 {% if current_user.username != "preview" %}
-                    <table class="table table-bordered">
-                        <tbody>
-                        <tr class = "bg-primary" >
+                    <table class="table table-bordered table-responsive-sm">
+                        <thead class="thead-dark">
+                        <tr>
                             <th scope="col">Username</th>
                             <th scope="col">Shooter ID</th>
                             <th scope="col">Permit</th>
                             <th scope="col">Permit Expiry</th>
                             <th scope="col">Rifle Serial</th>
                         </tr>
+                        </thead>
+                        <tbody>
                         <tr>
                             <td id="shooterID">{{ user.username }}</td>
                             <td id="shooterID">{{ user.shooterID }}</td>
@@ -163,20 +165,22 @@
                         </tr>
                         </tbody>
                     </table>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-responsive-sm">
+                        <thead class="bg-primary">
+                        <tr>
+                            <th scope="col">Student ID</th>
+                            <th scope="col">Grade</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Mobile</th>
+                        </tr>
+                        </thead>
                         <tbody>
-                            <tr class = "bg-primary">
-                                <th scope="col">Student ID</th>
-                                <th scope="col">Grade</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Mobile</th>
-                            </tr>
-                            <tr>
-                                <td id="schoolID">{{ user.schoolID }}</td>
-                                <td id="gradYr">{{ tableInfo["Grade"] }}</td>
-                                <td id="email">{{ tableInfo["Email"] }}</td>
-                                <td id="email">{{ user.mobile }}</td>
-                            </tr>
+                        <tr>
+                            <td id="schoolID">{{ user.schoolID }}</td>
+                            <td id="gradYr">{{ tableInfo["Grade"] }}</td>
+                            <td id="email">{{ tableInfo["Email"] }}</td>
+                            <td id="email">{{ user.mobile }}</td>
+                        </tr>
                         </tbody>
                     </table>
                 {% else %}
@@ -194,99 +198,100 @@
                 We couldn't find a user that matched your search. Please try again.
             </div>
         {% endif %}
-            <!-- Modal -->
+        <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Update Shooter Info </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="/update_user_info" method="post" role="form">
-                    <div class="modal-body">
-                        {{ form.csrf_token }}
-                        {{ form.userID(value = user.id)}}
-                        <div class="form-group">
-                            <div class="form-row">
-                                <div class = "col">
-                                    {{ form.fName.label }}
-                                    {{ form.fName(class_="field form-control",
-                                           placeholder="First Name",value = user.fName)}}
-                                </div>
-                                <div class = "col">
-                                    {{ form.sName.label }}
-                                    {{ form.sName(class_="field form-control",
-                                           placeholder="Last Name",value = user.sName)}}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-row">
-                                <div class = "col-8">
-                                    {{ form.schoolID.label }}
-                                    {{ form.schoolID(class_="field form-control",
-                                           placeholder="School ID",value = user.schoolID)}}
-                                </div>
-                                <div class = "col">
-                                    {{ form.gradYr.label }}
-                                    <input class = "field form-control" type="number" min="2000" max="9999" id="gradYr" name="gradYr", value = {{ user.gradYr }}>
+             aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Update Shooter Info </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="/update_user_info" method="post" role="form">
+                        <div class="modal-body">
+                            {{ form.csrf_token }}
+                            {{ form.userID(value = user.id) }}
+                            <div class="form-group">
+                                <div class="form-row">
+                                    <div class="col">
+                                        {{ form.fName.label }}
+                                        {{ form.fName(class_="field form-control",
+                                           placeholder="First Name",value = user.fName) }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.sName.label }}
+                                        {{ form.sName(class_="field form-control",
+                                           placeholder="Last Name",value = user.sName) }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-row">
-                                <div class = "col">
-                                    {{ form.email.label }}
-                                    {{ form.email(class_="field form-control",
-                                   placeholder="Email",value = user.email)}}
-                                </div>
-                                <div class = "col">
-                                    {{ form.mobile.label }}
-                                    {{ form.mobile(class_="field form-control",
-                                   placeholder="Mobile",value = user.mobile)}}
-                                </div>
-                            </div>
-                        </div>
-                        {{ form.shooterID.label }}
-                        {{ form.shooterID(class_="field form-control",
-                               placeholder="ShooterID",value = user.shooterID)}}
-                        <br>
-                        {{ form.rifleSerial.label }}
-                        {{ form.rifleSerial(class_="field form-control",
-                               placeholder="Rifle Serial",value = user.rifle_serial)}}
-                        <br>
-                        <div class="form-group">
-                            <div class="form-row">
-                                <div class = "col">
-                                    {{ form.permitType.label }}
-                                    {{ form.permitType(class_="field form-control",
-                                           placeholder="Permit Type",value = user.permitType)}}
-                                </div>
-                                <div class = "col">
-                                    {{ form.permitNumber.label }}
-                                    {{ form.permitNumber(class_="field form-control",
-                                           placeholder="Permit Number",value = user.permitNumber)}}
-                                </div>
-                                <div class = "col">
-                                    {{ form.permitExpiry.label }}
-                                    {{ form.permitExpiry(class_="field form-control",
-                                           placeholder="Permit Expiry",value = user.permitExpiry)}}
+                            <div class="form-group">
+                                <div class="form-row">
+                                    <div class="col-8">
+                                        {{ form.schoolID.label }}
+                                        {{ form.schoolID(class_="field form-control",
+                                           placeholder="School ID",value = user.schoolID) }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.gradYr.label }}
+                                        <input class="field form-control" type="number" min="2000" max="9999"
+                                               id="gradYr" name="gradYr" , value= {{ user.gradYr }}>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="form-group">
+                                <div class="form-row">
+                                    <div class="col">
+                                        {{ form.email.label }}
+                                        {{ form.email(class_="field form-control",
+                                   placeholder="Email",value = user.email) }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.mobile.label }}
+                                        {{ form.mobile(class_="field form-control",
+                                   placeholder="Mobile",value = user.mobile) }}
+                                    </div>
+                                </div>
+                            </div>
+                            {{ form.shooterID.label }}
+                            {{ form.shooterID(class_="field form-control",
+                               placeholder="ShooterID",value = user.shooterID) }}
+                            <br>
+                            {{ form.rifleSerial.label }}
+                            {{ form.rifleSerial(class_="field form-control",
+                               placeholder="Rifle Serial",value = user.rifle_serial) }}
+                            <br>
+                            <div class="form-group">
+                                <div class="form-row">
+                                    <div class="col">
+                                        {{ form.permitType.label }}
+                                        {{ form.permitType(class_="field form-control",
+                                           placeholder="Permit Type",value = user.permitType) }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.permitNumber.label }}
+                                        {{ form.permitNumber(class_="field form-control",
+                                           placeholder="Permit Number",value = user.permitNumber) }}
+                                    </div>
+                                    <div class="col">
+                                        {{ form.permitExpiry.label }}
+                                        {{ form.permitExpiry(class_="field form-control",
+                                           placeholder="Permit Expiry",value = user.permitExpiry) }}
+                                    </div>
+                                </div>
+                            </div>
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
@@ -319,9 +324,9 @@
                     <div class="row">
                         <div class="col-xl-6 col-md-6">
                             <div class="card" style="min-width:300px">
+                                <h5 class="card-header">Stages</h5>
                                 <div class="card-body" id="recentShotsContainer">
                                     <div class="row justify-content-center">
-                                        <h4>Stages</h4>
                                         <!--Input Dates-->
                                         <div class="selectStages mx-4"
                                              style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
@@ -352,13 +357,17 @@
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6">
-                            <h4 style="text-align: center;">Performance Over Time</h4>
-                            <!--line graph is shown here-->
-                            <script type="text/javascript" src="../static/js/profile/overview_graph.js"></script>
-                            <div class="spinner-border text-primary justify-content-center" id="graphSpinner"
-                                 role="status" style="margin: auto; padding: 10px;">
+                            <div class="card" style="height: 400px">
+                                <h5 class="card-header">Total Score & Consistency</h5>
+                                <div class = card-body>
+                                    <!--line graph is shown here-->
+                                    <script type="text/javascript" src="../static/js/profile/overview_graph.js"></script>
+                                    <div class="spinner-border text-primary justify-content-center" id="graphSpinner"
+                                         role="status" style="margin: auto; padding: 10px;">
+                                    </div>
+                                    <canvas style="background-color:white;" id="lineSTDEV"></canvas>
+                                </div>
                             </div>
-                            <canvas style="background-color:white; max-height:400px;" id="lineSTDEV"></canvas>
                         </div>
                     </div>
                 </div>
