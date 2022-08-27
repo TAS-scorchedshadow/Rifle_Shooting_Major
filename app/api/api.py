@@ -224,6 +224,10 @@ def submit_table():
     return jsonify({'success': 'success'})
 
 
+@api_bp.route('/api/attendance', methods=["GET"])
+def api_attendace():
+    users = api_num_shots_season_all();
+
 @api_bp.route('/api/num_shots_season_all', methods=["GET"])
 def api_num_shots_season_all():
     users = User.query.all()
@@ -259,6 +263,12 @@ def num_shots(userID, start, end):
         # Initialise all shots
         stage.init_shots()
         num += len(stage.shotList)
+
+    if num_sessions != 0:
+        shots_per_session = round(num / num_sessions, 2)
+    else:
+        shots_per_session = 0
     return {"start_time": start.strftime("%d/%m/%Y"),
             "end_time": end.strftime("%d/%m/%Y"),
-            "num_sessions": num_sessions, "num_stages": len(stages), "num_shots": num}
+            "num_sessions": num_sessions, "num_stages": len(stages), "num_shots": num,
+            "num_shots_per_session": shots_per_session}

@@ -26,6 +26,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <script type="text/javascript" src="../static/js/profile/shot_data.js"></script>
     <script type="text/javascript">
         $(function () {
 
@@ -323,7 +324,7 @@
                 <div class="container-fluid pt-2" style="padding-left: 0px; padding-right: 0px;">
                     <div class="row">
                         <div class="col-xl-6 col-md-6">
-                            <div class="card" style="min-width:300px">
+                            <div class="card" style="min-width:300px; height: 705px">
                                 <h5 class="card-header">Stages</h5>
                                 <div class="card-body" id="recentShotsContainer">
                                     <div class="row justify-content-center">
@@ -336,10 +337,12 @@
                                     </div>
                                     <br>
                                     <!--Show shots-->
-                                    <div id="recentShots" class="container-fluid">
-                                        <!--Cards showing the stages will be added here-->
-                                        <script type="text/javascript"
-                                                src="../static/js/profile/recent_shots.js"></script>
+                                    <div style="height:500px; overflow-y: scroll; overflow-x: hidden">
+                                        <div id="recentShots" class="container-fluid">
+                                            <!--Cards showing the stages will be added here-->
+                                            <script type="text/javascript"
+                                                    src="../static/js/profile/recent_shots.js"></script>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-12 pb-2">
@@ -367,6 +370,17 @@
                                     </div>
                                     <canvas style="background-color:white;" id="lineSTDEV"></canvas>
                                 </div>
+                            </div>
+                            <br>
+                            <div class="card" style="height: 280px">
+                                <h5 class="card-header">Season Shot Data</h5>
+                                <div class = card-body>
+                                    <div class="spinner-border text-primary justify-content-center" id="attendanceSpinner"
+                                         role="status" style="margin: auto; padding: 10px;">
+                                    </div>
+                                    <div id = "attendanceContent"></div>
+                                </div>
+                                <text class="card-header bg-light">Avr. Shots per Session rounded to 2.d.p</text>
                             </div>
                         </div>
                     </div>
