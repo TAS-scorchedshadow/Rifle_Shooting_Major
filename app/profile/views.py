@@ -130,9 +130,9 @@ def html_get_stages():
         htmlScoresBody = ""
         htmlSighters = ""
         for shot in stage['scores']:
-            htmlScoresBody = htmlScoresBody + f"{shot['scoreVal']}"
+            htmlScoresBody = htmlScoresBody + f"{shot['scoreVal']} "
         for shot in stage['sighters']:
-            htmlSighters = htmlSighters + f"{shot['scoreVal']}"
+            htmlSighters = htmlSighters + f"{shot['scoreVal']} "
         stage_html = ""
         if i < len(stages) - 1 or final_page is True:
             stage_html += """<div class="stage-overview">"""
