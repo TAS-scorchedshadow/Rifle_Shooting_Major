@@ -9,6 +9,7 @@ from app import db
 from app.models import User, Stage, Settings
 from app.stages_calc import stats_of_period, highest_stage, lowest_stage
 from app.time_convert import get_grad_year, utc_to_nsw, format_duration, nsw_to_utc
+from tests.helper_functions.generate_data import generate_rand_stage
 
 api_bp = Blueprint('api', __name__)
 
@@ -272,3 +273,121 @@ def num_shots(userID, start, end):
             "end_time": end.strftime("%d/%m/%Y"),
             "num_sessions": num_sessions, "num_stages": len(stages), "num_shots": num,
             "num_shots_per_session": shots_per_session}
+
+@api_bp.route('/get_stages', methods=["GET"])
+def get_stages():
+    items_per_page = 6
+    userID = request.args.get('userID')
+    date = datetime.datetime.strptime(request.args.get('start-date'), '%Y-%m-%d')
+    print(date)
+    page = int(request.args.get('page'))
+    stages, final_page = get_stages(userID, date, page)
+    html = ""
+    if stages is None:
+        return html
+    for i, stage in enumerate(stages):
+        htmlScoresBody = ""
+        htmlSighters = ""
+        for shot in stage['scores']:
+            htmlScoresBody = htmlScoresBody + f"{shot['scoreVal']}"
+        for shot in stage['sighters']:
+            htmlSighters = htmlSighters + f"{shot['scoreVal']}"
+        stage_html = ""
+        if i < len(stages) - 1 or final_page is True:
+            stage_html += """<div class="stage-overview">"""
+        else:
+            stage_html += f"""<div class="stage-overview" hx-get=/get_stages?userID={userID}&page={page+1} 
+            hx-trigger="revealed" hx-swap="afterend" hx-include="[name='start-date']" hx-indicator="#indicator">"""
+        stage_html += f"""
+                <div class="row">
+                    <div class="col-12 pb-4">
+                        <div class="card shadow border-0 card-hover">
+                            <div class="card-header recent-header">
+                                <div class="row">
+                                    <div class="col-4 align-self-center">
+                                        <p class="text-left" style="font-size:12px; color: black">
+                                        <i class="fas fa-clock"></i><span class="pl-1">{stage['duration']}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-4 align-self-center">
+                                        <p display="block" class="text-center" style="font-size:12px;">{stage['timestamp']}</p>
+                                    </div>
+                                    <div class="col-4 align-self-center">
+                                        <p class="text-right" style="font-size:12px; color: black">
+                                            <a href="/target?stageID={stage['stageID']}" class="stage-view show-sheet" target="_blank">
+                                                    <u>View Plotsheet</u>
+                                                    <i class="fas fa-external-link-alt" style="color:black;"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recent-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered recentShotsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style='width: 50px;'>Range</th>
+                                                        <th style='width: 62px;'>Sighters</th>
+                                                        <th>Shots</th>
+                                                        <th style='width: 69px;'>Total</th>
+                                                        <th style='width: 48px;'>Group</th>
+                                                        <th style='width: 37px;'>Std</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>{stage['distance']}</th>
+                                                        <th>{htmlSighters}</th>
+                                                        <th>{htmlScoresBody}</th>
+                                                        <th>{stage['totalScore']}</th>
+                                                        <th>{stage['groupSize']}</th>
+                                                        <th>{stage['std']}</th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
+        html += stage_html
+    return html
+
+def get_stages(userID, startDate, page):
+    items_per_page = 6
+    final_page = False
+    start_idx = (page-1) * items_per_page
+    end_idx = page * items_per_page
+    print(start_idx,end_idx)
+    if startDate:
+        # Note filters out shots on the same day for some reason
+        stages = Stage.query.filter(Stage.timestamp <= startDate + datetime.timedelta(days=1), Stage.userID == userID).order_by(
+            desc(Stage.timestamp)).all()
+    else:
+        stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()
+    if end_idx >= len(stages):
+        final_page = True
+    stages = stages[start_idx: end_idx]
+    stagesList = []
+    for stage in stages:
+        data = stage.format_shots()
+        stage.init_stage_stats()
+        displayScore = f"{data['total']}/{data['totalPossible']}"
+        stagesList.append({'scores': data["scores"],
+                           'totalScore': displayScore,
+                           'groupSize': round(stage.groupSize, 1),
+                           'distance': stage.distance,
+                           'timestamp': utc_to_nsw(stage.timestamp).strftime("%d %b %Y %I:%M %p"),
+                           'std': round(stage.std, 2),
+                           'duration': format_duration(stage.duration),
+                           'stageID': stage.id,
+                           'sighters': data['sighters']
+                           })
+    return stagesList, final_page

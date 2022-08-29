@@ -21,7 +21,6 @@
     <!--Import user id-->
     <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submit_table">
 
-
     <!--Date range picker (see https://www.daterangepicker.com)-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -116,10 +115,20 @@
         a.show-sheet:hover {
             color: #3b5fbf;
         }
-    </style>
+
+        .my-indicator{
+            display:none;
+        }
+        .htmx-request .my-indicator{
+            display:block;
+        }
+        .htmx-request.my-indicator{
+            display:block;
+        }
     </style>
 
     <div class="container-fluid" style="padding-bottom: 50px">
+        <a id="top"></a>
         <div class="row align-items-center pb-3">
             <!--EVERYTHING IN THIS ROW IS BY RISHI-->
             <div class="col-12 col-lg-3">
@@ -324,39 +333,24 @@
                 <div class="container-fluid pt-2" style="padding-left: 0px; padding-right: 0px;">
                     <div class="row">
                         <div class="col-xl-6 col-md-6">
-                            <div class="card" style="min-width:300px; height: 705px">
+                            <div class="card" style="min-width:300px;">
                                 <h5 class="card-header">Stages</h5>
-                                <div class="card-body" id="recentShotsContainer">
-                                    <div class="row justify-content-center">
-                                        <!--Input Dates-->
-                                        <div class="selectStages mx-4"
-                                             style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-                                            <i class="fa fa-calendar"></i>&nbsp;
-                                            <span id="date-selector"></span> <i class="fa fa-caret-down"></i>
-                                        </div>
-                                    </div>
+                                <div class="card-body">
+                                    <label for = "time-picker">Stages older than</label>
+                                    <input class = "field form-control" required type="date" name="start-date"
+                                           value="{{ today  }}" hx-target="#stages-container" id = "time-picker"
+                                           hx-get="/get_stages?userID={{ user.id }}&page=1" hx-trigger="change">
                                     <br>
-                                    <!--Show shots-->
-                                    <div style="height:500px; overflow-y: scroll; overflow-x: hidden">
-                                        <div id="recentShots" class="container-fluid">
-                                            <!--Cards showing the stages will be added here-->
-                                            <script type="text/javascript"
-                                                    src="../static/js/profile/recent_shots.js"></script>
-                                        </div>
+                                    <div style="min-height: 300px" hx-get="/get_stages?userID={{ user.id }}&page=1" hx-trigger="load"
+                                         hx-include="[name='start-date']" id="stages-container">
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 pb-2">
-                                            <div class="spinner-border text-primary justify-content-center"
-                                                 id="shotSpinner" role="status" style="margin: auto; padding: 10px;">
-                                            </div>
-                                        </div>
-                                        <div class="col text-center">
-                                            <button id="moreShoots" class="btn btn-primary" style="display: none;">Show
-                                                More
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <!--https://loading.io/spinner/bars/-bounce-bar-column-chart-equalizer-histogram-rectangle-block-progress-facebook -->
+                                    <img id="indicator" class="my-indicator mx-auto" style="max-height: 50px"
+                                         src="../../static/images/bars.svg"/>
                                 </div>
+                                <a href="#top">
+                                    <div class="card-footer">Back to top</div>
+                                </a>
                             </div>
                         </div>
                         <div class="col-xl-6 col-lg-6">

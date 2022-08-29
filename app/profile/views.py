@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from flask import Blueprint, request, redirect, render_template, flash
@@ -88,9 +89,10 @@ def profile():
 
     s = Settings.query.filter_by(id=0).first()
     times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
+    today = datetime.datetime.now().strftime("%Y-%m-%d")
 
     form = updateInfoForm(request.form)
-    return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error,
+    return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error, today=today,
                            season_time=times, form=form)
 
 
