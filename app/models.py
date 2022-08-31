@@ -11,14 +11,16 @@ import statistics
 from app.time_convert import nsw_to_utc, utc_to_nsw, format_duration
 
 
-class Settings(db.Model):
+class Club(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
     email_setting = db.Column(db.Integer) # 0 - Never, 1-Prompt, 2-Always
     season_start = db.Column(db.DateTime)
     season_end = db.Column(db.DateTime)
+    users = db.relationship('User', lazy='dynamic')
 
     def __repr__(self):
-        return '<Setting {}>'.format(self.id)
+        return '<Club {} Id:{}>'.format(self.namme,self.id)
 
 
 
