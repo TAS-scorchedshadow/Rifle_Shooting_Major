@@ -1,7 +1,7 @@
 from flask import request
 
 from app import db
-from app.models import User, Stage, Shot, Settings
+from app.models import User, Stage, Shot, Club
 
 from .decompress import read_archive
 from .upload_processing import validate_shots
@@ -142,7 +142,7 @@ def upload_stages(stage_list, invalid_list_id, stage_define, user_dict):
     for user in User.query.all():
         print(user)
         print(stageClassList)
-        s = Settings.query.filter_by(id=0).first()
+        s = Club.query.filter_by(id=0).first()
         if s.email_setting == 2:
             send_upload_email(user, stageClassList)
     return count

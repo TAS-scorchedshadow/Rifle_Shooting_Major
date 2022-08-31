@@ -5,7 +5,7 @@ from flask import template_rendered, url_for
 from flask_login import login_user
 
 from app import db, mail
-from app.models import User, Stage, Settings
+from app.models import User, Stage, Club
 
 
 @pytest.mark.usefixtures("create_users")

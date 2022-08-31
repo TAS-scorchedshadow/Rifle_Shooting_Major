@@ -6,7 +6,7 @@ from flask_login import login_required
 from sqlalchemy import desc
 
 from app import db
-from app.models import User, Stage, Settings
+from app.models import User, Stage, Club
 from app.stages_calc import stats_of_period, highest_stage, lowest_stage
 from app.time_convert import get_grad_year, utc_to_nsw, format_duration, nsw_to_utc
 from tests.helper_functions.generate_data import generate_rand_stage
@@ -233,7 +233,7 @@ def api_attendace():
 def api_num_shots_season_all():
     users = User.query.all()
     user_list = []
-    settings = Settings.query.filter_by(id=0).first()
+    settings = Club.query.filter_by(id=0).first()
     for user in users:
         data = num_shots(user.id, settings.season_start, settings.season_end)
         user_list.append({"userID": user.id, "name": f"{user.fName} {user.sName}", "data": data})
@@ -243,7 +243,7 @@ def api_num_shots_season_all():
 @api_bp.route('/api/num_shots_season', methods=["GET"])
 def api_num_shots_season():
     userID = request.args.get('userID')
-    settings = Settings.query.filter_by(id=0).first()
+    settings = Club.query.filter_by(id=0).first()
 
     return num_shots(userID, settings.season_start, settings.season_end)
 

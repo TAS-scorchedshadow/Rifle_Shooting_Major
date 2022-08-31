@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 
 from app import db
 from app.api.api import get_stages, num_shots
-from app.models import User, Settings
+from app.models import User, Club
 from app.decorators import roles_required
 from app.profile.forms import updateInfoForm
 
@@ -88,7 +88,7 @@ def profile():
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
 
-    s = Settings.query.filter_by(id=0).first()
+    s = Club.query.filter_by(id=0).first()
     times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
     today = datetime.datetime.now().strftime("%Y-%m-%d")
 

@@ -7,7 +7,7 @@ from flask_login import login_user
 
 from app import create_app, db
 from tests.helper_functions.generate_data import generate_rand_stage
-from app.models import User, Settings
+from app.models import User, Club
 from config import Config
 
 # Is subclass of Config by Flask
@@ -90,7 +90,7 @@ def create_users(request, test_client):
 
     start = datetime.datetime.now()
     end = datetime.datetime.now()
-    settings = Settings(id=0,email_setting=0,season_start=start,season_end=end)
+    settings = Club(id=0, email_setting=0, season_start=start, season_end=end)
     db.session.add(settings)
     request.cls.settings = settings
 
@@ -120,7 +120,7 @@ def api_setup(request, test_client):
 
     start = datetime.datetime.now()
     end = datetime.datetime.now()
-    settings = Settings(id=0,email_setting=0,season_start=start,season_end=end)
+    settings = Club(id=0, email_setting=0, season_start=start, season_end=end)
     db.session.add(settings)
     request.cls.settings = settings
     db.session.commit()
