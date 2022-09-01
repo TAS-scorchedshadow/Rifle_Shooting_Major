@@ -5,49 +5,59 @@ from flask import Blueprint, request, jsonify, redirect, url_for, render_templat
 from flask_login import login_required, current_user
 
 from app import db
-from app.decorators import roles_required
+from app.decorators import roles_required, club_exists
 from app.models import User, Club
 
 admin_bp = Blueprint('admin_bp', __name__)
 
 
-@admin_bp.route('/user_list', methods=['GET', 'POST'])
+@admin_bp.route('/<club>/user_list', methods=['GET', 'POST'])
 @login_required
+@club_exists()
 @roles_required(["ADMIN"])
-def user_list():
+def user_list(club):
     """
     List of all current users on the system.
 
     :return: user_list.html
     """
-    users = User.query.order_by(User.access, User.sName).all()
+    club = Club.query.filter_by(name=club).first()
+    users = User.query.filter_by(clubID=club.id).order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()
-    s = Club.query.filter_by(id=0).first()
-    times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
-    return render_template('admin/user_list.html', users=users, mail_setting=s.email_setting, season_time=times)
+    times = {"start": club.season_start.strftime("%d:%m:%Y"), "end": club.season_end.strftime("%d:%m:%Y")}
+    return render_template('admin/user_list.html', users=users, mail_setting=club.email_setting, season_time=times,
+                           club=club)
 
 
-@admin_bp.route('/admin', methods=['POST'])
-def admin():
+@admin_bp.route('/make_admin', methods=['POST'])
+@login_required
+def make_admin():
     """
      AJAX route for changing the account level of specific users.
      Route is accessible by admins through the buttons on the user_list page
 
     """
-    data = request.get_data()
-    loadedData = json.loads(data)
-    userID = loadedData['id']
-    if userID:
-        user = User.query.filter_by(id=userID).first()
-        state = 0
-        if user.access == 0:
-            user.access = 1
-            state = 1
-        else:
-            user.access = 0
-        db.session.commit()
-        return jsonify({'access_lvl': state})
+    data = json.loads(request.get_data())
+    userID = int(data["userID"])
+    clubID = int(data["clubID"])
+    club = Club.query.filter_by(id=clubID).first()
+    user = User.query.filter_by(id=userID).first()
+    if not club or not user:
+        return {"Error": "Error"}
+
+    if current_user.clubID != clubID or current_user.access < 2:
+        return {"Error": "Error"}
+
+    state = 0
+    if user.access == 0:
+        user.access = 1
+        state = 1
+    else:
+        user.access = 0
+    db.session.commit()
+    return jsonify({'access_lvl': state})
+
 
 @admin_bp.route('/email_settings', methods=['POST'])
 def email_settings():
@@ -55,9 +65,18 @@ def email_settings():
     AJAX route used to update the email_setting in the database
 
     """
-    setting = json.loads(request.get_data())
-    s = Club.query.filter_by(id=0).first()
-    s.email_setting = setting
+    data = json.loads(request.get_data())
+    clubID = int(data["clubID"])
+    email_setting = int(data["email_setting"])
+    club = Club.query.filter_by(id=clubID).first()
+    if not club:
+        return {"Error": "Error"}
+
+    if current_user.clubID != clubID or current_user.access < 2:
+        return {"Error": "Error"}
+
+    club.email_setting = email_setting
+
     db.session.commit()
 
     return jsonify("complete")
@@ -69,14 +88,22 @@ def update_season_date():
     AJAX route used to update the start & end times of a season in the database
 
     """
-    rtn = json.loads(request.get_data())
+    data = json.loads(request.get_data())
 
-    date_range = rtn["date_range"]
+    date_range = data["date_range"]
     dates = date_range.split(' - ')
 
-    s = Club.query.filter_by(id=0).first()
-    s.season_start = datetime.datetime.strptime(dates[0], '%B %d, %Y')
-    s.season_end = datetime.datetime.strptime(dates[1], '%B %d, %Y')
+    clubID = int(data["clubID"])
+    club = Club.query.filter_by(id=clubID).first()
+
+    if not club:
+        return {"Error": "Error"}
+
+    if current_user.clubID != clubID or current_user.access < 2:
+        return {"Error": "Error"}
+
+    club.season_start = datetime.datetime.strptime(dates[0], '%B %d, %Y')
+    club.season_end = datetime.datetime.strptime(dates[1], '%B %d, %Y')
     db.session.commit()
 
     return jsonify("complete")
@@ -98,6 +125,5 @@ def delete_account():
             db.session.commit()
             return jsonify('success')
         except:
-            print('error')
             return jsonify({'error': 'Invalid State'})
     return jsonify({'error': 'userID'})

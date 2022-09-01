@@ -14,14 +14,14 @@ function deleteAccount(user){
 
 }
 
-function setAdmin(sourceElement,user){
+function setAdmin(sourceElement,userID,clubID){
     $(sourceElement).html(`<div class="spinner-border spinner-border-sm text-primary ml-2"
                                  id="spinner" role="status">
                             </div>`)
     $.ajax({
-        data: JSON.stringify({"id": user}),
+        data: JSON.stringify({"userID": userID, "clubID": clubID}),
         type: 'POST',
-        url: '/admin',
+        url: '/make_admin',
         dataType: "JSON",
         success: (function (data) {
             // data.newState refers to the new value of state that will be taken on next call of this function
@@ -43,13 +43,13 @@ function setAdmin(sourceElement,user){
 
 $(document).ready(function () {
     var x = $("#emailContext").data()['mail']
-    console.log(x)
+    const clubID = $('#club-data').data("clubid");
     $("#emailContext").children().eq(x).fadeIn("slow")
     $( "#select" ).change(function() {
         update_email_context()
         $("#spinner").show()
          $.ajax({
-        data: JSON.stringify($( this ).val()),
+        data: JSON.stringify({"email_setting": $( this ).val(), "clubID": clubID}),
         type: 'POST',
         url: '/email_settings',
         dataType: "JSON",
@@ -64,13 +64,13 @@ $(document).ready(function () {
 
     // Season Date Picker
     function changeSeasonDate(date_range) {
-        console.log("running ajax");
         $("#spinner").show()
         $.ajax({
             type: 'POST',
             url: "/update_season_date",
             data: JSON.stringify({
                     'date_range': date_range,
+                    'clubID' : clubID
                     }),
             success:(function (ajax_status) {
                 $("#spinner").hide()
