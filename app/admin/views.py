@@ -118,12 +118,18 @@ def delete_account():
     """
     data = request.get_data()
     userID = json.loads(data)
-    if userID:
-        try:
-            user = User.query.filter_by(id=userID).first()
-            db.session.delete(user)
-            db.session.commit()
-            return jsonify('success')
-        except:
-            return jsonify({'error': 'Invalid State'})
-    return jsonify({'error': 'userID'})
+
+    clubID = int(data["clubID"])
+    club = Club.query.filter_by(id=clubID).first()
+
+    user = User.query.filter_by(id=userID).first()
+    if not club or not user:
+        return {"Error": "Error"}
+
+    if current_user.clubID != clubID or current_user.access < 2:
+        return {"Error": "Error"}
+
+    user = User.query.filter_by(id=userID).first()
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify('success')

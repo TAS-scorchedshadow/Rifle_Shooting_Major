@@ -1,8 +1,9 @@
 function deleteAccount(user){
     modal = "#RemoveModal" + user
+    const clubID = $('#club-data').data("clubid");
     $(modal).modal('toggle')
     $.ajax({
-        data: JSON.stringify(user),
+        data: JSON.stringify({"userID": user, "clubID": clubID}),
         type: 'POST',
         url: '/delete_account',
         dataType: "JSON",
