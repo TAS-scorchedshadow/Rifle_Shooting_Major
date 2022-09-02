@@ -20,12 +20,10 @@
 
     <!--Import user id-->
     <meta id="my-data" data-userid="{{ user.id }}" data-endroute="/submit_table">
-
     <!--Date range picker (see https://www.daterangepicker.com)-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
-    <script type="text/javascript" src="../static/js/profile/shot_data.js"></script>
     <script type="text/javascript">
         $(function () {
 
@@ -369,7 +367,8 @@
                             <div class="card" style="height: 280px">
                                 <h5 class="card-header">Season Shot Data</h5>
                                 <div class = card-body>
-                                    <div hx-get="/profile/get_season_shot_data?userID={{ user.id }}" hx-trigger="load"
+                                    <div hx-get="/profile/get_season_shot_data?userID={{ user.id }}&start={{ season_time['start'] }}&end={{ season_time['end'] }}"
+                                         hx-trigger="load"
                                          hx-indicator="#shot-indicator">
                                     </div>
                                     <img id="shot-indicator" class="bar-indicator mx-auto pt-5" style="max-height: 100px"
