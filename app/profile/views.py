@@ -8,7 +8,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.api.api import get_stages, num_shots
 from app.models import User, Club
-from app.decorators import roles_required, club_exists
+from app.decorators import role_required, club_exists
 from app.profile.forms import updateInfoForm
 
 profile_bp = Blueprint('profile_bp', __name__)
@@ -16,7 +16,6 @@ profile_bp = Blueprint('profile_bp', __name__)
 
 @profile_bp.route('/profile_list', methods=['GET'])
 @login_required
-@roles_required(["COACH", "ADMIN"])
 def catch_profile_list():
     club = Club.query.filter_by(id=current_user.clubID).first()
     return redirect(url_for(".profile_list", club=club.name))
@@ -25,7 +24,7 @@ def catch_profile_list():
 @profile_bp.route('/profile_list/<club>', methods=['GET', 'POST'])
 @login_required
 @club_exists
-@roles_required(["COACH", "ADMIN"])
+@role_required("COACH")
 def profile_list(club):
     searchError = False
     if request.method == "POST":
@@ -54,7 +53,6 @@ def profile_list(club):
 
     yearGroups = json.dumps(yearGroups)
     return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
-
 
 
 @profile_bp.route('/profile', methods=['GET', 'POST'])

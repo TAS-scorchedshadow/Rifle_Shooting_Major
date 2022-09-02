@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify, redirect, url_for, render_templat
 from flask_login import login_required, current_user
 
 from app import db
-from app.decorators import roles_required, club_exists
+from app.decorators import role_required, club_exists
 from app.models import User, Club
 
 admin_bp = Blueprint('admin_bp', __name__)
@@ -13,7 +13,6 @@ admin_bp = Blueprint('admin_bp', __name__)
 
 @admin_bp.route('/user_list', methods=['GET'])
 @login_required
-@roles_required(["ADMIN"])
 def user_list_catch():
     club = Club.query.filter_by(id=current_user.clubID).first()
     return redirect(url_for(".user_list", club=club.name))
@@ -22,7 +21,7 @@ def user_list_catch():
 @admin_bp.route('/user_list/<club>', methods=['GET', 'POST'])
 @login_required
 @club_exists
-@roles_required(["ADMIN"])
+@role_required("ADMIN")
 def user_list(club):
     """
     List of all current users on the system.
@@ -144,3 +143,18 @@ def delete_account():
     db.session.delete(user)
     db.session.commit()
     return jsonify('success')
+
+
+@admin_bp.route('/dev/users', methods=['GET', 'POST'])
+@login_required
+@role_required("DEV")
+def user_list_all():
+    """
+    List of all current users on the system.
+
+    :return: user_list.html
+    """
+    users = User.query.filter_by(clubID=club.id).order_by(User.access, User.sName).all()
+    for user in users:
+        user.schoolYr = user.get_school_year()
+    return render_template('admin/user_list.html', users=users)
