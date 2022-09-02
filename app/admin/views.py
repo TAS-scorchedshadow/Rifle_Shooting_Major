@@ -60,6 +60,7 @@ def make_admin():
 
 
 @admin_bp.route('/email_settings', methods=['POST'])
+@login_required
 def email_settings():
     """
     AJAX route used to update the email_setting in the database
@@ -83,6 +84,7 @@ def email_settings():
 
 
 @admin_bp.route('/update_season_date', methods=['POST'])
+@login_required
 def update_season_date():
     """
     AJAX route used to update the start & end times of a season in the database
@@ -111,6 +113,7 @@ def update_season_date():
 
 
 @admin_bp.route('/delete_account', methods=['POST'])
+@login_required
 def delete_account():
     """
     AJAX route for deleting user accounts. Route is accessible by admins through the buttons on the user_list page
