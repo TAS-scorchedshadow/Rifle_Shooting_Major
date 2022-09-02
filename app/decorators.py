@@ -7,6 +7,7 @@ from app.models import Club
 
 def roles_required(roles):
     def original_function(f):
+        @wraps(f)
         def decorated_function(*args, **kwargs):
             # Redundency for login_required
             if not current_user.is_authenticated:
@@ -32,6 +33,7 @@ def roles_required(roles):
 
 def club_exists():
     def original_function(f):
+        @wraps(f)
         def decorated_function(*args, **kwargs):
             club = Club.query.filter_by(name=kwargs['club']).first()
             if club is None:
