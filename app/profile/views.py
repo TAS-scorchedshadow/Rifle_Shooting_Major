@@ -98,6 +98,12 @@ def profile():
     tableInfo["Mobile"] = user.mobile
 
     club = Club.query.filter_by(id=user.clubID).first()
+    if not club:
+        flash("No club with that name exists", "error")
+        if request.referrer is not None:
+            return redirect(request.referrer)
+        else:
+            return redirect(url_for("welcome_bp.index"))
     times = {"start": club.season_start.strftime("%d:%m:%Y"), "end": club.season_end.strftime("%d:%m:%Y")}
     today = datetime.datetime.now().strftime("%Y-%m-%d")
 

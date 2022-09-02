@@ -75,14 +75,29 @@ def testdelshoot():
     return "OK"
 
 
-@api_bp.route('/get_users', methods=['POST'])
-def get_users():
+def get_users(clubID=None):
     """
-    Generates a list of names used to complete the autofill fields. Used in autofill.js
+    If a club ID is provided, results will only include users from the club.
 
     :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
-    users = User.query.all()
+    club = Club.query.filter_by(id=clubID).first()
+    if club:
+        users = User.query.filter_by(clubID=clubID).all()
+    else:
+        users = User.query.all()
+    return users
+
+
+@api_bp.route('/get_names', methods=['GET'])
+def get_names():
+    """
+        Generates a list of names used to complete the autofill fields. Used in autofill.js.
+        If a club ID is provided, results will only include users from the club.
+
+        :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
+    """
+    users = get_users(request.args.get("userID"))
     list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
             users]
     return jsonify(list)

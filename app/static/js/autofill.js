@@ -1,7 +1,7 @@
 $( document ).ready(function() {
     $.ajax({
-        type: 'POST',
-        url: "/get_users",
+        type: 'GET',
+        url: "/get_names",
         success:(function (data) {
             $( ".user-searchbar" ).autocomplete({
                 source: data
