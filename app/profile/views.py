@@ -52,7 +52,7 @@ def profile_list(club):
             yearGroups['other'].append([user.sName, user.fName, user.id])
 
     yearGroups = json.dumps(yearGroups)
-    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
+    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError, club=club)
 
 
 @profile_bp.route('/profile', methods=['GET', 'POST'])
@@ -107,7 +107,7 @@ def profile():
 
     form = updateInfoForm(request.form)
     return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error, today=today,
-                           season_time=times, form=form)
+                           season_time=times, form=form, club=club)
 
 
 @profile_bp.route('/update_user_info', methods=['POST'])

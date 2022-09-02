@@ -97,7 +97,11 @@ def get_names():
 
         :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
-    users = get_users(request.args.get("userID"))
+    clubID = request.args.get("clubID")
+    if clubID is None or clubID is '':
+        users = get_users()
+    else:
+        users = get_users(int(clubID))
     list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
             users]
     return jsonify(list)
