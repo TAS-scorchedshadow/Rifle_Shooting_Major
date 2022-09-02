@@ -161,7 +161,7 @@ class User(UserMixin, db.Model):
         totalStd = 0
         totalDuration = 0
         totalGroup = 0
-        settings = Club.query.filter_by(id=0).first()
+        settings = Club.query.filter_by(id=self.clubID).first()
         stages = Stage.query.filter(Stage.timestamp.between(settings.season_start, settings.season_end),
                                     Stage.distance == dist,
                                     Stage.userID == self.id).all()
