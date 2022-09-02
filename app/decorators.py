@@ -31,19 +31,18 @@ def roles_required(roles):
 
     return original_function
 
-def club_exists():
-    def original_function(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            club = Club.query.filter_by(name=kwargs['club']).first()
-            if club is None:
-                flash("No club with that name exists", "error")
-                if request.referrer is not None:
-                    return redirect(request.referrer)
-                else:
-                    return redirect(url_for("welcome_bp.index"))
-            return f(*args, **kwargs)
+def club_exists(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        club = Club.query.filter_by(name=kwargs['club']).first()
+        if club is None:
+            flash("No club with that name exists", "error")
+            if request.referrer is not None:
+                return redirect(request.referrer)
+            else:
+                return redirect(url_for("welcome_bp.index"))
+        return f(*args, **kwargs)
 
-        return decorated_function
+    return decorated_function
 
-    return original_function
+    return club_exists
