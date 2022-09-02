@@ -11,9 +11,17 @@ from app.models import User, Club
 admin_bp = Blueprint('admin_bp', __name__)
 
 
-@admin_bp.route('/<club>/user_list', methods=['GET', 'POST'])
+@admin_bp.route('/user_list', methods=['GET'])
 @login_required
-@club_exists()
+@roles_required(["ADMIN"])
+def user_list_catch():
+    club = Club.query.filter_by(id=current_user.clubID).first()
+    return redirect(url_for(".user_list", club=club.name))
+
+
+@admin_bp.route('/user_list/<club>', methods=['GET', 'POST'])
+@login_required
+@club_exists
 @roles_required(["ADMIN"])
 def user_list(club):
     """
