@@ -1,9 +1,9 @@
 //by Henry Guo (line 13-46 by Rishi)
 $(document).ready(function() {
     const userID = $('#my-data').data("userid");
+    $('#graph-indicator').toggleClass('htmx-request');
     loadShotAvgGraph(userID)
     function loadShotAvgGraph(user) {
-        $('#graphSpinner').toggleClass('d-flex');
         $.ajax({
             type: 'POST',
             url: "/get_avg_shot_graph_data",
@@ -26,7 +26,7 @@ $(document).ready(function() {
                             pointHitRadius: 20,
                         },
                         {
-                            label: 'Standard Deviation',
+                            label: 'Standard Deviation of Scores',
                             yAxisID: 'standard-deviation',
                             backgroundColor: 'rgba(0, 0, 255, 0.1)',
                             borderColor: 'rgba(0,0,255,1)',
@@ -71,8 +71,7 @@ $(document).ready(function() {
                         }
                     }
                 });
-                $('#graphSpinner').toggleClass('d-flex');
-                $('#graphSpinner').hide();
+                $('#graph-indicator').toggleClass('htmx-request');
             })
         })
     }
