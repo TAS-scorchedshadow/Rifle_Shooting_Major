@@ -18,7 +18,8 @@ def utc_to_nsw(utc_dt):
     :return: A datetime object in NSW Australia time
     """
     nsw = pytz.timezone('Australia/NSW')
-    return utc_dt.astimezone(tz=nsw)
+    nsw_dt = pytz.utc.localize(utc_dt).astimezone(nsw)
+    return nsw_dt
 
 
 def nsw_to_utc(nsw_dt):
