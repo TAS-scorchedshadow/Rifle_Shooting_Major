@@ -1,11 +1,15 @@
+import datetime
 import json
 
-from flask import Blueprint, request, redirect, render_template
+from flask import Blueprint, request, redirect, render_template, flash
 from flask import session as flask_session
 from flask_login import login_required, current_user
 
+from app import db
+from app.api.api import get_stages, num_shots
 from app.models import User, Settings
 from app.decorators import roles_required
+from app.profile.forms import updateInfoForm
 
 profile_bp = Blueprint('profile_bp', __name__)
 
@@ -43,6 +47,7 @@ def profile_list():
     return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
 
 
+
 @profile_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
@@ -62,7 +67,7 @@ def profile():
                 return redirect('/profile')
             else:
                 search_error = True
-    if not current_user.access >= 1:
+    if current_user.access < 1:
         user = current_user
     else:
         try:
@@ -85,5 +90,142 @@ def profile():
 
     s = Settings.query.filter_by(id=0).first()
     times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
-    return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error,
-                           season_time=times)
+    today = datetime.datetime.now().strftime("%Y-%m-%d")
+
+    form = updateInfoForm(request.form)
+    return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error, today=today,
+                           season_time=times, form=form)
+
+
+@profile_bp.route('/update_user_info', methods=['POST'])
+def update_user_info():
+    form = updateInfoForm(request.form)
+    if form.validate_on_submit():
+        user = User.query.filter_by(id=int(form.userID.data)).first()
+        if current_user.access > user.access or current_user.id == user.id:
+            for field in form:
+                if field.id != 'email' and field.id != 'userID':
+                    if field.data != "None":
+                        setattr(user, field.id, field.data)
+            if form.email.data != "None":
+                    user.email = form.email.data
+            db.session.commit()
+            flash("Details Updated Successfully", "success")
+        else:
+            flash("You don't have the permissions to edit this user", "error")
+        return redirect('/profile')
+    flash(form.errors)
+    return redirect('/profile')
+
+@profile_bp.route('/get_stages', methods=["GET"])
+def html_get_stages():
+    userID = request.args.get('userID')
+    date = datetime.datetime.strptime(request.args.get('start-date'), '%Y-%m-%d')
+    page = int(request.args.get('page'))
+    stages, final_page = get_stages(userID, date, page)
+    html = ""
+    if stages is None:
+        return html
+    for i, stage in enumerate(stages):
+        htmlScoresBody = ""
+        htmlSighters = ""
+        for shot in stage['scores']:
+            htmlScoresBody = htmlScoresBody + f"{shot['scoreVal']} "
+        for shot in stage['sighters']:
+            htmlSighters = htmlSighters + f"{shot['scoreVal']} "
+        stage_html = ""
+        if i < len(stages) - 1 or final_page is True:
+            stage_html += """<div class="stage-overview">"""
+        else:
+            stage_html += f"""<div class="stage-overview" hx-get=/get_stages?userID={userID}&page={page+1} 
+            hx-trigger="revealed" hx-swap="afterend" hx-include="[name='start-date']" hx-indicator="#indicator">"""
+        stage_html += f"""
+                <div class="row">
+                    <div class="col-12 pb-4">
+                        <div class="card shadow border-0 card-hover">
+                            <div class="card-header recent-header">
+                                <div class="row">
+                                    <div class="col-4 align-self-center">
+                                        <p class="text-left" style="font-size:12px; color: black">
+                                        <i class="fas fa-clock"></i><span class="pl-1">{stage['duration']}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-4 align-self-center">
+                                        <p display="block" class="text-center" style="font-size:12px;">{stage['timestamp']}</p>
+                                    </div>
+                                    <div class="col-4 align-self-center">
+                                        <p class="text-right" style="font-size:12px; color: black">
+                                            <a href="/target?stageID={stage['stageID']}" class="stage-view show-sheet" target="_blank">
+                                                    <u>View Plotsheet</u>
+                                                    <i class="fas fa-external-link-alt" style="color:black;"></i>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="recent-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-sm table-bordered recentShotsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style='width: 50px;'>Range</th>
+                                                        <th style='width: 62px;'>Sighters</th>
+                                                        <th>Shots</th>
+                                                        <th style='width: 69px;'>Total</th>
+                                                        <th style='width: 48px;'>Group</th>
+                                                        <th style='width: 37px;'>Std</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>{stage['distance']}</th>
+                                                        <th>{htmlSighters}</th>
+                                                        <th>{htmlScoresBody}</th>
+                                                        <th>{stage['totalScore']}</th>
+                                                        <th>{stage['groupSize']}</th>
+                                                        <th>{stage['std']}</th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
+        html += stage_html
+    return html
+
+@profile_bp.route('/profile/get_season_shot_data', methods=["GET"])
+def season_shot_data():
+    userID = request.args.get('userID')
+    settings = Settings.query.filter_by(id=0).first()
+    data = num_shots(userID, settings.season_start, settings.season_end)
+    html = f"""
+            <table class="table table-sm table-bordered">
+              <tbody>
+                <tr>
+                  <th scope="row">Sessions</th>
+                  <td>{data["num_sessions"]}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Stages</th>
+                  <td>{data["num_stages"]}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Shots</th>
+                  <td>{data["num_shots"]}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Avr. Shots per Session</th>
+                  <td>{data["num_shots_per_session"]}</td>
+                </tr>
+              </tbody>
+            </table>
+          """
+    return html

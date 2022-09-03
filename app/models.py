@@ -238,6 +238,12 @@ class Stage(db.Model):
             self.std = statistics.stdev(scores)
             self.duration = abs((self.shotList[-1].timestamp - self.shotList[1].timestamp)).total_seconds()
             self.init_total()
+        else:
+            self.mean = -1
+            self.median = -1
+            self.std = -1
+            self.duration = -1
+            self.init_total()
 
     def init_total(self):
         """
