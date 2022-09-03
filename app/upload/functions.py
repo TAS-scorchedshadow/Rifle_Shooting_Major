@@ -140,11 +140,7 @@ def upload_stages(stage_list, invalid_list_id, stage_define, user_dict):
         count["total"] += 1
     db.session.commit()
     for user in User.query.all():
-        print(user)
-        print(stageClassList)
-        s = Club.query.filter_by(id=0).first()
-        if s.email_setting == 2:
-            send_upload_email(user, stageClassList)
+        send_upload_email(user, stageClassList)
     return count
 
 
