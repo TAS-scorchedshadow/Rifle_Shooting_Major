@@ -34,10 +34,17 @@ $( document ).ready(function() {
                         'dateRange': dateRange,
                         }),
                 success:(function (shotData) {
-                    // Wait until container div is larger than 0 then run
+                    // If container is of size 0, then wait till resize then load all shots
+                    if ($('#heatMapDiv').width() > 0) {
+                        loadAllShots(seasonData);
+                    }
                     seasonData = shotData;
                     graphReady = true;
                     new ResizeSensor($("#heatMapDiv"), function(){
+                        // Don't load graphs if container is of size 0 or less
+                        if ($('#heatMapDiv').width() <= 0) {
+                            graphReady = false;
+                        }
                         if (graphReady === true) {
                             removeGraphs();
                             loadAllShots(seasonData);
