@@ -36,18 +36,14 @@ $( document ).ready(function() {
                 success:(function (shotData) {
                     // If container is of size 0, then wait till resize then load all shots
                     if ($('#heatMapDiv').width() > 0) {
-                        loadAllShots(seasonData);
+                        loadAllShots(shotData);
                     }
-                    seasonData = shotData;
                     graphReady = true;
                     new ResizeSensor($("#heatMapDiv"), function(){
-                        // Don't load graphs if container is of size 0 or less
-                        if ($('#heatMapDiv').width() <= 0) {
-                            graphReady = false;
-                        }
+                        console.log('size changed')
                         if (graphReady === true) {
-                            removeGraphs();
-                            loadAllShots(seasonData);
+                            removeGraphs()
+                            loadAllShots(shotData);
                             graphReady = true;
                         }
                     });
@@ -61,7 +57,7 @@ $( document ).ready(function() {
         //generate the needed html if they are missing
         if ($('#heatMap').length <= 0) {
             let heatMapHtml = `
-              <div class='pt-2' id='heatMap' style="width:600px; height:600px; margin: auto; padding: 10px;">
+              <div class='pt-2 mt-2' id='heatMap' style="width:600px; height:600px; margin: auto; padding: 10px;">
               </div>
             `;
             $('#heatMapDiv').append(heatMapHtml);
@@ -79,6 +75,10 @@ $( document ).ready(function() {
             `;
             $('#bestWorstCol').append(bestWorstHtml);
         }
+        // Remove existing heatmap if it exists
+        if ($('.heatmap-canvas').length > 0) {
+            $('.heatmap-canvas').remove()
+        }
         //load shots
         if (userID != null) {
             // Subtract padding
@@ -91,7 +91,7 @@ $( document ).ready(function() {
             let heatMapData = []
             let heatShotData = {}
             for (let i=0; i<shotData['target'].length; i++) {
-                heatShotData = {'x': 0, 'y': 0, 'value': 2}
+                heatShotData = {'x': 0, 'y': 0, 'value': 1}
                 heatShotData['x'] = Math.round(shotData['target'][i]['xPos'] * ratio + (size / 2));
                 heatShotData['y'] = Math.round(size / 2 - shotData['target'][i]['yPos'] * ratio);
                 heatMapData.push(heatShotData);
@@ -110,7 +110,8 @@ $( document ).ready(function() {
 
             };
             heatmapInstance.setData(testData);
-            let myTarget = new DrawTarget('title',distance, shotData['target'], null, size)
+            new DrawTarget('title',distance, shotData['target'], null, size)
+
             if (shotData['boxPlot'].length > 1) {
                 $('#boxAlert').hide();
                 boxPlot("boxPlot", shotData['boxPlot'])
@@ -176,6 +177,8 @@ $( document ).ready(function() {
                 $('#bestWorstDiv').append(worstHtml);
             }
         }
+        // Reset the card to 100% instead of a set height
+        $('#heatmapCard').css('height', '100%');
     }
     function removeGraphs() {
         graphReady = false;
@@ -189,13 +192,19 @@ $( document ).ready(function() {
     $('#date-selector-season').on('DOMSubtreeModified', function () {
       if ($(this).html() !== '') {
           dateRange = $('#date-selector-season').html();
+          // Set the height so that the card doesn't shrink and scroll the user back to the top of the page
+          let heatmapWidth = $('#heatmapCard').height();
+          $('#heatmapCard').css('height', heatmapWidth.toString() + 'px');
           removeGraphs();
           getSeasonShots(userID, distance, dateRange);
       }
     });
-    $('#select-range-span').on('DOMSubtreeModified', function () {
+    $('#select-range-span').on('DOMSubtreeModified', async function () {
       if ($(this).html() !== '') {
           distance = $('#select-range-span').html();
+          // Set the height so that the card doesn't shrink and scroll the user back to the top of the page
+          let heatmapWidth = $('#heatmapCard').height();
+          $('#heatmapCard').css('height', heatmapWidth.toString() + 'px');
           removeGraphs();
           getSeasonShots(userID, distance, dateRange);
       }
