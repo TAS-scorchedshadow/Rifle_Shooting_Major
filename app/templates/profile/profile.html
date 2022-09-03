@@ -244,7 +244,7 @@
                                     </div>
                                     <div class="col">
                                         {{ form.gradYr.label }}
-                                        <input class="field form-control" type="number" min="2000" max="9999"
+                                        <input class="field form-control" required type="number" min="2000" max="9999"
                                                id="gradYr" name="gradYr" , value= {{ user.gradYr }}>
                                     </div>
                                 </div>
@@ -357,10 +357,9 @@
                                 <div class = card-body>
                                     <!--line graph is shown here-->
                                     <script type="text/javascript" src="../static/js/profile/overview_graph.js"></script>
-                                    <div class="spinner-border text-primary justify-content-center" id="graphSpinner"
-                                         role="status" style="margin: auto; padding: 10px;">
-                                    </div>
-                                    <canvas style="background-color:white;" id="lineSTDEV"></canvas>
+                                    <img id="graph-indicator" class="bar-indicator mx-auto" style=" margin-top: 100px;
+                                        max-height: 100px" src="../../static/images/bars.svg"/>
+                                    <canvas style="background-color:inherit;" id="lineSTDEV"></canvas>
                                 </div>
                             </div>
                             <br>
