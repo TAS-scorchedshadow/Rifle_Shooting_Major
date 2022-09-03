@@ -34,8 +34,8 @@ $( document ).ready(function() {
                         'dateRange': dateRange,
                         }),
                 success:(function (shotData) {
+                    // Wait until container div is larger than 0 then run
                     seasonData = shotData;
-                    loadAllShots(shotData);
                     graphReady = true;
                     new ResizeSensor($("#heatMapDiv"), function(){
                         if (graphReady === true) {
