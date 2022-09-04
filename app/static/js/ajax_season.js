@@ -154,7 +154,7 @@ $( document ).ready(function() {
                   },
                 });
             }
-            $('.season-spinner').hide()
+            $('.season-spinner').css("display", "none")
             if (shotData['bestStage'].score != undefined) {
                 //Show best and worst stages
                 let bestHtml = `
@@ -182,7 +182,7 @@ $( document ).ready(function() {
         $('#heatMap').remove();
         $('#boxPlot').remove();
         $('#bestWorstDiv').remove();
-        $('.season-spinner').show();
+        $('.season-spinner').css("display", "block")
         $('#boxAlert').hide();
 
     }
