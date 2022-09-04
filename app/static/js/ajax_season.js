@@ -54,7 +54,7 @@ $( document ).ready(function() {
         //generate the needed html if they are missing
         if ($('#heatMap').length <= 0) {
             let heatMapHtml = `
-              <div class='pt-2 mt-2' id='heatMap' style="width:600px; height:600px; margin: auto; padding: 10px;">
+              <div class='pt-2 mt-4' id='heatMap' style="width:600px; height:600px; margin: auto; padding: 10px;">
               </div>
             `;
             $('#heatMapDiv').append(heatMapHtml);
