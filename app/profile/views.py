@@ -8,7 +8,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.api.api import get_stages, num_shots
 from app.models import User, Club
-from app.decorators import role_required, club_exists
+from app.decorators import club_authorised_urlpath, club_exists
 from app.profile.forms import updateInfoForm
 
 profile_bp = Blueprint('profile_bp', __name__)
@@ -17,15 +17,13 @@ profile_bp = Blueprint('profile_bp', __name__)
 @profile_bp.route('/profile_list', methods=['GET'])
 @login_required
 def catch_profile_list():
-    club = Club.query.filter_by(id=current_user.clubID).first()
-    return redirect(url_for(".profile_list", club=club.name))
+    return redirect(url_for(".profile_list", club_name=current_user.club.name))
 
 
-@profile_bp.route('/profile_list/<club>', methods=['GET', 'POST'])
+@profile_bp.route('/profile_list/<club_name>', methods=['GET', 'POST'])
 @login_required
-@club_exists
-@role_required("COACH")
-def profile_list(club):
+@club_authorised_urlpath("COACH")
+def profile_list(club, club_name):
     searchError = False
     if request.method == "POST":
         textInput = request.form['user-search']
@@ -40,7 +38,6 @@ def profile_list(club):
         if cardInput:
             flask_session['profileID'] = int(cardInput)
             return redirect('/profile')
-    club = Club.query.filter_by(name=club).first()
     users = User.query.filter_by(clubID=club.id).order_by(User.username).all()
     yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'],
                   '7': ['Year 7'], 'other': ['Graduated']}

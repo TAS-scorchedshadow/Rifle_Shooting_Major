@@ -1,11 +1,11 @@
 import datetime
 import json
 
-from flask import Blueprint, request, jsonify, redirect, url_for, render_template
+from flask import Blueprint, request, jsonify, redirect, url_for, render_template, abort
 from flask_login import login_required, current_user
 
 from app import db
-from app.decorators import role_required, club_exists
+from app.decorators import club_authorised_urlpath, club_exists, is_authorised
 from app.models import User, Club
 
 admin_bp = Blueprint('admin_bp', __name__)
@@ -14,21 +14,18 @@ admin_bp = Blueprint('admin_bp', __name__)
 @admin_bp.route('/user_list', methods=['GET'])
 @login_required
 def user_list_catch():
-    club = Club.query.filter_by(id=current_user.clubID).first()
-    return redirect(url_for(".user_list", club=club.name))
+    return redirect(url_for(".user_list", club_name=current_user.club.name))
 
 
-@admin_bp.route('/user_list/<club>', methods=['GET', 'POST'])
+@admin_bp.route('/user_list/<club_name>', methods=['GET', 'POST'])
 @login_required
-@club_exists
-@role_required("ADMIN")
-def user_list(club):
+@club_authorised_urlpath("ADMIN")
+def user_list(club, club_name):
     """
     List of all current users on the system.
 
     :return: user_list.html
     """
-    club = Club.query.filter_by(name=club).first()
     users = User.query.filter_by(clubID=club.id).order_by(User.access, User.sName).all()
     for user in users:
         user.schoolYr = user.get_school_year()
@@ -51,10 +48,10 @@ def make_admin():
     club = Club.query.filter_by(id=clubID).first()
     user = User.query.filter_by(id=userID).first()
     if not club or not user:
-        return {"Error": "Error"}
+        abort(400)
 
-    if current_user.clubID != clubID or current_user.access < 2:
-        return {"Error": "Error"}
+    if not is_authorised(club, "ADMIN"):
+        abort(403)
 
     state = 0
     if user.access == 0:
@@ -78,10 +75,10 @@ def email_settings():
     email_setting = int(data["email_setting"])
     club = Club.query.filter_by(id=clubID).first()
     if not club:
-        return {"Error": "Error"}
+        abort(400)
 
-    if current_user.clubID != clubID or current_user.access < 2:
-        return {"Error": "Error"}
+    if not is_authorised(club, "ADMIN"):
+        abort(403)
 
     club.email_setting = email_setting
 
@@ -106,10 +103,10 @@ def update_season_date():
     club = Club.query.filter_by(id=clubID).first()
 
     if not club:
-        return {"Error": "Error"}
+        abort(400)
 
-    if current_user.clubID != clubID or current_user.access < 2:
-        return {"Error": "Error"}
+    if not is_authorised(club, "ADMIN"):
+        abort(403)
 
     club.season_start = datetime.datetime.strptime(dates[0], '%B %d, %Y')
     club.season_end = datetime.datetime.strptime(dates[1], '%B %d, %Y')
@@ -127,17 +124,17 @@ def delete_account():
 
     """
     data = request.get_data()
-    userID = json.loads(data)
+    userID = json.loads(data['userID'])
 
     clubID = int(data["clubID"])
     club = Club.query.filter_by(id=clubID).first()
 
     user = User.query.filter_by(id=userID).first()
     if not club or not user:
-        return {"Error": "Error"}
+        abort(400)
 
-    if current_user.clubID != clubID or current_user.access < 2:
-        return {"Error": "Error"}
+    if not is_authorised(club, "ADMIN"):
+        abort(403)
 
     user = User.query.filter_by(id=userID).first()
     db.session.delete(user)
