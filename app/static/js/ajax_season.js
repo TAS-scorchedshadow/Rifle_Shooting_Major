@@ -22,9 +22,7 @@ $( document ).ready(function() {
     getSeasonShots(userID, distance, dateRange);
     var graphReady = false
     function getSeasonShots(userID, distance, dateRange) {
-        console.log('id ' + userID);
         if (userID != null){
-            console.log("running ajax");
             $.ajax({
                 type: 'POST',
                 url: "/get_all_shots_season",
@@ -40,7 +38,6 @@ $( document ).ready(function() {
                     }
                     graphReady = true;
                     new ResizeSensor($("#heatMapDiv"), function(){
-                        console.log('size changed')
                         if (graphReady === true) {
                             removeGraphs()
                             loadAllShots(shotData);
