@@ -44,11 +44,13 @@ def make_admin():
     """
     data = json.loads(request.get_data())
     userID = int(data["userID"])
-    clubID = int(data["clubID"])
-    club = Club.query.filter_by(id=clubID).first()
+    club = current_user.club
     user = User.query.filter_by(id=userID).first()
     if not club or not user:
         abort(400)
+
+    if user.clubID != current_user.clubID:
+        abort(403)
 
     if not is_authorised(club, "ADMIN"):
         abort(403)
@@ -71,9 +73,8 @@ def email_settings():
 
     """
     data = json.loads(request.get_data())
-    clubID = int(data["clubID"])
     email_setting = int(data["email_setting"])
-    club = Club.query.filter_by(id=clubID).first()
+    club = current_user.club
     if not club:
         abort(400)
 
@@ -99,8 +100,7 @@ def update_season_date():
     date_range = data["date_range"]
     dates = date_range.split(' - ')
 
-    clubID = int(data["clubID"])
-    club = Club.query.filter_by(id=clubID).first()
+    club = current_user.club
 
     if not club:
         abort(400)
@@ -124,14 +124,16 @@ def delete_account():
 
     """
     data = request.get_data()
-    userID = json.loads(data['userID'])
+    userID = json.loads(data)['userID']
 
-    clubID = int(data["clubID"])
-    club = Club.query.filter_by(id=clubID).first()
+    club = current_user.club
 
     user = User.query.filter_by(id=userID).first()
     if not club or not user:
         abort(400)
+
+    if current_user.clubID != user.clubID:
+        abort(403)
 
     if not is_authorised(club, "ADMIN"):
         abort(403)
