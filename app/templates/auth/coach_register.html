@@ -11,17 +11,6 @@
     If you are a current student <a href="/register">sign up here</a>
 </p>
 <hr>
-<h4 class="text-center">
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="flashes" style="list-style-type: none">
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-</h4>
 
 <!-- oninput checks if passwords are matching -->
 <form name="signup_form" role = "form" method="post" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
@@ -50,9 +39,6 @@
         {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
     </div>
 </form>
-{% if form.errors %}
-    {{ form.errors }}
-{% endif %}
 <br>
 <p class="text-center">Already have an account?
     <a href="/login">Sign In</a>
