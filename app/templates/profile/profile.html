@@ -478,64 +478,73 @@
             <!--Season Stats-->
             <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
                 <div class="container-fluid pt-2 pl-0 pr-0">
-                    <div class="row">
-                        <div class="col-5" style="display: flex; justify-content: space-between">
-                            <div class="selectSeason pb-2"
-                                 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; display:inline;">
-                                <i class="fa fa-calendar"></i>&nbsp;
-                                <span id="date-selector-season"></span> <i class="fa fa-caret-down"></i>
-                            </div>
-                            <div class="dropdown pl-2">
-                                <button class="btn btn-secondary" style="width: 100px" type="button"
-                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                    <span id="select-range-span">300m</span><i class="fa fa-caret-down pl-1"
-                                                                               style="color: white;"></i>
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item"
-                                       onclick="document.getElementById('select-range-span').innerHTML = '300m'">300m</a>
-                                    <a class="dropdown-item"
-                                       onclick="document.getElementById('select-range-span').innerHTML = '400m'">400m</a>
-                                    <a class="dropdown-item"
-                                       onclick="document.getElementById('select-range-span').innerHTML = '500m'">500m</a>
-                                    <a class="dropdown-item"
-                                       onclick="document.getElementById('select-range-span').innerHTML = '600m'">600m</a>
-                                    <a class="dropdown-item"
-                                       onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
-                                    <a class="dropdown-item"
-                                       onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="row" id="seasonRow1">
-                        <div class="col-12 col-xl-5" id="heatMapDiv">
-                            <div style="display:flex; flex-direction: column; justify-content: space-around;">
-                                <h4 style="margin: auto; padding: 10px;">Heatmap</h4>
-                                <div class="spinner-border text-primary season-spinner" role="status"
-                                     style="margin: auto; padding: 10px;">
+                        <div class="col-12 col-xl-5">
+                            <div class="card">
+                                <h5 class="card-header">Heatmap</h5>
+                                <div class="card-body" id="heatmapCard">
+                                    <div style="display: flex; justify-content: space-between">
+                                        <div class="selectSeason pb-2"
+                                             style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; display:inline;">
+                                            <i class="fa fa-calendar"></i>&nbsp;
+                                            <span id="date-selector-season"></span> <i class="fa fa-caret-down"></i>
+                                        </div>
+                                        <div class="dropdown pl-2">
+                                            <button class="btn btn-secondary" style="width: 100px" type="button"
+                                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                <span id="select-range-span">300m</span><i class="fa fa-caret-down pl-1"
+                                                                                           style="color: white;"></i>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item"
+                                                   onclick="document.getElementById('select-range-span').innerHTML = '300m'">300m</a>
+                                                <a class="dropdown-item"
+                                                   onclick="document.getElementById('select-range-span').innerHTML = '400m'">400m</a>
+                                                <a class="dropdown-item"
+                                                   onclick="document.getElementById('select-range-span').innerHTML = '500m'">500m</a>
+                                                <a class="dropdown-item"
+                                                   onclick="document.getElementById('select-range-span').innerHTML = '600m'">600m</a>
+                                                <a class="dropdown-item"
+                                                   onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
+                                                <a class="dropdown-item"
+                                                   onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
+                                         src="../../static/images/bars.svg"/>
+                                    <div id="heatMapDiv">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="pt-2" id='heatMap' style="margin: auto; padding: 10px;">
-                                <!--Heatmap goes in here-->
                             </div>
                         </div>
                         <div class="col-12 col-xl-7">
-                            <div id="boxPlotDiv"
-                                 style="display: flex; flex-direction: column; justify-content: space-around">
-                                <h4 style="margin: auto; padding: 10px;">Box Plot</h4>
-                                <div class="spinner-border text-primary season-spinner" role="status"
-                                     style="margin: auto; padding: 10px;">
+                            <div class="card">
+                                <h5 class="card-header">
+                                    Box Plot
+                                </h5>
+                                <div class="card-body">
+                                    <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
+                                         src="../../static/images/bars.svg"/>
+                                    <div id="boxPlotDiv" style="display: flex; flex-direction: column; justify-content: space-around">
+                                        <div class="alert alert-secondary" id="boxAlert" role="alert" style="display: none;">
+                                            There aren't enough stages to show a box plot. Please add more stages at the <a
+                                                href="/upload"><b><u>upload page</u></b></a> or select a different timeframe.
+                                        </div>
+                                        <canvas id="boxPlot"></canvas>
+                                    </div>
                                 </div>
-                                <div class="alert alert-secondary" id="boxAlert" role="alert" style="display: none;">
-                                    There aren't enough stages to show a box plot. Please add more stages at the <a
-                                        href="/upload"><b><u>upload page</u></b></a> or select a different timeframe.
-                                </div>
-                                <canvas id="boxPlot"></canvas>
                             </div>
-                            <div class="col-12 pt-2" id="bestWorstCol"
-                                 style="display: flex; flex-direction: column; justify-content: space-around">
+                            <div class="card mt-4">
+                                <h5 class="card-header">Notable stages</h5>
+                                <div class="card-body">
+                                    <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
+                                         src="../../static/images/bars.svg"/>
+                                    <div id="bestWorstCol"
+                                        style="display: flex; flex-direction: column; justify-content: space-around">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
