@@ -29,7 +29,7 @@ def create_app(config_class=Config):
     ctx.push()
 
     register_blueprints(app)
-    Talisman(app, content_security_policy=None)
+    Talisman(app, content_security_policy=None, force_https=app.config['FORCE_HTTPS'])
     configure_error_handlers(app)
     configure_shell_processor(app)
 
