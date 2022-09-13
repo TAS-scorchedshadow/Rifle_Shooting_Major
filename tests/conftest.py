@@ -16,6 +16,7 @@ class TestingConfig(Config):
     WTF_CSRF_ENABLED = False
     MAIL_SUPPRESS_SEND = True
     FORCE_HTTPS = False
+    SECRET_KEY = "SUPER_SECRET"
     SQLALCHEMY_DATABASE_URI = "sqlite:///"
 
 
