@@ -12,6 +12,15 @@ on:
 permissions:
   contents: read
 
+env:
+  SECRET_KEY: 'SECRET KEY'
+  MAIL_DEFAULT_SENDER: 'proanalyticsRS@gmail.com'
+  MAIL_SERVER: 'smtp.sendgrid.net'
+  MAIL_PORT: 587
+  MAIL_USE_TLS: 1
+  MAIL_USERNAME: 'apikey'
+  MAIL_SETTING: 0
+
 jobs:
   build:
 
