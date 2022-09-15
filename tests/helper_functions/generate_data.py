@@ -63,7 +63,7 @@ def generate_rand_stage(num_shots: int, x_center: float, y_center: float, x_spre
             score = 5
             v_score = 1
 
-        new_shot = Shot(score=score,xPos=x_poses[i],yPos=y_poses[i],vScore=v_score,stageID=stage_id)
+        new_shot = Shot(score=score, xPos=x_poses[i], yPos=y_poses[i], vScore=v_score, stageID=stage_id)
         time += timedelta(seconds=int(times[i]))
         new_shot.timestamp = time
         new_shot.sighter = False

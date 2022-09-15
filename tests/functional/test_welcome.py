@@ -1,11 +1,6 @@
-import datetime as datetime
-
 import pytest
-from flask import template_rendered, url_for
-from flask_login import login_user
 
-from app import db, mail
-from app.models import User, Stage, Club
+from app import mail
 
 
 @pytest.mark.usefixtures("create_users")
