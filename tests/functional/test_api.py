@@ -1,5 +1,7 @@
 import pytest
 import json
+
+
 @pytest.mark.usefixtures("api_setup")
 class TestApi:
     def test_submit_notes(self, test_client, captured_templates):
@@ -8,7 +10,8 @@ class TestApi:
         WHEN the '/submit_notes' page is requested (GET)
         THEN check that the response is valid
         """
-        response = test_client.post('/submit_notes', json=[self.stage_ids[0], 'You suck at shooting. Just give up already'])
+        response = test_client.post('/submit_notes',
+                                    json=[self.stage_ids[0], 'You suck at shooting. Just give up already'])
 
         assert json.loads(response.data.decode("utf-8")) == {'success': 'success'}
 

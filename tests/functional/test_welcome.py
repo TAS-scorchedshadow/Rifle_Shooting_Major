@@ -1,7 +1,7 @@
 import pytest
 
 from app import mail
-from tests.helper_functions.auth_helper import set_club, register_user
+from tests.helper_functions.auth_helper import set_club
 
 
 @pytest.mark.usefixtures("register_users")
@@ -52,7 +52,6 @@ class TestIndex:
             "username": self.coach.username,
             "password": "coachPass"
         })
-
 
         response = test_client.get('/', follow_redirects=True)
 

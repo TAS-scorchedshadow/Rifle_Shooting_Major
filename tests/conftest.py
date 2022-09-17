@@ -3,13 +3,13 @@ import datetime as datetime
 import pytest as pytest
 from dateutil.relativedelta import relativedelta
 from flask import template_rendered
-from flask_login import login_user
 
 from app import create_app, db
 from tests.helper_functions.auth_helper import register_user, set_access
 from tests.helper_functions.generate_data import generate_rand_stage
 from app.models import User, Club
 from config import Config
+
 
 # Is subclass of Config by Flask
 class TestingConfig(Config):
@@ -25,6 +25,7 @@ def flask_app():
     flask_app = create_app(TestingConfig)
     yield flask_app
 
+
 @pytest.fixture
 def test_client(flask_app):
     with flask_app.test_client() as testing_client:
@@ -34,6 +35,7 @@ def test_client(flask_app):
             db.create_all()
             yield testing_client  # this is where the testing happens!
             db.drop_all()
+
 
 @pytest.fixture
 def captured_templates(flask_app):
@@ -58,9 +60,9 @@ def create_club(request, test_client):
     if request.cls:
         request.cls.club = club
 
+
 @pytest.fixture
 def register_users(request, test_client):
-
     start = datetime.datetime.now()
     end = datetime.datetime.now()
 
@@ -73,7 +75,6 @@ def register_users(request, test_client):
     request.cls.club2 = club2
 
     db.session.commit()
-
 
     student_data = {
         "fName": "Henry",
@@ -99,13 +100,13 @@ def register_users(request, test_client):
         "password": "coachPass",
         "confirmPassword": "coachPass"
     }
-    #TODO: If we have a seperate coach registeration, switch the register route
+    # TODO: If we have a seperate coach registeration, switch the register route
     register_user(coach_data, test_client)
     u = User.query.filter_by(fName=coach_data["fName"]).first()
     set_access(u, 1)
     request.cls.coach = u
 
-    #TODO: If we have a seperate admin registration, switch this out
+    # TODO: If we have a seperate admin registration, switch this out
     admin = User(username="admin")
     admin.set_password("adminPass")
     admin.access = 2
@@ -124,6 +125,7 @@ def register_users(request, test_client):
     db.session.add(dev)
     request.cls.dev = dev
     request.cls.admin.password = "adminPass"
+
 
 @pytest.fixture
 def create_users(request, test_client):
@@ -180,6 +182,7 @@ def create_users(request, test_client):
 
     db.session.commit()
 
+
 @pytest.fixture
 def api_setup(request, test_client):
     db.drop_all()
@@ -215,4 +218,3 @@ def api_setup(request, test_client):
         new_stage.userID = student.id
         request.cls.stage_ids.append(new_stage.id)
     db.session.commit()
-

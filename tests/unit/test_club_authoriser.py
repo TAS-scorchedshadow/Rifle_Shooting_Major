@@ -26,7 +26,6 @@ class TestIsAuthorised:
         assert is_authorised(self.club, "ADMIN") is False
         assert is_authorised(self.club, "DEV") is False
 
-
     def test_auth_coach(self, test_client, captured_templates):
         test_client.post('/login', data={
             "username": self.coach.username,

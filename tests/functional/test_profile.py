@@ -134,10 +134,10 @@ class TestProfileList:
         template, context = captured_templates[0]
         assert template.name == 'profile/profile.html'
 
+
 @pytest.mark.usefixtures("register_users")
 class TestProfile:
     def test_profile_unauthorised(self, test_client, captured_templates):
-
         response = test_client.get('/profile', follow_redirects=True)
 
         assert response.status_code == 200
@@ -146,7 +146,6 @@ class TestProfile:
         assert template.name == "auth/login.html"
 
     def test_profile_student(self, test_client, captured_templates):
-
         test_client.post('/login', data={
             "username": self.student.username,
             "password": "studentPass"
@@ -418,7 +417,6 @@ class TestProfile:
 
         assert template.name == "profile/profile.html"
 
-
     def test_profile_search_error(self, test_client, captured_templates):
         test_client.post('/login', data={
             "username": self.admin.username,
@@ -434,12 +432,12 @@ class TestProfile:
 
         assert template.name == "profile/profile.html"
 
+
 def test_get_target_stats_get(test_client):
     """
     GIVEN a Flask application configured for testing
     WHEN the '/get_target_stats' page is requested (GET)
     THEN check that the response is valid
     """
-    data = '0'
     response = test_client.get('/get_target_stats')
     assert 405 == response.status_code
