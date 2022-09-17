@@ -1,10 +1,9 @@
-from datetime import datetime, date
+from datetime import datetime
 
 import pytest
-from flask import session as flask_session
 
 
-@pytest.mark.usefixtures("create_users")
+@pytest.mark.usefixtures("register_users")
 class TestProfileList:
     def test_profile_list_unauthorised(self, test_client, captured_templates):
         """
@@ -85,7 +84,9 @@ class TestProfileList:
             "password": "adminPass"
         })
 
-        response = test_client.post('/profile_list', data={"user-search": self.student.username, "user": ""}, follow_redirects=True)
+        response = test_client.post(f'/profile_list/{self.club.name}',
+                                    data={"user-search": self.student.username, "user": ""},
+                                    follow_redirects=True)
 
         assert response.status_code == 200
         template, context = captured_templates[0]
@@ -104,7 +105,9 @@ class TestProfileList:
             "password": "adminPass"
         })
 
-        response = test_client.post('/profile_list', data={"user-search": "Not a name", "user": ""}, follow_redirects=True)
+        response = test_client.post(f'/profile_list/{self.club.name}',
+                                    data={"user-search": "Not a name", "user": ""},
+                                    follow_redirects=True)
 
         assert response.status_code == 200
         template, context = captured_templates[0]
@@ -123,13 +126,15 @@ class TestProfileList:
             "password": "adminPass"
         })
 
-        response = test_client.post('/profile_list', data={"user-search": "", "user": self.student.id}, follow_redirects=True)
+        response = test_client.post(f'/profile_list/{self.club.name}',
+                                    data={"user-search": "", "user": self.student.id},
+                                    follow_redirects=True)
 
         assert response.status_code == 200
         template, context = captured_templates[0]
         assert template.name == 'profile/profile.html'
 
-@pytest.mark.usefixtures("create_users")
+@pytest.mark.usefixtures("register_users")
 class TestProfile:
     def test_profile_unauthorised(self, test_client, captured_templates):
 

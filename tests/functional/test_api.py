@@ -23,7 +23,7 @@ class TestApi:
 
         assert json.loads(response.data.decode("utf-8")) == expected
 
-    def test_get_users(self, test_client, captured_templates):
+    def test_get_names(self, test_client, captured_templates):
         """
         GIVEN a Flask application configured for testing
         WHEN the '/get_users' page is requested (GET)
@@ -31,7 +31,7 @@ class TestApi:
         """
         expected = [{'label': 'student (None None)', 'value': 'student'},
                     {'label': 'coach (None None)', 'value': 'coach'}, {'label': 'admin (None None)', 'value': 'admin'}]
-        response = test_client.post('/get_users')
+        response = test_client.get('/get_names')
 
         assert json.loads(response.data.decode("utf-8")) == expected
 
