@@ -8,7 +8,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.api.api import get_stages, num_shots
 from app.models import User, Club
-from app.decorators import club_authorised_urlpath, club_exists
+from app.decorators import club_authorised_urlpath, club_exists, is_authorised
 from app.profile.forms import updateInfoForm
 
 profile_bp = Blueprint('profile_bp', __name__)
@@ -112,19 +112,15 @@ def update_user_info():
     form = updateInfoForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(id=int(form.userID.data)).first()
-        if current_user.access > user.access or current_user.id == user.id:
+        if (current_user.access > user.access and current_user.clubID == user.clubID) or current_user.id == user.id:
             for field in form:
-                if field.id != 'email' and field.id != 'userID':
+                if field.id != 'userID':
                     if field.data != "None":
                         setattr(user, field.id, field.data)
-            if form.email.data != "None":
-                    user.email = form.email.data
             db.session.commit()
             flash("Details Updated Successfully", "success")
         else:
-            flash("You don't have the permissions to edit this user", "error")
-        return redirect('/profile')
-    flash(form.errors)
+            flash("Invalid permissions to edit this user", "error")
     return redirect('/profile')
 
 

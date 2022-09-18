@@ -15,7 +15,7 @@ class updateInfoForm(FlaskForm):
     email = EmailField("Email", validators=[InputRequired()])
     gradYr = IntegerField("Graduation Year", validators=[InputRequired(), NumberRange(min=2000, max=9999)])
     mobile = StringField("Mobile", validators=[InputRequired()])
-    rifleSerial = StringField("Rifle Serial", validators=[InputRequired()])
+    rifle_serial = StringField("Rifle Serial", validators=[InputRequired()])
     schoolID = StringField("School ID", validators=[InputRequired()])
     shooterID = StringField("Shooter ID", validators=[InputRequired()])
     permitType = StringField("Permit Type", validators=[InputRequired()])

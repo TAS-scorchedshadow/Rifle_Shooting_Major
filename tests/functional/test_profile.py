@@ -1,6 +1,11 @@
+import copy
 from datetime import datetime
+from time import strftime
 
 import pytest
+
+from app.models import User
+from tests.helper_functions.auth_helper import set_club
 
 
 @pytest.mark.usefixtures("register_users")
@@ -441,3 +446,104 @@ def test_get_target_stats_get(test_client):
     """
     response = test_client.get('/get_target_stats')
     assert 405 == response.status_code
+
+
+def user_assert_helper(user, form):
+    # Did not use a getattr() loop as there's special behaviour in the database
+    assert user.id == form["userID"]
+    assert user.fName == form["fName"]
+    assert user.sName == form["sName"]
+    assert user.email == form["email"]
+    # Update gradYr in the database?
+    assert user.gradYr == str(form["gradYr"])
+    assert user.mobile == form["mobile"]
+    assert user.rifle_serial == form["rifle_serial"]
+    assert user.schoolID == form["schoolID"]
+    assert user.shooterID == form["shooterID"]
+    assert user.permitType == form["permitType"]
+    assert user.permitNumber == form["permitNumber"]
+    assert user.permitExpiry.strftime("%Y-%m-%d") == form['permitExpiry']
+
+
+@pytest.mark.usefixtures("register_users")
+class TestUpdateUserInfo:
+
+    # This form does not set the target user
+    # It will be set individually in each test
+    form = {
+        "userID": -1,
+        "fName": "123x",
+        "sName": "Hello",
+        "email": "new@gmail.com",
+        "gradYr": 2022,
+        "mobile": "0403588000",
+        "rifle_serial": "new Rifle serial",
+        "schoolID": "435921000",
+        "shooterID": "Shooter ID",
+        "permitType": "P-50",
+        "permitNumber": "Hello World",
+        "permitExpiry":  datetime.now().strftime("%Y-%m-%d")
+    }
+
+    def test_student_self_update(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
+
+        form = self.form
+        form['userID'] = self.student.id
+
+        r = test_client.post('/update_user_info', data=form, follow_redirects=True)
+        assert b"Details Updated Successfully" in r.data
+        user_assert_helper(self.student, form)
+
+    def test_student_to_coach_update(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
+
+        form = self.form
+        form['userID'] = self.coach.id
+
+        r = test_client.post('/update_user_info', data=form, follow_redirects=True)
+        assert b"Invalid permissions to edit this user" in r.data
+
+    def test_student_to_admin_update(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
+
+        form = self.form
+        form['userID'] = self.admin.id
+
+        r = test_client.post('/update_user_info', data=form, follow_redirects=True)
+        assert b"Invalid permissions to edit this user" in r.data
+
+    def test_coach_to_admin_update(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.coach.username,
+            "password": "coachPass"
+        })
+
+        form = self.form
+        form['userID'] = self.admin.id
+
+        r = test_client.post('/update_user_info', data=form, follow_redirects=True)
+        assert b"Invalid permissions to edit this user" in r.data
+
+    def test_coach_to_other_school_update(self, test_client, captured_templates):
+        test_client.post('/login', data={
+            "username": self.coach.username,
+            "password": "coachPass"
+        })
+
+        set_club(self.student, self.club2)
+        form = self.form
+        form['userID'] = self.student.id
+
+        r = test_client.post('/update_user_info', data=form, follow_redirects=True)
+        assert b"Invalid permissions to edit this user" in r.data
+
