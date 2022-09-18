@@ -44,12 +44,13 @@ def register():
 
     :return:
     """
-    clubList = ['SBHS', 'Scots']
     form = signUpForm()
     if form.validate_on_submit():
+        # TODO: Add handling for the disabled default option for club dropdown
+        email = form.email.data  # TODO: Neither this or coach register actually has a proper email check
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
                     school=request.form['club'],
-                    schoolID=form.schoolID.data, email=form.email.data, gradYr=str(form.gradYr.data))
+                    schoolID=form.schoolID.data, email=email, gradYr=str(form.gradYr.data))
         user.generate_username()
         user.set_password(form.password.data)
         db.session.add(user)
@@ -57,6 +58,7 @@ def register():
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
         return render_template('auth/register_success.html', user=user)
+    clubList = ['SBHS', 'Scots']  # TODO: Replace this with a function that gets the club list from database
     return render_template('auth/register.html', title='Register', form=form, clubList=clubList)
 
 

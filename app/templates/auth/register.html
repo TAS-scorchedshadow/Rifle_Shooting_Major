@@ -35,10 +35,10 @@
     <div class="form-row px-4">
         <div class="col-4">
             <select class="field form-control form-control-lg" name="club">
-                <option disabled selected value="Club">Club</option>
-                   {% for option in clubList %}
-                   <option value={{option}}>{{option}}</option>
-                   {% endfor %}
+                <!-- <option disabled selected value="Club">Club</option> -->
+                {% for option in clubList %}
+                    <option value={{option}}>{{option}}</option>
+                {% endfor %}
             </select>
         </div>
         <div class="col-4">
