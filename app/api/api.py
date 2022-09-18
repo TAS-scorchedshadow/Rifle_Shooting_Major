@@ -98,7 +98,7 @@ def get_names():
         :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
     clubID = request.args.get("clubID")
-    if clubID is None or clubID is '':
+    if clubID is None or clubID == '':
         users = get_users()
     else:
         users = get_users(int(clubID))
