@@ -10,6 +10,7 @@ def is_authorised(club: object, role: str) -> bool:
     """
     Checks if the current_user has the access corresponding to the role. The current user must be a part of
     the supplied club (excluding the dev role).
+
     :param club: Club to check authorisation for
     :param role: One of ["STUDENT", "COACH", "ADMIN", "DEV"]
     :return: Boolean
