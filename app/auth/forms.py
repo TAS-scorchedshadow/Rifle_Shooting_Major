@@ -11,10 +11,10 @@ class signUpForm(FlaskForm):
     """
     fName = StringField("Enter First Name:", validators=[InputRequired()])
     sName = StringField("Enter Last Name:", validators=[InputRequired()])
-    school = SelectField("Select a school", choices=[('SBHS', 'SBHS')])
     gradYr = IntegerField("Graduation Year:", validators=[InputRequired(), NumberRange(min=2000, max=9999)])
     schoolID = StringField("School ID:", validators=[InputRequired()])
     shooterID = StringField("Shooter ID:", validators=[InputRequired()])
+    email = StringField("Email:", validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")
 

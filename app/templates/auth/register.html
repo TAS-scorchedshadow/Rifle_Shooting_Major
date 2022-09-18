@@ -33,19 +33,26 @@
       </div>
     <br>
     <div class="form-row px-4">
-          <div class="col-2">
-               {{ form.school(class_="field form-control form-control-lg",placeholder="First Name")}}
-          </div>
+        <div class="col-4">
+            <select class="field form-control form-control-lg" name="club">
+                <option disabled selected value="Club">Club</option>
+                   {% for option in clubList %}
+                   <option value={{option}}>{{option}}</option>
+                   {% endfor %}
+            </select>
+        </div>
         <div class="col-4">
              {{ form.gradYr(class_="field form-control form-control-lg",placeholder="Graduation Year")}}
         </div>
-        <div class="col-6">
+        <div class="col-4">
              {{ form.schoolID(class_="field form-control form-control-lg",placeholder="School ID")}}
         </div>
       </div>
     <br>
      <div class="form-group px-4">
          {{ form.shooterID(class_="field form-control form-control-lg",placeholder="Shooter ID")}}
+         <br>
+         {{ form.email(class_="field form-control form-control-lg",placeholder="Email")}}
          <br>
          {{ form.password(class_="field form-control form-control-lg",placeholder="Password", id ="pass1")}}
          <br>

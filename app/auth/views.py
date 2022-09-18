@@ -44,12 +44,12 @@ def register():
 
     :return:
     """
+    clubList = ['SBHS', 'Scots']
     form = signUpForm()
     if form.validate_on_submit():
-        email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
-                    school=form.school.data,
-                    schoolID=form.schoolID.data, email=email, gradYr=str(form.gradYr.data))
+                    school=request.form['club'],
+                    schoolID=form.schoolID.data, email=form.email.data, gradYr=str(form.gradYr.data))
         user.generate_username()
         user.set_password(form.password.data)
         db.session.add(user)
@@ -57,7 +57,7 @@ def register():
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
         return render_template('auth/register_success.html', user=user)
-    return render_template('auth/register.html', title='Register', form=form)
+    return render_template('auth/register.html', title='Register', form=form, clubList=clubList)
 
 
 @auth_bp.route('/coachRegister', methods=['GET', 'POST'])
