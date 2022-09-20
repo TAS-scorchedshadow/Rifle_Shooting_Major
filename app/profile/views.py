@@ -177,11 +177,11 @@ def html_get_stages():
                                             <table class="table table-sm table-bordered recentShotsTable">
                                                 <thead>
                                                     <tr>
-                                                        <th style='width: 50px;'>Range</th>
+                                                        <th style='width: 55px;'>Range</th>
                                                         <th style='width: 62px;'>Sighters</th>
                                                         <th>Shots</th>
                                                         <th style='width: 69px;'>Total</th>
-                                                        <th style='width: 48px;'>Group</th>
+                                                        <th style='width: 55px;'>Group</th>
                                                         <th style='width: 37px;'>Std</th>
                                                     </tr>
                                                 </thead>
