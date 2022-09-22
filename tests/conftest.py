@@ -3,12 +3,13 @@ import datetime as datetime
 import pytest as pytest
 from dateutil.relativedelta import relativedelta
 from flask import template_rendered
-from flask_login import login_user
 
 from app import create_app, db
+from tests.helper_functions.auth_helper import register_user, set_access
 from tests.helper_functions.generate_data import generate_rand_stage
-from app.models import User, Settings
+from app.models import User, Club
 from config import Config
+
 
 # Is subclass of Config by Flask
 class TestingConfig(Config):
@@ -24,6 +25,7 @@ def flask_app():
     flask_app = create_app(TestingConfig)
     yield flask_app
 
+
 @pytest.fixture
 def test_client(flask_app):
     with flask_app.test_client() as testing_client:
@@ -33,6 +35,7 @@ def test_client(flask_app):
             db.create_all()
             yield testing_client  # this is where the testing happens!
             db.drop_all()
+
 
 @pytest.fixture
 def captured_templates(flask_app):
@@ -49,9 +52,83 @@ def captured_templates(flask_app):
 
 
 @pytest.fixture
+def create_club(request, test_client):
+    start = datetime.datetime.now()
+    end = datetime.datetime.now()
+    club = Club(name="SBHS", season_start=start, season_end=end)
+    db.session.add(club)
+    if request.cls:
+        request.cls.club = club
+
+
+@pytest.fixture
+def register_users(request, test_client):
+    start = datetime.datetime.now()
+    end = datetime.datetime.now()
+
+    club = Club(name="SBHS", season_start=start, season_end=end)
+    db.session.add(club)
+    request.cls.club = club
+
+    club2 = Club(name="SCOTS", season_start=start, season_end=end)
+    db.session.add(club2)
+    request.cls.club2 = club2
+
+    db.session.commit()
+
+    student_data = {
+        "fName": "Henry",
+        "sName": "Guo",
+        "school": club.name,
+        "gradYr": 2024,
+        "schoolID": "435921000",
+        "shooterID": "Xaw-423",
+        "password": "studentPass",
+        "confirmPassword": "studentPass"
+    }
+    register_user(student_data, test_client)
+    u = User.query.filter_by(fName=student_data["fName"]).first()
+    request.cls.student = u
+
+    coach_data = {
+        "fName": "Jeffery",
+        "sName": "Lee",
+        "school": club.name,
+        "gradYr": 2022,
+        "schoolID": "asdE2sa",
+        "shooterID": "Xasx-423",
+        "password": "coachPass",
+        "confirmPassword": "coachPass"
+    }
+    # TODO: If we have a seperate coach registeration, switch the register route
+    register_user(coach_data, test_client)
+    u = User.query.filter_by(fName=coach_data["fName"]).first()
+    set_access(u, 1)
+    request.cls.coach = u
+
+    # TODO: If we have a seperate admin registration, switch this out
+    admin = User(username="admin")
+    admin.set_password("adminPass")
+    admin.access = 2
+    admin.fName = "Richard"
+    admin.sName = "Smith"
+    admin.clubID = club.id
+    db.session.add(admin)
+    request.cls.admin = admin
+    request.cls.admin.password = "adminPass"
+
+    dev = User(username="dev")
+    dev.set_password("devPass")
+    dev.access = 3
+    dev.fName = "Dev"
+    dev.sName = "Account"
+    db.session.add(dev)
+    request.cls.dev = dev
+    request.cls.admin.password = "adminPass"
+
+
+@pytest.fixture
 def create_users(request, test_client):
-    db.drop_all()
-    db.create_all()
     student = User(username="student")
     student.set_password("studentPass")
     student.access = 0
@@ -89,13 +166,22 @@ def create_users(request, test_client):
     db.session.add(admin)
     request.cls.admin = admin
 
+    dev = User(username="dev")
+    dev.set_password("devPass")
+    dev.access = 3
+    dev.fName = "Dev"
+    dev.sName = "Account"
+    db.session.add(dev)
+    request.cls.dev = dev
+
     start = datetime.datetime.now()
     end = datetime.datetime.now()
-    settings = Settings(id=0,email_setting=0,season_start=start,season_end=end)
+    settings = Club(id=0, email_setting=0, season_start=start, season_end=end)
     db.session.add(settings)
     request.cls.settings = settings
 
     db.session.commit()
+
 
 @pytest.fixture
 def api_setup(request, test_client):
@@ -121,7 +207,7 @@ def api_setup(request, test_client):
 
     start = datetime.datetime.now()
     end = datetime.datetime.now()
-    settings = Settings(id=0,email_setting=0,season_start=start,season_end=end)
+    settings = Club(id=0, email_setting=0, season_start=start, season_end=end)
     db.session.add(settings)
     request.cls.settings = settings
     db.session.commit()
@@ -132,4 +218,3 @@ def api_setup(request, test_client):
         new_stage.userID = student.id
         request.cls.stage_ids.append(new_stage.id)
     db.session.commit()
-

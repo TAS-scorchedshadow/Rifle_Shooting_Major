@@ -1,6 +1,8 @@
 import os
 import time
 
+from sqlalchemy import func
+
 from app import db, login
 from flask import current_app as app
 from datetime import datetime, timedelta
@@ -11,14 +13,16 @@ import statistics
 from app.time_convert import nsw_to_utc, utc_to_nsw, format_duration
 
 
-class Settings(db.Model):
+class Club(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
     email_setting = db.Column(db.Integer) # 0 - Never, 1-Prompt, 2-Always
-    season_start = db.Column(db.DateTime)
-    season_end = db.Column(db.DateTime)
+    season_start = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    season_end = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    users = db.relationship('User', backref='club', lazy='dynamic')
 
     def __repr__(self):
-        return '<Setting {}>'.format(self.id)
+        return '<Club {} Id:{}>'.format(self.name,self.id)
 
 
 
@@ -31,6 +35,7 @@ class User(UserMixin, db.Model):
     """
     # UserMixin defines isActive, isAuthenticated, getID, isAnonymous
     id = db.Column(db.Integer, primary_key=True)
+    clubID = db.Column(db.Integer, db.ForeignKey('club.id'))
     username = db.Column(db.String(64), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     fName = db.Column(db.String(70))
@@ -50,7 +55,7 @@ class User(UserMixin, db.Model):
     labels = db.Column(db.JSON)
     stages = db.relationship('Stage', backref='shooter', lazy='dynamic')
 
-    # Gear Settings
+    # Gear Club
     rifle_serial = db.Column(db.String(20))
     rifle_slingPointLength = db.Column(db.String(20))
     rifle_buttLength = db.Column(db.String(20))
@@ -156,7 +161,7 @@ class User(UserMixin, db.Model):
         totalStd = 0
         totalDuration = 0
         totalGroup = 0
-        settings = Settings.query.filter_by(id=0).first()
+        settings = Club.query.filter_by(id=self.clubID).first()
         stages = Stage.query.filter(Stage.timestamp.between(settings.season_start, settings.season_end),
                                     Stage.distance == dist,
                                     Stage.userID == self.id).all()

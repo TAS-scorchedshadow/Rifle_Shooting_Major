@@ -3,6 +3,8 @@
 {% block page_title %} User List {% endblock %}
 {% block page_content %}
 
+    <meta id="club-data" data-clubid="{{ club.id }}">
+
     <!--Date range picker (see https://www.daterangepicker.com)-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -132,7 +134,7 @@
                                             <td>
                                                 {% if user.access == 0 %}
                                                     <a type="button" class="btn btn-secondary mybtn" id="access{{ user.id }}"
-                                                       href="javascript:setAdmin('#access{{ user.id }}','{{user.id}}')">
+                                                       href="javascript:setAdmin('#access{{ user.id }}','{{user.id}}','{{ club.id }}')">
                                                         <i class="fas fa-lock"></i>
                                                         Student
                                                     </a>
@@ -144,7 +146,7 @@
                                                     </a>
                                                     {% else %}
                                                         <a type="button" class="btn btn-dark mybtn" id="access{{ user.id }}"
-                                                           href="javascript:setAdmin('#access{{ user.id }}','{{user.id}}')">
+                                                           href="javascript:setAdmin('#access{{ user.id }}','{{user.id}}','{{ club.id }}')">
                                                             <i class="fas fa-unlock"></i>
                                                             Coach
                                                         </a>

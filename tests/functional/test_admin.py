@@ -1,7 +1,9 @@
 import pytest
 
+from tests.helper_functions.auth_helper import set_club
 
-@pytest.mark.usefixtures("create_users")
+
+@pytest.mark.usefixtures("register_users")
 class TestUserList:
     def test_user_list_unauthorised(self, test_client, captured_templates):
         """
@@ -23,6 +25,8 @@ class TestUserList:
         THEN check that the response is valid
         """
 
+        set_club(self.student, self.club)
+
         test_client.post('/login', data={
             "username": self.student.username,
             "password": "studentPass"
@@ -41,6 +45,8 @@ class TestUserList:
         THEN check that the response is valid
         """
 
+        set_club(self.coach, self.club)
+
         test_client.post('/login', data={
             "username": self.coach.username,
             "password": "coachPass"
@@ -58,6 +64,8 @@ class TestUserList:
         WHEN the '/' page is requested (GET)
         THEN check that the response is valid
         """
+
+        set_club(self.admin, self.club)
 
         test_client.post('/login', data={
             "username": self.admin.username,

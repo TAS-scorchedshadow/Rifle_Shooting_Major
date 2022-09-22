@@ -1,7 +1,11 @@
 $( document ).ready(function() {
+    const clubID = $( "#my-data" ).data("clubid")
     $.ajax({
-        type: 'POST',
-        url: "/get_users",
+        type: 'GET',
+        url: "/get_names",
+        data: {
+           clubID
+        },
         success:(function (data) {
             $( ".user-searchbar" ).autocomplete({
                 source: data

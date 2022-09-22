@@ -1,8 +1,7 @@
 import pytest
-from flask import url_for
 
 
-@pytest.mark.usefixtures("create_users")
+@pytest.mark.usefixtures("register_users")
 class TestLogin:
     def test_login_student(self, test_client, captured_templates):
         """
