@@ -153,13 +153,18 @@
                     <div class="col">
                         {% block stat_table %}
                              <div class="card shadow border-0">
-                                <table class="table">
+                                <table class="table" data-toggle="tooltip" data-placement="right" data-html="true"
+                                       title="<b>Day Average</b> <br> Average of stages at {{ stage.distance }} shot on
+                                        {{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y") }} by any user from all clubs. <hr>
+                                        <b>Personal Average</b> <br> Average of stages shot at {{ stage.distance }} by {{ user.fName }} from
+                                        {{ (user.club.season_start|utc_to_nsw).strftime("%d %b %Y") }} to
+                                        {{ (user.club.season_end|utc_to_nsw).strftime("%d %b %Y") }}">
                                     <thead class="thead-dark">
                                         <tr>
                                           <th scope="col">Stat</th>
                                           <th scope="col">This Stage</th>
-                                          <th scope="col">Avr. (Day)</th>
-                                          <th scope="col">Avr. (Season)</th>
+                                          <th scope="col">Day Avr.</th>
+                                          <th scope="col">Personal Avr.(Season)</th>
                                         </tr>
                                     </thead>
                                      <tbody>
