@@ -211,14 +211,10 @@
                             </div>
                         {% endblock %}
                         <br>
-                        <div class="card shadow border-0 flex-fill">
-                            <div class="card-header bg-dark">
-                                <div class="row justify-content-center mx-2">
-                                    <h4 style="color:white;">Stage Centres for {{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y") }}</h4>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card shadow border-0">
+                            <div class="card-header bg-dark">
+                                <div class="text-white">Stage Centres for {{ (stage.timestamp|utc_to_nsw).strftime("%d %b %Y") }}</div>
+                            </div>
                             <div class="row">
                                 <div class="col-6">
                                     <canvas id="groupDiagram" style="border: 5px solid black"></canvas>
