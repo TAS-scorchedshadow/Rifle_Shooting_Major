@@ -125,7 +125,6 @@ def update_season_date():
     return jsonify("complete")
 
 
-
 @admin_bp.route('/delete_account', methods=['POST'])
 @login_required
 def delete_account():
