@@ -6,7 +6,7 @@ from flask_login import login_required
 from sqlalchemy import desc
 
 from app import db
-from app.models import User, Stage, Settings
+from app.models import User, Stage, Club
 from app.stages_calc import stats_of_period, highest_stage, lowest_stage
 from app.time_convert import get_grad_year, utc_to_nsw, format_duration, nsw_to_utc
 from tests.helper_functions.generate_data import generate_rand_stage
@@ -75,14 +75,33 @@ def testdelshoot():
     return "OK"
 
 
-@api_bp.route('/get_users', methods=['POST'])
-def get_users():
+def get_users(clubID=None):
     """
-    Generates a list of names used to complete the autofill fields. Used in autofill.js
+    If a club ID is provided, results will only include users from the club.
 
     :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
-    users = User.query.all()
+    club = Club.query.filter_by(id=clubID).first()
+    if club:
+        users = User.query.filter_by(clubID=clubID).all()
+    else:
+        users = User.query.all()
+    return users
+
+
+@api_bp.route('/get_names', methods=['GET'])
+def get_names():
+    """
+        Generates a list of names used to complete the autofill fields. Used in autofill.js.
+        If a club ID is provided, results will only include users from the club.
+
+        :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
+    """
+    clubID = request.args.get("clubID")
+    if clubID is None or clubID == '':
+        users = get_users()
+    else:
+        users = get_users(int(clubID))
     list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
             users]
     return jsonify(list)
@@ -233,7 +252,7 @@ def api_attendace():
 def api_num_shots_season_all():
     users = User.query.all()
     user_list = []
-    settings = Settings.query.filter_by(id=0).first()
+    settings = Club.query.filter_by(id=0).first()
     for user in users:
         data = num_shots(user.id, settings.season_start, settings.season_end)
         user_list.append({"userID": user.id, "name": f"{user.fName} {user.sName}", "data": data})
@@ -243,7 +262,7 @@ def api_num_shots_season_all():
 @api_bp.route('/api/num_shots_season', methods=["GET"])
 def api_num_shots_season():
     userID = request.args.get('userID')
-    settings = Settings.query.filter_by(id=0).first()
+    settings = Club.query.filter_by(id=0).first()
 
     return num_shots(userID, settings.season_start, settings.season_end)
 

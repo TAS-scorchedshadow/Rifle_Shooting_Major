@@ -1,26 +1,31 @@
 import datetime
 import json
 
-from flask import Blueprint, request, redirect, render_template, flash
+from flask import Blueprint, request, redirect, render_template, flash, url_for
 from flask import session as flask_session
 from flask_login import login_required, current_user
 
 from app import db
 from app.api.api import get_stages, num_shots
-from app.models import User, Settings
-from app.decorators import roles_required
+from app.models import User, Club
+from app.decorators import club_authorised_urlpath, club_exists, is_authorised
 from app.profile.forms import updateInfoForm
 
 profile_bp = Blueprint('profile_bp', __name__)
 
 
-@profile_bp.route('/profile_list', methods=['GET', 'POST'])
+@profile_bp.route('/profile_list', methods=['GET'])
 @login_required
-@roles_required(["COACH", "ADMIN"])
-def profile_list():
+def catch_profile_list():
+    return redirect(url_for(".profile_list", club_name=current_user.club.name))
+
+
+@profile_bp.route('/profile_list/<club_name>', methods=['GET', 'POST'])
+@login_required
+@club_authorised_urlpath("COACH")
+def profile_list(club, club_name):
     searchError = False
     if request.method == "POST":
-        print(request.form)
         textInput = request.form['user-search']
         cardInput = request.form['user']
         if textInput:
@@ -33,7 +38,7 @@ def profile_list():
         if cardInput:
             flask_session['profileID'] = int(cardInput)
             return redirect('/profile')
-    users = User.query.order_by(User.username).all()
+    users = User.query.filter_by(clubID=club.id).order_by(User.username).all()
     yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'],
                   '7': ['Year 7'], 'other': ['Graduated']}
     for user in users:
@@ -44,8 +49,7 @@ def profile_list():
             yearGroups['other'].append([user.sName, user.fName, user.id])
 
     yearGroups = json.dumps(yearGroups)
-    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError)
-
+    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError, club=club)
 
 
 @profile_bp.route('/profile', methods=['GET', 'POST'])
@@ -88,13 +92,19 @@ def profile():
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
 
-    s = Settings.query.filter_by(id=0).first()
-    times = {"start": s.season_start.strftime("%d:%m:%Y"), "end": s.season_end.strftime("%d:%m:%Y")}
+    club = Club.query.filter_by(id=user.clubID).first()
+    if not club:
+        flash("No club with that name exists", "error")
+        if request.referrer is not None:
+            return redirect(request.referrer)
+        else:
+            return redirect(url_for("welcome_bp.index"))
+    times = {"start": club.season_start.strftime("%d:%m:%Y"), "end": club.season_end.strftime("%d:%m:%Y")}
     today = datetime.datetime.now().strftime("%Y-%m-%d")
 
     form = updateInfoForm(request.form)
     return render_template('profile/profile.html', user=user, tableInfo=tableInfo, error=search_error, today=today,
-                           season_time=times, form=form)
+                           season_time=times, form=form, club=club)
 
 
 @profile_bp.route('/update_user_info', methods=['POST'])
@@ -102,20 +112,17 @@ def update_user_info():
     form = updateInfoForm(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(id=int(form.userID.data)).first()
-        if current_user.access > user.access or current_user.id == user.id:
+        if (current_user.access > user.access and current_user.clubID == user.clubID) or current_user.id == user.id:
             for field in form:
-                if field.id != 'email' and field.id != 'userID':
+                if field.id != 'userID':
                     if field.data != "None":
                         setattr(user, field.id, field.data)
-            if form.email.data != "None":
-                    user.email = form.email.data
             db.session.commit()
             flash("Details Updated Successfully", "success")
         else:
-            flash("You don't have the permissions to edit this user", "error")
-        return redirect('/profile')
-    flash(form.errors)
+            flash("Invalid permissions to edit this user", "error")
     return redirect('/profile')
+
 
 @profile_bp.route('/get_stages', methods=["GET"])
 def html_get_stages():
@@ -170,11 +177,11 @@ def html_get_stages():
                                             <table class="table table-sm table-bordered recentShotsTable">
                                                 <thead>
                                                     <tr>
-                                                        <th style='width: 50px;'>Range</th>
+                                                        <th style='width: 55px;'>Range</th>
                                                         <th style='width: 62px;'>Sighters</th>
                                                         <th>Shots</th>
                                                         <th style='width: 69px;'>Total</th>
-                                                        <th style='width: 48px;'>Group</th>
+                                                        <th style='width: 55px;'>Group</th>
                                                         <th style='width: 37px;'>Std</th>
                                                     </tr>
                                                 </thead>
@@ -201,11 +208,19 @@ def html_get_stages():
         html += stage_html
     return html
 
+
 @profile_bp.route('/profile/get_season_shot_data', methods=["GET"])
 def season_shot_data():
+    """
+    GET request for seasonal shot data.
+    expects {userID, start, end} where start end is in "%d:%m:%Y"
+
+    :return: html displaying the shot data
+    """
     userID = request.args.get('userID')
-    settings = Settings.query.filter_by(id=0).first()
-    data = num_shots(userID, settings.season_start, settings.season_end)
+    season_start = datetime.datetime.strptime(request.args.get('start'), "%d:%m:%Y")
+    season_end = datetime.datetime.strptime(request.args.get('end'), "%d:%m:%Y")
+    data = num_shots(userID, season_start, season_end)
     html = f"""
             <table class="table table-sm table-bordered">
               <tbody>
