@@ -181,8 +181,8 @@ def html_get_stages():
                                                         <th style='width: 62px;'>Sighters</th>
                                                         <th>Shots</th>
                                                         <th style='width: 69px;'>Total</th>
-                                                        <th style='width: 55px;'>Group</th>
                                                         <th style='width: 37px;'>Std</th>
+                                                        <th style='width: 55px;'>Group</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -191,8 +191,8 @@ def html_get_stages():
                                                         <th>{htmlSighters}</th>
                                                         <th>{htmlScoresBody}</th>
                                                         <th>{stage['totalScore']}</th>
-                                                        <th>{stage['groupSize']}</th>
                                                         <th>{stage['std']}</th>
+                                                        <th>{stage['groupSize']}</th>
                                                     </tr>
                                                 </tbody>
                                             </table>
