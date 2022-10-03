@@ -24,7 +24,17 @@ class signUpForm(FlaskForm):
 class independentSignUpForm(FlaskForm):
     fName = StringField("Enter First Name:", validators=[InputRequired()])
     sName = StringField("Enter Last Name:", validators=[InputRequired()])
-    shooterID = StringField("School ID:", validators=[InputRequired()])
+    shooterID = StringField("Shooter ID:", validators=[InputRequired()])
+    email = EmailField("Email", validators=[InputRequired()])
+    password = PasswordField("Password:")
+    confirmPassword = PasswordField("Password:")
+
+    submit = SubmitField("Sign Up")
+
+
+class CoachSignUpForm(FlaskForm):
+    fName = StringField("Enter First Name:", validators=[InputRequired()])
+    sName = StringField("Enter Last Name:", validators=[InputRequired()])
     email = EmailField("Email", validators=[InputRequired()])
     password = PasswordField("Password:")
     confirmPassword = PasswordField("Password:")

@@ -1,5 +1,5 @@
 import pytest
-
+from app.models import User
 
 @pytest.mark.usefixtures("register_users")
 class TestLogin:
@@ -42,3 +42,47 @@ class TestLogin:
         assert len(captured_templates) == 1
         template, context = captured_templates[0]
         assert template.name == 'welcome/index.html'
+
+
+@pytest.mark.usefixtures("create_club")
+class TestRegister:
+    def test_register_student(self, test_client, captured_templates):
+        """
+        GIVEN a Flask application configured for testing
+        WHEN the '/register' page is requested (POST)
+        THEN check that the response is valid
+        """
+        student_data = {
+            "fName": "Henry",
+            "sName": "Guo",
+            "school": self.club.name,
+            "gradYr": 2024,
+            "schoolID": "435921000",
+            "shooterID": "Xaw-423",
+            "email": "test@test.com",
+            "password": "studentPass",
+            "confirmPassword": "studentPass",
+            "club": self.club.id,
+        }
+        test_client.post('/register', content_type='multipart/form-data', data=student_data)
+        u = User.query.filter_by(fName=student_data["fName"]).first()
+
+        assert u != None
+    def test_register_coach(self, test_client, captured_templates):
+        """
+        GIVEN a Flask application configured for testing
+        WHEN the '/coachRegister' page is requested (POST)
+        THEN check that the response is valid
+        """
+        coach_data = {
+            "fName": "Dylan",
+            "sName": "Huynh",
+            "email": "test@test.com",
+            "password": "studentPass",
+            "confirmPassword": "studentPass",
+            "club": self.club.id,
+        }
+        test_client.post('/coachRegister', content_type='multipart/form-data', data=coach_data)
+        u = User.query.filter_by(fName=coach_data["fName"]).first()
+
+        assert u != None

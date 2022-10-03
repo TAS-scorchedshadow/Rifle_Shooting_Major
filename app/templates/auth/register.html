@@ -33,7 +33,7 @@
             <select class="field form-control form-control-lg" name="club">
                 <!-- <option disabled selected value="Club">Club</option> -->
                 {% for option in clubList %}
-                    <option value={{option}}>{{option}}</option>
+                    <option value={{option['id']}}>{{option['name']}}</option>
                 {% endfor %}
             </select>
         </div>
@@ -74,5 +74,9 @@
 <p class="text-center">
     Already have an account?
     <a href="/login">Sign In</a>
+</p>
+<p class="text-center">
+    Are you a coach?
+    <a href="/coachRegister">Register as coach</a>
 </p>
 {% endblock %}
