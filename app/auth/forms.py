@@ -14,9 +14,9 @@ class signUpForm(FlaskForm):
     gradYr = IntegerField("Graduation Year:", validators=[InputRequired(), NumberRange(min=2000, max=9999)])
     schoolID = StringField("School ID:", validators=[InputRequired()])
     shooterID = StringField("Shooter ID:", validators=[InputRequired()])
-    email = StringField("Email:", validators=[InputRequired()])
-    password = PasswordField("Password:")
-    confirmPassword = PasswordField("Password:")
+    email = EmailField("Email:", validators=[InputRequired()])
+    password = PasswordField("Password:", validators=[InputRequired()])
+    confirmPassword = PasswordField("Password:", validators=[InputRequired()])
 
     submit = SubmitField("Sign Up")
 
