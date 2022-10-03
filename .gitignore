@@ -12,3 +12,5 @@
 *.pyc
 __pycache__/
 /latest.dump
+.idea/flaskProject.iml
+.idea/misc.xml

@@ -7,7 +7,7 @@ from werkzeug.urls import url_parse
 from app import db
 from app.models import User, Club
 
-from .forms import signInForm, signUpForm, independentSignUpForm, ResetPasswordRequestForm, ResetPasswordForm
+from .forms import signInForm, signUpForm, CoachSignUpForm, ResetPasswordRequestForm, ResetPasswordForm
 from .email import send_activation_email, send_password_reset_email
 
 
@@ -46,36 +46,40 @@ def register():
     """
     form = signUpForm()
     if form.validate_on_submit():
-        email = form.schoolID.data + "@student.sbhs.nsw.edu.au"
+        # TODO: Graduation year can't be none (integerField passively has InputRequired validator)
+        email = form.email.data
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
                     schoolID=form.schoolID.data, email=email, gradYr=str(form.gradYr.data))
         user.generate_username()
         user.set_password(form.password.data)
-        club = Club.query.filter_by(name=form.school.data).first()
-        user.clubID = club.id
+        user.clubID = int(request.form['club'])
         db.session.add(user)
         db.session.commit()
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
         return render_template('auth/register_success.html', user=user)
-    return render_template('auth/register.html', title='Register', form=form)
+    clubList = [{'name': club.name, 'id': club.id} for club in Club.query.all()]
+    error = form.errors
+    return render_template('auth/register.html', title='Register', form=form, clubList=clubList)
 
 
-@auth_bp.route('/coachRegister', methods=['GET', 'POST'])
+@auth_bp.route('/coach_register', methods=['GET', 'POST'])
 def coach_register():
-    form = independentSignUpForm()
+    form = CoachSignUpForm()
     if form.validate_on_submit():
         email = form.email.data
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
-                    email=email, school="OTHER")
+                    email=email, gradYr='-1', schoolID=0)
         user.generate_username()
         user.set_password(form.password.data)
+        user.clubID = int(request.form['club'])
         db.session.add(user)
         db.session.commit()
         send_activation_email(user)
         flash('Congratulations, you are now a registered user!', 'success')
-        return render_template('auth/register_success.html', user=user)
-    return render_template('auth/coach_register.html', title='Register', form=form)
+        return render_template('auth/coach_register_success.html', user=user)
+    clubList = [{'name': club.name, 'id': club.id} for club in Club.query.all()]
+    return render_template('auth/coach_register.html', title='Register', form=form, clubList=clubList)
 
 
 @auth_bp.route('/logout')

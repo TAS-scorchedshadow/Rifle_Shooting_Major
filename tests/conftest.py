@@ -57,6 +57,7 @@ def create_club(request, test_client):
     end = datetime.datetime.now()
     club = Club(name="SBHS", season_start=start, season_end=end)
     db.session.add(club)
+    db.session.commit()
     if request.cls:
         request.cls.club = club
 
@@ -83,8 +84,10 @@ def register_users(request, test_client):
         "gradYr": 2024,
         "schoolID": "435921000",
         "shooterID": "Xaw-423",
+        "email": "test@test.com",
         "password": "studentPass",
-        "confirmPassword": "studentPass"
+        "confirmPassword": "studentPass",
+        "club": club.id,
     }
     register_user(student_data, test_client)
     u = User.query.filter_by(fName=student_data["fName"]).first()
@@ -93,15 +96,16 @@ def register_users(request, test_client):
     coach_data = {
         "fName": "Jeffery",
         "sName": "Lee",
-        "school": club.name,
         "gradYr": 2022,
         "schoolID": "asdE2sa",
         "shooterID": "Xasx-423",
+        "email": "test@test.com",
         "password": "coachPass",
-        "confirmPassword": "coachPass"
+        "confirmPassword": "coachPass",
+        "club": club.id,
     }
     # TODO: If we have a seperate coach registeration, switch the register route
-    register_user(coach_data, test_client)
+    r = test_client.post('/register', content_type='multipart/form-data', data=coach_data)
     u = User.query.filter_by(fName=coach_data["fName"]).first()
     set_access(u, 1)
     request.cls.coach = u
