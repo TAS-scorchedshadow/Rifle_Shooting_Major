@@ -63,7 +63,7 @@ def register():
     return render_template('auth/register.html', title='Register', form=form, clubList=clubList)
 
 
-@auth_bp.route('/coachRegister', methods=['GET', 'POST'])
+@auth_bp.route('/coach_register', methods=['GET', 'POST'])
 def coach_register():
     form = CoachSignUpForm()
     if form.validate_on_submit():

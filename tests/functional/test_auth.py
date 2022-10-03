@@ -82,7 +82,7 @@ class TestRegister:
             "confirmPassword": "studentPass",
             "club": self.club.id,
         }
-        test_client.post('/coachRegister', content_type='multipart/form-data', data=coach_data)
+        test_client.post('/coach_register', content_type='multipart/form-data', data=coach_data)
         u = User.query.filter_by(fName=coach_data["fName"]).first()
 
         assert u != None
