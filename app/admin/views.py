@@ -5,8 +5,8 @@ from flask import Blueprint, request, jsonify, redirect, url_for, render_templat
 from flask_login import login_required, current_user
 
 from app import db
-from app.decorators import club_authorised_urlpath, club_exists, is_authorised
-from app.models import User, Club
+from app.decorators import club_authorised_urlpath, is_authorised
+from app.models import User
 
 admin_bp = Blueprint('admin_bp', __name__)
 
@@ -38,7 +38,7 @@ def user_list(club, club_name):
 @login_required
 def make_admin():
     """
-     AJAX route for changing the account level of specific users.
+     AJAX route for toggling a user between a student and a coach (access levels 0-1 respectively)
      Route is accessible by admins through the buttons on the user_list page
 
     """
@@ -69,7 +69,7 @@ def make_admin():
 @login_required
 def email_settings():
     """
-    AJAX route used to update the email_setting in the database
+    AJAX route used to update the email_setting in the database. Expects email_setting to be "int"
 
     """
     data = json.loads(request.get_data())
@@ -92,7 +92,10 @@ def email_settings():
 @login_required
 def update_season_date():
     """
-    AJAX route used to update the start & end times of a season in the database
+    AJAX route used to update the start & end times of a season in the database. Takes in data in the
+    format "{%B %d, %Y} - {%B %d, %Y}"
+
+    Will ensure that start date < end date
 
     """
     data = json.loads(request.get_data())
@@ -108,12 +111,18 @@ def update_season_date():
     if not is_authorised(club, "ADMIN"):
         abort(403)
 
-    club.season_start = datetime.datetime.strptime(dates[0], '%B %d, %Y')
-    club.season_end = datetime.datetime.strptime(dates[1], '%B %d, %Y')
+    start = datetime.datetime.strptime(dates[0], '%B %d, %Y')
+    end = datetime.datetime.strptime(dates[1], '%B %d, %Y')
+
+    if start > end:
+        abort(400, "Start date must be less than end date")
+
+    club.season_start = start
+    club.season_end = end
+
     db.session.commit()
 
     return jsonify("complete")
-
 
 
 @admin_bp.route('/delete_account', methods=['POST'])
