@@ -11,6 +11,7 @@ load_dotenv(dotenv_path)
 
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    FORCE_HTTPS = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOGIN_DISABLED = False  # Enable this to avoid having to login
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')

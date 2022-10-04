@@ -1,14 +1,10 @@
-import datetime as datetime
-
 import pytest
-from flask import template_rendered, url_for
-from flask_login import login_user
 
-from app import db, mail
-from app.models import User, Stage, Settings
+from app import mail
+from tests.helper_functions.auth_helper import set_club
 
 
-@pytest.mark.usefixtures("create_users")
+@pytest.mark.usefixtures("register_users")
 class TestIndex:
     def test_index_unauthorised(self, test_client, captured_templates):
         """
@@ -30,6 +26,8 @@ class TestIndex:
         WHEN the '/' page is requested (GET)
         THEN check that the response is valid
         """
+
+        set_club(self.student, self.club)
 
         test_client.post('/login', data={
             "username": self.student.username,
@@ -60,33 +58,6 @@ class TestIndex:
         assert response.status_code == 200
         assert len(captured_templates) == 1
         template, context = captured_templates[0]
-        assert template.name == 'welcome/index.html'
-
-    def test_index_post(self, test_client, captured_templates):
-        test_client.post('/login', data={
-            "username": self.coach.username,
-            "password": "coachPass"
-        })
-
-        response = test_client.post('/', data={"user": self.student.username}, follow_redirects=True)
-
-        assert response.status_code == 200
-        assert len(captured_templates) == 1
-        template, context = captured_templates[0]
-        assert template.name == 'profile/profile.html'
-
-    def test_index_post_error(self, test_client, captured_templates):
-        test_client.post('/login', data={
-            "username": self.coach.username,
-            "password": "coachPass"
-        })
-
-        response = test_client.post('/', data={"user": "Not a Username"}, follow_redirects=True)
-
-        assert response.status_code == 200
-        assert len(captured_templates) == 1
-        template, context = captured_templates[0]
-        assert context["error"] is True
         assert template.name == 'welcome/index.html'
 
 

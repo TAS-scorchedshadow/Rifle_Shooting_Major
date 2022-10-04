@@ -29,7 +29,7 @@ def create_app(config_class=Config):
     ctx.push()
 
     register_blueprints(app)
-    Talisman(app, content_security_policy=None)
+    Talisman(app, content_security_policy=None, force_https=app.config['FORCE_HTTPS'])
     configure_error_handlers(app)
     configure_shell_processor(app)
 
@@ -75,8 +75,8 @@ def configure_error_handlers(app):
 
 
 def configure_shell_processor(app):
-    from app.models import User, Stage, Shot
+    from app.models import User, Stage, Shot, Club
 
     @app.shell_context_processor
     def make_shell_context():
-        return {'db': db, 'User': User, 'Stage': Stage, 'Shot': Shot}
+        return {'db': db, 'User': User, 'Stage': Stage, 'Shot': Shot, 'Club': Club}

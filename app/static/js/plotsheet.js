@@ -23,4 +23,8 @@ $(document).ready(function(){
             myTarget.draw();
         }
     });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 })

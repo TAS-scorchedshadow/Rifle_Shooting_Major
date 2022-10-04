@@ -1,16 +1,8 @@
 {% extends "auth/base_no_navbar.html" %}
-{% set active_page = "Register" %}
-{% block page_title %}Register{% endblock %}
+{% set active_page = "Coach Register" %}
+{% block page_title %}Coach Register{% endblock %}
 {% block login_content %}
-<h2 class="text-center mt-5"><i>Alternative Registration</i></h2>
-<p class="text-center">
-    For users <b>not</b> currently enrolled at SBHS
-</p>
-<hr>
-<p class="text-center">
-    If you are a current student <a href="/register">sign up here</a>
-</p>
-<hr>
+<h2 class="text-center mt-5">Coach Register</h2>
 
 <!-- oninput checks if passwords are matching -->
 <form name="signup_form" role = "form" method="post" oninput='pass2.setCustomValidity(pass2.value != pass1.value ? "Passwords do not match." : "")'>
@@ -25,12 +17,21 @@
         </div>
       </div>
     <br>
-    <div class="form-group px-4">
-        {{ form.email(class_="field form-control form-control-lg",placeholder="Email Address")}}
-    </div>
+    <div class="form-row px-4">
+        <div class="col-4">
+            <select class="field form-control form-control-lg" name="club">
+                <!-- <option disabled selected value="Club">Club</option> -->
+                {% for option in clubList %}
+                    <option value={{option['id']}}>{{option['name']}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-8">
+            {{ form.email(class_="field form-control form-control-lg",placeholder="Email")}}
+        </div>
+      </div>
+    <br>
      <div class="form-group px-4">
-         {{ form.shooterID(class_="field form-control form-control-lg",placeholder="Shooter ID")}}
-         <br>
          {{ form.password(class_="field form-control form-control-lg",placeholder="Password", id ="pass1")}}
          <br>
          {{ form.confirmPassword(class_="field form-control form-control-lg",placeholder="Confirm Password", id ="pass2")}}
@@ -42,5 +43,9 @@
 <br>
 <p class="text-center">Already have an account?
     <a href="/login">Sign In</a>
+</p>
+<p class="text-center">
+    Not a coach?
+    <a href="/register">Register as student</a>
 </p>
 {% endblock %}
