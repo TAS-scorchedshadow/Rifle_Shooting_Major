@@ -27,3 +27,12 @@ def new_club(db, Club, club_name: str) -> object:
     db.session.add(club)
     db.session.commit()
     return club
+
+
+def delete_all_stages(db, User, Stage, username):
+    user = User.query.filter_by(username=username).first()
+    stage_list = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
+    for stage in stage_list:
+        print(stage)
+        db.session.delete(stage)
+    db.session.commit()

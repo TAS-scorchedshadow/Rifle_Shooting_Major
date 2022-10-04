@@ -60,21 +60,6 @@ def get_avg_shot_data():
     return graph_data
 
 
-@api_bp.route('/testdelshoot', methods=['GET', 'POST'])
-@login_required
-def testdelshoot():
-    """
-    Code that deletes all shoots put under the sbhs.admin user.
-    """
-    user = User.query.filter_by(username="sbhs.admin").first()
-    stage_list = [stage for stage in Stage.query.filter_by(userID=user.id).all()]
-    for stage in stage_list:
-        print(stage)
-        db.session.delete(stage)
-    db.session.commit()
-    return "OK"
-
-
 def get_users(clubID=None):
     """
     If a club ID is provided, results will only include users from the club.
@@ -243,10 +228,6 @@ def submit_table():
 
     return jsonify({'success': 'success'})
 
-
-@api_bp.route('/api/attendance', methods=["GET"])
-def api_attendace():
-    users = api_num_shots_season_all();
 
 @api_bp.route('/api/num_shots_season_all', methods=["GET"])
 def api_num_shots_season_all():
