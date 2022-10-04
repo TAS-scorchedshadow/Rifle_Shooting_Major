@@ -2,14 +2,12 @@ import json
 import datetime as datetime
 
 from flask import Blueprint, request, jsonify
-from flask_login import login_required
 from sqlalchemy import desc
 
 from app import db
 from app.models import User, Stage, Club
 from app.stages_calc import stats_of_period, highest_stage, lowest_stage
 from app.time_convert import get_grad_year, utc_to_nsw, format_duration, nsw_to_utc
-from tests.helper_functions.generate_data import generate_rand_stage
 
 api_bp = Blueprint('api', __name__)
 
