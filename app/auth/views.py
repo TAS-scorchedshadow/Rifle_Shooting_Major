@@ -36,7 +36,7 @@ def login():
         return redirect(next_page)
     return render_template('auth/login.html', form=form)
 
-# Dylan Huynh
+
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     """
@@ -59,7 +59,6 @@ def register():
         flash('Congratulations, you are now a registered user!', 'success')
         return render_template('auth/register_success.html', user=user)
     clubList = [{'name': club.name, 'id': club.id} for club in Club.query.all()]
-    error = form.errors
     return render_template('auth/register.html', title='Register', form=form, clubList=clubList)
 
 
@@ -106,8 +105,10 @@ def request_reset_password():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-        flash('Password reset email sent successfully', "success")
-        return redirect(url_for('auth_bp.login'))
+            flash(f'Password reset email sent successfully to {user.email}', "success")
+            return redirect(url_for('auth_bp.login'))
+        flash(f"No account matching {form.email.data} was found. Please try again", "error")
+
     return render_template('auth/request_reset_password.html', form=form)
 
 
