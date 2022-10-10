@@ -1,4 +1,6 @@
 import pytest
+
+from app import mail
 from app.models import User
 
 @pytest.mark.usefixtures("register_users")
@@ -52,6 +54,7 @@ class TestRegister:
         WHEN the '/register' page is requested (POST)
         THEN check that the response is valid
         """
+
         student_data = {
             "fName": "Henry",
             "sName": "Guo",
@@ -64,10 +67,17 @@ class TestRegister:
             "confirmPassword": "studentPass",
             "club": self.club.id,
         }
-        test_client.post('/register', content_type='multipart/form-data', data=student_data)
-        u = User.query.filter_by(fName=student_data["fName"]).first()
 
-        assert u != None
+        with mail.record_messages() as outbox:
+            response = test_client.post('/register', content_type='multipart/form-data', data=student_data)
+
+            assert response.status_code == 200
+            assert len(outbox) == 1
+            assert outbox[0].subject == "Welcome to Riflelytics!"
+
+        u = User.query.filter_by(fName=student_data["fName"]).first()
+        assert u is not None
+
     def test_register_coach(self, test_client, captured_templates):
         """
         GIVEN a Flask application configured for testing
@@ -82,7 +92,13 @@ class TestRegister:
             "confirmPassword": "studentPass",
             "club": self.club.id,
         }
-        test_client.post('/coach_register', content_type='multipart/form-data', data=coach_data)
-        u = User.query.filter_by(fName=coach_data["fName"]).first()
 
-        assert u != None
+        with mail.record_messages() as outbox:
+            response = test_client.post('/register', content_type='multipart/form-data', data=coach_data)
+
+            assert response.status_code == 200
+            assert len(outbox) == 1
+            assert outbox[0].subject == "Welcome to Riflelytics!"
+            u = User.query.filter_by(fName=coach_data["fName"]).first()
+
+            assert u is not None

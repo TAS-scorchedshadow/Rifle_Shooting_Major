@@ -59,7 +59,6 @@ def register():
         flash('Congratulations, you are now a registered user!', 'success')
         return render_template('auth/register_success.html', user=user)
     clubList = [{'name': club.name, 'id': club.id} for club in Club.query.all()]
-    error = form.errors
     return render_template('auth/register.html', title='Register', form=form, clubList=clubList)
 
 
