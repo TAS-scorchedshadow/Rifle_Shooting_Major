@@ -248,6 +248,7 @@ def submit_table():
 def api_attendace():
     users = api_num_shots_season_all();
 
+
 @api_bp.route('/api/num_shots_season_all', methods=["GET"])
 def api_num_shots_season_all():
     users = User.query.all()
@@ -278,7 +279,7 @@ def num_shots(userID, start, end):
         num_sessions = 1
     for i, stage in enumerate(stages):
         if i < length - 1:
-            if stages[i+1].timestamp - stages[i].timestamp > datetime.timedelta(hours=12):
+            if stages[i + 1].timestamp - stages[i].timestamp > datetime.timedelta(hours=12):
                 num_sessions += 1
         # Initialise all shots
         stage.init_shots()
@@ -293,14 +294,25 @@ def num_shots(userID, start, end):
             "num_sessions": num_sessions, "num_stages": len(stages), "num_shots": num,
             "num_shots_per_session": shots_per_session}
 
-def get_stages(userID, startDate, page):
+
+def get_stages(userID: int, startDate: datetime, page: int) -> (list[dict], bool):
+    """
+    Paginates stages (6 stages per page). More recent stages will appear first. On the last stage
+    returns true on the second parameter. If userID does not refer to a valid user no stages will be returned
+
+    :param userID: int
+    :param startDate: datetime object
+    :param page: int
+    :return: list[stage dict], final_page
+    """
     items_per_page = 6
     final_page = False
-    start_idx = (page-1) * items_per_page
+    start_idx = (page - 1) * items_per_page
     end_idx = page * items_per_page
     if startDate:
         # Note filters out shots on the same day for some reason
-        stages = Stage.query.filter(Stage.timestamp <= startDate + datetime.timedelta(days=1), Stage.userID == userID).order_by(
+        stages = Stage.query.filter(Stage.timestamp <= startDate + datetime.timedelta(days=1),
+                                    Stage.userID == userID).order_by(
             desc(Stage.timestamp)).all()
     else:
         stages = Stage.query.filter_by(userID=userID).order_by(desc(Stage.timestamp)).all()
