@@ -1,7 +1,5 @@
-from flask import Blueprint, redirect, url_for, flash, request, render_template, abort
+from flask import Blueprint, redirect, url_for, flash, request, render_template
 from flask_login import current_user, login_user, logout_user
-from flask import session as flask_session
-from flask_wtf.csrf import generate_csrf
 from werkzeug.urls import url_parse
 
 from app import db
@@ -36,6 +34,7 @@ def login():
         return redirect(next_page)
     return render_template('auth/login.html', form=form)
 
+
 # Dylan Huynh
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -47,9 +46,9 @@ def register():
     form = signUpForm()
     if form.validate_on_submit():
         # TODO: Graduation year can't be none (integerField passively has InputRequired validator)
-        email = form.email.data
         user = User(fName=form.fName.data.strip().lower().title(), sName=form.sName.data.strip().lower().title(),
-                    schoolID=form.schoolID.data, email=email, gradYr=str(form.gradYr.data))
+                    schoolID=form.schoolID.data, shooterID=form.shooterID.data,
+                    email=form.email.data, gradYr=str(form.gradYr.data))
         user.generate_username()
         user.set_password(form.password.data)
         user.clubID = int(request.form['club'])
