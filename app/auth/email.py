@@ -23,7 +23,7 @@ def send_activation_email(user):
     :param user: Newly registered user
     """
     token = user.get_activation_token()
-    send_email('Welcome to Riflelytics! Confirm Your Email',
+    send_email('Welcome to Riflelytics!',
                recipients=[user.email],
                text_body=render_template('email/welcome.txt', user=user, token=token),
                html_body=render_template('email/welcome.html', user=user, token=token))
