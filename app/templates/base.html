@@ -102,7 +102,7 @@
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
-                            <div class = "mx-5">
+                            <div class = "mx-5 pt-2">
                             {% if category == "error" %}
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                   <strong>{{ message }}</strong>
