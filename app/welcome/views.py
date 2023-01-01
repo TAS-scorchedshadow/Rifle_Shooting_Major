@@ -27,7 +27,7 @@ def landing():
 
     :return: Landing html page
     """
-    return render_template('welcome/landing_page.html')
+    return render_template('welcome/new_landing.html')
 
 
 @welcome_bp.route('/contact', methods=['GET', 'POST'])
