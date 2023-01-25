@@ -10,6 +10,10 @@ class TestApi:
         WHEN the '/submit_notes' page is requested (GET)
         THEN check that the response is valid
         """
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
         response = test_client.post('/submit_notes',
                                     json=[self.stage_ids[0], 'You suck at shooting. Just give up already'])
 
@@ -21,6 +25,10 @@ class TestApi:
         WHEN the '/get_avg_shot_graph_data' page is requested (GET)
         THEN check that the response is valid
         """
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
         expected = {'scores': [], 'times': [], 'sd': []}
         response = test_client.post('/get_avg_shot_graph_data', json=3)
 
@@ -32,6 +40,10 @@ class TestApi:
         WHEN the '/get_users' page is requested (GET)
         THEN check that the response is valid
         """
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
         expected = [{'label': 'student (None None)', 'value': 'student'},
                     {'label': 'coach (None None)', 'value': 'coach'}, {'label': 'admin (None None)', 'value': 'admin'}]
         response = test_client.get('/get_names')
@@ -44,6 +56,10 @@ class TestApi:
         WHEN the '/get_shots' page is requested (GET)
         THEN check that the response is valid
         """
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
         response = test_client.post('/get_shots', json=[self.student.id, 0, "January 30, 2003 - March 21, 2023"])
         response_list = json.loads(response.data.decode("utf-8"))
         for stage in response_list:
@@ -55,6 +71,10 @@ class TestApi:
         WHEN the '/get_target_stats' page is requested (GET)
         THEN check that the response is valid
         """
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
         expected = {'error': 'userID'}
 
         response = test_client.post('/get_target_stats', json=3)
@@ -67,6 +87,10 @@ class TestApi:
         WHEN the '/get_all_shots_season' page is requested (GET)
         THEN check that the response is valid
         """
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
         response = test_client.post('/get_all_shots_season', json={'distance': '300m', 'userID': self.student.id,
                                                                    'dateRange': 'January 30, 2003 - March 21, 2023'})
         decoded_res = json.loads(response.data.decode("utf-8"))
@@ -79,6 +103,10 @@ class TestApi:
         WHEN the '/submit_table' page is requested (GET)
         THEN check that the response is valid
         """
+        test_client.post('/login', data={
+            "username": self.student.username,
+            "password": "studentPass"
+        })
         expected = {'success': 'success'}
 
         response = test_client.post('/submit_table', json=[3, {'email': 'test@example.com'}])
