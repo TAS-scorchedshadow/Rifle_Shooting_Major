@@ -218,7 +218,7 @@ def api_setup(request, test_client):
 
     request.cls.stage_ids = []
     for i in list(range(5)):
-        new_stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, '300m')
+        new_stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, '300m', datetime.datetime.now())
         new_stage.userID = student.id
         request.cls.stage_ids.append(new_stage.id)
     db.session.commit()
