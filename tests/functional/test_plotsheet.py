@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from flask import url_for
 
@@ -14,7 +16,7 @@ class TestPlotsheet:
             "password": "studentPass"
         })
 
-        stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, "300m")
+        stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, "300m", datetime.datetime.now())
         response = test_client.get(f'/target?stageID={stage.id}', follow_redirects=True)
 
         assert response.status_code == 200
@@ -24,7 +26,7 @@ class TestPlotsheet:
     def test_higher_access(self, test_client, captured_templates):
 
         users = [[self.coach.username, "coachPass"], [self.admin.username, "adminPass"], [self.dev.username, "devPass"]]
-        stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, "300m")
+        stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, "300m", datetime.datetime.now())
         for user in users:
             test_client.post('/login', data={
                 "username": user[0],

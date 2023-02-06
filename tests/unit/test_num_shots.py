@@ -24,7 +24,7 @@ class TestNumShots:
         n_shots = 10
         n_stages = 20
         for i in range(0, n_stages):
-            stage = generate_rand_stage(n_shots, 0, 0, 0.1, 0.1, "300m")
+            stage = generate_rand_stage(n_shots, 0, 0, 0.1, 0.1, "300m", datetime.now())
             stage.userID = self.student.id
             db.session.commit()
         r = num_shots(self.student.id, self.start_date, self.end_date)
@@ -38,7 +38,7 @@ class TestNumShots:
         n_stages = 20
         time_offset = datetime.now()
         for i in range(0, n_stages):
-            stage = generate_rand_stage(n_shots, 0, 0, 0.1, 0.1, "300m")
+            stage = generate_rand_stage(n_shots, 0, 0, 0.1, 0.1, "300m", datetime.now())
             time_offset += timedelta(hours=13)
             stage.timestamp = time_offset
             stage.userID = self.student.id
