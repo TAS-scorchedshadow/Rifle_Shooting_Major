@@ -157,12 +157,15 @@
                                                        Admin
                                                     </a>
                                                  {% endif %}
-                                                <a type="button" user="{{ user.id }}" class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal{{ user.id }}">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
+                                                {% if user.access < 2 and current_user.username != "preview" %}
+                                                    <a type="button" user="{{ user.id }}" class="btn btn-danger" data-toggle="modal" data-target="#RemoveModal{{ user.id }}">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                         <!-- Delete Account Modal -->
+                                        {% if user.access < 2 and current_user.username != "preview" %}
                                             <div class="modal fade text-black" id="RemoveModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
@@ -186,6 +189,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        {% endif %}
                                         <!-- Admin Account Modal -->
                                             <div class="modal fade" id="AdminModal{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
