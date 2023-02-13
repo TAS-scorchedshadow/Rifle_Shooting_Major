@@ -65,14 +65,20 @@ def register_blueprints(app):
 
 
 def configure_error_handlers(app):
+    # Page not found
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('error/404.html'), 404
 
+    # Internal server error
     @app.errorhandler(500)
     def server_error(e):
         return render_template('error/500.html'), 500
 
+    # Unauthorised/Forbidden
+    @app.errorhandler(403)
+    def user_unauthorised(e):
+        return render_template('error/403.html'), 403
 
 def configure_shell_processor(app):
     from app.models import User, Stage, Shot, Club

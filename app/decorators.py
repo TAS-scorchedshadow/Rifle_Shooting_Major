@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import request, redirect, url_for, flash
+from flask import request, redirect, url_for, flash, abort
 from flask_login import current_user, LoginManager
 
 from app.models import Club
@@ -15,14 +15,27 @@ def is_authorised(club: object, role: str) -> bool:
     :param role: One of ["STUDENT", "COACH", "ADMIN", "DEV"]
     :return: Boolean
     """
+    dev_access = 3
+
+    authorised = is_role_authorised(role) and club.id == current_user.clubID
+
+    if current_user.access == dev_access:
+        authorised = True
+    return authorised
+
+
+def is_role_authorised(role: str) -> bool:
+    """
+    Checks if the current_user has the access corresponding to the role.
+
+    :param role: One of ["STUDENT", "COACH", "ADMIN", "DEV"]
+    :return: Boolean
+    """
     levels = ["STUDENT", "COACH", "ADMIN", "DEV"]
 
     access_required = levels.index(role)
     authorised = False
-    if access_required <= current_user.access and club.id == current_user.clubID:
-        authorised = True
-
-    if current_user.access is levels.index("DEV"):
+    if access_required <= current_user.access:
         authorised = True
     return authorised
 
@@ -31,23 +44,24 @@ def club_authorised_urlpath(role):
     def original_function(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            club = Club.query.filter_by(name=kwargs['club_name']).first()
             access = False
             error_msg = ""
-            if club:
-                if is_authorised(club, role) is True:
-                    access = True
+            if 'club_name' in kwargs:
+                club = Club.query.filter_by(name=kwargs['club_name']).first()
+                if club:
+                    if is_authorised(club, role) is True:
+                        access = True
+                    else:
+                        error_msg = "Invalid Permissions"
                 else:
-                    error_msg = "Invalid Permissions"
+                    error_msg = "No clubs with that name were found"
             else:
-                error_msg = "No clubs with that name were found"
-
+                error_msg = "No club name was given"
+            print(access)
             if access is False:
                 flash(error_msg, "error")
-                if request.referrer is not None:
-                    return redirect(request.referrer)
-                else:
-                    return redirect(url_for("welcome_bp.index"))
+                # TODO REDIRECT UNAUTHORISED PAGE
+                return redirect(url_for("error_bp.user_unauthorised"))
             return f(club, *args, **kwargs)
 
         return decorated_function
@@ -61,12 +75,30 @@ def club_exists(f):
         club = Club.query.filter_by(name=kwargs['club']).first()
         if club is None:
             flash("No club with that name exists", "error")
-            if request.referrer is not None:
-                return redirect(request.referrer)
-            else:
-                return redirect(url_for("welcome_bp.index"))
+            # TODO REDIRECT UNAUTHORISED PAGE
+            return redirect(url_for("error_bp.user_unauthorised"))
         return f(*args, **kwargs)
 
     return decorated_function
 
     return club_exists
+
+
+def authorise_role(role):
+    """
+    Decorator authorising the current user by only the role
+    """
+    def original_function(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if is_role_authorised(role):
+                return f(*args, **kwargs)
+            else:
+                # TODO REDIRECT UNAUTHORISED PAGE
+                return redirect(url_for("error_bp.user_unauthorised"))
+        return decorated_function
+    return original_function
+
+
+
+
