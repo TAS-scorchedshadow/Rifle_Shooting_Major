@@ -57,11 +57,10 @@ def club_authorised_urlpath(role):
                     error_msg = "No clubs with that name were found"
             else:
                 error_msg = "No club name was given"
-            print(access)
             if access is False:
                 flash(error_msg, "error")
-                # TODO REDIRECT UNAUTHORISED PAGE
-                return redirect(url_for("error_bp.user_unauthorised"))
+                abort(403)
+                return
             return f(club, *args, **kwargs)
 
         return decorated_function
@@ -75,8 +74,8 @@ def club_exists(f):
         club = Club.query.filter_by(name=kwargs['club']).first()
         if club is None:
             flash("No club with that name exists", "error")
-            # TODO REDIRECT UNAUTHORISED PAGE
-            return redirect(url_for("error_bp.user_unauthorised"))
+            abort(403)
+            return
         return f(*args, **kwargs)
 
     return decorated_function
@@ -94,8 +93,8 @@ def authorise_role(role):
             if is_role_authorised(role):
                 return f(*args, **kwargs)
             else:
-                # TODO REDIRECT UNAUTHORISED PAGE
-                return redirect(url_for("error_bp.user_unauthorised"))
+                abort(403)
+                return
         return decorated_function
     return original_function
 

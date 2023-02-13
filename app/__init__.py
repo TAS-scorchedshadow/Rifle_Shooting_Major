@@ -49,6 +49,7 @@ def register_blueprints(app):
     from app.upload.views import upload_bp
 
     from app.welcome.views import welcome_bp
+    from app.error.views import error_bp
 
     app.register_blueprint(csrf.exempt(shell_bp))
     app.register_blueprint(csrf.exempt(time_convert_blueprint))
@@ -62,6 +63,7 @@ def register_blueprints(app):
     app.register_blueprint(csrf.exempt(upload_bp))
 
     app.register_blueprint(csrf.exempt(welcome_bp))
+    app.register_blueprint(csrf.exempt(error_bp))
 
 
 def configure_error_handlers(app):

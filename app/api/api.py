@@ -105,20 +105,16 @@ def get_names():
 
         :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
-    dev_access= 3
-    clubID = request.args.get("clubID")
+    dev_access = 3
     # Verify club ID is valid
-    if current_user.access != dev_access and current_user.clubID != clubID:
-        redirect(url_for("welcome_bp.index"))
-
-
-    if clubID is None or clubID == '':
+    if current_user.access == dev_access:
         users = get_users()
     else:
-        users = get_users(int(clubID))
-    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
-            users]
-    return jsonify(list)
+        user = User.query.filter_by(id=current_user.id).first()
+        users = get_users(user.clubID)
+    out = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
+           users]
+    return jsonify(out)
 
 
 @api_bp.route('/get_shots', methods=['POST'])
@@ -203,7 +199,6 @@ def get_all_shots_season():
     data = {'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
-    print(stages)
     for stage in stages:
         stage.init_stage_stats()
         totalScore = stage.total
@@ -214,8 +209,6 @@ def get_all_shots_season():
     # Sort the scores for boxPlot so the lowest value can be taken.
     # The lowest value is used to determine the lower bound of the box plot
     data['boxPlot'].sort()
-    print('boxplot', data['boxPlot'])
-    print('boxplot', stages)
     if len(stages) > 0:
         # Get highest and lowest scoring stages
         highestStage = highest_stage(userID, startDate, endDate, dist)
@@ -239,13 +232,19 @@ def get_all_shots_season():
 @authorise_role("STUDENT")
 def submit_table():
     """
-       AJAX request updates a user object(given by ID) with the new information provided in the table. Used in
+       Updates a user object (given by ID) with the new information provided in the table. Students can
+       only change their own tables. Meanwhile, all other level users can only edit tables from their own club.
     """
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
     userID = data[0]
-    tableDict = data[1]
+    current_user_obj = User.query.filter_by(id=current_user.id).first()
     user = User.query.filter_by(id=userID).first()
+    if userID != current_user.id:
+        if current_user_obj.access < 1 or current_user_obj.clubID != user.clubID:
+            return abort(403)
+    tableDict = data[1]
+
     # In this case setattr changes the value of a certain field in the database to the given value.
     # e.g. user.sightHole = "5"
     if user:
