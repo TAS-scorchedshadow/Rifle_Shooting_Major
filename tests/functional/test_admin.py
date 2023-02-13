@@ -38,7 +38,7 @@ class TestUserList:
 
         response = test_client.get('/user_list', follow_redirects=True)
 
-        assert response.status_code == 200
+        assert response.status_code == 403
         template, context = captured_templates[0]
         assert template.name != 'admin/user_list.html'
 
@@ -58,7 +58,7 @@ class TestUserList:
 
         response = test_client.get('/user_list', follow_redirects=True)
 
-        assert response.status_code == 200
+        assert response.status_code == 403
         template, context = captured_templates[0]
         assert template.name != 'admin/user_list.html'
 
