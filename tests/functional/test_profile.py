@@ -37,7 +37,7 @@ class TestProfileList:
 
         response = test_client.get('/profile_list', follow_redirects=True)
 
-        assert response.status_code == 200
+        assert response.status_code == 403
         template, context = captured_templates[0]
         assert template.name != 'profile/profile_list.html'
 

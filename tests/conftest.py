@@ -203,6 +203,12 @@ def api_setup(request, test_client):
     db.session.add(coach)
     request.cls.coach = coach
 
+    dev = User(username="dev")
+    dev.set_password("devPass")
+    dev.access = 3
+    db.session.add(dev)
+    request.cls.dev = dev
+
     admin = User(username="admin")
     admin.set_password("adminPass")
     admin.access = 2

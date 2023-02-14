@@ -1,20 +1,23 @@
 import json
 import datetime as datetime
 
-from flask import Blueprint, request, jsonify
-from flask_login import login_required
+from flask import Blueprint, request, jsonify, redirect, url_for, abort
+from flask_login import login_required, current_user
 from sqlalchemy import desc
 
 from app import db
 from app.models import User, Stage, Club
 from app.stages_calc import stats_of_period, highest_stage, lowest_stage
 from app.time_convert import get_grad_year, utc_to_nsw, format_duration, nsw_to_utc
+from app.decorators import authorise_role
 from tests.helper_functions.generate_data import generate_rand_stage
 
 api_bp = Blueprint('api', __name__)
 
 
 @api_bp.route('/submit_notes', methods=['POST'])
+@login_required
+@authorise_role("STUDENT")
 def submit_notes():
     """
     AJAX route for updating the notes of a stage from the plotsheet.
@@ -31,6 +34,8 @@ def submit_notes():
 
 
 @api_bp.route('/get_avg_shot_graph_data', methods=['POST'])
+@login_required
+@authorise_role("STUDENT")
 def get_avg_shot_data():
     """
     Collect shots for use in the averages line graph
@@ -62,6 +67,7 @@ def get_avg_shot_data():
 
 @api_bp.route('/testdelshoot', methods=['GET', 'POST'])
 @login_required
+@authorise_role("DEV")
 def testdelshoot():
     """
     Code that deletes all shoots put under the sbhs.admin user.
@@ -90,6 +96,8 @@ def get_users(clubID=None):
 
 
 @api_bp.route('/get_names', methods=['GET'])
+@login_required
+@authorise_role("STUDENT")
 def get_names():
     """
         Generates a list of names used to complete the autofill fields. Used in autofill.js.
@@ -97,17 +105,21 @@ def get_names():
 
         :return: List of Dictionaries, Key: Username, Value: Username, first name, last name
     """
-    clubID = request.args.get("clubID")
-    if clubID is None or clubID == '':
+    dev_access = 3
+    # Verify club ID is valid
+    if current_user.access == dev_access:
         users = get_users()
     else:
-        users = get_users(int(clubID))
-    list = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
-            users]
-    return jsonify(list)
+        user = User.query.filter_by(id=current_user.id).first()
+        users = get_users(user.clubID)
+    out = [{'label': "{} ({} {})".format(user.username, user.fName, user.sName), 'value': user.username} for user in
+           users]
+    return jsonify(out)
 
 
 @api_bp.route('/get_shots', methods=['POST'])
+@login_required
+@authorise_role("STUDENT")
 def get_shots():
     """
     Collect shots for use in the recent shots card
@@ -153,6 +165,8 @@ def get_shots():
 
 
 @api_bp.route('/get_target_stats', methods=['POST'])
+@login_required
+@authorise_role("STUDENT")
 def get_target_stats():
     """
     Function provides databse information for ajax request in ajax_target.js
@@ -165,6 +179,8 @@ def get_target_stats():
 
 
 @api_bp.route('/get_all_shots_season', methods=['POST'])
+@login_required
+@authorise_role("STUDENT")
 def get_all_shots_season():
     """
     Function collects every shot in the time-frame selected by the user
@@ -183,7 +199,6 @@ def get_all_shots_season():
     data = {'target': [], 'boxPlot': [], 'bestStage': [], 'worstStage': []}
     stages = Stage.query.filter(Stage.timestamp.between(startDate, endDate), Stage.distance == dist,
                                 Stage.userID == userID).all()
-    print(stages)
     for stage in stages:
         stage.init_stage_stats()
         totalScore = stage.total
@@ -194,8 +209,6 @@ def get_all_shots_season():
     # Sort the scores for boxPlot so the lowest value can be taken.
     # The lowest value is used to determine the lower bound of the box plot
     data['boxPlot'].sort()
-    print('boxplot', data['boxPlot'])
-    print('boxplot', stages)
     if len(stages) > 0:
         # Get highest and lowest scoring stages
         highestStage = highest_stage(userID, startDate, endDate, dist)
@@ -215,15 +228,23 @@ def get_all_shots_season():
 
 
 @api_bp.route('/submit_table', methods=['POST'])
+@login_required
+@authorise_role("STUDENT")
 def submit_table():
     """
-       AJAX request updates a user object(given by ID) with the new information provided in the table. Used in
+       Updates a user object (given by ID) with the new information provided in the table. Students can
+       only change their own tables. Meanwhile, all other level users can only edit tables from their own club.
     """
     data = request.get_data().decode("utf-8")
     data = json.loads(data)
     userID = data[0]
-    tableDict = data[1]
+    current_user_obj = User.query.filter_by(id=current_user.id).first()
     user = User.query.filter_by(id=userID).first()
+    if userID != current_user.id:
+        if current_user_obj.access < 1 or current_user_obj.clubID != user.clubID:
+            return abort(403)
+    tableDict = data[1]
+
     # In this case setattr changes the value of a certain field in the database to the given value.
     # e.g. user.sightHole = "5"
     if user:
@@ -245,11 +266,15 @@ def submit_table():
 
 
 @api_bp.route('/api/attendance', methods=["GET"])
+@login_required
+@authorise_role("STUDENT")
 def api_attendace():
     users = api_num_shots_season_all();
 
 
 @api_bp.route('/api/num_shots_season_all', methods=["GET"])
+@login_required
+@authorise_role("DEV")
 def api_num_shots_season_all():
     users = User.query.all()
     user_list = []
@@ -261,9 +286,14 @@ def api_num_shots_season_all():
 
 
 @api_bp.route('/api/num_shots_season', methods=["GET"])
+@login_required
+@authorise_role("STUDENT")
 def api_num_shots_season():
     userID = request.args.get('userID')
-    settings = Club.query.filter_by(id=0).first()
+    userObj = User.query.filter_by(id=userID)
+    if userObj is None:
+        abort(400)
+    settings = Club.query.filter_by(id=userObj.clubID).first()
 
     return num_shots(userID, settings.season_start, settings.season_end)
 
