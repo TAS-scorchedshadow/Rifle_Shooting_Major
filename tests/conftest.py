@@ -203,6 +203,12 @@ def api_setup(request, test_client):
     db.session.add(coach)
     request.cls.coach = coach
 
+    dev = User(username="dev")
+    dev.set_password("devPass")
+    dev.access = 3
+    db.session.add(dev)
+    request.cls.dev = dev
+
     admin = User(username="admin")
     admin.set_password("adminPass")
     admin.access = 2
@@ -218,7 +224,7 @@ def api_setup(request, test_client):
 
     request.cls.stage_ids = []
     for i in list(range(5)):
-        new_stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, '300m')
+        new_stage = generate_rand_stage(10, 0, 0, 0.1, 0.1, '300m', datetime.datetime.now())
         new_stage.userID = student.id
         request.cls.stage_ids.append(new_stage.id)
     db.session.commit()

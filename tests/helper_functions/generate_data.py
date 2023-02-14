@@ -7,12 +7,13 @@ from app.models import Shot, Stage
 
 
 def generate_rand_stage(num_shots: int, x_center: float, y_center: float, x_spread: float, y_spread: float,
-                        distance: str) -> Stage:
+                        distance: str, start_time: datetime) -> Stage:
     """
     Creates a stage with shots placed at a given spread and center
     (Spread should be around 0.1 for more realistic results)
     All shots created will NOT be sighters
 
+    :param start_time:
     :param num_shots: number
     :param x_center: number
     :param y_center: number
@@ -41,7 +42,7 @@ def generate_rand_stage(num_shots: int, x_center: float, y_center: float, x_spre
     d = target_details[distance]
     x_poses = np.random.normal(size=num_shots, loc=x_center, scale=d[0]*x_spread)
     y_poses = np.random.normal(size=num_shots, loc=y_center, scale=d[0]*y_spread)
-    time = datetime.now()
+    time = start_time
     times = np.random.normal(size=num_shots, loc=20, scale=5)
 
     stage_id = random.randint(0, 1000)

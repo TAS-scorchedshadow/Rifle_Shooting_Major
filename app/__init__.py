@@ -49,6 +49,7 @@ def register_blueprints(app):
     from app.upload.views import upload_bp
 
     from app.welcome.views import welcome_bp
+    from app.error.views import error_bp
 
     app.register_blueprint(csrf.exempt(shell_bp))
     app.register_blueprint(csrf.exempt(time_convert_blueprint))
@@ -62,17 +63,24 @@ def register_blueprints(app):
     app.register_blueprint(csrf.exempt(upload_bp))
 
     app.register_blueprint(csrf.exempt(welcome_bp))
+    app.register_blueprint(csrf.exempt(error_bp))
 
 
 def configure_error_handlers(app):
+    # Page not found
     @app.errorhandler(404)
     def page_not_found(e):
         return render_template('error/404.html'), 404
 
+    # Internal server error
     @app.errorhandler(500)
     def server_error(e):
         return render_template('error/500.html'), 500
 
+    # Unauthorised/Forbidden
+    @app.errorhandler(403)
+    def user_unauthorised(e):
+        return render_template('error/403.html'), 403
 
 def configure_shell_processor(app):
     from app.models import User, Stage, Shot, Club

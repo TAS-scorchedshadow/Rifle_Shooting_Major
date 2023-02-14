@@ -37,7 +37,7 @@ class TestProfileList:
 
         response = test_client.get('/profile_list', follow_redirects=True)
 
-        assert response.status_code == 200
+        assert response.status_code == 403
         template, context = captured_templates[0]
         assert template.name != 'profile/profile_list.html'
 
@@ -547,3 +547,16 @@ class TestUpdateUserInfo:
         r = test_client.post('/update_user_info', data=form, follow_redirects=True)
         assert b"Invalid permissions to edit this user" in r.data
 
+
+@pytest.mark.usefixtures("register_users")
+class TestSeasonShotData:
+    # This functionality is hard to test from the AJAX route. See unit testing functions for testing on num_shots
+    def test_invalid_userID(self, test_client):
+        test_client.post('/login', data={
+            "username": self.coach.username,
+            "password": "coachPass"
+        })
+        start = self.club.season_start.strftime("%d:%m:%Y")
+        end = self.club.season_end.strftime("%d:%m:%Y")
+        r = test_client.get(f'/profile/get_season_shot_data?start={start}&end={end}&userID={self.student.id}')
+        assert r.status_code == 200

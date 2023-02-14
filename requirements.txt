@@ -56,6 +56,6 @@ Werkzeug==1.0.0
 WTForms==2.3.3
 zstandard==0.14.1
 pytz~=2020.5
-sklearn~=0.0
 scikit-learn~=0.24.2
 pytest~=7.1.2
+fpdf~=1.7.2
