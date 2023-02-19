@@ -14,7 +14,7 @@ class Config(object):
     FORCE_HTTPS = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOGIN_DISABLED = False  # Enable this to avoid having to login
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('TESTING_DATABASE_URL')
     SESSION_COOKIE_SECURE = True
 
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
