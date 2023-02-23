@@ -33,13 +33,13 @@
             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
             {% if alert[2] > 0 %}
                 {% if alert[0] == "Incomplete" %}
-                    {{ alert[2] }} stages have been uploaded.
+                    {{ alert[2] }} stages have been uploaded to the server.
                 {% else %}
-                    {{ alert[2] }} stages are ready to upload.
+                    {{ alert[2] }} stages are ready to upload; press the upload button to finalise.
                 {% endif %}
             {% endif %}
             {% if alert[1] > 0 %}
-                {{ alert[1] }} stages are missing a correct username.
+                {{ alert[1] }} stages are missing a correct username and must be fixed before they can be uploaded.
             {% endif %}
         </div>
 

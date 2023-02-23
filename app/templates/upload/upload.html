@@ -52,7 +52,7 @@
                     {% if alert[1] > 0 %}
                         {{ alert[1] }} files were in incorrect format and could not be uploaded.
                     {% else %}
-                        There were no new stages to upload.
+                        There were no new stages to upload within the given timeframe.
                     {% endif %}
                 {% elif alert[0] == "Success" %}
                     {{ alert[2] }} stages have been successfully uploaded.
