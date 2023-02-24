@@ -41,6 +41,18 @@ function setAdmin(sourceElement,userID,clubID){
 
 }
 
+const role_replace = []
+role_replace[0] = ["<i class=\"fas fa-lock\"></i> Restricted", "btn-warning"]
+role_replace[1] = ["<i class=\"fas fa-unlock\"></i> Standard", "btn-primary"]
+role_replace[2] = ["<i class=\"fas fa-whistle\"></i> Manager", "btn-dark"]
+
+function source_element(source, access_level) {
+    console.log(source.html())
+
+    source.removeClass("btn-primary btn-secondary btn-warning btn-dark")
+    source.html(role_replace[access_level][0])
+    source.addClass(role_replace[access_level][1])
+}
 
 $(document).ready(function () {
     var x = $("#emailContext").data()['mail']
@@ -85,6 +97,20 @@ $(document).ready(function () {
           changeSeasonDate($(this).html());
       }
     });
+
+
+     $(".role-swapper").click(function() {
+         const level = $(this).data("lvl")
+         console.log($(this).data("lvl"))
+         $.ajax({
+            data: JSON.stringify({"level": level, "userid": $(this).data("userid")}),
+            type: 'POST',
+            url: '/make_admin',
+            dataType: "JSON",
+            success: source_element($(this).parent().parent().children(".role-btn"), level)
+        })
+         return false;
+     })
 }
 )
 

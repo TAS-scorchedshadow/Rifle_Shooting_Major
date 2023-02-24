@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 
 from app import db
 from app.decorators import club_authorised_urlpath, is_authorised
-from app.models import User
+from app.models import User, Club
 
 admin_bp = Blueprint('admin_bp', __name__)
 
@@ -31,7 +31,7 @@ def user_list(club, club_name):
         user.schoolYr = user.get_school_year()
     times = {"start": club.season_start.strftime("%d:%m:%Y"), "end": club.season_end.strftime("%d:%m:%Y")}
     return render_template('admin/user_list.html', users=users, mail_setting=club.email_setting, season_time=times,
-                           club=club)
+                           club=club, club_list=Club.query.all())
 
 
 @admin_bp.route('/make_admin', methods=['POST'])
@@ -43,26 +43,25 @@ def make_admin():
 
     """
     data = json.loads(request.get_data())
-    userID = int(data["userID"])
+    userID = int(data["userid"])
+    level = int(data["level"])
     club = current_user.club
     user = User.query.filter_by(id=userID).first()
     if not club or not user:
         abort(400)
 
-    if user.clubID != current_user.clubID:
+    if level >= 3:
+        abort(403)
+
+    if (user.clubID != current_user.clubID) and not is_authorised(club, "DEV"):
         abort(403)
 
     if not is_authorised(club, "ADMIN"):
         abort(403)
 
-    state = 0
-    if user.access == 0:
-        user.access = 1
-        state = 1
-    else:
-        user.access = 0
+    user.access = level
     db.session.commit()
-    return jsonify({'access_lvl': state})
+    return jsonify('success')
 
 
 @admin_bp.route('/email_settings', methods=['POST'])

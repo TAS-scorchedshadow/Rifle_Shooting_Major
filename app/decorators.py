@@ -15,7 +15,7 @@ def is_authorised(club: object, role: str) -> bool:
     :param role: One of ["STUDENT", "COACH", "ADMIN", "DEV"]
     :return: Boolean
     """
-    dev_access = 3
+    dev_access = 4
 
     authorised = is_role_authorised(role) and club.id == current_user.clubID
 
