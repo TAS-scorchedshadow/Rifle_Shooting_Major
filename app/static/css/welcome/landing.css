@@ -223,12 +223,14 @@ section {
 .primary-section {
     background-color: white;
     display: flex;
+    justify-content: center;
     align-items: center;
 }
 
 .secondary-section {
     background-color: #cdecfb;
     display: flex;
+    justify-content: center;
     align-items: center;
 }
 
@@ -240,21 +242,29 @@ section {
 
 .display-img {
     object-fit: scale-down;
-    width: 80%;
+    max-height: 80%;
+    max-width: 80%;
     margin: 0 10%;
 }
 
 .secondary-section .display-img {
-    box-shadow: 5px 10px #888888;
+    filter: drop-shadow(0 2px 0.3rem #858585);
 }
 
 .primary-section .display-img {
-    box-shadow: -5px 10px #888888;
+    filter: drop-shadow(0 2px 0.3rem #858585);
 }
 
 .showcase {
     margin-left: 5rem;
     margin-right: 5rem;
+    margin-top: 2rem;
+    height: inherit;
+}
+
+.showcase-item {
+    height: inherit;
+    margin-top: 4.5%;
 }
 
 .showcase h2 {
@@ -287,5 +297,9 @@ section {
     .showcase {
         margin-left: 2rem;
         margin-right: 2rem;
+    }
+    .showcase-item {
+        height: 50%;
+        margin-top: 0;
     }
 }
