@@ -11,6 +11,6 @@ def send_feedback_email(text, sender):
         :param sender: string of sender name
     """
     send_email('[Riflelytics] Feedback has been sent',
-               recipients=["riflelytics@gmail.com"],
+               recipients=["contact@riflelytics.com"],
                text_body=render_template('email/feedback.txt', text=text, sender=sender),
                html_body=render_template('email/feedback.html', text=text, sender=sender))

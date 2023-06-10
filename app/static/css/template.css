@@ -9762,6 +9762,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
   #sidebar ul.components {
     display: flex;
     flex-direction: row;
+    justify-content: center;
   }
   #sidebar .sidebar-header {
     display: none;
@@ -9808,7 +9809,6 @@ h1, h2, h3, h4, h5, h6, p, th, td {
   z-index: 999;
   background: #f7ffff;
   color: #000000;
-  transition: all 0.3s;
 }
 
 #sidebar .sidebar-header {

@@ -18,7 +18,7 @@ def upload():
     :return: Upload page html
     """
     # Reroute if invalid user
-    if not current_user.access >= 1 or current_user.username == "preview":
+    if not current_user.access >= 1:
         return redirect(url_for('welcome_bp.index'))
     # Initialise Variables
     form = uploadForm()

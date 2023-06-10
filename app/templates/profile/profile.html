@@ -138,67 +138,51 @@
                 </div>
                 <br>
                 <div>
-                    {% if current_user.username != "preview" %}
-                        <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
-                            <i class="fas fa-edit"></i>
-                            Edit
-                        </button>
-                    {% else %}
-                        <button class="btn btn-dark disabled btn-block">
-                            <i class="fas fa-edit"></i>
-                            Editing Unavailable
-                        </button>
-                    {% endif %}
+                    <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
+                        <i class="fas fa-edit"></i>
+                        Edit
+                    </button>
                 </div>
             </div>
             <div class="col-12 col-lg-9 pt-3">
-                {% if current_user.username != "preview" %}
-                    <table class="table table-bordered table-responsive-sm">
-                        <thead class="thead-dark">
-                        <tr>
-                            <th scope="col">Username</th>
-                            <th scope="col">Shooter ID</th>
-                            <th scope="col">Permit</th>
-                            <th scope="col">Permit Expiry</th>
-                            <th scope="col">Rifle Serial</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td id="shooterID">{{ user.username }}</td>
-                            <td id="shooterID">{{ user.shooterID }}</td>
-                            <td id="dob"><b>{{ user.permitType }}:</b> {{ user.permitNumber }}</td>
-                            <td id="rifleSerial">{{ user.permitExpiry }}</td>
-                            <td id="rifleSerial">{{ user.rifle_serial }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-bordered table-responsive-xs">
-                        <thead class="bg-primary">
-                        <tr>
-                            <th scope="col">Student ID</th>
-                            <th scope="col">School Year</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Mobile</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td id="schoolID">{{ user.schoolID }}</td>
-                            <td id="gradYr">{{ tableInfo["Grade"] }}</td>
-                            <td id="email">{{ tableInfo["Email"] }}</td>
-                            <td id="email">{{ user.mobile }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                {% else %}
-                    <div class="card bg-secondary" style="min-height: 13rem">
-                        <div class="card-body text-center">
-                            <h4>Student Info Unavaliable in Preview</h4>
-                            <i class="fas fa-eye-slash fa-6x"></i>
-                        </div>
-                    </div>
-                {% endif %}
+                <table class="table table-bordered table-responsive-sm">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Username</th>
+                        <th scope="col">Shooter ID</th>
+                        <th scope="col">Permit</th>
+                        <th scope="col">Permit Expiry</th>
+                        <th scope="col">Rifle Serial</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="shooterID">{{ user.username }}</td>
+                        <td id="shooterID">{{ user.shooterID }}</td>
+                        <td id="dob"><b>{{ user.permitType }}:</b> {{ user.permitNumber }}</td>
+                        <td id="rifleSerial">{{ user.permitExpiry }}</td>
+                        <td id="rifleSerial">{{ user.rifle_serial }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="table table-bordered table-responsive-xs">
+                    <thead class="bg-primary">
+                    <tr>
+                        <th scope="col">Student ID</th>
+                        <th scope="col">School Year</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Mobile</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="schoolID">{{ user.schoolID }}</td>
+                        <td id="gradYr">{{ tableInfo["Grade"] }}</td>
+                        <td id="email">{{ tableInfo["Email"] }}</td>
+                        <td id="email">{{ user.mobile }}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         {% if error == true %}
