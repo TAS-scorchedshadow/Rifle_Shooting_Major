@@ -102,15 +102,9 @@
                                     <i id="tick" class="fa fa-check ml-2" aria-hidden="true" style="color: lawngreen; display: none; position: absolute"></i>
                                 </h5>
                             </div>
-                            {% if current_user.username != "preview" %}
-                                <div>
-                                     <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
-                                </div>
-                            {% else %}
-                                <div>
-                                     <p>{{ stage.notes }}</p>
-                                </div>
-                            {% endif %}
+                            <div>
+                                 <textarea class="form-control" id="notes" rows="3">{{ stage.notes }}</textarea>
+                            </div>
                         {% endblock %}
                     <!--<a class="btn btn-primary" href="#" role="button">&gt</a>-->
                     </div>
