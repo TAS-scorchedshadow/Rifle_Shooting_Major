@@ -120,7 +120,6 @@ body {
     font-family: "RM Neue",sans-serif;
     font-size: 100%;
     line-height: 1.15;
-    margin-top: 30px;
     padding: 10px 21px;
     text-align: center;
     text-transform: none;
@@ -131,6 +130,8 @@ body {
     filter: drop-shadow(0 2px 0.1rem #858585);
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 100px;
+    margin-top: 10px;
 }
 
 .hero-btn:active {
