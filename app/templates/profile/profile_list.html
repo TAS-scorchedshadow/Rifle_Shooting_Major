@@ -8,20 +8,17 @@
 <script type="text/javascript" src="../static/js/autofill.js" defer></script>
 <meta id="my-data" data-clubid="{{ club.id }}">
 
-<div class="jumbotron jumbotron-fluid">
-    <div class=" text-center container-fluid justify-content-lg-center">
-        <div class = "text-center justify-content-center">
-            <div>
-                <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2">
-                <polygon class="logoCol1" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
-                <polygon class="logoCol2" points="69.4 13.1 108.6 79 32.6 175 0 138.9 69.4 13.1"/>
-                <polygon class="logoCol3" points="158.8 11.6 120.2 79.1 198.6 175.2 231.1 138.1 158.8 11.6"/>
-                </svg>
-            </div>
-        </div>
-        <h1> Profile List </h1>
+<div class = "text-center justify-content-center">
+    <div>
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231.1 175.2">
+        <polygon class="logoCol1" points="113.9 67.9 153.1 0 74.7 0 113.9 67.9"/>
+        <polygon class="logoCol2" points="69.4 13.1 108.6 79 32.6 175 0 138.9 69.4 13.1"/>
+        <polygon class="logoCol3" points="158.8 11.6 120.2 79.1 198.6 175.2 231.1 138.1 158.8 11.6"/>
+        </svg>
     </div>
+    <h1> Profile List </h1>
 </div>
+
 
 <meta id="profile-list" data-users="{{ yearGroups }}">
 
@@ -29,10 +26,10 @@
 <div class="container-fluid">
     <script src="../static/js/profile_list.js"></script>
     <form method="post">
-        <div class="row">
-            <div class="col-12" align="center">
+        <div class="row py-5">
+            <div class="col-12 text-center">
                 <label for="username"><i class="fas fa-search"></i></label>
-                <input id="username" placeholder="Find Shooter" class="user-searchbar w-50" autocomplete="off" name="user-search">
+                <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="user-search">
                 <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
                 {% if error == true %}
                     <div class="alert alert-info mt-3" role="alert">
@@ -43,7 +40,7 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <div class="yearGroups" id="yearGroups" align="center" style="justify-self: center">
+                <div class="yearGroups text-center" id="yearGroups" >
                     <!--List of shooters go in here-->
                 </div>
             </div>
