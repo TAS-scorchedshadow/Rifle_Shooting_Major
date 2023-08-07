@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 import json
 
@@ -95,8 +97,14 @@ class TestApi:
             "username": self.student.username,
             "password": "studentPass"
         })
+
+        startDate = datetime.datetime.now() - datetime.timedelta(days=30)
+        endDate = datetime.datetime.now() + datetime.timedelta(days=30)
+
+        dateRange = f'{startDate.strftime("%B %d, %Y")} - {endDate.strftime("%B %d, %Y")}'
+        print(dateRange)
         response = test_client.post('/get_all_shots_season', json={'distance': '300m', 'userID': self.student.id,
-                                                                   'dateRange': 'January 30, 2003 - March 21, 2023'})
+                                                                   'dateRange': dateRange})
         decoded_res = json.loads(response.data.decode("utf-8"))
 
         assert len(decoded_res['target']) == 50
@@ -111,8 +119,7 @@ class TestApi:
             "username": self.student.username,
             "password": "studentPass"
         })
-        response = test_client.get('/api/num_shots_season_all', json={'distance': '300m', 'userID': self.student.id,
-                                                                   'dateRange': 'January 30, 2003 - March 21, 2023'})
+        response = test_client.get('/api/num_shots_season_all', json={'distance': '300m', 'userID': self.student.id})
         assert response.status_code == 403
 
     def test_submit_table(self, test_client, captured_templates):
