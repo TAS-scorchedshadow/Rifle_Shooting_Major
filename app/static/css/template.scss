@@ -8,12 +8,21 @@
 ----------------------------------------------------- */
 
 //Color palette
-$secondary: #6086e5;
 $primary: #84ceeb;
-$bg: #ffffff;
+$secondary: #5ab9ea;
+$bg: #E5E4E2;
 $bg-highlight-1: #f7ffff;
-$bg-highlight-2: $primary;
+$bg-highlight-2: #5680e9;
 $txt-color: #000000;
+
+//#C1C8E4
+
+//$: #6086e5;
+//$primary: #84ceeb;
+//$bg: #ffffff;
+//$bg-highlight-1: #f7ffff;
+//$bg-highlight-2: $primary;
+//$txt-color: #000000;
 
 //$primary: #86c232;
 //$secondary: #72c213;
@@ -24,12 +33,14 @@ $txt-color: #000000;
 
 $theme-colors: (
   "primary": $primary,
-  "nav-color-bg": $bg-highlight-1,
+  "nav-color-bg": $bg,
   "nav-color-txt": $txt-color,
   "nav-tabs-link-active-bg": $bg-highlight-1
 );
 
-$link-hover-decoration : none;
+$link-hover-decoration: none;
+$link-color: #033d96;
+
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
@@ -219,6 +230,10 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 /* ---------------------------------------------------
     MEDIAQUERIES
 ----------------------------------------------------- */
+#sidebar {
+    background: $bg-highlight-1;
+}
+
 
 //Small Screens
 @media (max-width: 768px) {
@@ -310,7 +325,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 }
 
 #sidebar ul li a:hover {
-    color: $bg;
+    color: $bg-highlight-1;
     background: $primary;
 }
 

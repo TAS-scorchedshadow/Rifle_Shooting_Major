@@ -1,7 +1,12 @@
-body{
-  background-color: #0c5460;
-}
 
+
+#content{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background: #E5E4E2;
+    background: linear-gradient(45deg, #E5E4E2 0%, rgba(90,185,234,1) 100%);
+}
 
 .login-card {
   position: absolute;

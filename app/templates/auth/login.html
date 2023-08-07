@@ -23,11 +23,8 @@
         {{ form.submit(class_="btn btn-primary btn-lg btn-block") }}
     </div>
 </form>
-<p class="text-center">Don't have an account?
-    <a href="/register">Sign Up</a>
-</p>
-<p class="text-center">
-    Forgot Password?
-    <a href="/request_reset_password">Click to Reset</a>
-</p>
+<div class="d-flex flex-column text-center py-2">
+    <div>Don't have an account? <a href="/register">Sign Up</a></div>
+    <div>Forgot Password? <a href="/request_reset_password">Reset Password</a></div>
+</div>
 {% endblock %}
