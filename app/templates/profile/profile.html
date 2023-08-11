@@ -127,6 +127,11 @@
 
     <div class="container-fluid" style="padding-bottom: 50px">
         <a id="top"></a>
+        {% if error == true %}
+            <div class="alert alert-info mt-3" role="alert">
+                We couldn't find a user that matched your search. Please try again.
+            </div>
+        {% endif %}
         <div class="row align-items-center pb-3">
             <div class="col-12 col-lg-3">
                 <div class="card text-center bg-primary">
@@ -184,11 +189,7 @@
                 </table>
             </div>
         </div>
-        {% if error == true %}
-            <div class="alert alert-info mt-3" role="alert">
-                We couldn't find a user that matched your search. Please try again.
-            </div>
-        {% endif %}
+
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -284,6 +285,17 @@
             </div>
         </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
+        {% if current_user.access >= 1 %}
+            <form method="post">
+                <div class="row pb-2">
+                    <div class="col-12 text-center">
+                        <label for="username"><i class="fas fa-search"></i></label>
+                        <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="user">
+                        <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
         <div>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
@@ -298,15 +310,6 @@
                     <a class="nav-link" id="season-tab" data-toggle="tab" href="#season" role="tab" aria-controls="season"
                        aria-selected="false">Season Stats</a>
                 </li>
-                {% if current_user.access >= 1 %}
-                    <div class="ui-widget pl-2">
-                        <form method="post">
-                            <label for="username"><i class="fas fa-search"></i></label>
-                            <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user-search">
-                            <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                {% endif %}
             </ul>
             <div class="tab-content" id="myTabContent">
                 <!--Overview tab-->
