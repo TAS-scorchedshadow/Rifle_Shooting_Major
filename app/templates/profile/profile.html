@@ -302,20 +302,19 @@
                     <div class="ui-widget pl-2">
                         <form method="post">
                             <label for="username"><i class="fas fa-search"></i></label>
-                            <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off"
-                                   name="user">
+                            <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off" name="user-search">
                             <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
                 {% endif %}
             </ul>
-            <div class="tab-content bg-nav-tabs-link-active-bg" id="myTabContent">
+            <div class="tab-content" id="myTabContent">
                 <!--Overview tab-->
                 <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                    <div class="container-fluid p-4" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="container-fluid p-4 bg-highlight-1" style="padding-left: 0px; padding-right: 0px;">
                         <div class="row">
                             <div class="col-xl-6 col-md-6">
-                                <div class="card bg-nav-color-bg" style="min-width:300px;">
+                                <div class="card bg-background" style="min-width:300px;">
                                     <h5 class="card-header">Stages</h5>
                                     <div class="card-body">
                                         <label for = "time-picker">Stages older than</label>
@@ -336,7 +335,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6">
-                                <div class="card" style="height: 400px">
+                                <div class="card bg-background" style="height: 400px">
                                     <h5 class="card-header">Total Score & Consistency</h5>
                                     <div class = card-body>
                                         <!--line graph is shown here-->
@@ -347,7 +346,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <div class="card" style="height: 280px">
+                                <div class="card bg-background" style="height: 280px">
                                     <h5 class="card-header">Season Shot Data</h5>
                                     <div class = card-body>
                                         <div hx-get="/profile/get_season_shot_data?userID={{ user.id }}&start={{ season_time['start'] }}&end={{ season_time['end'] }}"
@@ -365,9 +364,9 @@
                 </div>
                 <!--Gear Club Tab (By Dylan)-->
                 <div class="tab-pane fade" id="rifle-settings" role="tabpanel" aria-labelledby="rifle-settings-tab">
-                    <div class="container-fluid p-4">
+                    <div class="container-fluid p-4 bg-highlight-1">
                         <div class="card shadow border-0">
-                            <div class="card-header bg-dark text-white text-center">
+                            <div class="card-header text-center">
                                 <div>Gear Settings</div>
                             </div>
                             <div class="card-body">
@@ -460,7 +459,7 @@
                 </div>
                 <!--Season Stats-->
                 <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
-                    <div class="container-fluid p-4">
+                    <div class="container-fluid p-4 bg-highlight-1">
                         <div class="row" id="seasonRow1">
                             <div class="col-12 col-xl-5">
                                 <div class="card">

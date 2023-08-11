@@ -8,34 +8,33 @@
 ----------------------------------------------------- */
 
 //Color palette
-$primary: #84ceeb;
-$secondary: #5ab9ea;
-$bg: #E5E4E2;
-$bg-highlight-1: #f7ffff;
-$bg-highlight-2: #5680e9;
-$txt-color: #000000;
-
-//#C1C8E4
-
-//$: #6086e5;
 //$primary: #84ceeb;
-//$bg: #ffffff;
-//$bg-highlight-1: #f7ffff;
-//$bg-highlight-2: $primary;
+//$secondary: #5ab9ea;
+//$bg: #E5E4E2;
+//$highlight-1: #f7ffff;
+//$highlight-2: #5680e9;
 //$txt-color: #000000;
+
+
+$primary: #84ceeb;
+$secondary: #6086e5;
+$bg: #F5F5F5;
+$highlight-1: #f7ffff;
+$highlight-2: #84ceeb;
+$txt-color: #000000;
 
 //$primary: #86c232;
 //$secondary: #72c213;
 //$bg: #6B6E70;
-//$bg-highlight-1: #474B4F;
-//$bg-highlight-2: #222629;
+//$highlight-1: #474B4F;
+//$highlight-2: #222629;
 //$txt-color: #fff;
 
 $theme-colors: (
-  "primary": $primary,
-  "nav-color-bg": $bg,
-  "nav-color-txt": $txt-color,
-  "nav-tabs-link-active-bg": $bg-highlight-1
+    "primary": $primary,
+    "background": $bg,
+    "highlight-1": $highlight-1,
+    "highlight-2": $highlight-2
 );
 
 $link-hover-decoration: none;
@@ -49,8 +48,8 @@ $link-color: #033d96;
 ----------------------------------------------------- */
 .alert-secondary {
   color: #121415;
-  background-color: $bg-highlight-1 !important;
-  border-color: $bg-highlight-1 !important;
+  background-color: $highlight-1 !important;
+  border-color: $highlight-1 !important;
 }
 .alert-secondary hr {
   border-top-color: #b4b5b6;
@@ -63,7 +62,7 @@ $link-color: #033d96;
   .nav-link.active,
   .nav-item.show .nav-link {
     color: $txt-color;
-    background-color: $bg-highlight-1 !important;
+    background-color: $highlight-1 !important;
   }
 }
 .navbar {
@@ -91,10 +90,10 @@ $link-color: #033d96;
     CARDS
 ----------------------------------------------------- */
 .card {
-    background-color: $bg-highlight-1;
+    background-color: $highlight-1;
 }
 .card-header{
-    background-color: $bg-highlight-2;
+    background-color: $highlight-2;
 }
 
 
@@ -117,7 +116,7 @@ p {
 
 
 .background-light{
-    background-color: $bg-highlight-2;
+    background-color: $highlight-2;
 }
 
 .background-secondary{
@@ -133,13 +132,13 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 }
 
 .modal-content{
-    background-color: $bg-highlight-1;
+    background-color: $highlight-1;
 }
 
 .input-group-text{
-    background-color: $bg-highlight-1;
+    background-color: $highlight-1;
     color: $txt-color;
-    border: 1px solid $bg-highlight-2;
+    border: 1px solid $highlight-2;
 }
 .text-primary{
     color: $primary;
@@ -153,7 +152,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 }
 
 .jumbotron-fluid{
-    background-color: $bg-highlight-1;
+    background-color: $highlight-1;
 }
 
 .fa-clock{
@@ -231,7 +230,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
     MEDIAQUERIES
 ----------------------------------------------------- */
 #sidebar {
-    background: $bg-highlight-1;
+    background: $highlight-1;
 }
 
 
@@ -305,12 +304,12 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 #sidebar {
     position: fixed;
     z-index: 999;
-    background: $bg-highlight-1;
+    background: $highlight-1;
     color: $txt-color;
 }
 
 #sidebar .sidebar-header {
-    background: $bg-highlight-2;
+    background: $highlight-2;
 }
 
 #sidebar .sidebar-header span {
@@ -325,7 +324,7 @@ h1, h2, h3, h4, h5, h6, p, th, td {
 }
 
 #sidebar ul li a:hover {
-    color: $bg-highlight-1;
+    color: $highlight-1;
     background: $primary;
 }
 
