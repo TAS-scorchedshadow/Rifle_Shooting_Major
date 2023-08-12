@@ -127,8 +127,12 @@
 
     <div class="container-fluid" style="padding-bottom: 50px">
         <a id="top"></a>
+        {% if error == true %}
+            <div class="alert alert-info mt-3" role="alert">
+                We couldn't find a user that matched your search. Please try again.
+            </div>
+        {% endif %}
         <div class="row align-items-center pb-3">
-            <!--EVERYTHING IN THIS ROW IS BY RISHI-->
             <div class="col-12 col-lg-3">
                 <div class="card text-center bg-primary">
                     <div class="card-body">
@@ -165,7 +169,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <table class="table table-bordered table-responsive-xs">
+                <table class="table table-bordered table-responsive-sm">
                     <thead class="bg-primary">
                     <tr>
                         <th scope="col">Student ID</th>
@@ -185,11 +189,7 @@
                 </table>
             </div>
         </div>
-        {% if error == true %}
-            <div class="alert alert-info mt-3" role="alert">
-                We couldn't find a user that matched your search. Please try again.
-            </div>
-        {% endif %}
+
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
              aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -285,247 +285,250 @@
             </div>
         </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab"
-                   aria-controls="overview" aria-selected="true">Overview</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="rifle-settings-tab" data-toggle="tab" href="#rifle-settings" role="tab"
-                   aria-controls="rifle-settings" aria-selected="false">Rifle Settings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="season-tab" data-toggle="tab" href="#season" role="tab" aria-controls="season"
-                   aria-selected="false">Season Stats</a>
-            </li>
-            {% if current_user.access >= 1 %}
-                <div class="ui-widget pl-2">
-                    <form method="post">
+        {% if current_user.access >= 1 %}
+            <form method="post">
+                <div class="row pb-4">
+                    <div class="col-12 text-center">
                         <label for="username"><i class="fas fa-search"></i></label>
-                        <input id="username" placeholder="Find Shooter" class="user-searchbar" autocomplete="off"
-                               name="user">
+                        <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="user">
                         <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    </div>
                 </div>
-            {% endif %}
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            <!--Overview tab-->
-            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-                <div class="container-fluid pt-2" style="padding-left: 0px; padding-right: 0px;">
-                    <div class="row">
-                        <div class="col-xl-6 col-md-6">
-                            <div class="card" style="min-width:300px;">
-                                <h5 class="card-header">Stages</h5>
-                                <div class="card-body">
-                                    <label for = "time-picker">Stages older than</label>
-                                    <input class = "field form-control" required type="date" name="start-date"
-                                           value="{{ today  }}" hx-target="#stages-container" id = "time-picker"
-                                           hx-get="/get_stages?userID={{ user.id }}&page=1" hx-trigger="change">
-                                    <br>
-                                    <div style="min-height: 300px" hx-get="/get_stages?userID={{ user.id }}&page=1" hx-trigger="load"
-                                         hx-include="[name='start-date']" id="stages-container" hx-indicator="#indicator">
+            </form>
+        {% endif %}
+        <div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab"
+                       aria-controls="overview" aria-selected="true">Overview</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="rifle-settings-tab" data-toggle="tab" href="#rifle-settings" role="tab"
+                       aria-controls="rifle-settings" aria-selected="false">Rifle Settings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="season-tab" data-toggle="tab" href="#season" role="tab" aria-controls="season"
+                       aria-selected="false">Season Stats</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!--Overview tab-->
+                <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                    <div class="container-fluid p-4 bg-highlight-1" style="padding-left: 0px; padding-right: 0px;">
+                        <div class="row">
+                            <div class="col-xl-6 col-md-6">
+                                <div class="card bg-background" style="min-width:300px;">
+                                    <h5 class="card-header">Stages</h5>
+                                    <div class="card-body">
+                                        <label for = "time-picker">Stages older than</label>
+                                        <input class = "field form-control" required type="date" name="start-date"
+                                               value="{{ today  }}" hx-target="#stages-container" id = "time-picker"
+                                               hx-get="/get_stages?userID={{ user.id }}&page=1" hx-trigger="change">
+                                        <br>
+                                        <div style="min-height: 300px" hx-get="/get_stages?userID={{ user.id }}&page=1" hx-trigger="load"
+                                             hx-include="[name='start-date']" id="stages-container" hx-indicator="#indicator">
+                                        </div>
+                                        <!--https://loading.io/spinner/bars/-bounce-bar-column-chart-equalizer-histogram-rectangle-block-progress-facebook -->
+                                        <img id="indicator" class="bar-indicator mx-auto" style="max-height: 50px"
+                                             src="../../static/images/bars.svg"/>
                                     </div>
-                                    <!--https://loading.io/spinner/bars/-bounce-bar-column-chart-equalizer-histogram-rectangle-block-progress-facebook -->
-                                    <img id="indicator" class="bar-indicator mx-auto" style="max-height: 50px"
-                                         src="../../static/images/bars.svg"/>
-                                </div>
-                                <a href="#top">
-                                    <div class="card-footer text-secondary">Back to top</div>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-xl-6 col-lg-6">
-                            <div class="card" style="height: 400px">
-                                <h5 class="card-header">Total Score & Consistency</h5>
-                                <div class = card-body>
-                                    <!--line graph is shown here-->
-                                    <script type="text/javascript" src="../static/js/profile/overview_graph.js"></script>
-                                    <img id="graph-indicator" class="bar-indicator mx-auto" style=" margin-top: 120px;
-                                        max-height: 50px" src="../../static/images/bars.svg"/>
-                                    <canvas style="background-color:inherit;" id="lineSTDEV"></canvas>
+                                    <a href="#top">
+                                        <div class="card-footer">Back to top</div>
+                                    </a>
                                 </div>
                             </div>
-                            <br>
-                            <div class="card" style="height: 280px">
-                                <h5 class="card-header">Season Shot Data</h5>
-                                <div class = card-body>
-                                    <div hx-get="/profile/get_season_shot_data?userID={{ user.id }}&start={{ season_time['start'] }}&end={{ season_time['end'] }}"
-                                         hx-trigger="load"
-                                         hx-indicator="#shot-indicator">
+                            <div class="col-xl-6 col-lg-6">
+                                <div class="card bg-background" style="height: 400px">
+                                    <h5 class="card-header">Total Score & Consistency</h5>
+                                    <div class = card-body>
+                                        <!--line graph is shown here-->
+                                        <script type="text/javascript" src="../static/js/profile/overview_graph.js"></script>
+                                        <img id="graph-indicator" class="bar-indicator mx-auto" style=" margin-top: 120px;
+                                            max-height: 50px" src="../../static/images/bars.svg"/>
+                                        <canvas style="background-color:inherit;" id="lineSTDEV"></canvas>
                                     </div>
-                                    <img id="shot-indicator" class="bar-indicator mx-auto pt-5" style="max-height: 100px"
-                                         src="../../static/images/bars.svg"/>
                                 </div>
-                                <text class="card-header bg-light">Avr. Shots per Session rounded to 2.d.p</text>
+                                <br>
+                                <div class="card bg-background" style="height: 280px">
+                                    <h5 class="card-header">Season Shot Data</h5>
+                                    <div class = card-body>
+                                        <div hx-get="/profile/get_season_shot_data?userID={{ user.id }}&start={{ season_time['start'] }}&end={{ season_time['end'] }}"
+                                             hx-trigger="load"
+                                             hx-indicator="#shot-indicator">
+                                        </div>
+                                        <img id="shot-indicator" class="bar-indicator mx-auto pt-5" style="max-height: 100px"
+                                             src="../../static/images/bars.svg"/>
+                                    </div>
+                                    <text class="card-header bg-light">Avr. Shots per Session rounded to 2.d.p</text>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!--Gear Club Tab (By Dylan)-->
-            <div class="tab-pane fade" id="rifle-settings" role="tabpanel" aria-labelledby="rifle-settings-tab">
-                <div class="container-fluid pt-2 pl-0 pr-0">
-                    <div class="card shadow border-0">
-                        <div class="card-header bg-dark text-white text-center">
-                            <div>Gear Settings</div>
-                        </div>
-                        <div class="card-body">
-                            <div>
-                                <table class="table table-bordered editableTable">
-                                    <thead class="thead-dark">
-                                    <tr>
-                                        <th>Butt Length</th>
-                                        <th>Butt Height</th>
-                                        <th>Sight Hole</th>
-                                        <th>Sling Point</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td id="rifle_buttLength">{{ user.rifle_buttLength }}</td>
-                                        <td id="rifle_buttHeight">{{ user.rifle_buttHeight }}</td>
-                                        <td id="rifle_sightHole">{{ user.rifle_sightHole }}</td>
-                                        <td id="rifle_slingPointLength">{{ user.rifle_slingPointLength }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 col-lg-2 mb-3" id="settings-button">
-                                    {% if current_user.username != "preview" %}
-                                        <button class="btn btn-primary btn-block edit h-100">
-                                            <i class="fas fa-edit"></i>
-                                            Edit
-                                        </button>
-                                    {% else %}
-                                        <button class="btn btn-dark disabled btn-block h-100">
-                                            <i class="fas fa-edit"></i>
-                                            Editing Unavailable
-                                        </button>
-                                    {% endif %}
-                                    <button type="button" class="btn btn-warning btn-lg btn-block submit h-100"
-                                            id="submit" style="display: none">
-                                        <i class="fas fa-save"></i>
-                                        <h5>Save</h5>
-                                    </button>
-                                </div>
-                                <div class="col-12 col-lg-10" style="height: inherit; overflow-y: scroll;">
-                                    <table class="table table-bordered editableTable" id="stage-table">
-                                        <thead class="thead-dark" style="position: sticky; top: 0;">
+                <!--Gear Club Tab (By Dylan)-->
+                <div class="tab-pane fade" id="rifle-settings" role="tabpanel" aria-labelledby="rifle-settings-tab">
+                    <div class="container-fluid p-4 bg-highlight-1">
+                        <div class="card shadow border-0 bg-background">
+                            <h5 class="card-header text-center">
+                                Gear Settings
+                            </h5>
+                            <div class="card-body">
+                                <div>
+                                    <table class="table table-bordered editableTable">
+                                        <thead class="thead-dark">
                                         <tr>
-                                            <th>Distance</th>
-                                            <th>Elevation</th>
-                                            <th>Ring Size</th>
+                                            <th>Butt Length</th>
+                                            <th>Butt Height</th>
+                                            <th>Sight Hole</th>
+                                            <th>Sling Point</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr>
-                                            <th>300m</th>
-                                            <td id="elevation_300m">{{ user.elevation_300m }}</td>
-                                            <td id="ringSize_300m">{{ user.ringSize_300m }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>400m</th>
-                                            <td id="elevation_400m">{{ user.elevation_400m }}</td>
-                                            <td id="ringSize_400m">{{ user.ringSize_400m }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>500m</th>
-                                            <td id="elevation_500m">{{ user.elevation_500m }}</td>
-                                            <td id="ringSize_500m">{{ user.ringSize_500m }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>600m</th>
-                                            <td id="elevation_600m">{{ user.elevation_600m }}</td>
-                                            <td id="ringSize_600m">{{ user.ringSize_600m }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>700m</th>
-                                            <td id="elevation_700m">{{ user.elevation_700m }}</td>
-                                            <td id="ringSize_700m">{{ user.ringSize_700m }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>800m</th>
-                                            <td id="elevation_800m">{{ user.elevation_800m }}</td>
-                                            <td id="ringSize_800m">{{ user.ringSize_800m }}</td>
+                                            <td id="rifle_buttLength">{{ user.rifle_buttLength }}</td>
+                                            <td id="rifle_buttHeight">{{ user.rifle_buttHeight }}</td>
+                                            <td id="rifle_sightHole">{{ user.rifle_sightHole }}</td>
+                                            <td id="rifle_slingPointLength">{{ user.rifle_slingPointLength }}</td>
                                         </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-lg-2 mb-3" id="settings-button">
+                                        {% if current_user.username != "preview" %}
+                                            <button class="btn btn-primary btn-block edit h-100">
+                                                <i class="fas fa-edit"></i>
+                                                Edit
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-dark disabled btn-block h-100">
+                                                <i class="fas fa-edit"></i>
+                                                Editing Unavailable
+                                            </button>
+                                        {% endif %}
+                                        <button type="button" class="btn btn-warning btn-lg btn-block submit h-100"
+                                                id="submit" style="display: none">
+                                            <i class="fas fa-save"></i>
+                                            <h5>Save</h5>
+                                        </button>
+                                    </div>
+                                    <div class="col-12 col-lg-10" style="height: inherit; overflow-y: scroll;">
+                                        <table class="table table-bordered editableTable" id="stage-table">
+                                            <thead class="thead-dark" style="position: sticky; top: 0;">
+                                            <tr>
+                                                <th>Distance</th>
+                                                <th>Elevation</th>
+                                                <th>Ring Size</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <th>300m</th>
+                                                <td id="elevation_300m">{{ user.elevation_300m }}</td>
+                                                <td id="ringSize_300m">{{ user.ringSize_300m }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>400m</th>
+                                                <td id="elevation_400m">{{ user.elevation_400m }}</td>
+                                                <td id="ringSize_400m">{{ user.ringSize_400m }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>500m</th>
+                                                <td id="elevation_500m">{{ user.elevation_500m }}</td>
+                                                <td id="ringSize_500m">{{ user.ringSize_500m }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>600m</th>
+                                                <td id="elevation_600m">{{ user.elevation_600m }}</td>
+                                                <td id="ringSize_600m">{{ user.ringSize_600m }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>700m</th>
+                                                <td id="elevation_700m">{{ user.elevation_700m }}</td>
+                                                <td id="ringSize_700m">{{ user.ringSize_700m }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>800m</th>
+                                                <td id="elevation_800m">{{ user.elevation_800m }}</td>
+                                                <td id="ringSize_800m">{{ user.ringSize_800m }}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!--Season Stats-->
-            <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
-                <div class="container-fluid pt-2 pl-0 pr-0">
-                    <div class="row" id="seasonRow1">
-                        <div class="col-12 col-xl-5">
-                            <div class="card">
-                                <h5 class="card-header">Heatmap</h5>
-                                <div class="card-body" id="heatmapCard">
-                                    <div style="display: flex; justify-content: space-between">
-                                        <div class="selectSeason pb-2"
-                                             style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; display:inline;">
-                                            <i class="fa fa-calendar"></i>&nbsp;
-                                            <span id="date-selector-season"></span> <i class="fa fa-caret-down"></i>
-                                        </div>
-                                        <div class="dropdown pl-2">
-                                            <button class="btn btn-secondary" style="width: 100px" type="button"
-                                                    id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                <span id="select-range-span">300m</span><i class="fa fa-caret-down pl-1"
-                                                                                           style="color: white;"></i>
-                                            </button>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                <a class="dropdown-item"
-                                                   onclick="document.getElementById('select-range-span').innerHTML = '300m'">300m</a>
-                                                <a class="dropdown-item"
-                                                   onclick="document.getElementById('select-range-span').innerHTML = '400m'">400m</a>
-                                                <a class="dropdown-item"
-                                                   onclick="document.getElementById('select-range-span').innerHTML = '500m'">500m</a>
-                                                <a class="dropdown-item"
-                                                   onclick="document.getElementById('select-range-span').innerHTML = '600m'">600m</a>
-                                                <a class="dropdown-item"
-                                                   onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
-                                                <a class="dropdown-item"
-                                                   onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
+                <!--Season Stats-->
+                <div class="tab-pane fade" id="season" role="tabpanel" aria-labelledby="season-tab">
+                    <div class="container-fluid p-4 bg-highlight-1">
+                        <div class="row" id="seasonRow1">
+                            <div class="col-12 col-xl-5">
+                                <div class="card bg-background">
+                                    <h5 class="card-header">Heatmap</h5>
+                                    <div class="card-body" id="heatmapCard">
+                                        <div style="display: flex; justify-content: space-between">
+                                            <div class="selectSeason pb-2"
+                                                 style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; display:inline;">
+                                                <i class="fa fa-calendar"></i>&nbsp;
+                                                <span id="date-selector-season"></span> <i class="fa fa-caret-down"></i>
+                                            </div>
+                                            <div class="dropdown pl-2">
+                                                <button class="btn btn-secondary" style="width: 100px" type="button"
+                                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                    <span id="select-range-span">300m</span><i class="fa fa-caret-down pl-1"
+                                                                                               style="color: white;"></i>
+                                                </button>
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item"
+                                                       onclick="document.getElementById('select-range-span').innerHTML = '300m'">300m</a>
+                                                    <a class="dropdown-item"
+                                                       onclick="document.getElementById('select-range-span').innerHTML = '400m'">400m</a>
+                                                    <a class="dropdown-item"
+                                                       onclick="document.getElementById('select-range-span').innerHTML = '500m'">500m</a>
+                                                    <a class="dropdown-item"
+                                                       onclick="document.getElementById('select-range-span').innerHTML = '600m'">600m</a>
+                                                    <a class="dropdown-item"
+                                                       onclick="document.getElementById('select-range-span').innerHTML = '700m'">700m</a>
+                                                    <a class="dropdown-item"
+                                                       onclick="document.getElementById('select-range-span').innerHTML = '800m'">800m</a>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
-                                         src="../../static/images/bars.svg"/>
-                                    <div id="heatMapDiv">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-xl-7">
-                            <div class="card">
-                                <h5 class="card-header">
-                                    Box Plot
-                                </h5>
-                                <div class="card-body">
-                                    <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
-                                         src="../../static/images/bars.svg"/>
-                                    <div id="boxPlotDiv" style="display: flex; flex-direction: column; justify-content: space-around">
-                                        <div class="alert alert-secondary" id="boxAlert" role="alert" style="display: none;">
-                                            There aren't enough stages to show a box plot. Please add more stages at the <a
-                                                href="/upload"><b><u>upload page</u></b></a> or select a different timeframe.
+                                        <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
+                                             src="../../static/images/bars.svg"/>
+                                        <div id="heatMapDiv">
                                         </div>
-                                        <canvas id="boxPlot"></canvas>
                                     </div>
                                 </div>
                             </div>
-                            <div class="card mt-4">
-                                <h5 class="card-header">Notable stages</h5>
-                                <div class="card-body">
-                                    <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
-                                         src="../../static/images/bars.svg"/>
-                                    <div id="bestWorstCol"
-                                        style="display: flex; flex-direction: column; justify-content: space-around">
+                            <div class="col-12 col-xl-7">
+                                <div class="card bg-background">
+                                    <h5 class="card-header">
+                                        Box Plot
+                                    </h5>
+                                    <div class="card-body">
+                                        <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
+                                             src="../../static/images/bars.svg"/>
+                                        <div id="boxPlotDiv" style="display: flex; flex-direction: column; justify-content: space-around">
+                                            <div class="alert alert-secondary" id="boxAlert" role="alert" style="display: none;">
+                                                There aren't enough stages to show a box plot. Please add more stages at the <a
+                                                    href="/upload"><b><u>upload page</u></b></a> or select a different timeframe.
+                                            </div>
+                                            <canvas id="boxPlot"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mt-4 bg-background">
+                                    <h5 class="card-header">Notable stages</h5>
+                                    <div class="card-body">
+                                        <img class="season-spinner mx-auto" style="max-height: 50px; display: block"
+                                             src="../../static/images/bars.svg"/>
+                                        <div id="bestWorstCol"
+                                            style="display: flex; flex-direction: column; justify-content: space-around">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
