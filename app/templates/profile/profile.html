@@ -169,7 +169,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <table class="table table-bordered table-responsive-xs">
+                <table class="table table-bordered table-responsive-sm">
                     <thead class="bg-primary">
                     <tr>
                         <th scope="col">Student ID</th>
@@ -287,7 +287,7 @@
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
         {% if current_user.access >= 1 %}
             <form method="post">
-                <div class="row pb-2">
+                <div class="row pb-4">
                     <div class="col-12 text-center">
                         <label for="username"><i class="fas fa-search"></i></label>
                         <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="user">
