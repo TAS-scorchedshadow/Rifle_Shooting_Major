@@ -286,11 +286,11 @@
         </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
         {% if current_user.access >= 1 %}
-            <form method="post">
+            <form method="get" action="/profile">
                 <div class="row pb-4">
                     <div class="col-12 text-center">
                         <label for="username"><i class="fas fa-search"></i></label>
-                        <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="user">
+                        <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="username">
                         <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
