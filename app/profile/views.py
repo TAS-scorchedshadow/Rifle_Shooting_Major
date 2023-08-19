@@ -20,24 +20,10 @@ def catch_profile_list():
     return redirect(url_for(".profile_list", club_name=current_user.club.name))
 
 
-@profile_bp.route('/profile_list/<club_name>', methods=['GET', 'POST'])
+@profile_bp.route('/profile_list/<club_name>', methods=['GET'])
 @login_required
 @club_authorised_urlpath("COACH")
 def profile_list(club, club_name):
-    searchError = False
-    if request.method == "POST":
-        textInput = request.form['user-search']
-        cardInput = request.form['user']
-        if textInput:
-            user = User.query.filter_by(username=textInput).first()
-            if user:
-                flask_session['profileID'] = user.id
-                return redirect('/profile')
-            else:
-                searchError = True
-        if cardInput:
-            flask_session['profileID'] = int(cardInput)
-            return redirect('/profile')
     users = User.query.filter_by(clubID=club.id).order_by(User.username).all()
     yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'],
                   '7': ['Year 7'], 'other': ['Graduated']}
@@ -49,7 +35,7 @@ def profile_list(club, club_name):
             yearGroups['other'].append([user.sName, user.fName, user.username])
 
     yearGroups = json.dumps(yearGroups)
-    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError, club=club)
+    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, club=club)
 
 
 def can_access_profile(user) -> bool:
