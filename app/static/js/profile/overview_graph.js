@@ -45,12 +45,15 @@ $(document).ready(function() {
                         scales: {
                             'score': {
                                 position: 'left',
-                                max: 50,
+                                max: 51,
                                 min: 0,
                                 title: {
                                     display: true,
                                     text: 'Score out of 50'
                                 },
+                                ticks: {
+                                    stepSize: 5
+                                }
 
                             },
                             'standard-deviation': {
@@ -60,6 +63,10 @@ $(document).ready(function() {
                                 title: {
                                     display: true,
                                     text: 'Standard Deviation'
+                                },
+                                // grid line settings
+                                grid: {
+                                  drawOnChartArea: false, // only want the grid lines for one axis to show up
                                 },
                             },
                             x: {
