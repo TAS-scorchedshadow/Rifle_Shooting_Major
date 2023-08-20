@@ -142,7 +142,7 @@
                 </div>
                 <br>
                 <div>
-                    <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#exampleModal">
+                    <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#updateUserInfoModal">
                         <i class="fas fa-edit"></i>
                         Edit
                     </button>
@@ -191,12 +191,12 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="updateUserInfoModal" tabindex="-1" role="dialog"
+             aria-labelledby="updateUserInfoModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Update Shooter Info </h5>
+                        <h5 class="modal-title" id="updateUserInfoModalLabel">Update Shooter Info </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -286,11 +286,11 @@
         </div>
         {#    Tab header (code from https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior)    #}
         {% if current_user.access >= 1 %}
-            <form method="post">
+            <form method="get" action="/profile">
                 <div class="row pb-4">
                     <div class="col-12 text-center">
                         <label for="username"><i class="fas fa-search"></i></label>
-                        <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="user">
+                        <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="username">
                         <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>

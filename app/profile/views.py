@@ -20,65 +20,53 @@ def catch_profile_list():
     return redirect(url_for(".profile_list", club_name=current_user.club.name))
 
 
-@profile_bp.route('/profile_list/<club_name>', methods=['GET', 'POST'])
+@profile_bp.route('/profile_list/<club_name>', methods=['GET'])
 @login_required
 @club_authorised_urlpath("COACH")
 def profile_list(club, club_name):
-    searchError = False
-    if request.method == "POST":
-        textInput = request.form['user-search']
-        cardInput = request.form['user']
-        if textInput:
-            user = User.query.filter_by(username=textInput).first()
-            if user:
-                flask_session['profileID'] = user.id
-                return redirect('/profile')
-            else:
-                searchError = True
-        if cardInput:
-            flask_session['profileID'] = int(cardInput)
-            return redirect('/profile')
     users = User.query.filter_by(clubID=club.id).order_by(User.username).all()
     yearGroups = {'12': ['Year 12'], '11': ['Year 11'], '10': ['Year 10'], '9': ['Year 9'], '8': ['Year 8'],
                   '7': ['Year 7'], 'other': ['Graduated']}
     for user in users:
         schoolYr = str(user.get_school_year())
         if schoolYr in yearGroups:
-            yearGroups[schoolYr].append([user.sName, user.fName, user.id])
+            yearGroups[schoolYr].append([user.sName, user.fName, user.username])
         else:
-            yearGroups['other'].append([user.sName, user.fName, user.id])
+            yearGroups['other'].append([user.sName, user.fName, user.username])
 
     yearGroups = json.dumps(yearGroups)
-    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, error=searchError, club=club)
+    return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, club=club)
 
 
-@profile_bp.route('/profile', methods=['GET', 'POST'])
+def can_access_profile(user) -> bool:
+    if current_user.access == 3:
+        return True
+    if user.club == current_user.club and current_user.access >= 1:
+        return True
+    return False
+
+@profile_bp.route('/profile', methods=['GET'])
 @login_required
 def profile():
     """
     Page which displays shooter/stages/shot information
 
-    :parameter [UserID]: Database Shooter ID. Not passed to function, but read from URL
+    :param username: User to display
     :return: profile.html with info dictionary for the table, form for forms and variables/lists for ChartJS
     """
+
     search_error = False
-    if request.method == "POST":
-        username = request.form['user']
-        if username:
-            user = User.query.filter_by(username=username).first()
-            if user:
-                flask_session['profileID'] = user.id
-                return redirect('/profile')
-            else:
-                search_error = True
-    if current_user.access < 1:
+    if "username" not in request.args:
         user = current_user
     else:
-        try:
-            userID = flask_session['profileID']
-        except KeyError:
-            userID = current_user.id
-        user = User.query.filter_by(id=userID).first()
+        username = request.args["username"]
+        user = User.query.filter_by(username=username).first()
+        if user is None:
+            user = current_user
+            search_error = True
+        elif not can_access_profile(user):
+            user = current_user
+
 
     tableInfo = {}
     tableInfo["SID"] = user.shooterID
@@ -92,7 +80,7 @@ def profile():
     tableInfo["Sharing"] = user.sharing
     tableInfo["Mobile"] = user.mobile
 
-    club = Club.query.filter_by(id=user.clubID).first()
+    club = user.club
     if not club:
         flash("No club with that name exists", "error")
         if request.referrer is not None:
