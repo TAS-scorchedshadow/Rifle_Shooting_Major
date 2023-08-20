@@ -1,5 +1,5 @@
 //By Henry Guo
-var target_details = {
+const target_details = {
     "details": ['V', '5', '4', '3', '2', '1'],
     "300m": [300, 70, 140, 280, 420, 600, 1200],
     "400m": [400, 95, 185, 375, 560, 800, 1800],
@@ -17,15 +17,15 @@ var target_details = {
     "1000y": [914.4, 255, 510, 815, 1120, 1830, 2400]
 };
 //Colors
-var targetFill = '#afafaf';
-var targetStroke = 'black';
-var groupColours = ['red', 'blue', 'green', 'yellow', 'brown']
-var shotFill = '#afafaf';
-var shotFillAlternatives = [shotFill,'#95b0b0','#b09595','#7db281']
-var shotStroke = 'black';
-var shotText = 'black';
+const targetFill = '#afafaf';
+const targetStroke = 'black';
+const groupColours = ['red', 'blue', 'green', 'yellow', 'brown']
+const shotFill = '#afafaf';
+const shotFillAlternatives = [shotFill,'#95b0b0','#b09595','#7db281']
+const shotStroke = 'black';
+const shotText = 'black';
 
-var gridLinesColor = '#7b7b7b';
+const gridLinesColor = '#7b7b7b';
 
 function Circle(c, x, y, radius, fillColor='white', strokeColor='black', lineWidth=1) {
     /**

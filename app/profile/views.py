@@ -175,26 +175,23 @@ def html_get_stages():
                                     <div class="col-12">
                                         <div class="table-responsive">
                                             <table class="table table-sm table-bordered recentShotsTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th style='width: 55px;'>Range</th>
-                                                        <th style='width: 62px;'>Sighters</th>
-                                                        <th>Shots</th>
-                                                        <th style='width: 69px;'>Total</th>
-                                                        <th style='width: 37px;'>Std</th>
-                                                        <th style='width: 55px;'>Group</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <th>{stage['distance']}</th>
-                                                        <th>{htmlSighters}</th>
-                                                        <th>{htmlScoresBody}</th>
-                                                        <th>{stage['totalScore']}</th>
-                                                        <th>{stage['std']}</th>
-                                                        <th>{stage['groupSize']}</th>
-                                                    </tr>
-                                                </tbody>
+                                                <tr>
+                                                    <td colspan="5">{htmlScoresBody}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Range</th>
+                                                    <th>Sighters</th>
+                                                    <th>Total</th>
+                                                    <th>Std</th>
+                                                    <th>Group</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>{stage['distance']}</td>
+                                                    <td>{htmlSighters}</td>
+                                                    <td>{stage['totalScore']}</td>
+                                                    <td>{stage['std']}</td>
+                                                    <td>{stage['groupSize']}</td>
+                                                </tr>
                                             </table>
                                         </div>
                                     </div>
