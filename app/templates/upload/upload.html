@@ -40,8 +40,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/js/fileinput.min.js"></script>
         <!-- optionally if you need a theme like font awesome theme you can include it as mentioned below -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/themes/fa/theme.js"></script>
-        <!-- optionally if you need translation for your language then include  locale file as mentioned below -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/js/locales/(lang).js"></script>
+        <!-- optionally if you need translation for your language then include  locale file as mentioned below
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/5.1.2/js/locales/(lang).js"></script>-->
 
     </head>
     {% if alert[0] %}
@@ -112,8 +112,6 @@
                             <!-- Code from https://plugins.krajee.com/file-theme-demo -->
                             <!-- FONT AWESOME THEME -->
                             <!-- load the JS files in the right order -->
-                            <script src="../../node_modules/bootstrap/bootstrap-fileinput/js/fileinput.js"></script>
-                            <script src="../../node_modules/bootstrap-fileinput/themes/fa/theme.js"></script>
                             {{ form.csrf_token }}
                             {{ form.weeks.label }}
                             {{ form.weeks }}
