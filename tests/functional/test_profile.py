@@ -77,69 +77,6 @@ class TestProfileList:
         template, context = captured_templates[0]
         assert template.name == 'profile/profile_list.html'
 
-    def test_profile_post_text(self, test_client, captured_templates):
-        """
-        GIVEN a Flask application configured for testing
-        WHEN the '/' page is requested (GET)
-        THEN check that the response is valid
-        """
-
-        test_client.post('/login', data={
-            "username": self.admin.username,
-            "password": "adminPass"
-        })
-
-        response = test_client.post(f'/profile_list/{self.club.name}',
-                                    data={"user-search": self.student.username, "user": ""},
-                                    follow_redirects=True)
-
-        assert response.status_code == 200
-        template, context = captured_templates[0]
-        assert context["user"] == self.student
-        assert template.name == 'profile/profile.html'
-
-    def test_profile_post_text_error(self, test_client, captured_templates):
-        """
-        GIVEN a Flask application configured for testing
-        WHEN the '/' page is requested (GET)
-        THEN check that the response is valid
-        """
-
-        test_client.post('/login', data={
-            "username": self.admin.username,
-            "password": "adminPass"
-        })
-
-        response = test_client.post(f'/profile_list/{self.club.name}',
-                                    data={"user-search": "Not a name", "user": ""},
-                                    follow_redirects=True)
-
-        assert response.status_code == 200
-        template, context = captured_templates[0]
-        assert context["error"] is True
-        assert template.name == 'profile/profile_list.html'
-
-    def test_profile_post_card(self, test_client, captured_templates):
-        """
-        GIVEN a Flask application configured for testing
-        WHEN the '/' page is requested (GET)
-        THEN check that the response is valid
-        """
-
-        test_client.post('/login', data={
-            "username": self.admin.username,
-            "password": "adminPass"
-        })
-
-        response = test_client.post(f'/profile_list/{self.club.name}',
-                                    data={"user-search": "", "user": self.student.id},
-                                    follow_redirects=True)
-
-        assert response.status_code == 200
-        template, context = captured_templates[0]
-        assert template.name == 'profile/profile.html'
-
-
 @pytest.mark.usefixtures("register_users")
 class TestProfile:
     def test_profile_unauthorised(self, test_client, captured_templates):
@@ -232,48 +169,7 @@ class TestProfile:
             "password": "coachPass"
         })
 
-        with test_client.session_transaction() as sess:
-            sess['profileID'] = self.student.id
-
-        response = test_client.get('/profile', follow_redirects=True)
-
-        assert response.status_code == 200
-        template, context = captured_templates[0]
-
-        assert context["user"] == self.student
-
-        info = {}
-        info["SID"] = self.student.shooterID
-        info["DOB"] = self.student.dob
-        info["Rifle Serial"] = self.student.rifle_serial
-        info["StudentID"] = self.student.schoolID
-        info["Grade"] = self.student.get_school_year()
-        info["Email"] = self.student.email
-        info["Permit"] = self.student.permitNumber
-        info["Expiry"] = self.student.permitExpiry
-        info["Sharing"] = self.student.sharing
-        info["Mobile"] = self.student.mobile
-
-        assert context["tableInfo"] == info
-
-        assert type(context["error"]) is bool
-
-        assert "start" in context["season_time"]
-        datetime.strptime(context["season_time"]["start"], "%d:%m:%Y")
-        assert "end" in context["season_time"]
-
-        assert isinstance(context["season_time"]["end"], str)
-        datetime.strptime(context["season_time"]["end"], "%d:%m:%Y")
-
-        assert template.name == "profile/profile.html"
-
-    def test_profile_coach_post(self, test_client, captured_templates):
-        test_client.post('/login', data={
-            "username": self.coach.username,
-            "password": "coachPass"
-        })
-
-        response = test_client.post('/profile', data={"user": self.student.username}, follow_redirects=True)
+        response = test_client.get(f'/profile?username={self.student.username}', follow_redirects=True)
 
         assert response.status_code == 200
         template, context = captured_templates[0]
@@ -349,48 +245,7 @@ class TestProfile:
             "password": "adminPass"
         })
 
-        with test_client.session_transaction() as sess:
-            sess['profileID'] = self.student.id
-
-        response = test_client.get('/profile', follow_redirects=True)
-
-        assert response.status_code == 200
-        template, context = captured_templates[0]
-
-        assert context["user"] == self.student
-
-        info = {}
-        info["SID"] = self.student.shooterID
-        info["DOB"] = self.student.dob
-        info["Rifle Serial"] = self.student.rifle_serial
-        info["StudentID"] = self.student.schoolID
-        info["Grade"] = self.student.get_school_year()
-        info["Email"] = self.student.email
-        info["Permit"] = self.student.permitNumber
-        info["Expiry"] = self.student.permitExpiry
-        info["Sharing"] = self.student.sharing
-        info["Mobile"] = self.student.mobile
-
-        assert context["tableInfo"] == info
-
-        assert type(context["error"]) is bool
-
-        assert "start" in context["season_time"]
-        datetime.strptime(context["season_time"]["start"], "%d:%m:%Y")
-        assert "end" in context["season_time"]
-
-        assert isinstance(context["season_time"]["end"], str)
-        datetime.strptime(context["season_time"]["end"], "%d:%m:%Y")
-
-        assert template.name == "profile/profile.html"
-
-    def test_profile_admin_post(self, test_client, captured_templates):
-        test_client.post('/login', data={
-            "username": self.admin.username,
-            "password": "adminPass"
-        })
-
-        response = test_client.post('/profile', data={"user": self.student.username}, follow_redirects=True)
+        response = test_client.get(f'/profile?username={self.student.username}', follow_redirects=True)
 
         assert response.status_code == 200
         template, context = captured_templates[0]
@@ -428,12 +283,10 @@ class TestProfile:
             "password": "adminPass"
         })
 
-        response = test_client.post('/profile', data={"user": "Not a name"}, follow_redirects=True)
+        response = test_client.get('/profile?username=notaname', follow_redirects=True)
 
         assert response.status_code == 200
         template, context = captured_templates[0]
-
-        assert context["error"] is True
 
         assert template.name == "profile/profile.html"
 

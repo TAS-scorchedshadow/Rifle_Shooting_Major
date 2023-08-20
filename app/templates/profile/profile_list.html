@@ -25,30 +25,22 @@
     <!--New Cards by Henry Guo-->
 <div class="container-fluid">
     <script src="../static/js/profile_list.js"></script>
-    <form method="post">
+    <form method="get" action="/profile">
         <div class="row py-5">
             <div class="col-12 text-center">
                 <label for="username"><i class="fas fa-search"></i></label>
-                <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="user-search">
+                <input id="username" placeholder="Find Shooter" class="user-searchbar w-50 h-100" autocomplete="off" name="username">
                 <button type="submit" id="user-searchbar-submit" class="btn btn-primary">Submit</button>
-                {% if error == true %}
-                    <div class="alert alert-info mt-3" role="alert">
-                      We couldn't find a user that matched your search. Please try again.
-                    </div>
-                {% endif %}
             </div>
         </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="yearGroups text-center" id="yearGroups" >
-                    <!--List of shooters go in here-->
-                </div>
-            </div>
-        </div>
-
-        <!--Hidden input to submit user id-->
-        <input type="text" id="idInput" style="display:none" name="user">
     </form>
+    <div class="row">
+        <div class="col-12">
+            <div class="yearGroups text-center" id="yearGroups" >
+                <!--List of shooters go in here-->
+            </div>
+        </div>
+    </div>
 </div>
 
 
