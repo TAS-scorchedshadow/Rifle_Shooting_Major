@@ -24,7 +24,6 @@
 
     <!--New Cards by Henry Guo-->
 <div class="container-fluid">
-    <script src="../static/js/profile_list.js"></script>
     <form method="get" action="/profile">
         <div class="row py-5">
             <div class="col-12 text-center">
@@ -34,12 +33,14 @@
             </div>
         </div>
     </form>
-    <div class="row">
-        <div class="col-12">
-            <div class="yearGroups text-center" id="yearGroups" >
-                <!--List of shooters go in here-->
-            </div>
-        </div>
+    <label>Sort By</label>
+    <select name="sort_by" class="form-select" hx-get="/profile_search?clubID={{ club.id }}" hx-target="#target" hx-trigger="load, change">
+      <option selected value="default">Default</option>
+        <option value="sname-fname">Surname</option>
+      <option value="year">Year</option>
+      <option value="shots">Three</option>
+    </select>
+    <div id="target">
     </div>
 </div>
 

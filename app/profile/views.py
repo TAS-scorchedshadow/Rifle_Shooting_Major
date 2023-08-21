@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from flask import Blueprint, request, redirect, render_template, flash, url_for
+from flask import Blueprint, request, redirect, render_template, flash, url_for, abort
 from flask import session as flask_session
 from flask_login import login_required, current_user
 
@@ -10,6 +10,7 @@ from app.api.api import get_stages, num_shots
 from app.models import User, Club
 from app.decorators import club_authorised_urlpath, club_exists, is_authorised
 from app.profile.forms import updateInfoForm
+from app.profile.sort_strategy import YearStrategy, ShotsStrategy, LastNameStrategy, AccessStrategy
 
 profile_bp = Blueprint('profile_bp', __name__)
 
@@ -37,6 +38,41 @@ def profile_list(club, club_name):
     yearGroups = json.dumps(yearGroups)
     return render_template('profile/profile_list.html', users=users, yearGroups=yearGroups, club=club)
 
+@profile_bp.route('/profile_search', methods=['GET'])
+def search():
+    clubID = request.args.get('clubID')
+    sort_by = request.args.get('sort_by')
+    club = Club.query.filter_by(id=clubID).first()
+    if not club:
+        return abort(400)
+
+    if sort_by == "year":
+        sort_strategy = YearStrategy()
+    elif sort_by == "shots":
+        sort_strategy = ShotsStrategy()
+    elif sort_by == "sname-fname":
+        sort_strategy = LastNameStrategy()
+    else:
+        sort_strategy = AccessStrategy()
+
+    data = sort_strategy.sort_users(User.query.filter_by(clubID=clubID).all())
+    html = """<div class="text-center">"""
+    for category, list_users in data:
+        html += f"""
+            <h3>{category}</h3>
+            <div class="row justify-content-center px-2">"""
+        for display, username in list_users:
+            html += f"""
+                 <div class="pl-2 pr-2"> 
+                    <a class="card mt-3 pl-1 pr-1" href="/profile?username={username}">
+                        <div class="card-body text-center" style="width:300px">
+                            <h6>{display} </h6>
+                        </div>
+                    </a>
+                </div>
+            """
+        html += "</div><hr>"
+    return html
 
 def can_access_profile(user) -> bool:
     if current_user.access == 3:
