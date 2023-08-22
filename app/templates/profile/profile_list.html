@@ -33,14 +33,20 @@
             </div>
         </div>
     </form>
-    <label>Sort By</label>
-    <select name="sort_by" class="form-select" hx-get="/profile_search?clubID={{ club.id }}" hx-target="#target" hx-trigger="load, change">
-      <option selected value="default">Default</option>
-        <option value="sname-fname">Surname</option>
-      <option value="year">Year</option>
-      <option value="shots">Three</option>
-    </select>
+    <div class="row justify-content-end align-items-center">
+        <img id="shot-indicator" class="htmx-indicator" style="max-width: 25px"
+                                             src="../../static/images/bars.svg"/>
+        <label class="mb-0 mx-2">Sort By</label>
+        <select name="sort_by" class="form-select" hx-get="/profile_search?clubID={{ club.id }}" hx-target="#target" hx-trigger="load, change"
+            hx-indicator="#shot-indicator">
+          <option selected value="default">Default</option>
+            <option value="sname-fname">Surname</option>
+          <option value="year">Year</option>
+          <option value="shots">Shot Frequency</option>
+        </select>
+    </div>
     <div id="target">
+
     </div>
 </div>
 

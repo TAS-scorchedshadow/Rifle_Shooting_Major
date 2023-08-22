@@ -57,16 +57,21 @@ def search():
 
     data = sort_strategy.sort_users(User.query.filter_by(clubID=clubID).all())
     html = """<div class="text-center">"""
+    print(data)
     for category, list_users in data:
         html += f"""
             <h3>{category}</h3>
             <div class="row justify-content-center px-2">"""
-        for display, username in list_users:
+        for display, subdisplay, username in list_users:
+            subtitle = ""
+            if subdisplay:
+                subtitle = f'<div>{subdisplay}</div>'
             html += f"""
                  <div class="pl-2 pr-2"> 
                     <a class="card mt-3 pl-1 pr-1" href="/profile?username={username}">
                         <div class="card-body text-center" style="width:300px">
-                            <h6>{display} </h6>
+                            <h6>{display}</h6>
+                            {subtitle}
                         </div>
                     </a>
                 </div>
