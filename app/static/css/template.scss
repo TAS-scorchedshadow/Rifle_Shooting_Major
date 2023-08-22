@@ -334,6 +334,10 @@ a[aria-expanded="true"] {
     background: $bg;
 }
 
+.profile-card:hover {
+    border-color: $link-color;
+}
+
 /*
 
 ::-webkit-scrollbar {

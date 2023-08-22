@@ -68,7 +68,7 @@ def search():
                 subtitle = f'<div>{subdisplay}</div>'
             html += f"""
                  <div class="pl-2 pr-2"> 
-                    <a class="card mt-3 pl-1 pr-1" href="/profile?username={username}">
+                    <a class="card profile-card mt-3 pl-1 pr-1" href="/profile?username={username}">
                         <div class="card-body text-center" style="width:300px">
                             <h6>{display}</h6>
                             {subtitle}
