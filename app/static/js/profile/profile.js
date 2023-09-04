@@ -9,4 +9,18 @@ $(document).ready(function() {
             $this.text("Show details");
         }
     });
+
+    let $backToTop = $(".back-to-top");
+    $backToTop.hide();
+    $(window).on('scroll', function() {
+    if ($(this).scrollTop() > 500) {
+        $backToTop.fadeIn(150);
+    } else {
+        $backToTop.fadeOut(150);
+    }
+    });
+
+    $backToTop.on('click', function(e) {
+        $("html, body").animate({scrollTop: 0}, 300);
+    });
 })
