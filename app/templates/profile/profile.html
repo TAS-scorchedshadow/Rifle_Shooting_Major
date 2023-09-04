@@ -17,17 +17,16 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" defer></script>
     <script type="text/javascript" src="../static/js/autofill.js" defer></script>
-
     <!--Import user id-->
     <meta id="my-data" data-userid="{{ user.id }}" data-clubid="{{ club.id }}" data-endroute="/submit_table">
     <!--Date range picker (see https://www.daterangepicker.com)-->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/profile/profile.css"/>
+    <script src="../static/js/profile/profile.js"></script>
     <script type="text/javascript">
         $(function () {
-
-
             function cbStages(start, end) {
                 $('.selectStages span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
             }
@@ -65,11 +64,8 @@
             // Display the initial dates on the input box
             cbStages(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
             cbSeason(moment('{{ season_time["start"] }}', 'DD:MM:YYYY'), moment('{{ season_time["end"] }}', 'DD:MM:YYYY'));
-
-
         });
     </script>
-
     <!--Scripts for season stats page-->
     <script src="../static/css-element-queries/src/ResizeSensor.js"></script>
     <script src=../static/heatmap.js-master/build/heatmap.min.js></script>
@@ -142,13 +138,14 @@
                 </div>
                 <br>
                 <div>
-                    <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#updateUserInfoModal">
+                    <button class="btn btn-primary btn-block hide-mobile" data-toggle="modal" data-target="#updateUserInfoModal">
                         <i class="fas fa-edit"></i>
                         Edit
                     </button>
                 </div>
             </div>
-            <div class="col-12 col-lg-9 pt-3">
+                <!---------------------------------- PROFILE TABLE ---------------------------->
+            <div class="col-12 col-lg-9 pt-3 hide-mobile">
                 <table class="table table-bordered table-responsive-sm">
                     <thead class="thead-dark">
                     <tr>
@@ -188,6 +185,55 @@
                     </tbody>
                 </table>
             </div>
+            <div class="col-12 show-mobile">
+                <button class="btn btn-primary btn-block show-details-btn"><i class="fa fa-table" aria-hidden="true"></i> Show details</button>
+            </div>
+            <!-- Mobile profile details -->
+            <div class="col-12 show-mobile profile-details">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Username</th>
+                        <td>{{ user.username }}</td>
+                    </tr>
+                    <tr>
+                        <th>Shooter Id</th>
+                        <td>{{ user.shooterID }}</td>
+                    </tr>
+                    <tr>
+                        <th>Permit</th>
+                        <td><b>{{ user.permitType }}:</b> {{ user.permitNumber }}</td>
+                    </tr>
+                    <tr>
+                        <th>Permit Expiry</th>
+                        <td>{{ user.permitExpiry }}</td>
+                    </tr>
+                    <tr>
+                        <th>Rifle Serial</th>
+                        <td>{{ user.rifle_serial }}</td>
+                    </tr>
+                    <tr>
+                        <th>Student Id</th>
+                        <td>{{ user.schoolID }}</td>
+                    </tr>
+                    <tr>
+                        <th>School Year</th>
+                        <td>{{ tableInfo["Grade"] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ tableInfo["Email"] }}</td>
+                    </tr>
+                    <tr>
+                        <th>Mobile</th>
+                        <td>{{ user.mobile }}</td>
+                    </tr>
+                </table>
+                <button class="btn btn-primary btn-block" data-toggle="modal" data-target="#updateUserInfoModal">
+                    <i class="fas fa-edit"></i>
+                    Edit
+                </button>
+            </div>
+
         </div>
 
         <!-- Modal -->
