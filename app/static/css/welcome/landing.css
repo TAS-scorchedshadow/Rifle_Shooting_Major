@@ -57,6 +57,14 @@ body {
 
 .hero-logo {
     height: 120px;
+    pointer-events: none;
+}
+
+.hero-btn-row {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
 }
 
 .hero-btn {
@@ -64,30 +72,14 @@ body {
     background-color: #0276FF;
     border-radius: 24px;
     border-style: none;
-    box-shadow: rgba(255, 255, 255, 0.26) 0 1px 2px inset;
-    box-sizing: border-box;
     color: #fff;
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    flex-shrink: 0;
-    font-family: "RM Neue",sans-serif;
-    font-size: 100%;
-    line-height: 1.15;
-    margin-top: 10px;
     padding: 10px 21px;
     text-align: center;
-    text-transform: none;
     transition: color .13s ease-in-out,background .13s ease-in-out,opacity .13s ease-in-out,box-shadow .13s ease-in-out;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
+    box-shadow: rgba(255, 255, 255, 0.26) 0 1px 2px inset;
+    box-sizing: border-box;
     filter: drop-shadow(0 2px 0.1rem #858585);
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 100px;
-    margin-top: 2rem;
-    font-size: 1.5rem;
+
 }
 
 .hero-btn:active {
@@ -95,7 +87,8 @@ body {
 }
 
 .hero-btn:hover {
-  background-color: #1C84FF;
+    background-color: #1C84FF;
+
 }
 
 .carousel-inner {
@@ -137,11 +130,6 @@ span.carousel-control-next-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%2ffff' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5L3.75 4l-2.5 2.5L2.75 8l4-4-4-4z'/%3e%3c/svg%3e");
 }
 
-
-.new-club {
-    display: flex;
-    align-items: center;
-}
 
 .new-club-title {
     flex: 1;
@@ -284,7 +272,6 @@ section {
 
     .new-club-title {
         font-size: 20px;
-        width: 80vw;
     }
     .showcase {
         margin-left: 2rem;

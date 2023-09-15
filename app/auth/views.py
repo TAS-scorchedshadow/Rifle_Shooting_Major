@@ -34,6 +34,15 @@ def login():
         return redirect(next_page)
     return render_template('auth/login.html', form=form)
 
+@auth_bp.route('/preview', methods=['GET'])
+def preview_login():
+    if current_user.is_authenticated:
+        return redirect(url_for('welcome_bp.index'))
+    user = User.query.filter_by(username="preview").first()
+    if not user:
+        return redirect(url_for('welcome_bp.landing'))
+    login_user(user)
+    return redirect(url_for('welcome_bp.index'))
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
