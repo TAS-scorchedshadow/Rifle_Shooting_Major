@@ -15,7 +15,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LOGIN_DISABLED = False  # Enable this to avoid having to login
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL")  # or other relevant config var
-    if SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
+    if SQLALCHEMY_DATABASE_URI and SQLALCHEMY_DATABASE_URI.startswith("postgres://"):
         SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.replace("postgres://", "postgresql://", 1)
     SESSION_COOKIE_SECURE = True
 
