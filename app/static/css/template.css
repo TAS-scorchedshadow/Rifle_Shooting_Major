@@ -9841,6 +9841,10 @@ a[aria-expanded=true] {
   background: #F5F5F5;
 }
 
+.profile-card:hover {
+  border-color: #033d96;
+}
+
 /*
 
 ::-webkit-scrollbar {
